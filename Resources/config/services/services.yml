@@ -1,0 +1,64 @@
+services:
+    gos_web_socket.twig.extension:
+        class: Gos\Bundle\WebSocketBundle\Twig\GosWebSocketServerExtension
+        tags:
+            - { name: "twig.extension" }
+
+    gos_web_socket.entry_point:
+        class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
+        arguments:
+            - @gos_web_socket.server.registry
+
+    gos_web_socket.server_command:
+        class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
+        arguments:
+            - @gos_web_socket.entry_point
+        tags:
+            - { name: console.command }
+
+    gos_web_socket.ws.server:
+        class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
+        arguments:
+            - %web_socket_server.host%
+            - %web_socket_server.port%
+            - @event_dispatcher
+            - @gos_web_socket.periodic.registry
+            - @gos_web_socket_server.wamp_application
+        tags:
+            - { name: gos_web_socket.server }
+
+    gos_web_socket.server.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
+
+    gos_web_socket.rpc.dispatcher:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
+        arguments:
+            - @gos_web_socket.rpc.registry
+
+    gos_web_socket.rpc.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
+
+    gos_web_socket.topic.dispatcher:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
+        arguments:
+            - @gos_web_socket.topic.registry
+
+    gos_web_socket.topic.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
+
+    gos_web_socket.periodic.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
+
+    gos_web_socket_server.wamp_application:
+        class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
+        arguments:
+            - @gos_web_socket.rpc.dispatcher
+            - @gos_web_socket.topic.dispatcher
+            - @event_dispatcher
+
+    gos_web_socket_server.client_event.listener:
+        class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
+            - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
+            - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }

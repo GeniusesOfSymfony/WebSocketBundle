@@ -1,0 +1,31 @@
+{
+    "name": "gos/web-socket-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony Web Socket Bundle",
+    "keywords": ["Web Socket Bundle", "Websocket", "WAMP", "IO", "Ratchet"],
+    "homepage": "https://github.com/GeniusesOfSymfony/WebSocketBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremy Dare",
+            "email": "jeremy.d.dare@gmail.com"
+        },
+        {
+            "name": "Johann Saunier",
+            "email": "johann_27@hotmail.fr"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "~2.4",
+        "cboden/Ratchet": "~0.3"
+    },
+    "autoload": {
+        "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}
