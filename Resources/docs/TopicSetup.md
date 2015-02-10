@@ -20,41 +20,41 @@ class AcmeTopic implements TopicInterface
     /**
      * This will receive any Subscription requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $conn
+     * @param \Ratchet\ConnectionInterface $connection
      * @param $topic
      * @return void
      */
-    public function onSubscribe(Conn $conn, $topic)
+    public function onSubscribe(ConnectionInterface $connection, $topic)
     {
         //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast($conn->resourceId . " has joined " . $topic->getId());
+        $topic->broadcast($connection->resourceId . " has joined " . $topic->getId());
     }
 
     /**
      * This will receive any UnSubscription requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $conn
+     * @param \Ratchet\ConnectionInterface $connection
      * @param $topic
      * @return void
      */
-    public function onUnSubscribe(Conn $conn, $topic)
+    public function onUnSubscribe(ConnectionInterface $connection, $topic)
     {
         //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast($conn->resourceId . " has left " . $topic->getId());
+        $topic->broadcast($connection->resourceId . " has left " . $topic->getId());
     }
 
 
     /**
      * This will receive any Publish requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $conn
+     * @param \Ratchet\ConnectionInterface $connection
      * @param $topic
      * @param $event
      * @param array $exclude
      * @param array $eligible
      * @return mixed|void
      */
-    public function onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $connection, $topic, $event, array $exclude, array $eligible)
     {
         /*
         $topic->getId() will contain the FULL requested uri, so you can proceed based on that
