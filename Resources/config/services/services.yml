@@ -16,6 +16,12 @@ services:
         tags:
             - { name: console.command }
 
+    gos_web_socket.ws.client:
+        class: Gos\Component\WebSocketClient\Wamp\Client
+        arguments:
+            - %web_socket_server.host%
+            - %web_socket_server.port%
+
     gos_web_socket.ws.server:
         class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
         arguments:
