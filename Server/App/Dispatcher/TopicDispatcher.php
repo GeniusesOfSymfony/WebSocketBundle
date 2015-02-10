@@ -80,13 +80,13 @@ class TopicDispatcher implements TopicDispatcherInterface
         $event = $event[count($event)-1];
         //if topic service exists, notify it
 
-        $topic = $this->topicRegistry->getTopic($topic->getId());
+        $appTopic = $this->topicRegistry->getTopic($topic->getId());
 
         if ($topic) {
             if ($payload) { //its a publish call.
-                call_user_func([$topic, $event], $conn, $topic, $payload, $exclude, $eligible);
+                call_user_func([$appTopic, $event], $conn, $topic, $payload, $exclude, $eligible);
             } else {
-                call_user_func([$topic, $event], $conn, $topic);
+                call_user_func([$appTopic, $event], $conn, $topic);
             }
 
             return true;

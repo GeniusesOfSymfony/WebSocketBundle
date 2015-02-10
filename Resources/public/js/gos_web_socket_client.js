@@ -102,8 +102,6 @@ var WS = (function()
         }
     };
 
-
-
     return {
         connect: function(uri)
         {

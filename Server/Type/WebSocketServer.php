@@ -115,7 +115,7 @@ class WebSocketServer implements ServerInterface
                 $this->sessionHandler
             );
         } else {
-            $serverStack = new WampServer(new WampServer($this->wampApplication));
+            $serverStack = new WampServer($this->wampApplication);
         }
 
         $this->app = new HttpServer(new WsServer($serverStack));
