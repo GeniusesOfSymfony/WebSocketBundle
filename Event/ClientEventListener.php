@@ -5,6 +5,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Http\FirewallMapInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -51,9 +52,9 @@ class ClientEventListener
         $conn = $event->getConnection();
         $token = null;
 
-        if (isset($conn->Session) && $conn->Session) {
-            foreach ($this->firewalls as $firewall) {
-                if (false !== $serializedToken = $conn->Session->get('_security_' . $firewall, false)) {
+        if(isset($conn->Session) && $conn->Session){
+            foreach($this->firewalls as $firewall){
+                if(false !== $serializedToken = $conn->Session->get('_security_'.$firewall, false)){
                     /** @var TokenInterface $token */
                     $token = unserialize($serializedToken);
                     break;
@@ -61,7 +62,7 @@ class ClientEventListener
             }
         }
 
-        if (null === $token) {
+        if(null === $token){
             $token = new AnonymousToken($this->firewalls[0], $conn->resourceId);
         }
 

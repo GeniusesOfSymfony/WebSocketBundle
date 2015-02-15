@@ -1,4 +1,5 @@
 <?php
+
 namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +33,7 @@ class ClientStorage
     }
 
     /**
-     * @param string        $identifier
+     * @param string              $identifier
      * @param UserInterface $user
      */
     public function addClient($identifier, UserInterface $user = null)

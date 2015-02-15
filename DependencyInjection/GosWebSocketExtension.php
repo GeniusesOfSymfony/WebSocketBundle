@@ -2,7 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
@@ -46,7 +48,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $configs['web_socket_server']['host']
         );
 
-        if (isset($configs['client'])) {
+        if(isset($configs['client'])){
             $clientConf = $configs['client'];
 
             if (!isset($clientConf['session_handler'])) {
@@ -58,18 +60,19 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 new Reference(ltrim($clientConf['session_handler'], '@'))
             ]);
 
-            if (!isset($clientConf['firewall'])) {
+            if(!isset($clientConf['firewall'])){
                 throw new \Exception('You must define at leat one element against wish firewall user must be auth');
             }
 
             $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');
             $clientListenerDef->addArgument((array) $clientConf['firewall']);
 
-            if (isset($clientConf['storage']['driver'])) {
+            if(isset($clientConf['storage']['driver'])){
+
                 $driverRef = ltrim($clientConf['storage']['driver'], '@');
                 $clientStorageDef = $container->getDefinition('gos_web_socket.client_storage');
 
-                if (isset($clientConf['storage']['decorator'])) {
+                if(isset($clientConf['storage']['decorator'])){
                     $decoratorRef = ltrim($clientConf['storage']['decorator'], '@');
                     $decoratorDef = $container->getDefinition($decoratorRef);
                     $decoratorDef->addArgument(new Reference($driverRef));
@@ -77,7 +80,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                     $clientStorageDef->addMethodCall('setStorageDriver', [
                         new Reference($decoratorRef)
                     ]);
-                } else {
+                }else{
                     $clientStorageDef->addMethodCall('setStorageDriver', [
                         new Reference($driverRef)
                     ]);
@@ -138,6 +141,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        //twig
         if (isset($config['shared_config']) && true === $config['shared_config']) {
             if (!isset($bundles['TwigBundle'])) {
                 throw new \Exception('Share option required Twig Bundle');
@@ -149,6 +153,27 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             ));
 
             $container->prependExtensionConfig('twig', $twigConfig);
+        }
+
+        //monolog
+        if(isset($bundles['MonologBundle'])){
+            $monologConfig = array(
+                'channels' => array('websocket'),
+                'handlers' => array(
+                    'websocket' => array(
+                        'type' => 'console',
+                        'verbosity_levels' => array(
+                            OutputInterface::VERBOSITY_NORMAL => Logger::INFO
+                        ),
+                        'channels' => array(
+                            'type' => 'inclusive',
+                            'elements' => array('websocket')
+                        )
+                    )
+                )
+            );
+
+            $container->prependExtensionConfig('monolog', $monologConfig);
         }
     }
 }

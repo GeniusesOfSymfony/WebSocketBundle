@@ -13,6 +13,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
         arguments:
             - @gos_web_socket.entry_point
+            - @?monolog.logger.websocket
         tags:
             - { name: console.command }
 
