@@ -2,14 +2,17 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -32,18 +35,34 @@ class WampApplication implements WampServerInterface
     protected $eventDispatcher;
 
     /**
+     * @var ClientStorage
+     */
+    protected $clientStorage;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param RpcDispatcherInterface   $rpcDispatcher
      * @param TopicDispatcherInterface $topicDispatcher
      * @param EventDispatcherInterface $eventDispatcher
+     * @param ClientStorage            $clientStorage
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         RpcDispatcherInterface $rpcDispatcher,
         TopicDispatcherInterface $topicDispatcher,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ClientStorage $clientStorage,
+        LoggerInterface $logger = null
     ) {
         $this->rpcDispatcher = $rpcDispatcher;
         $this->topicDispatcher = $topicDispatcher;
         $this->eventDispatcher = $eventDispatcher;
+        $this->clientStorage = $clientStorage;
+        $this->logger = $logger;
     }
 
     /**
@@ -75,6 +94,17 @@ class WampApplication implements WampServerInterface
      */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
+        if (null !== $this->logger) {
+            $user = $this->clientStorage->getClient($conn->resourceId);
+            $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+
+            $this->logger->info(sprintf(
+                '%s subscribe to %s',
+                $username,
+                $topic->getId()
+            ));
+        }
+
         $this->topicDispatcher->onSubscribe($conn, $topic);
     }
 
@@ -84,6 +114,17 @@ class WampApplication implements WampServerInterface
      */
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
+        if (null !== $this->logger) {
+            $user = $this->clientStorage->getClient($conn->resourceId);
+            $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+
+            $this->logger->info(sprintf(
+                'User %s unsubscribed to %s',
+                $username,
+                $topic->getId()
+            ));
+        }
+
         $this->topicDispatcher->onUnSubscribe($conn, $topic);
     }
 
@@ -117,7 +158,6 @@ class WampApplication implements WampServerInterface
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         $event = new ClientErrorEvent($conn, ClientEvent::ERROR);
-
         $event->setException($e);
         $this->eventDispatcher->dispatch(Events::CLIENT_ERROR, $event);
     }

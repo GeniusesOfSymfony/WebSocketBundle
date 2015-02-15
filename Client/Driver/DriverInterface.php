@@ -1,6 +1,6 @@
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Client;
+namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
 interface DriverInterface
 {
@@ -23,7 +23,7 @@ interface DriverInterface
      * @param mixed  $data
      * @param int    $lifeTime
      *
-     * @return mixed
+     * @return bool True if saved, false otherwise
      */
     public function save($id, $data, $lifeTime = 0);
 

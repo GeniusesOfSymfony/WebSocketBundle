@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Server;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -17,32 +17,18 @@ class EntryPoint
     protected $serverRegistry;
 
     /**
-     * @var OutputInterface
+     * @var LoggerInterface
      */
-    protected $output;
+    protected $logger;
 
     /**
-     * @param ServerRegistry $serverRegistry
+     * @param ServerRegistry  $serverRegistry
+     * @param LoggerInterface $logger
      */
-    public function __construct(ServerRegistry $serverRegistry)
+    public function __construct(ServerRegistry $serverRegistry, LoggerInterface $logger = null)
     {
         $this->serverRegistry = $serverRegistry;
-    }
-
-    /**
-     * @param OutputInterface $output
-     */
-    public function setOutput(OutputInterface $output = null)
-    {
-        $this->output = $output;
-    }
-
-    /**
-     * @return OutputInterface|null
-     */
-    public function getOutput()
-    {
-        return $this->output;
+        $this->logger = $logger;
     }
 
     /**
@@ -52,8 +38,12 @@ class EntryPoint
     {
         /** @var ServerInterface $server */
         foreach ($this->serverRegistry->getServers() as $server) {
-            if (null !== $this->output) {
-                $this->getOutput()->writeln("Launching " . $server->getName() . " on: " . $server->getAddress());
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf(
+                    'Launching %s on %s',
+                    $server->getName(),
+                    $server->getAddress()
+                ));
             }
 
             //launch server into background process?

@@ -129,7 +129,7 @@ class WebSocketServer implements ServerInterface
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry as $periodic) {
-            $this->loop->addPeriodicTimer(($periodic->getTimeout()/1000), [$periodic, "tick"]);
+            $this->loop->addPeriodicTimer(($periodic->getTimeout()/1000), [$periodic, 'tick']);
         }
 
         $this->server = new \Ratchet\Server\IoServer($this->app, $this->socket, $this->loop);
@@ -146,7 +146,7 @@ class WebSocketServer implements ServerInterface
      */
     public function getAddress()
     {
-        return $this->host . ":" . $this->port;
+        return $this->host . ':' . $this->port;
     }
 
     /**
@@ -154,6 +154,6 @@ class WebSocketServer implements ServerInterface
      */
     public function getName()
     {
-        return "Ratchet WS Server";
+        return 'Ratchet WS Server';
     }
 }

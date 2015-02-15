@@ -48,11 +48,10 @@ class ServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if(null !== $this->logger){
+        if (null !== $this->logger) {
             $this->logger->info('Starting web socket');
         }
 
-        $this->entryPoint->setOutput($output);
         $this->entryPoint->launch();
     }
 }

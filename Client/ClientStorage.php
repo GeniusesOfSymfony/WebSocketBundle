@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
+use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -25,20 +26,30 @@ class ClientStorage
     /**
      * @param string $identifier
      *
-     * @return mixed
+     * @return string|UserInterface|false
      */
     public function getClient($identifier)
     {
-        return $this->driver->fetch($identifier);
+        $result = $this->driver->fetch($identifier);
+
+        if (false === $result) {
+            throw new StorageException(sprintf('Client %s not found', $identifier));
+        }
+
+        return unserialize($result);
     }
 
     /**
-     * @param string              $identifier
-     * @param UserInterface $user
+     * @param string               $identifier
+     * @param string|UserInterface $user
+     *
+     * @throws StorageException
      */
-    public function addClient($identifier, UserInterface $user = null)
+    public function addClient($identifier, $user)
     {
-        $this->driver->save($identifier, $user);
+        if (false === $result = $this->driver->save($identifier, serialize($user))) {
+            throw new StorageException('Unable add client');
+        }
     }
 
     /**

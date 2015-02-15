@@ -2,10 +2,12 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+use Gos\Bundle\WebSocketBundle\Client\StorageException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Security\Http\FirewallMapInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -28,18 +30,26 @@ class ClientEventListener
     protected $securityContext;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param ClientStorage            $clientStorage
      * @param SecurityContextInterface $securityContext
+     * @param LoggerInterface          $logger
      * @param array                    $firewalls
      */
     public function __construct(
         ClientStorage $clientStorage,
         SecurityContextInterface $securityContext,
+        LoggerInterface $logger = null,
         $firewalls = array()
     ) {
         $this->clientStorage = $clientStorage;
         $this->firewalls = $firewalls;
         $this->securityContext = $securityContext;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,11 +60,19 @@ class ClientEventListener
     public function onClientConnect(ClientEvent $event)
     {
         $conn = $event->getConnection();
+
+        if (null !== $this->logger) {
+            $loggerContext = array(
+                'connection_id' => $conn->resourceId,
+                'session_id' => $conn->WAMP->sessionId,
+            );
+        }
+
         $token = null;
 
-        if(isset($conn->Session) && $conn->Session){
-            foreach($this->firewalls as $firewall){
-                if(false !== $serializedToken = $conn->Session->get('_security_'.$firewall, false)){
+        if (isset($conn->Session) && $conn->Session) {
+            foreach ($this->firewalls as $firewall) {
+                if (false !== $serializedToken = $conn->Session->get('_security_' . $firewall, false)) {
                     /** @var TokenInterface $token */
                     $token = unserialize($serializedToken);
                     break;
@@ -62,14 +80,38 @@ class ClientEventListener
             }
         }
 
-        if(null === $token){
-            $token = new AnonymousToken($this->firewalls[0], $conn->resourceId);
+        if (null === $token) {
+            $token = new AnonymousToken($this->firewalls[0], 'anon-' . $conn->WAMP->sessionId);
         }
 
         $this->securityContext->setToken($token);
-        $this->clientStorage->addClient($conn->resourceId, $token->getUser());
 
-        echo $conn->resourceId . " connected" . PHP_EOL;
+        $user = $token->getUser();
+
+        $username = $this->securityContext->isGranted('IS_AUTHENTICATED_FULLY')
+            ? $user->getUsername()
+            : $user;
+
+        try {
+            $this->clientStorage->addClient($conn->resourceId, $user);
+
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf(
+                    '%s connected [%]',
+                    $username,
+                    $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+                ), $loggerContext);
+            }
+        } catch (StorageException $e) {
+            if (null !== $this->logger) {
+                $this->logger->error(
+                    $e->getMessage(),
+                    $loggerContext
+                );
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -80,9 +122,25 @@ class ClientEventListener
     public function onClientDisconnect(ClientEvent $event)
     {
         $conn = $event->getConnection();
-        $this->clientStorage->removeClient($conn->resourceId);
 
-        echo $conn->resourceId . " disconnected" . PHP_EOL;
+        $user = $this->clientStorage->getClient($conn->resourceId);
+
+        $username = $this->securityContext->isGranted('IS_AUTHENTICATED_FULLY')
+            ? $user->getUsername()
+            : $user;
+
+        if (null !== $this->logger) {
+            $this->logger->info(sprintf(
+                '%s disconnected [%]',
+                $username,
+                $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+            ), array(
+                'connection_id' => $conn->resourceId,
+                'session_id' => $conn->WAMP->sessionId,
+            ));
+        }
+
+        $this->clientStorage->removeClient($conn->resourceId);
     }
 
     /**
@@ -92,7 +150,25 @@ class ClientEventListener
      */
     public function onClientError(ClientErrorEvent $event)
     {
+        $conn = $event->getConnection();
         $e = $event->getException();
-        echo "connection error occurred: " . $e->getMessage() . PHP_EOL;
+
+        if (null !== $this->logger) {
+            $loggerContext = array(
+                'connection_id' => $conn->resourceId,
+                'session_id' => $conn->WAMP->sessionId,
+            );
+
+            if ($this->clientStorage->hasClient($conn->resourceId)) {
+                $loggerContext['client'] = $this->clientStorage->getClient($conn->resourceId);
+            }
+
+            $this->logger->error(sprintf(
+                'Connection error occurred %s in %s line %s',
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ), $loggerContext);
+        }
     }
 }

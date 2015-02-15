@@ -73,7 +73,7 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function dispatch($event, ConnectionInterface $conn, Topic $topic, $payload = null, $exclude = null, $eligible = null)
     {
-        $event = explode(":", $event);
+        $event = explode(':', $event);
         if (count($event) <= 0) {
             return false;
         }

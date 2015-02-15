@@ -8,6 +8,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
         arguments:
             - @gos_web_socket.server.registry
+            - @?monolog.logger.websocket
 
     gos_web_socket.server_command:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
@@ -62,18 +63,26 @@ services:
             - @gos_web_socket.rpc.dispatcher
             - @gos_web_socket.topic.dispatcher
             - @event_dispatcher
+            - @gos_web_socket.client_storage
+            - @?monolog.logger.websocket
 
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
 
     gos_web_socket.client_storage.doctrine.decorator:
-        class: Gos\Bundle\WebSocketBundle\Client\DoctrineCacheDriverDecorator
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
+
+    gos_web_scocket.client_storage.predis.cache:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        arguments:
+            - @snc_redis.cache
 
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
             - @gos_web_socket.client_storage
             - @security.context
+            - @?monolog.logger.websocket
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }

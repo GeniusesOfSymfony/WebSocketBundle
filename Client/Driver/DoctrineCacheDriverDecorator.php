@@ -1,6 +1,6 @@
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Client;
+namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
 use Doctrine\Common\Cache\CacheProvider;
 
