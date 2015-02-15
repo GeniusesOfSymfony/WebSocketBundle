@@ -62,8 +62,17 @@ services:
             - @gos_web_socket.topic.dispatcher
             - @event_dispatcher
 
-    gos_web_socket_server.client_event.listener:
+    gos_web_socket.client_storage:
+        class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
+
+    gos_web_socket.client_storage.doctrine.decorator:
+        class: Gos\Bundle\WebSocketBundle\Client\DoctrineCacheDriverDecorator
+
+    gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
+        arguments:
+            - @gos_web_socket.client_storage
+            - @security.context
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }

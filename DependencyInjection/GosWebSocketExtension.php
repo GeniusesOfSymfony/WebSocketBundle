@@ -46,11 +46,43 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $configs['web_socket_server']['host']
         );
 
-        if (isset($configs['session_handler'])) {
+        if (isset($configs['client'])) {
+            $clientConf = $configs['client'];
+
+            if (!isset($clientConf['session_handler'])) {
+                throw new \Exception('You must define session provider if you want configure "Client" options');
+            }
+
             $def = $container->getDefinition('gos_web_socket.ws.server');
             $def->addMethodCall('setSessionHandler', [
-                new Reference(ltrim($configs['session_handler'], '@'))
+                new Reference(ltrim($clientConf['session_handler'], '@'))
             ]);
+
+            if (!isset($clientConf['firewall'])) {
+                throw new \Exception('You must define at leat one element against wish firewall user must be auth');
+            }
+
+            $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');
+            $clientListenerDef->addArgument((array) $clientConf['firewall']);
+
+            if (isset($clientConf['storage']['driver'])) {
+                $driverRef = ltrim($clientConf['storage']['driver'], '@');
+                $clientStorageDef = $container->getDefinition('gos_web_socket.client_storage');
+
+                if (isset($clientConf['storage']['decorator'])) {
+                    $decoratorRef = ltrim($clientConf['storage']['decorator'], '@');
+                    $decoratorDef = $container->getDefinition($decoratorRef);
+                    $decoratorDef->addArgument(new Reference($driverRef));
+
+                    $clientStorageDef->addMethodCall('setStorageDriver', [
+                        new Reference($decoratorRef)
+                    ]);
+                } else {
+                    $clientStorageDef->addMethodCall('setStorageDriver', [
+                        new Reference($driverRef)
+                    ]);
+                }
+            }
         }
 
         if (!empty($configs['rpc'])) {
