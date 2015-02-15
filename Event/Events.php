@@ -11,4 +11,5 @@ final class Events
     const CLIENT_CONNECTED = 'gos_web_socket.client_connected';
     const CLIENT_DISCONNECTED = 'gos_web_socket.client_disconnected';
     const CLIENT_ERROR = 'gos_web_socket.client_error';
+    const CLIENT_REJECTED = 'gos_web_socket.client_rejected';
 }

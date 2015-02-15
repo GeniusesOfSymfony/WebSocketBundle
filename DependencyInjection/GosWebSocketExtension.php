@@ -32,13 +32,24 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $container->setParameter(
             'web_socket_server.port',
-            $configs['web_socket_server']['port']
+            $configs['server']['port']
         );
 
         $container->setParameter(
             'web_socket_server.host',
-            $configs['web_socket_server']['host']
+            $configs['server']['host']
         );
+
+        $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
+        $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
+
+        if (!empty($configs['origins'])) {
+            foreach ($configs['origins'] as $origin) {
+                $originsRegistryDef->addMethodCall('addOrigin', [
+                    $origin
+                ]);
+            }
+        }
 
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
@@ -89,12 +100,12 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        if (!empty($configs['topic'])) {
+        if (!empty($configs['topics'])) {
             $def = $container->getDefinition('gos_web_socket.topic.registry');
 
-            foreach ($configs['topic'] as $rpc) {
+            foreach ($configs['topics'] as $topic) {
                 $def->addMethodCall('addTopic', [
-                    new Reference(ltrim($rpc, '@'))
+                    new Reference(ltrim($topic, '@'))
                 ]);
             }
         }
@@ -102,19 +113,19 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (!empty($configs['periodic'])) {
             $def = $container->getDefinition('gos_web_socket.periodic.registry');
 
-            foreach ($configs['periodic'] as $rpc) {
+            foreach ($configs['periodic'] as $periodic) {
                 $def->addMethodCall('addPeriodic', [
-                    new Reference(ltrim($rpc, '@'))
+                    new Reference(ltrim($periodic, '@'))
                 ]);
             }
         }
 
-        if (!empty($configs['server'])) {
+        if (!empty($configs['servers'])) {
             $def = $container->getDefinition('gos_web_socket.server.registry');
 
-            foreach ($configs['server'] as $rpc) {
+            foreach ($configs['servers'] as $server) {
                 $def->addMethodCall('addServer', [
-                    new Reference(ltrim($rpc, '@'))
+                    new Reference(ltrim($server, '@'))
                 ]);
             }
         }
@@ -148,8 +159,8 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
 
             $twigConfig = array('globals' => array(
-                'gos_web_socket_server_host' => $config['web_socket_server']['host'],
-                'gos_web_socket_server_port' => $config['web_socket_server']['port'],
+                'gos_web_socket_server_host' => $config['server']['host'],
+                'gos_web_socket_server_port' => $config['server']['port'],
             ));
 
             $container->prependExtensionConfig('twig', $twigConfig);

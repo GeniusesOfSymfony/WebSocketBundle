@@ -32,6 +32,8 @@ services:
             - @event_dispatcher
             - @gos_web_socket.periodic.registry
             - @gos_web_socket_server.wamp_application
+            - @gos_web_socket.origins.registry
+            - %web_socket_origin_check%
         tags:
             - { name: gos_web_socket.server }
 
@@ -57,6 +59,9 @@ services:
     gos_web_socket.periodic.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
 
+    gos_web_socket.origins.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
+
     gos_web_socket_server.wamp_application:
         class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
         arguments:
@@ -72,11 +77,6 @@ services:
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
 
-    gos_web_scocket.client_storage.predis.cache:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
-        arguments:
-            - @snc_redis.cache
-
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
@@ -87,3 +87,4 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
+            - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }

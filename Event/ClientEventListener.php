@@ -171,4 +171,16 @@ class ClientEventListener
             ), $loggerContext);
         }
     }
+
+    /**
+     * @param ClientRejectedEvent $event
+     */
+    public function onClientRejected(ClientRejectedEvent $event)
+    {
+        if (null !== $this->logger) {
+            $this->logger->warning('Client rejected, bad origin', [
+                'origin' => $event->getOrigin()
+            ]);
+        }
+    }
 }

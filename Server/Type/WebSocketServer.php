@@ -5,7 +5,9 @@ namespace Gos\Bundle\WebSocketBundle\Server\Type;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Ratchet\Http\HttpServer;
 use Ratchet\Http\HttpServerInterface;
@@ -73,6 +75,16 @@ class WebSocketServer implements ServerInterface
     protected $wampApplication;
 
     /**
+     * @var OriginRegistry|null
+     */
+    protected $originRegistry;
+
+    /**
+     * @var bool
+     */
+    protected $originCheck;
+
+    /**
      * @param string                   $host
      * @param int                      $port
      * @param EventDispatcherInterface $eventDispatcher
@@ -82,13 +94,17 @@ class WebSocketServer implements ServerInterface
         $port,
         EventDispatcherInterface $eventDispatcher,
         PeriodicRegistry $periodicRegistry,
-        WampApplication $wampApplication
+        WampApplication $wampApplication,
+        OriginRegistry $originRegistry,
+        $originCheck
     ) {
         $this->host = $host;
         $this->port = $port;
         $this->eventDispatcher = $eventDispatcher;
         $this->periodicRegistry = $periodicRegistry;
         $this->wampApplication = $wampApplication;
+        $this->originRegistry = $originRegistry;
+        $this->originCheck = $originCheck;
     }
 
     /**
@@ -109,16 +125,30 @@ class WebSocketServer implements ServerInterface
 
     public function launch()
     {
+        $serverStack = new WampServer($this->wampApplication);
+
         if (null !== $this->sessionHandler) {
             $serverStack = new SessionProvider(
-                new WampServer($this->wampApplication),
+                $serverStack,
                 $this->sessionHandler
             );
-        } else {
-            $serverStack = new WampServer($this->wampApplication);
         }
 
-        $this->app = new HttpServer(new WsServer($serverStack));
+        $serverStack = new WsServer($serverStack);
+
+        if (true === $this->originCheck) {
+            $serverStack = new OriginCheck(
+                $serverStack,
+                array('localhost', '127.0.0.1'),
+                $this->eventDispatcher
+            );
+
+            foreach ($this->originRegistry->getOrigins() as $origin) {
+                $serverStack->allowedOrigins[] = $origin;
+            }
+        }
+
+        $this->app = new HttpServer($serverStack);
 
         /** @var $loop LoopInterface */
         $this->loop = \React\EventLoop\Factory::create();
