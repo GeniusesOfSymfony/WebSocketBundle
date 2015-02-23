@@ -55,7 +55,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $clientConf = $configs['client'];
 
             if (!isset($clientConf['session_handler'])) {
-                throw new \Exception('You must define session provider if you want configure "Client" options');
+                throw new \RuntimeException('You must define session provider if you want configure "Client" options');
             }
 
             $def = $container->getDefinition('gos_web_socket.ws.server');
@@ -64,7 +64,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             ]);
 
             if (!isset($clientConf['firewall'])) {
-                throw new \Exception('You must define at leat one element against wish firewall user must be auth');
+                throw new \RuntimeException('You must define at leat one element against wish firewall user must be auth');
             }
 
             $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');
@@ -155,7 +155,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         //twig
         if (isset($config['shared_config']) && true === $config['shared_config']) {
             if (!isset($bundles['TwigBundle'])) {
-                throw new \Exception('Shared configuration required Twig Bundle');
+                throw new \RuntimeException('Shared configuration required Twig Bundle');
             }
 
             $twigConfig = array('globals' => array(

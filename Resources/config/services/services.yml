@@ -34,6 +34,7 @@ services:
             - @gos_web_socket_server.wamp_application
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
+            - @?monolog.logger.websocket
         tags:
             - { name: gos_web_socket.server }
 

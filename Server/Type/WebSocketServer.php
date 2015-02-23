@@ -9,12 +9,14 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use Psr\Log\LoggerInterface;
 use Ratchet\Http\HttpServer;
 use Ratchet\Http\HttpServerInterface;
 use Ratchet\Server\IoServer;
 use Ratchet\Session\SessionProvider;
 use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -85,6 +87,11 @@ class WebSocketServer implements ServerInterface
     protected $originCheck;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param string                   $host
      * @param int                      $port
      * @param EventDispatcherInterface $eventDispatcher
@@ -96,7 +103,8 @@ class WebSocketServer implements ServerInterface
         PeriodicRegistry $periodicRegistry,
         WampApplication $wampApplication,
         OriginRegistry $originRegistry,
-        $originCheck
+        $originCheck,
+        LoggerInterface $logger = null
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -105,6 +113,7 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
+        $this->logger = $logger;
     }
 
     /**
@@ -113,14 +122,6 @@ class WebSocketServer implements ServerInterface
     public function setSessionHandler(\SessionHandlerInterface $sessionHandler)
     {
         $this->sessionHandler = $sessionHandler;
-    }
-
-    /**
-     * @return LoopInterface
-     */
-    public function getLoop()
-    {
-        return $this->loop;
     }
 
     public function launch()
@@ -151,9 +152,9 @@ class WebSocketServer implements ServerInterface
         $this->app = new HttpServer($serverStack);
 
         /** @var $loop LoopInterface */
-        $this->loop = \React\EventLoop\Factory::create();
+        $this->loop = Factory::create();
 
-        $this->socket = new \React\Socket\Server($this->loop);
+        $this->socket = new Server($this->loop);
 
         $this->socket->listen($this->port, $this->host);
 
@@ -162,11 +163,15 @@ class WebSocketServer implements ServerInterface
             $this->loop->addPeriodicTimer(($periodic->getTimeout()/1000), [$periodic, 'tick']);
         }
 
-        $this->server = new \Ratchet\Server\IoServer($this->app, $this->socket, $this->loop);
+        $this->server = new IoServer($this->app, $this->socket, $this->loop);
 
         /* Server Event Loop to add other services in the same loop. */
         $event = new ServerEvent($this->loop);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
+
+        if (null !== $this->logger) {
+            $this->logger->info('Starting web socket');
+        }
 
         $this->loop->run();
     }
@@ -184,6 +189,6 @@ class WebSocketServer implements ServerInterface
      */
     public function getName()
     {
-        return 'Ratchet WS Server';
+        return 'Ratchet';
     }
 }

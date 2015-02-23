@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Command;
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -39,7 +40,9 @@ class ServerCommand extends Command
     {
         $this
             ->setName('gos:server')
-            ->setDescription('Starts the web socket servers');
+            ->setDescription('Starts the web socket servers')
+            ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
+        ;
     }
 
     /**
@@ -48,10 +51,6 @@ class ServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (null !== $this->logger) {
-            $this->logger->info('Starting web socket');
-        }
-
-        $this->entryPoint->launch();
+        $this->entryPoint->launch($input->getArgument('name'));
     }
 }

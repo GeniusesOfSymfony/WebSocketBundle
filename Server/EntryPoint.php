@@ -34,20 +34,33 @@ class EntryPoint
     /**
      * Launches the relevant servers needed by Gos WebSocket.
      */
-    public function launch()
+    public function launch($serverName)
     {
-        /** @var ServerInterface $server */
-        foreach ($this->serverRegistry->getServers() as $server) {
-            if (null !== $this->logger) {
-                $this->logger->info(sprintf(
-                    'Launching %s on %s',
-                    $server->getName(),
-                    $server->getAddress()
+        $servers = $this->serverRegistry->getServers();
+
+        if(null === $serverName){
+            reset($servers);
+            $server = current($servers);
+        }else{
+            if(!isset($servers[$serverName])){
+                throw new \RuntimeException(sprintf(
+                    'Unknown server %s in [%s]',
+                    $serverName,
+                    implode(', ', array_keys($servers))
                 ));
             }
 
-            //launch server into background process?
-            $server->launch();
+            $server = $servers[$serverName];
         }
+
+        if (null !== $this->logger) {
+            $this->logger->info(sprintf(
+                'Launching %s on %s',
+                $server->getName(),
+                $server->getAddress()
+            ));
+        }
+
+        $server->launch();
     }
 }
