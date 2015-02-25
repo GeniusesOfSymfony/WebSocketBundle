@@ -7,7 +7,7 @@ namespace Gos\Bundle\WebSocketBundle\Event;
  */
 final class Events
 {
-    const SERVER_LAUNCHED = 'gos_web_socket.server.launched';
+    const SERVER_LAUNCHED = 'gos_web_socket.server_launched';
     const CLIENT_CONNECTED = 'gos_web_socket.client_connected';
     const CLIENT_DISCONNECTED = 'gos_web_socket.client_disconnected';
     const CLIENT_ERROR = 'gos_web_socket.client_error';

@@ -73,10 +73,12 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function dispatch($event, ConnectionInterface $conn, Topic $topic, $payload = null, $exclude = null, $eligible = null)
     {
-        $event = explode(':', $event);
-        if (count($event) <= 0) {
+        if (false === strpos($event, ':')){
             return false;
         }
+
+        $event = explode(':', $event);
+
         $event = $event[count($event)-1];
         //if topic service exists, notify it
 
@@ -84,9 +86,9 @@ class TopicDispatcher implements TopicDispatcherInterface
 
         if ($topic) {
             if ($payload) { //its a publish call.
-                call_user_func([$appTopic, $event], $conn, $topic, $payload, $exclude, $eligible);
+                $appTopic->{$event}($conn, $topic, $payload, $exclude, $eligible);
             } else {
-                call_user_func([$appTopic, $event], $conn, $topic);
+                $appTopic->{$event}($conn, $topic);
             }
 
             return true;

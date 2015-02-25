@@ -160,7 +160,7 @@ class WebSocketServer implements ServerInterface
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry as $periodic) {
-            $this->loop->addPeriodicTimer(($periodic->getTimeout()/1000), [$periodic, 'tick']);
+            $this->loop->addPeriodicTimer($periodic->getTimeout()/1000, [$periodic, 'tick']);
         }
 
         $this->server = new IoServer($this->app, $this->socket, $this->loop);

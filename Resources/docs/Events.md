@@ -1,8 +1,10 @@
 #Events
 
-Sometimes you will need to perform a server side action when a user connects or disconnects. Gos WebSocket will fire events for 3 reasons:
+Sometimes you will need to perform a server side action when a user connects or disconnects. Gos WebSocket will fire events for many reasons:
 
+* Server starting
 * Client Connects
+* Client Rejected
 * Client Disconnects
 * On Socket Error
 
@@ -18,6 +20,8 @@ namespace Acme\HelloBundle\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 
 class AcmeClientEventListener
 {
@@ -58,6 +62,29 @@ class AcmeClientEventListener
         echo "connection error occurred: " . $e->getMessage() . PHP_EOL;
     }
 
+    /**
+     * Called whenever server start
+     *
+     * @param ServentEvent $event
+     */
+    public function onServerStart(ServerEvent $event)
+    {
+    	$event = $event->getEventLoop();
+
+        echo 'Server was successfully started !'. PHP_EOL;
+    }
+
+    /**
+     * Called whenever client is rejected by application
+     *
+     * @param ClientRejectedEvent $event
+     */
+	public function onClientRejected(ClientRejectedEvent $event)
+    {
+    	$origin = $event->getOrigin;
+
+		echo 'connection rejected from '. $origin . PHP_EOL;
+    }
 }
 ```
 
@@ -66,8 +93,10 @@ class AcmeClientEventListener
 Add this to your bundles "services.yml"
 
 ####Available events:
+* **gos_web_socket.server_launched**
 * **gos_web_socket.client_connected**
 * **gos_web_socket.client_disconnected**
+* **gos_web_socket.client_rejected**
 * **gos_web_socket.client_error**
 
 Default event listener :
@@ -78,6 +107,8 @@ gos_web_socket_server.client_event.listener:
         - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
         - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
         - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
+        - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: onServerStart }
+        - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 ```
 
 You can add your own.
