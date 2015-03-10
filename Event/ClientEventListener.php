@@ -53,9 +53,10 @@ class ClientEventListener
     }
 
     /**
-     * Called whenever a client connects
-     *
      * @param ClientEvent $event
+     *
+     * @throws StorageException
+     * @throws \Exception
      */
     public function onClientConnect(ClientEvent $event)
     {
@@ -88,12 +89,15 @@ class ClientEventListener
 
         $user = $token->getUser();
 
-        $username = $this->securityContext->isGranted('IS_AUTHENTICATED_FULLY')
+        $username = $user instanceof UserInterface
             ? $user->getUsername()
             : $user;
 
         try {
-            $this->clientStorage->addClient($conn->resourceId, $user);
+            $identifier = $conn->resourceId . ':' . $conn->WAMP->sessionId . ':' . $username;
+
+            $this->clientStorage->addClient($identifier, $user);
+            $conn->WAMP->clientStorageId = $identifier;
 
             if (null !== $this->logger) {
                 $this->logger->info(sprintf(
@@ -115,7 +119,7 @@ class ClientEventListener
     }
 
     /**
-     * Called whenever a client disconnects
+     * Called whenever a client disconnects.
      *
      * @param ClientEvent $event
      */
@@ -123,28 +127,41 @@ class ClientEventListener
     {
         $conn = $event->getConnection();
 
-        $user = $this->clientStorage->getClient($conn->resourceId);
+        try {
+            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
 
-        $username = $this->securityContext->isGranted('IS_AUTHENTICATED_FULLY')
-            ? $user->getUsername()
-            : $user;
+            $username = $user instanceof UserInterface
+                ? $user->getUsername()
+                : $user;
 
-        if (null !== $this->logger) {
-            $this->logger->info(sprintf(
-                '%s disconnected [%]',
-                $username,
-                $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
-            ), array(
-                'connection_id' => $conn->resourceId,
-                'session_id' => $conn->WAMP->sessionId,
-            ));
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf(
+                    '%s disconnected [%]',
+                    $username,
+                    $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+                ), array(
+                    'connection_id' => $conn->resourceId,
+                    'session_id' => $conn->WAMP->sessionId,
+                ));
+            }
+        } catch (StorageException $e) {
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf(
+                    '%s disconnected [%s]',
+                    'Expired user',
+                    ''
+                ), array(
+                    'connection_id' => $conn->resourceId,
+                    'session_id' => $conn->WAMP->sessionId,
+                ));
+            }
         }
 
         $this->clientStorage->removeClient($conn->resourceId);
     }
 
     /**
-     * Called whenever a client errors
+     * Called whenever a client errors.
      *
      * @param ClientErrorEvent $event
      */
@@ -157,10 +174,11 @@ class ClientEventListener
             $loggerContext = array(
                 'connection_id' => $conn->resourceId,
                 'session_id' => $conn->WAMP->sessionId,
+                'client_storage_id' => $conn->WAMP->clientStorageId,
             );
 
             if ($this->clientStorage->hasClient($conn->resourceId)) {
-                $loggerContext['client'] = $this->clientStorage->getClient($conn->resourceId);
+                $loggerContext['client'] = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
             }
 
             $this->logger->error(sprintf(
@@ -179,7 +197,7 @@ class ClientEventListener
     {
         if (null !== $this->logger) {
             $this->logger->warning('Client rejected, bad origin', [
-                'origin' => $event->getOrigin()
+                'origin' => $event->getOrigin(),
             ]);
         }
     }

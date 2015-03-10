@@ -84,11 +84,13 @@ class RpcDispatcher implements RpcDispatcherInterface
     }
 
     /**
-     * source: http://www.paulferrett.com/2009/php-camel-case-functions/
+     * source: http://www.paulferrett.com/2009/php-camel-case-functions/.
      *
      * Translates a string with underscores into camel case (e.g. first_name -&gt; firstName)
-     * @param  string $str                   String in underscore format
-     * @param  bool   $capitalise_first_char If true, capitalise the first char in $str
+     *
+     * @param string $str                   String in underscore format
+     * @param bool   $capitalise_first_char If true, capitalise the first char in $str
+     *
      * @return string $str translated into camel caps
      */
     protected function toCamelCase($str, $capitalise_first_char = false)

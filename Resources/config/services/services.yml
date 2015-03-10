@@ -8,7 +8,6 @@ services:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
         arguments:
             - @gos_web_socket.server.registry
-            - @?monolog.logger.websocket
 
     gos_web_socket.server_command:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
@@ -23,6 +22,8 @@ services:
         arguments:
             - %web_socket_server.host%
             - %web_socket_server.port%
+        calls:
+            - [ setLogger, [ @?monolog.logger.websocket ] ]
 
     gos_web_socket.ws.server:
         class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer

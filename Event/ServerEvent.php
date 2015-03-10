@@ -22,6 +22,7 @@ class ServerEvent extends Event
 
     /**
      * Get Server Event Loop to add other services in the same loop.
+     *
      * @return LoopInterface
      */
     public function getEventLoop()

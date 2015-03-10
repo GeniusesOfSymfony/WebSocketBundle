@@ -31,6 +31,7 @@ class RpcRegistry
      * @param string $name
      *
      * @return RpcInterface
+     *
      * @throws \Exception
      */
     public function getRpc($name)

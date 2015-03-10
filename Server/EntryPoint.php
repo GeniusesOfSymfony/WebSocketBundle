@@ -17,18 +17,12 @@ class EntryPoint
     protected $serverRegistry;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @param ServerRegistry  $serverRegistry
      * @param LoggerInterface $logger
      */
-    public function __construct(ServerRegistry $serverRegistry, LoggerInterface $logger = null)
+    public function __construct(ServerRegistry $serverRegistry)
     {
         $this->serverRegistry = $serverRegistry;
-        $this->logger = $logger;
     }
 
     /**
@@ -38,11 +32,11 @@ class EntryPoint
     {
         $servers = $this->serverRegistry->getServers();
 
-        if(null === $serverName){
+        if (null === $serverName) {
             reset($servers);
             $server = current($servers);
-        }else{
-            if(!isset($servers[$serverName])){
+        } else {
+            if (!isset($servers[$serverName])) {
                 throw new \RuntimeException(sprintf(
                     'Unknown server %s in [%s]',
                     $serverName,
@@ -51,14 +45,6 @@ class EntryPoint
             }
 
             $server = $servers[$serverName];
-        }
-
-        if (null !== $this->logger) {
-            $this->logger->info(sprintf(
-                'Launching %s on %s',
-                $server->getName(),
-                $server->getAddress()
-            ));
         }
 
         $server->launch();

@@ -33,11 +33,12 @@ class TopicRegistry
      * @param $topicId
      *
      * @return TopicInterface
+     *
      * @throws \Exception
      */
     public function getTopic($topicId)
     {
-        $parts = explode("/", $topicId);
+        $parts = explode('/', $topicId);
 
         if ($parts <= 0) {
             throw new \Exception('Incorrectly formatted Topic name');

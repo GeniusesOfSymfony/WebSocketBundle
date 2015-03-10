@@ -18,6 +18,7 @@ Resources
 * [Periodic Services](Resources/docs/PeriodicSetup.md)(functions to be run every x seconds with the IO loop.)
 * [Session Management & User authentication](Resources/docs/SessionSetup.md)
 * [Server Events](Resources/docs/Events.md)
+* [Configuration Reference](Resources/docs/ConfigurationReference.md)
 
 Code Cookbook
 --------------

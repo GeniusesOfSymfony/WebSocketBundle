@@ -73,13 +73,14 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function dispatch($event, ConnectionInterface $conn, Topic $topic, $payload = null, $exclude = null, $eligible = null)
     {
-        if (false === strpos($event, ':')){
+        if (false === strpos($event, '::')) {
             return false;
         }
 
-        $event = explode(':', $event);
+        $event = explode('::', $event);
 
         $event = $event[count($event)-1];
+
         //if topic service exists, notify it
 
         $appTopic = $this->topicRegistry->getTopic($topic->getId());

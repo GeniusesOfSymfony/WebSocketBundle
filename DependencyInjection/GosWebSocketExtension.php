@@ -46,7 +46,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (!empty($configs['origins'])) {
             foreach ($configs['origins'] as $origin) {
                 $originsRegistryDef->addMethodCall('addOrigin', [
-                    $origin
+                    $origin,
                 ]);
             }
         }
@@ -60,7 +60,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             $def = $container->getDefinition('gos_web_socket.ws.server');
             $def->addMethodCall('setSessionHandler', [
-                new Reference(ltrim($clientConf['session_handler'], '@'))
+                new Reference(ltrim($clientConf['session_handler'], '@')),
             ]);
 
             if (!isset($clientConf['firewall'])) {
@@ -80,11 +80,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                     $decoratorDef->addArgument(new Reference($driverRef));
 
                     $clientStorageDef->addMethodCall('setStorageDriver', [
-                        new Reference($decoratorRef)
+                        new Reference($decoratorRef),
                     ]);
                 } else {
                     $clientStorageDef->addMethodCall('setStorageDriver', [
-                        new Reference($driverRef)
+                        new Reference($driverRef),
                     ]);
                 }
             }
@@ -95,7 +95,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             foreach ($configs['rpc'] as $rpc) {
                 $def->addMethodCall('addRpc', [
-                    new Reference(ltrim($rpc, '@'))
+                    new Reference(ltrim($rpc, '@')),
                 ]);
             }
         }
@@ -105,7 +105,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             foreach ($configs['topics'] as $topic) {
                 $def->addMethodCall('addTopic', [
-                    new Reference(ltrim($topic, '@'))
+                    new Reference(ltrim($topic, '@')),
                 ]);
             }
         }
@@ -115,7 +115,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             foreach ($configs['periodic'] as $periodic) {
                 $def->addMethodCall('addPeriodic', [
-                    new Reference(ltrim($periodic, '@'))
+                    new Reference(ltrim($periodic, '@')),
                 ]);
             }
         }
@@ -125,7 +125,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             foreach ($configs['servers'] as $server) {
                 $def->addMethodCall('addServer', [
-                    new Reference(ltrim($server, '@'))
+                    new Reference(ltrim($server, '@')),
                 ]);
             }
         }

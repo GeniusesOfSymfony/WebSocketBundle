@@ -41,8 +41,7 @@ class ServerCommand extends Command
         $this
             ->setName('gos:server')
             ->setDescription('Starts the web socket servers')
-            ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
-        ;
+            ->addArgument('name', InputArgument::OPTIONAL, 'Server name');
     }
 
     /**

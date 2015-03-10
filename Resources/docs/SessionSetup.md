@@ -83,14 +83,14 @@ gos_web_socket:
 
 ### Create your own Driver
 
-I want create Redis Driver working with predis client. Predis client provided by [SncRedisBundle](https://github.com/snc/SncRedisBundle).
+For example, you want store your client through redis server like previous example. But I want use Predis client instead of native redis client. We will use [SncRedisBundle](https://github.com/snc/SncRedisBundle) to provide my predis client.
 
-Configure my client
+Configure my predis client through SncRedisBundle
 
 ```yaml
 snc_redis:
     clients:
-        cache:
+        ws_client:
             type: predis
             alias: client_storage.driver #snc_redis.client_storage.driver
             dsn: redis://127.0.0.1/2
@@ -99,7 +99,113 @@ snc_redis:
                 profile: 2.2
                 connection_timeout: 10
                 read_write_timeout: 30
+
+gos_web_socket:
+    client:
+		...
+        storage:
+            driver: @gos_web_scocket.client_storage.driver.predis
+		...
 ```
+
+The PHP class :
+
+```php
+<?php
+
+namespace Gos\Bundle\WebSocketBundle\Client\Driver;
+
+use Predis\Client;
+
+class PredisDriver implements DriverInterface
+{
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function fetch($id)
+    {
+        $result = $this->client->get($id);
+        if (null === $result) {
+            return false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     */
+    public function contains($id)
+    {
+        return $this->client->exists($id);
+    }
+
+    /**
+     * @param string $id
+     * @param mixed  $data
+     * @param int    $lifeTime
+     *
+     * @return bool True if saved, false otherwise
+     */
+    public function save($id, $data, $lifeTime = 0)
+    {
+        if ($lifeTime > 0) {
+            $response = $this->client->setex($id, $lifeTime, $data);
+        } else {
+            $response = $this->client->set($id, $data);
+        }
+
+        return $response === true || $response == 'OK';
+    }
+
+    /**
+     * Deletes a cache entry.
+     *
+     * @param string $id The cache id.
+     *
+     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     */
+    public function delete($id)
+    {
+        return $this->client->del($id) > 0;
+    }
+}
+```
+
+The service definition :
+
+```yaml
+services:
+    gos_web_scocket.client_storage.driver.predis:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        arguments:
+            - @snc_redis.cache
+
+```
+
+Predis client is already include in GosWebSocketBundle
+
+
+
+
+
 
 
 

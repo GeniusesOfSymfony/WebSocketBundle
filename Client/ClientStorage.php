@@ -47,7 +47,7 @@ class ClientStorage
      */
     public function addClient($identifier, $user)
     {
-        if (false === $result = $this->driver->save($identifier, serialize($user))) {
+        if (false === $result = $this->driver->save($identifier, serialize($user), 60 * 15)) {
             throw new StorageException('Unable add client');
         }
     }

@@ -126,6 +126,10 @@ class WebSocketServer implements ServerInterface
 
     public function launch()
     {
+        if (null !== $this->logger) {
+            $this->logger->info('Starting web socket');
+        }
+
         $serverStack = new WampServer($this->wampApplication);
 
         if (null !== $this->sessionHandler) {
@@ -151,7 +155,7 @@ class WebSocketServer implements ServerInterface
 
         $this->app = new HttpServer($serverStack);
 
-        /** @var $loop LoopInterface */
+        /* @var $loop LoopInterface */
         $this->loop = Factory::create();
 
         $this->socket = new Server($this->loop);
@@ -170,7 +174,11 @@ class WebSocketServer implements ServerInterface
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
         if (null !== $this->logger) {
-            $this->logger->info('Starting web socket');
+            $this->logger->info(sprintf(
+                'Launching %s on %s',
+                $this->getName(),
+                $this->getAddress()
+            ));
         }
 
         $this->loop->run();

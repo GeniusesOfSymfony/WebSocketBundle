@@ -34,6 +34,7 @@ class GosWebSocketServerExtension extends \Twig_Extension
 
     /**
      * @return string
+     *
      * @throws \Exception
      * @throws \Twig_Error
      */
