@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -37,6 +38,16 @@ class ClientStorage
         }
 
         return unserialize($result);
+    }
+
+    /**
+     * @param ConnectionInterface $conn
+     *
+     * @return string
+     */
+    public static function getStorageId(ConnectionInterface $conn)
+    {
+        return $conn->resourceId;
     }
 
     /**
