@@ -90,3 +90,6 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
+
+    gos_web_socket.server.in_memory.client_storage.driver:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver

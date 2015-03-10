@@ -54,17 +54,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
 
-            if (!isset($clientConf['session_handler'])) {
-                throw new \RuntimeException('You must define session provider if you want configure "Client" options');
-            }
-
-            $def = $container->getDefinition('gos_web_socket.ws.server');
-            $def->addMethodCall('setSessionHandler', [
-                new Reference(ltrim($clientConf['session_handler'], '@')),
-            ]);
-
-            if (!isset($clientConf['firewall'])) {
-                throw new \RuntimeException('You must define at leat one element against wish firewall user must be auth');
+            if (isset($clientConf['session_handler'])) {
+                $def = $container->getDefinition('gos_web_socket.ws.server');
+                $def->addMethodCall('setSessionHandler', [
+                    new Reference(ltrim($clientConf['session_handler'], '@')),
+                ]);
             }
 
             $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');

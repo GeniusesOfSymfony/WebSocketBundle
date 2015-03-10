@@ -197,20 +197,9 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
         arguments:
             - @snc_redis.cache
-
 ```
 
-Predis client is already include in GosWebSocketBundle
-
-
-
-
-
-
-
-
-
-
+**NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
 
 For information on sharing the config between server and client, read the [Sharing Config](code/SharingConfig.md) Code Cookbook.
 

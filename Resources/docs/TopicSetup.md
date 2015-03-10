@@ -2,7 +2,19 @@
 
 Although the standard Gos WebSocket PubSub can be useful as a simple channel for allowing messages to be pushed to users, anymore advanced functionality will require custom Topic Handlers.
 
-Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface "Gos\Bundle\WebSocketBundle\Topic\TopicInterface"
+Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
+
+### What is a topic ?
+A topic is the representation of a pubsub channel. For example you want create a channel for your chat with room.
+
+You will have a prefix `chat` and multiple channel like `all`, `room1`, `room2` that give : 
+* `chat/all`
+* `chat/room1`
+* `chat/room2`
+* `chat/*`
+
+You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
+
 
 ##Step 1: Create the Topic Handler Service Class
 
@@ -72,9 +84,9 @@ class AcmeTopic implements TopicInterface
             "event" => $event
         ));
     }
-    
+
     /**
-    * Like RPC is will use to prefix the channel 
+    * Like RPC is will use to prefix the channel
     * @return string
     */
     public function getPrefix()
@@ -87,18 +99,19 @@ class AcmeTopic implements TopicInterface
 
 The 4 methods that must be implemented are:
 
-* onSubscribe(Conn $conn, $topic)
-* onUnSubscribe(Conn $conn, $topic)
-* onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)
-* getPrefix() 
+* `onSubscribe(Conn $conn, $topic)`
+* `onUnSubscribe(Conn $conn, $topic)`
+* `onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)`
+* `getPrefix()`
 
-$conn is the connection object of the client who has initiated this event.
 
-$topic is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
+* `$conn` is the connection object of the client who has initiated this event.
+* `$topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
+
 
 ##Step 2: Register your service with Symfony
 
-If you are using YML, edit "YourBundle/Resources/config/services.yml"
+If you are using **YML**, edit `YourBundle/Resources/config/services.yml`
 
 For other formats, please check the [Symfony2 Documents](http://symfony.com/doc/master/book/service_container.html)
 
@@ -126,6 +139,54 @@ gos_web_socket:
         - @acme_hello.topic_sample_service
 ```
 
+### Retrive the current user
+
+This feature needs some configurations, please check [Session Setup](SessionSetup.md) before continue and understand how it's work.
+
+To retrieve the user connected through websocket, you must inject client storage service in your topic.
+
+```yaml
+services:
+    acme_hello.topic_sample_service:
+        class: Acme\HelloBundle\Topic\AcmeTopic
+        arguments:
+        	- @gos_web_socket.client_storage
+        tags:
+            - { name: gos_web_socket.topic }
+```
+
+```php
+use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+
+class AcmeTopic implements TopicInterface
+{
+    /**
+     * @var ClientStorage
+     */
+    protected $clientStorage;
+
+    /**
+     * @param ClientStorage $clientStorage
+     */
+    public function __construct(ClientStorage $clientStorage)
+    {
+        $this->clientStorage = $clientStorage;
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param Topic               $topic
+     */
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic)
+    {
+        /** @var UserInterface */
+        $user = $this->clientStorage->getClient(ClientStorage::getStorageId($connection));
+    }
+}
+```
+
+
+##Step 3: Connect client to your topic
 The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
 
 ```javascript

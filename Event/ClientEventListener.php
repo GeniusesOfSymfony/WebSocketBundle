@@ -62,6 +62,10 @@ class ClientEventListener
     {
         $conn = $event->getConnection();
 
+        if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
+            $this->logger->warning(sprintf('User firewall is not configured, we have set %s by default', $this->firewalls[0]));
+        }
+
         if (null !== $this->logger) {
             $loggerContext = array(
                 'connection_id' => $conn->resourceId,
@@ -94,7 +98,8 @@ class ClientEventListener
             : $user;
 
         try {
-            $identifier = $conn->resourceId . ':' . $conn->WAMP->sessionId . ':' . $username;
+            $identifier = ClientStorage::getStorageId($conn, $username);
+            $loggerContext['storage_id'] = $identifier;
 
             $this->clientStorage->addClient($identifier, $user);
             $conn->WAMP->clientStorageId = $identifier;
@@ -142,6 +147,7 @@ class ClientEventListener
                 ), array(
                     'connection_id' => $conn->resourceId,
                     'session_id' => $conn->WAMP->sessionId,
+                    'storage_id' => $conn->WAMP->clientStorageId,
                 ));
             }
         } catch (StorageException $e) {
@@ -153,6 +159,7 @@ class ClientEventListener
                 ), array(
                     'connection_id' => $conn->resourceId,
                     'session_id' => $conn->WAMP->sessionId,
+                    'storage_id' => $conn->WAMP->clientStorageId,
                 ));
             }
         }
@@ -174,7 +181,6 @@ class ClientEventListener
             $loggerContext = array(
                 'connection_id' => $conn->resourceId,
                 'session_id' => $conn->WAMP->sessionId,
-                'client_storage_id' => $conn->WAMP->clientStorageId,
             );
 
             if ($this->clientStorage->hasClient($conn->resourceId)) {

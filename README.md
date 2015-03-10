@@ -64,7 +64,7 @@ Add the following to your app/config.yml
 ```yaml
 # Web Socket Configuration
 gos_web_socket:
-    web_socket_server:
+    server:
         port: 8080        #The port the socket server will listen on
         host: 127.0.0.1   #The host ip to bind to
 ```
