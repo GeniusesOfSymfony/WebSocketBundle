@@ -23,9 +23,7 @@ class PredisDriver implements DriverInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function fetch($id)
     {
@@ -38,9 +36,7 @@ class PredisDriver implements DriverInterface
     }
 
     /**
-     * @param $id
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function contains($id)
     {
@@ -48,11 +44,7 @@ class PredisDriver implements DriverInterface
     }
 
     /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return bool True if saved, false otherwise
+     * {@inheritdoc}
      */
     public function save($id, $data, $lifeTime = 0)
     {
@@ -66,11 +58,7 @@ class PredisDriver implements DriverInterface
     }
 
     /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * {@inheritdoc}
      */
     public function delete($id)
     {
