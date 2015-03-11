@@ -24,7 +24,8 @@ You just have to register a topic who catch all channel prefixed by `chat` to ha
 namespace Acme\HelloBundle\Topic;
 
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Ratchet\ConnectionInterface as Conn;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {
@@ -36,7 +37,7 @@ class AcmeTopic implements TopicInterface
      * @param $topic
      * @return void
      */
-    public function onSubscribe(ConnectionInterface $connection, $topic)
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic)
     {
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast($connection->resourceId . " has joined " . $topic->getId());
@@ -49,7 +50,7 @@ class AcmeTopic implements TopicInterface
      * @param $topic
      * @return void
      */
-    public function onUnSubscribe(ConnectionInterface $connection, $topic)
+    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic)
     {
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast($connection->resourceId . " has left " . $topic->getId());
@@ -66,7 +67,7 @@ class AcmeTopic implements TopicInterface
      * @param array $eligible
      * @return mixed|void
      */
-    public function onPublish(ConnectionInterface $connection, $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)
     {
         /*
         $topic->getId() will contain the FULL requested uri, so you can proceed based on that
@@ -135,7 +136,7 @@ services:
 
 ```yaml
 gos_web_socket:
-    topic:
+    topics:
         - @acme_hello.topic_sample_service
 ```
 
@@ -157,6 +158,9 @@ services:
 
 ```php
 use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {

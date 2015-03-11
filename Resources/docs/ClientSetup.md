@@ -94,7 +94,6 @@ myWebSocket.on("socket/connect", function(session){
 
 _For more information on setting up server side half of RPC, please see [Setting up RPC's](RPCSetup.md)_
 
-
 The other way to interact with the server is the popular "Pub/Sub" method. This is essentially:
 
 Clients subscribe to "Topics", Clients publish to those same topics. When this occurs, anyone subscribed will be notified.
