@@ -80,7 +80,7 @@ class AcmeTopic implements TopicInterface
 
 
         $topic->broadcast(array(
-            "sender" => $conn->resourceId,
+            "sender" => $connection->resourceId,
             "topic" => $topic->getId(),
             "event" => $event
         ));
@@ -100,14 +100,14 @@ class AcmeTopic implements TopicInterface
 
 The 4 methods that must be implemented are:
 
-* `onSubscribe(Conn $conn, $topic)`
-* `onUnSubscribe(Conn $conn, $topic)`
-* `onPublish(Conn $conn, $topic, $event, array $exclude, array $eligible)`
+* `onSubscribe(ConnectionInterface $connection, Topic $topic)`
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic)`
+* `onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)`
 * `getPrefix()`
 
 
-* `$conn` is the connection object of the client who has initiated this event.
-* `$topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
+* `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
+* `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
 
 
 ##Step 2: Register your service with Symfony
