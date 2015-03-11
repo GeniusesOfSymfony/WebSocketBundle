@@ -99,7 +99,7 @@ The other way to interact with the server is the popular "Pub/Sub" method. This 
 
 Clients subscribe to "Topics", Clients publish to those same topics. When this occurs, anyone subscribed will be notified.
 
-For a more in depth description of PubSub architecture, see [Autobahn JS PubSub Tutorial](http://autobahn.ws/js/tutorials/pubsub)
+For a more in depth description of PubSub architecture, see [Autobahn JS PubSub Documentation](http://autobahn.ws/js/reference_wampv1.html)
 
 #### session.subscribe(topic, function(uri, payload))
 #### session.unsubscribe(topic)
