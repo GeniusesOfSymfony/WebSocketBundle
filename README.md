@@ -1,4 +1,4 @@
-Gos Web Socket
+Gos Web Socket Bundle
 =====================
 
 About
@@ -9,20 +9,42 @@ Much like Socket.IO it provides both server side and client side code ensuring y
 
 Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js), with [Symfony2](http://symfony.com/)
 
+What can I do with this bundle
+------------------------------
+
+Make real time application like
+* Chat Application
+* Real time notification
+* Browser game
+
+More commonly, all application who meet real time.
+
 Resources
 --------------
 * [Installation Instructions](#installation-instructions)
-* [Client Javascript](Resources/docs/ClientSetup.md)
+* [Client Setup](Resources/docs/ClientSetup.md)
 * [Server Side of RPC](Resources/docs/RPCSetup.md)
 * [PubSub Topic Handlers](Resources/docs/TopicSetup.md)
 * [Periodic Services](Resources/docs/PeriodicSetup.md)(functions to be run every x seconds with the IO loop.)
 * [Session Management & User authentication](Resources/docs/SessionSetup.md)
 * [Server Events](Resources/docs/Events.md)
+* [Client Javascript](Resources/docs/Client.md)
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
 
 Code Cookbook
 --------------
 * [Sharing Config between Server and Client](Resources/docs/code/SharingConfig.md)
+
+Overview
+--------
+
+You must achieve these following steps before send your first message through websocket.
+
+1. Install the bundle
+2. Create you first topic handler
+3. Implement the client (Javascript)
+
+Let's do it !
 
 Installation Instructions
 --------------
@@ -86,7 +108,9 @@ Starting Gos WebSocket
 Launching Ratchet WS Server on: *:8080
 ```
 
-This means the websocket server is now up and running!
+This means the websocket server is now up and running ! 
+
+**From here, only the websocket server is running ! That doesn't mean you can subscribe, publish, call. Follow next step to do it :)**
 
 ### Next Steps
 
