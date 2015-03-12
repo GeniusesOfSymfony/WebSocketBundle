@@ -70,20 +70,15 @@ class AcmeTopic implements TopicInterface
     public function onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)
     {
         /*
-        $topic->getId() will contain the FULL requested uri, so you can proceed based on that
+        	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
 
-        e.g.
-
-        if ($topic->getId() == "acme/channel/shout")
-            //shout something to all subs.
+            if ($topic->getId() == "acme/channel/shout")
+     	       //shout something to all subs.
         */
 
-
-        $topic->broadcast(array(
-            "sender" => $connection->resourceId,
-            "topic" => $topic->getId(),
-            "event" => $event
-        ));
+        $topic->broadcast([
+        	'msg' => $event
+        ]);
     }
 
     /**
@@ -98,14 +93,47 @@ class AcmeTopic implements TopicInterface
 }
 ```
 
-The 4 methods that must be implemented are:
+### Most important things in topic
 
-* `onSubscribe(ConnectionInterface $connection, Topic $topic)`
-* `onUnSubscribe(ConnectionInterface $connection, Topic $topic)`
-* `onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)`
-* `getPrefix()`
+#### Topic::broadcast($msg, array $exclude = array(), array $eligible = array());
 
+Send a message to all the connections in this topic.
 
+**Note :** `$exclude` and `$include` work with Wamp Session ID available through `$connection->WAMP->sessionId`
+
+#### How get the current channel name ?
+
+Will return you the topic id (channel). `Topic` also implement `__toString()` method wich return the channel `(string) $topic`
+
+#### How iterate over my subscribers ?
+
+`Topic` implements `IteratorAggregate`, you can iterate over subscribers present in your topic. Client are reprensented by `ConnectionInterface`
+
+```php
+/** @var ConnectionInterface $client **/
+foreach($topic as $client){
+    //Do stuff ...
+}
+```
+
+#### How send a message only to my current client ?
+
+`$connection->event($topic->getId(), ['msg' => 'lol']);`
+
+#### How count the number of subscribers I have ?
+
+`Topic` implements `Countable` interface, you just have to do `count($topic)`
+
+#### Topic interface & explaination
+
+The **4 methods** that must be implemented are:
+
+* `onSubscribe(ConnectionInterface $connection, Topic $topic)` When client subscribe to the topic
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic)` When client unsubscribe to the topic
+* `onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)` When client publish inside the topic
+* `getPrefix()` Give the prefix of channel this topic will catch
+
+Where
 * `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
 
