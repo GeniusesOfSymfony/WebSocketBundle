@@ -74,7 +74,7 @@ myWebSocket.on("socket/connect", function(session){
         console.log("Received message", payload.msg);
     });
 
-    session.publish("acme/channel", {msg: "This is a message!"});
+    session.publish("acme/channel", "This is a message!");
 })
 ```
 
