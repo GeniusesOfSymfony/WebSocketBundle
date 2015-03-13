@@ -74,11 +74,11 @@ myWebSocket.on("socket/connect", function(session){
         console.log("Received message", payload.msg);
     });
 
-    session.publish("acme/channel", {msg: "This is a message!"});
+    session.publish("acme/channel", "This is a message!");
 })
 ```
 
-**Next step :** If your application requires more complexity than just repeating messages in channels, please see [custom server side topic handlers](TopicSetup.md)
+**Next step :** Before being able to subscribe/publish/unsubscribe, you need to setup a [Topic Handler](TopicSetup.md). In the next step you will find an example Topic Handler that you can use to test the bundle PubSub functionality. If your application requires more complexity than just repeating messages in channels, you can freely customize the Topic Handler Class.
 
 **Dig into client JS :** [More about client JS](Client.md)
 
