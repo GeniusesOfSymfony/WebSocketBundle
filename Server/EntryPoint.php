@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Server;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -17,8 +16,7 @@ class EntryPoint
     protected $serverRegistry;
 
     /**
-     * @param ServerRegistry  $serverRegistry
-     * @param LoggerInterface $logger
+     * @param ServerRegistry $serverRegistry
      */
     public function __construct(ServerRegistry $serverRegistry)
     {

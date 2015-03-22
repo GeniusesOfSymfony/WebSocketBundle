@@ -95,6 +95,11 @@ class WebSocketServer implements ServerInterface
      * @param string                   $host
      * @param int                      $port
      * @param EventDispatcherInterface $eventDispatcher
+     * @param PeriodicRegistry         $periodicRegistry
+     * @param WampApplication          $wampApplication
+     * @param OriginRegistry           $originRegistry
+     * @param bool                     $originCheck
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         $host,
@@ -164,7 +169,7 @@ class WebSocketServer implements ServerInterface
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry as $periodic) {
-            $this->loop->addPeriodicTimer($periodic->getTimeout()/1000, [$periodic, 'tick']);
+            $this->loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
         }
 
         $this->server = new IoServer($this->app, $this->socket, $this->loop);

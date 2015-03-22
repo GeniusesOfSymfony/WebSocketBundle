@@ -26,33 +26,26 @@ class TopicRegistry
      */
     public function addTopic(TopicInterface $topic)
     {
-        $this->topics[$topic->getPrefix()] = $topic;
+        $this->topics[$topic->getName()] = $topic;
     }
 
     /**
-     * @param $topicId
+     * @param string $topicName
      *
      * @return TopicInterface
      *
      * @throws \Exception
      */
-    public function getTopic($topicId)
+    public function getTopic($topicName)
     {
-        $parts = explode('/', $topicId);
-
-        if ($parts <= 0) {
-            throw new \Exception('Incorrectly formatted Topic name');
+        if (!isset($this->topics[$topicName])) {
+            throw new \Exception(sprintf(
+                'Topic %s does\'nt exist in [ %s ]',
+                $topicName,
+                array_keys($this->topics)
+            ));
         }
 
-        $domain = $parts[0];
-
-        if (isset($this->topics[$domain])) {
-            return $this->topics[$domain];
-        }
-
-        throw new \Exception(sprintf('Domain %s not exists, only [ %s ] are available',
-            $domain,
-            implode(', ', array_keys($this->topics))
-        ));
+        return $this->topics[$topicName];
     }
 }

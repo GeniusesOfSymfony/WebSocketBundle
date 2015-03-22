@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -45,10 +46,16 @@ class WampApplication implements WampServerInterface
     protected $logger;
 
     /**
+     * @var WampRouter
+     */
+    protected $wampRouter;
+
+    /**
      * @param RpcDispatcherInterface   $rpcDispatcher
      * @param TopicDispatcherInterface $topicDispatcher
      * @param EventDispatcherInterface $eventDispatcher
      * @param ClientStorage            $clientStorage
+     * @param WampRouter               $wampRouter
      * @param LoggerInterface          $logger
      */
     public function __construct(
@@ -56,12 +63,14 @@ class WampApplication implements WampServerInterface
         TopicDispatcherInterface $topicDispatcher,
         EventDispatcherInterface $eventDispatcher,
         ClientStorage $clientStorage,
+        WampRouter $wampRouter,
         LoggerInterface $logger = null
     ) {
         $this->rpcDispatcher = $rpcDispatcher;
         $this->topicDispatcher = $topicDispatcher;
         $this->eventDispatcher = $eventDispatcher;
         $this->clientStorage = $clientStorage;
+        $this->wampRouter = $wampRouter;
         $this->logger = $logger;
     }
 
@@ -85,7 +94,9 @@ class WampApplication implements WampServerInterface
             ));
         }
 
-        $this->topicDispatcher->onPublish($conn, $topic, $event, $exclude, $eligible);
+        $wampRequest = $this->wampRouter->match($topic);
+
+        $this->topicDispatcher->onPublish($conn, $topic, $wampRequest, $event, $exclude, $eligible);
     }
 
     /**
@@ -116,7 +127,9 @@ class WampApplication implements WampServerInterface
             ));
         }
 
-        $this->topicDispatcher->onSubscribe($conn, $topic);
+        $wampRequest = $this->wampRouter->match($topic);
+
+        $this->topicDispatcher->onSubscribe($conn, $topic, $wampRequest);
     }
 
     /**
@@ -136,7 +149,9 @@ class WampApplication implements WampServerInterface
             ));
         }
 
-        $this->topicDispatcher->onUnSubscribe($conn, $topic);
+        $wampRequest = $this->wampRouter->match($topic);
+
+        $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
     }
 
     /**
