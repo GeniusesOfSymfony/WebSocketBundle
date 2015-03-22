@@ -19,7 +19,8 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": "~2.4",
         "cboden/Ratchet": "~0.3",
-        "gos/web-socket-bundle": "~0.1@dev"
+        "gos/web-socket-bundle": "~0.1@dev",
+        "gos/pubsub-router-bundle": "~0.1@dev"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
