@@ -66,7 +66,7 @@ class WampRouter
     public function match(Topic $topic, $tokenSeparator = null)
     {
         try {
-            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId(), '/');
+            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
         } catch (ResourceNotFoundException $e) {
             if (null !== $this->logger) {
                 $this->logger->error(sprintf(
