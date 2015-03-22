@@ -96,18 +96,21 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
     {
-        $appTopic = $this->topicRegistry->getTopic($request->getRoute()->getCallback()[0]);
+        $dispatched = false;
 
-        if ($topic) {
-            if ($payload) { //its a publish call.
-                $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
-            } else {
-                $appTopic->{$calledMethod}($conn, $topic, $request);
+        foreach ($request->getRoute()->getCallback() as $callback) {
+            $appTopic = $this->topicRegistry->getTopic($callback);
+            if ($topic) {
+                if ($payload) { //its a publish call.
+                    $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
+                } else {
+                    $appTopic->{$calledMethod}($conn, $topic, $request);
+                }
+
+                $dispatched = true;
             }
-
-            return true;
         }
 
-        return false;
+        return $dispatched;
     }
 }

@@ -80,7 +80,7 @@ class WampRouter
             $this->logger->debug(sprintf(
                 'Matched route "%s"',
                 $routeName
-            ));
+            ), $attributes);
         }
 
         return new WampRequest($routeName, $route, new ParameterBag($attributes));

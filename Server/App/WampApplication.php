@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App;
 
-use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
@@ -11,6 +11,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,7 +37,7 @@ class WampApplication implements WampServerInterface
     protected $eventDispatcher;
 
     /**
-     * @var ClientStorage
+     * @var ClientStorageInterface
      */
     protected $clientStorage;
 
@@ -54,7 +55,7 @@ class WampApplication implements WampServerInterface
      * @param RpcDispatcherInterface   $rpcDispatcher
      * @param TopicDispatcherInterface $topicDispatcher
      * @param EventDispatcherInterface $eventDispatcher
-     * @param ClientStorage            $clientStorage
+     * @param ClientStorageInterface   $clientStorage
      * @param WampRouter               $wampRouter
      * @param LoggerInterface          $logger
      */
@@ -62,7 +63,7 @@ class WampApplication implements WampServerInterface
         RpcDispatcherInterface $rpcDispatcher,
         TopicDispatcherInterface $topicDispatcher,
         EventDispatcherInterface $eventDispatcher,
-        ClientStorage $clientStorage,
+        ClientStorageInterface $clientStorage,
         WampRouter $wampRouter,
         LoggerInterface $logger = null
     ) {
@@ -94,20 +95,21 @@ class WampApplication implements WampServerInterface
             ));
         }
 
-        $wampRequest = $this->wampRouter->match($topic);
+        $request = $this->wampRouter->match($topic);
 
-        $this->topicDispatcher->onPublish($conn, $topic, $wampRequest, $event, $exclude, $eligible);
+        $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
     }
 
     /**
-     * @param ConnectionInterface        $conn
-     * @param string                     $id
-     * @param \Ratchet\Wamp\Topic|string $topic
-     * @param array                      $params
+     * @param ConnectionInterface $conn
+     * @param string              $id
+     * @param Topic               $topic
+     * @param array               $params
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
     {
-        $this->rpcDispatcher->dispatch($conn, $id, $topic, $params);
+        $request = $this->wampRouter->match($topic);
+        $this->rpcDispatcher->dispatch($conn, $id, $topic, $request, $params);
     }
 
     /**

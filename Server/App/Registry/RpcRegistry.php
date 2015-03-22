@@ -24,7 +24,7 @@ class RpcRegistry
      */
     public function addRpc(RpcInterface $rpcHandler)
     {
-        $this->rpcHandlers[$rpcHandler->getPrefix()] = $rpcHandler;
+        $this->rpcHandlers[$rpcHandler->getName()] = $rpcHandler;
     }
 
     /**
@@ -36,13 +36,13 @@ class RpcRegistry
      */
     public function getRpc($name)
     {
-        if (isset($this->rpcHandlers[$name])) {
-            return $this->rpcHandlers[$name];
+        if (!isset($this->rpcHandlers[$name])) {
+            throw new \Exception(sprintf('rpc handler %s not exists, only [ %s ] are available',
+                $name,
+                implode(', ', array_keys($this->rpcHandlers))
+            ));
         }
 
-        throw new \Exception(sprintf('rpc handler %s not exists, only [ %s ] are available',
-            $name,
-            implode(', ', array_keys($this->rpcHandlers))
-        ));
+        return $this->rpcHandlers[$name];
     }
 }

@@ -16,7 +16,7 @@ namespace Acme\HelloBundle\RPC;
 use Ratchet\ConnectionInterface as Conn;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 
-class AcmeService extends RpcInterface
+class AcmeService implements RpcInterface
 {
     /**
      * Adds the params together

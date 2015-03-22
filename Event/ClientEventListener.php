@@ -1,7 +1,7 @@
 <?php
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\StorageException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class ClientEventListener
 {
     /**
-     * @param ClientStorage $clientStorage
+     * @param ClientStorageInterface $clientStorage
      */
     protected $clientStorage;
 
@@ -35,13 +35,13 @@ class ClientEventListener
     protected $logger;
 
     /**
-     * @param ClientStorage            $clientStorage
+     * @param ClientStorageInterface   $clientStorage
      * @param SecurityContextInterface $securityContext
      * @param LoggerInterface          $logger
      * @param array                    $firewalls
      */
     public function __construct(
-        ClientStorage $clientStorage,
+        ClientStorageInterface $clientStorage,
         SecurityContextInterface $securityContext,
         LoggerInterface $logger = null,
         $firewalls = array()
@@ -98,7 +98,8 @@ class ClientEventListener
             : $user;
 
         try {
-            $identifier = ClientStorage::getStorageId($conn, $username);
+            $className = get_class($this->clientStorage);
+            $identifier = $className::getStorageId($conn, $username);
             $loggerContext['storage_id'] = $identifier;
 
             $this->clientStorage->addClient($identifier, $user);
