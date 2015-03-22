@@ -13,6 +13,9 @@ gos_web_socket:
         port: ~ # Required, Example 127.0.0.1
         host: ~ # Required, Example 1337
         origin_check:         false
+        router:
+            resources:
+                - @AcmeBundle/Resources/config/pubsub/routing.yml
     rpc:                  []
     topics:               []
     periodic:             []

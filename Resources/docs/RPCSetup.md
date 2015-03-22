@@ -6,6 +6,11 @@ In Symfony RPCs are setup as services. This allows you full control of what to d
 
 If you are new to services, please see [Symfony2: Service Container](http://symfony.com/doc/master/book/service_container.html)
 
+##Overview
+* Create the service class
+* Register you service with Symfony
+* Register your service with PubSubRouter
+
 ##Step 1: Create the Service Class
 
 ```php
@@ -13,8 +18,9 @@ If you are new to services, please see [Symfony2: Service Container](http://symf
 
 namespace Acme\HelloBundle\RPC;
 
-use Ratchet\ConnectionInterface as Conn;
+use Ratchet\ConnectionInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class AcmeService implements RpcInterface
 {
@@ -23,24 +29,24 @@ class AcmeService implements RpcInterface
      *
      * Note: $conn isnt used here, but contains the connection of the person making this request.
      *
-     * @param \Ratchet\ConnectionInterface $conn
+     * @param ConnectionInterface $connection
+     * @param WampRequest $request
      * @param array $params
      * @return int
      */
-    public function addFunc(Conn $conn, $params)
+    public function addFunc(ConnectionInterface $connection, WampRequest $request, $params)
     {
         return array("result" => array_sum($params));
     }
     
     /**
-     * prefix of RPC
-     * e.g will give sample/add_func
+     * Name of RPC, use for pubsub router (see step3)
      * 
      * @return string
      */
-    public function getPrefix()
+    public function getName()
     {
-        return 'sample';
+        return 'acme.rpc';
     }
 }
 ```
@@ -84,25 +90,72 @@ The domain will match the network namespace for sending messages to this service
 e.g.
 
 ```javascript
-    //this will call the server side function "AcmeService::addFunc"
-    session.call("sample/add_func", [2, 5])
-    ...
+    //using "then" promises.
+    session.call("sample/add_func", {"term1": 2, "term2": 5}).then(  
+        function(result)
+        {
+            console.log("RPC Valid!", result);
+        },
+        function(error, desc)
+        {
+            console.log("RPC Error", error, desc);
+        }
+    );
 ```
 
-To use the "other" network namespace (the one commented out in the config), we would use:
-
-```javascript
-    session.call("other/the_function_name", params);
-```
-
-If we added a function called "subFunc" to AcmeService, which returned all the parameters subtracted from each other, we could call it via:
-
-```javascript
-    //this will call the server side function "AcmeService::subFunc"
-    session.call("sample/sub_func", [10, 3])
-    ...
-```
 
 The idea of having these network namespaces is to group relevant code into separate files.
+
+##Step 3: Register your service with PubSubRouter
+
+Now you have create your RPC service and implements your RPC call in the client, you must now link the path with your service.  `sample/add_func` will refer to AcmeService
+
+if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration :
+
+```yaml
+gos_web_socket:
+    ...
+    server:
+        host: 127.0.0.1
+        port: 8080
+        router:
+            resources:
+                - @AcmeBundle/Resources/config/pubsub/routing.yml
+    ...
+```
+
+Create the route corresponding to your RPC
+
+```yaml
+acme_rpc:
+    channel: sample/{method}
+    handler:
+        callback: 'acme.rpc' #related to the getName() or your RPC service
+    requirements:
+        method:
+            pattern: "[a-z_]+" #accept all valid regex, don't put delimiters !
+```
+
+From here, each call who match with this pattern will handled by AcmeService.
+
+**PRO TIP** : If you want use the same channel but refer to many service, you achieve this with the following example : 
+
+```yaml
+acme_a_b_c_rpc:
+    channel: sample/{method}
+    handler:
+        callback: 'acme.method_abc.rpc'
+    requirements:
+        method:
+            pattern: "method_a|method_b|method_c"
+            
+acme_d_e_rpc:
+    channel: sample/{method}
+    handler:
+        callback: 'acme.method_d_e.rpc'
+    requirements:
+        method:
+            pattern: "method_d|method_e"
+```
 
 _For more information on the Client Side of Gos WebSocket, please see [Client Side Setup](ClientSetup.md)_

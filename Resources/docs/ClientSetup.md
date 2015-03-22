@@ -31,7 +31,7 @@ Once the javascript is included, you can start using gos_web_socket_client.js to
 A `WS` object is made available in the global scope of the page. This can be used to connect to the server as follows:
 
 ```javascript
-var websocket = WS.connect("ws://localhost:8080");
+var websocket = WS.connect("ws://127.0.0.1:8080");
 ```
 
 The following commands are available to a GosSocket object returned by WS.connect.
@@ -41,7 +41,7 @@ The following commands are available to a GosSocket object returned by WS.connec
 This allows you to listen for events called by GosSocket. The only events fired currently are "socket/connect" and "socket/disconnect".
 
 ```javascript
-var myWebSocket = WS.connect("ws://localhost:8080");
+var myWebSocket = WS.connect("ws://127.0.0.1:8080");
 
 myWebSocket.on("socket/connect", function(session){
     //session is an Autobahn JS WAMP session.

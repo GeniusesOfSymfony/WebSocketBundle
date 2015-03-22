@@ -50,12 +50,14 @@ Installation Instructions
 --------------
 
 ###Step 1: Install via composer
-Add the following to your composer.json
 
+**Command line** : `composer require myclabs/deep-copy`
+
+**composer.json** : 
 ```javascript
 {
     "require": {
-        "gos/web-socket-bundle": "~0.1"
+        "gos/web-socket-bundle": "~0.1@dev"
     }
 }
 ```

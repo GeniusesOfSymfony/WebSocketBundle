@@ -51,7 +51,7 @@ class RpcDispatcher implements RpcDispatcherInterface
         $result = null;
 
         try {
-            $result = call_user_func([$procedure, $method], $conn, $params);
+            $result = call_user_func([$procedure, $method], $conn, $request, $params);
         } catch (\Exception $e) {
             $conn->callError($id, $topic, $e->getMessage(),  [
                 'code' => $e->getCode(),
