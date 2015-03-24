@@ -28,7 +28,6 @@ Resources
 * [Periodic Services](Resources/docs/PeriodicSetup.md)(functions to be run every x seconds with the IO loop.)
 * [Session Management & User authentication](Resources/docs/SessionSetup.md)
 * [Server Events](Resources/docs/Events.md)
-* [Client Javascript](Resources/docs/Client.md)
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
 
 Code Cookbook
@@ -50,20 +49,8 @@ Installation Instructions
 --------------
 
 ###Step 1: Install via composer
-Add the following to your composer.json
 
-```javascript
-{
-    "require": {
-        "gos/web-socket-bundle": "~0.1"
-    }
-}
-```
-
-Then update composer to install the new packages:
-```command
-php composer.phar update
-```
+`composer require gos/web-socket-bundle`
 
 ###Step 2: Add to your App Kernel
 
@@ -105,7 +92,7 @@ If everything is successful, you will see something similar to the following:
 
 ```
 Starting Gos WebSocket
-Launching Ratchet WS Server on: *:8080
+Launching Ratchet WS Server on: 127.0.0.1:8080
 ```
 
 This means the websocket server is now up and running ! 

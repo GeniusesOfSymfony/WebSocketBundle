@@ -5,18 +5,18 @@ Although the standard Gos WebSocket PubSub can be useful as a simple channel for
 Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
 
 ### What is a topic ?
-A topic is the representation of a pubsub channel. For example you want create a channel for your chat with room.
-
-You will have a prefix `chat` and multiple channel like `all`, `room1`, `room2` that give : 
-* `chat/all`
-* `chat/room1`
-* `chat/room2`
-* `chat/*`
+A topic is the server side representation of a pubsub channel.
 
 You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
 
+##Overview
 
-##Step 1: Create the Topic Handler Service Class
+* Create the topic handler service
+* Register your service with symfony
+* Connect the client with your topic
+* Link the topic with channel with pubsub router
+
+##Step 1: Create the Topic Handler Service
 
 ```php
 <?php
@@ -26,18 +26,19 @@ namespace Acme\HelloBundle\Topic;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class AcmeTopic implements TopicInterface
 {
-
     /**
      * This will receive any Subscription requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $connection
-     * @param $topic
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
      * @return void
      */
-    public function onSubscribe(ConnectionInterface $connection, Topic $topic)
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast(['msg' => $connection->resourceId . " has joined " . $topic->getId()]);
@@ -46,11 +47,12 @@ class AcmeTopic implements TopicInterface
     /**
      * This will receive any UnSubscription requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $connection
-     * @param $topic
-     * @return void
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
+     * @return voids
      */
-    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic)
+    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast(['msg' => $connection->resourceId . " has left " . $topic->getId()]);
@@ -60,14 +62,15 @@ class AcmeTopic implements TopicInterface
     /**
      * This will receive any Publish requests for this topic.
      *
-     * @param \Ratchet\ConnectionInterface $connection
-     * @param $topic
+     * @param ConnectionInterface $connection
+     * @param $Topic topic
+     * @param WampRequest $request
      * @param $event
      * @param array $exclude
-     * @param array $eligible
+     * @param array $eligibles
      * @return mixed|void
      */
-    public function onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
         /*
         	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
@@ -85,25 +88,36 @@ class AcmeTopic implements TopicInterface
     * Like RPC is will use to prefix the channel
     * @return string
     */
-    public function getPrefix()
+    public function getName()
     {
-        return 'acme';
+        return 'acme.topic';
     }
-
 }
 ```
 
 ### Most important things in topic
 
-#### Topic::broadcast($msg, array $exclude = array(), array $eligible = array());
+### Broadcast full definition
+
+`Topic::broadcast($msg, array $exclude = array(), array $eligible = array());`
 
 Send a message to all the connections in this topic.
 
 **Note :** `$exclude` and `$include` work with Wamp Session ID available through `$connection->WAMP->sessionId`
 
-#### How get the current channel name ?
+#### How get the current channel information (route, attributes, path etc ...) ?
 
-Will return you the topic id (channel). `Topic` also implement `__toString()` method wich return the channel `(string) $topic`
+`$request->getRouteName()` Will give the mathed route name
+
+`$request->getRoute()` will give [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/RouteInterface.php) object.
+
+`$request->getAttributes()` will give [ParameterBag](http://api.symfony.com/2.6/Symfony/Component/HttpFoundation/ParameterBag.html)
+
+For example, your channel pattern is `chat/user/{room}`, user subscribe to `chat/user/room1`
+
+`$request->getAttributes()->get('room');` will return `room1`. You can look step3 who explain how pubsub router work.
+
+`$topic->getId()` will return the subscribed channel e.g : `chat/user/room1`
 
 #### How iterate over my subscribers ?
 
@@ -120,7 +134,7 @@ foreach($topic as $client){
 
 `$connection->event($topic->getId(), ['msg' => 'lol']);`
 
-#### How count the number of subscribers I have ?
+#### How count the number of subscribers I currently have ?
 
 `Topic` implements `Countable` interface, you just have to do `count($topic)`
 
@@ -128,14 +142,15 @@ foreach($topic as $client){
 
 The **4 methods** that must be implemented are:
 
-* `onSubscribe(ConnectionInterface $connection, Topic $topic)` When client subscribe to the topic
-* `onUnSubscribe(ConnectionInterface $connection, Topic $topic)` When client unsubscribe to the topic
-* `onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)` When client publish inside the topic
-* `getPrefix()` Give the prefix of channel this topic will catch
+* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client subscribe to the topic
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client unsubscribe to the topic
+* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` When client publish inside the topic
+* `getName()` Use for routing definition, used to point this class.
 
 Where
 * `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
+* `WampRequest` Is the representation of the request make trough websocket. 
 
 
 ##Step 2: Register your service with Symfony
@@ -168,7 +183,7 @@ gos_web_socket:
         - @acme_hello.topic_sample_service
 ```
 
-### Retrive the current user
+### Retrieve the current user
 
 This feature needs some configurations, please check [Session Setup](SessionSetup.md) before continue and understand how it's work.
 
@@ -217,7 +232,6 @@ class AcmeTopic implements TopicInterface
 }
 ```
 
-
 ##Step 3: Connect client to your topic
 The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
 
@@ -236,18 +250,64 @@ The following javascript will show connecting to this topic, notice how "acme/ch
     session.publish("acme/channel", {msg: "I won't see this"});
 ```
 
-If we wanted to include dynamic channels based on that namespace, we could include them, and they will all get routed through that Topic Handler.
+##Step 4 : Link channel & topic with pubsub router
 
-```javascript
+* Channel can be static e.g : `acme/user`
+* Channel can be dynamic e.g : `acme/user/*`
+
+Now will say to the system, topic named `acme.topic` (related to Topic::getName())` will handle channel pattern.
+
+if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration :
+
+```yaml
+gos_web_socket:
     ...
-
-    //the callback function in "subscribe" is called everytime an event is published in that channel.
-    session.subscribe("acme/channel/id/12345", function(uri, payload){
-        console.log("Received message", payload.msg);
-    });
-
-    session.publish("acme/channel/id/12345", {msg: "This is a message!"});
+    server:
+        host: 127.0.0.1
+        port: 8080
+        router:
+            resources:
+                - @AcmeBundle/Resources/config/pubsub/routing.yml
+    ...
 ```
+
+Create the route to rely channel / topic 
+
+```yaml
+acme_topic_chat:
+    channel: acme/chat/{room}/{user_id}
+    handler:
+        callback: 'acme.topic' #related to the getName() of your topic
+    requirements:
+        room:
+            pattern: "[a-z]+" #accept all valid regex, don't put delimiters !
+        user_id:
+            pattern: "\d+"
+```
+
+From here, each call who match with this pattern will handled by AcmeTopic.
+
+This route will match `acme/chat/dev_room/123` and will be handled by topic named `acme.topic`
+
+Another example, more complicated : 
+
+```yaml
+acme_topic_chat:
+    channel: notification/user/{role}/{application}/{user}
+    handler:
+        callback: 'notification.topic'
+    requirements:
+        role:
+            pattern: "editor|admin|client"
+        application:
+            pattern: "[a-z]+"
+        user:
+            pattern: "\d+"
+            wildcard: true
+```
+
+Wildcard parameter allow you to match on this : `notification/user/admin/blog-app/*` and also `notification/user/admin/blog-app/all` and by the way `notification/user/admin/blog-app/1234` for notification system it can be usefull.
+
 _Please note, this is not secure as anyone can subscribe to these channels by making a request for them. For true private channels, you will need to implement server side security_
 
 For more information on the Client Side of Gos WebSocket, please see [Client Side Setup](ClientSetup.md)

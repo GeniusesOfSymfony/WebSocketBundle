@@ -7,5 +7,5 @@ interface RpcInterface
     /**
      * @return string
      */
-    public function getPrefix();
+    public function getName();
 }

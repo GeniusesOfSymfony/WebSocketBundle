@@ -13,12 +13,12 @@ class RpcResponse
     protected $data;
 
     /**
-     * @param array  $data
+     * @param mixed  $data
      * @param string $prefix
      */
-    public function __construct(array $data = [])
+    public function __construct($data, $prefix = 'result')
     {
-        $this->data = $data;
+        $this->data[$prefix] = $data;
     }
 
     /**

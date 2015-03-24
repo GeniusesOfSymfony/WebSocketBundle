@@ -2,9 +2,12 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -17,31 +20,51 @@ class TopicDispatcher implements TopicDispatcherInterface
     protected $topicRegistry;
 
     /**
-     * @param TopicRegistry $topicRegistry
+     * @var WampRouter
      */
-    public function __construct(TopicRegistry $topicRegistry)
+    protected $router;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    protected $logger;
+
+    const SUBSCRIPTION = 'onSubscribe';
+
+    const UNSUBSCRIPTION = 'onUnSubscribe';
+
+    const PUBLISH = 'onPublish';
+
+    /**
+     * @param TopicRegistry   $topicRegistry
+     * @param WampRouter      $router
+     * @param LoggerInterface $logger
+     */
+    public function __construct(TopicRegistry $topicRegistry, WampRouter $router, LoggerInterface $logger = null)
     {
         $this->topicRegistry = $topicRegistry;
+        $this->router = $router;
+        $this->logger = $logger;
     }
 
     /**
      * @param ConnectionInterface $conn
      * @param Topic               $topic
      */
-    public function onSubscribe(ConnectionInterface $conn, Topic $topic)
+    public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
         //if topic service exists, notify it
-        $this->dispatch(__METHOD__, $conn, $topic);
+        $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
     }
 
     /**
      * @param ConnectionInterface $conn
      * @param Topic               $topic
      */
-    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic)
+    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
         //if topic service exists, notify it
-        $this->dispatch(__METHOD__, $conn, $topic);
+        $this->dispatch(self::UNSUBSCRIPTION, $conn, $topic, $request);
     }
 
     /**
@@ -51,9 +74,9 @@ class TopicDispatcher implements TopicDispatcherInterface
      * @param array               $exclude
      * @param array               $eligible
      */
-    public function onPublish(ConnectionInterface $conn, Topic $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
-        if (!$this->dispatch(__METHOD__, $conn, $topic, $event, $exclude, $eligible)) {
+        if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
             //default behaviour is to broadcast to all.
             $topic->broadcast($event);
 
@@ -62,7 +85,7 @@ class TopicDispatcher implements TopicDispatcherInterface
     }
 
     /**
-     * @param string              $event
+     * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic
      * @param null                $payload
@@ -71,30 +94,23 @@ class TopicDispatcher implements TopicDispatcherInterface
      *
      * @return bool
      */
-    public function dispatch($event, ConnectionInterface $conn, Topic $topic, $payload = null, $exclude = null, $eligible = null)
+    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
     {
-        if (false === strpos($event, '::')) {
-            return false;
-        }
+        $dispatched = false;
 
-        $event = explode('::', $event);
+        foreach ((array) $request->getRoute()->getCallback() as $callback) {
+            $appTopic = $this->topicRegistry->getTopic($callback);
+            if ($topic) {
+                if ($payload) { //its a publish call.
+                    $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
+                } else {
+                    $appTopic->{$calledMethod}($conn, $topic, $request);
+                }
 
-        $event = $event[count($event)-1];
-
-        //if topic service exists, notify it
-
-        $appTopic = $this->topicRegistry->getTopic($topic->getId());
-
-        if ($topic) {
-            if ($payload) { //its a publish call.
-                $appTopic->{$event}($conn, $topic, $payload, $exclude, $eligible);
-            } else {
-                $appTopic->{$event}($conn, $topic);
+                $dispatched = true;
             }
-
-            return true;
         }
 
-        return false;
+        return $dispatched;
     }
 }

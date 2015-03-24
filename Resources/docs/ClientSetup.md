@@ -23,7 +23,6 @@ php app/console assetic:dump --env=prod --no-debug
 
 This is to ensure the client js libraries are available.
 
-
 ###Step 2: gos_web_socket_client.js
 
 Once the javascript is included, you can start using gos_web_socket_client.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
@@ -31,7 +30,7 @@ Once the javascript is included, you can start using gos_web_socket_client.js to
 A `WS` object is made available in the global scope of the page. This can be used to connect to the server as follows:
 
 ```javascript
-var websocket = WS.connect("ws://localhost:8080");
+var websocket = WS.connect("ws://127.0.0.1:8080");
 ```
 
 The following commands are available to a GosSocket object returned by WS.connect.
@@ -41,7 +40,7 @@ The following commands are available to a GosSocket object returned by WS.connec
 This allows you to listen for events called by GosSocket. The only events fired currently are "socket/connect" and "socket/disconnect".
 
 ```javascript
-var myWebSocket = WS.connect("ws://localhost:8080");
+var myWebSocket = WS.connect("ws://127.0.0.1:8080");
 
 myWebSocket.on("socket/connect", function(session){
     //session is an Autobahn JS WAMP session.
@@ -79,9 +78,6 @@ myWebSocket.on("socket/connect", function(session){
 ```
 
 **Next step :** Before being able to subscribe/publish/unsubscribe, you need to setup a [Topic Handler](TopicSetup.md). In the next step you will find an example Topic Handler that you can use to test the bundle PubSub functionality. If your application requires more complexity than just repeating messages in channels, you can freely customize the Topic Handler Class.
-
-**Dig into client JS :** [More about client JS](Client.md)
-
 
 For more information on using the WAMP Session objects, please refer to the [official autobahn documentation](http://autobahn.ws/js)
 

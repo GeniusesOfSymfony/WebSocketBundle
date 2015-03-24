@@ -4,12 +4,11 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientStorage
+class ClientStorage implements ClientStorageInterface
 {
     /**
      * @var DriverInterface
@@ -17,7 +16,7 @@ class ClientStorage
     protected $driver;
 
     /**
-     * @param DriverInterface $driver
+     * {@inheritdoc}
      */
     public function setStorageDriver(DriverInterface $driver)
     {
@@ -25,9 +24,7 @@ class ClientStorage
     }
 
     /**
-     * @param string $identifier
-     *
-     * @return string|UserInterface|false
+     * {@inheritdoc}
      */
     public function getClient($identifier)
     {
@@ -41,9 +38,7 @@ class ClientStorage
     }
 
     /**
-     * @param ConnectionInterface $conn
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public static function getStorageId(ConnectionInterface $conn)
     {
@@ -51,10 +46,7 @@ class ClientStorage
     }
 
     /**
-     * @param string               $identifier
-     * @param string|UserInterface $user
-     *
-     * @throws StorageException
+     * {@inheritdoc}
      */
     public function addClient($identifier, $user)
     {
@@ -64,9 +56,7 @@ class ClientStorage
     }
 
     /**
-     * @param string $identifier
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasClient($identifier)
     {
@@ -74,9 +64,7 @@ class ClientStorage
     }
 
     /**
-     * @param string $identifier
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function removeClient($identifier)
     {

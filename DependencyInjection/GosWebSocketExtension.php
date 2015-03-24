@@ -137,6 +137,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        //PubSubRouter
+        $pubsubConfig = $config['server']['router'];
+        $container->prependExtensionConfig('gos_pubsub_router', $pubsubConfig);
+
         //assetic
         if (isset($bundles['AsseticBundle'])) {
             $asseticConfig = array(
@@ -168,7 +172,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                     'websocket' => array(
                         'type' => 'console',
                         'verbosity_levels' => array(
-                            'VERBOSITY_NORMAL' => Logger::INFO,
+                            'VERBOSITY_NORMAL' => Logger::DEBUG,
                         ),
                         'channels' => array(
                             'type' => 'inclusive',

@@ -11,8 +11,11 @@ gos_web_socket:
     shared_config: true
     server:
         port: ~ # Required, Example 127.0.0.1
-        host: ~ # Required, Example 1337
+        host: ~ # Required, Example 1337s
         origin_check:         false
+        router:
+            resources:
+                - @AcmeBundle/Resources/config/pubsub/routing.yml
     rpc:                  []
     topics:               []
     periodic:             []
