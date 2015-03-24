@@ -98,7 +98,7 @@ class TopicDispatcher implements TopicDispatcherInterface
     {
         $dispatched = false;
 
-        foreach ($request->getRoute()->getCallback() as $callback) {
+        foreach ((array) $request->getRoute()->getCallback() as $callback) {
             $appTopic = $this->topicRegistry->getTopic($callback);
             if ($topic) {
                 if ($payload) { //its a publish call.
