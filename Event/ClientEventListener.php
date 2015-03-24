@@ -1,12 +1,10 @@
 <?php
 namespace Gos\Bundle\WebSocketBundle\Event;
 
+use Gos\Bundle\WebSocketBundle\Client\Authenticator\AuthenticatorInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\StorageException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -20,35 +18,27 @@ class ClientEventListener
     protected $clientStorage;
 
     /**
-     * @var string[]
-     */
-    protected $firewalls;
-
-    /**
-     * @var SecurityContextInterface
-     */
-    protected $securityContext;
-
-    /**
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @param ClientStorageInterface   $clientStorage
-     * @param SecurityContextInterface $securityContext
-     * @param LoggerInterface          $logger
-     * @param array                    $firewalls
+     * @var AuthenticatorInterface
+     */
+    protected $authenticator;
+
+    /**
+     * @param ClientStorageInterface $clientStorage
+     * @param AuthenticatorInterface $authenticator
+     * @param LoggerInterface        $logger
      */
     public function __construct(
         ClientStorageInterface $clientStorage,
-        SecurityContextInterface $securityContext,
-        LoggerInterface $logger = null,
-        $firewalls = array()
+        AuthenticatorInterface $authenticator,
+        LoggerInterface $logger = null
     ) {
         $this->clientStorage = $clientStorage;
-        $this->firewalls = $firewalls;
-        $this->securityContext = $securityContext;
+        $this->authenticator = $authenticator;
         $this->logger = $logger;
     }
 
@@ -60,67 +50,33 @@ class ClientEventListener
      */
     public function onClientConnect(ClientEvent $event)
     {
-        $conn = $event->getConnection();
-
-        if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
-            $this->logger->warning(sprintf('User firewall is not configured, we have set %s by default', $this->firewalls[0]));
-        }
+        $connection = $event->getConnection();
 
         if (null !== $this->logger) {
             $loggerContext = array(
-                'connection_id' => $conn->resourceId,
-                'session_id' => $conn->WAMP->sessionId,
+                'connection_id' => $connection->resourceId,
+                'session_id' => $connection->WAMP->sessionId,
             );
         }
 
-        $token = null;
+        $sid = $this->clientStorage->getStorageId($connection);
+        $loggerContext['storage_id'] = $sid;
 
-        if (isset($conn->Session) && $conn->Session) {
-            foreach ($this->firewalls as $firewall) {
-                if (false !== $serializedToken = $conn->Session->get('_security_' . $firewall, false)) {
-                    /** @var TokenInterface $token */
-                    $token = unserialize($serializedToken);
-                    break;
-                }
-            }
-        }
-
-        if (null === $token) {
-            $token = new AnonymousToken($this->firewalls[0], 'anon-' . $conn->WAMP->sessionId);
-        }
-
-        $this->securityContext->setToken($token);
-
-        $user = $token->getUser();
+        $user = $this->authenticator->authenticate($connection);
+        $this->clientStorage->addClient($sid, $user);
 
         $username = $user instanceof UserInterface
             ? $user->getUsername()
             : $user;
 
-        try {
-            $className = get_class($this->clientStorage);
-            $identifier = $className::getStorageId($conn, $username);
-            $loggerContext['storage_id'] = $identifier;
+        $connection->WAMP->clientStorageId = $sid;
 
-            $this->clientStorage->addClient($identifier, $user);
-            $conn->WAMP->clientStorageId = $identifier;
-
-            if (null !== $this->logger) {
-                $this->logger->info(sprintf(
-                    '%s connected [%]',
-                    $username,
-                    $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
-                ), $loggerContext);
-            }
-        } catch (StorageException $e) {
-            if (null !== $this->logger) {
-                $this->logger->error(
-                    $e->getMessage(),
-                    $loggerContext
-                );
-            }
-
-            throw $e;
+        if (null !== $this->logger) {
+            $this->logger->info(sprintf(
+                '%s connected [%]',
+                $username,
+                $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+            ), $loggerContext);
         }
     }
 
@@ -131,41 +87,22 @@ class ClientEventListener
      */
     public function onClientDisconnect(ClientEvent $event)
     {
-        $conn = $event->getConnection();
+        $connection = $event->getConnection();
 
-        try {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+        $sid = $this->clientStorage->getStorageId($connection);
 
-            $username = $user instanceof UserInterface
-                ? $user->getUsername()
-                : $user;
+        $this->clientStorage->removeClient($sid);
 
-            if (null !== $this->logger) {
-                $this->logger->info(sprintf(
-                    '%s disconnected [%]',
-                    $username,
-                    $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
-                ), array(
-                    'connection_id' => $conn->resourceId,
-                    'session_id' => $conn->WAMP->sessionId,
-                    'storage_id' => $conn->WAMP->clientStorageId,
-                ));
-            }
-        } catch (StorageException $e) {
-            if (null !== $this->logger) {
-                $this->logger->info(sprintf(
-                    '%s disconnected [%s]',
-                    'Expired user',
-                    ''
-                ), array(
-                    'connection_id' => $conn->resourceId,
-                    'session_id' => $conn->WAMP->sessionId,
-                    'storage_id' => $conn->WAMP->clientStorageId,
-                ));
-            }
+        if (null !== $this->logger) {
+            $this->logger->info(sprintf(
+                '%s disconnected',
+                $connection->resourceId
+            ), array(
+                'connection_id' => $connection->resourceId,
+                'session_id' => $connection->WAMP->sessionId,
+                'storage_id' => $connection->WAMP->clientStorageId,
+            ));
         }
-
-        $this->clientStorage->removeClient($conn->resourceId);
     }
 
     /**
@@ -175,18 +112,18 @@ class ClientEventListener
      */
     public function onClientError(ClientErrorEvent $event)
     {
-        $conn = $event->getConnection();
+        $connection = $event->getConnection();
         $e = $event->getException();
 
         if (null !== $this->logger) {
             $loggerContext = array(
-                'connection_id' => $conn->resourceId,
-                'session_id' => $conn->WAMP->sessionId,
+                'connection_id' => $connection->resourceId,
+                'session_id' => $connection->WAMP->sessionId,
             );
 
-            if ($this->clientStorage->hasClient($conn->resourceId)) {
-                $loggerContext['client'] = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            }
+            $sid = $this->clientStorage->getStorageId($connection);
+
+            $loggerContext['client'] = $this->clientStorage->getClient($sid, $connection);
 
             $this->logger->error(sprintf(
                 'Connection error occurred %s in %s line %s',

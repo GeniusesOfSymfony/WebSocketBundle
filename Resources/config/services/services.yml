@@ -78,6 +78,8 @@ services:
 
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
+        arguments:
+            - @gos_websocket.session.authenticator
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
@@ -86,7 +88,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
             - @gos_web_socket.client_storage
-            - @security.context
+            - @gos_websocket.session.authenticator
             - @?monolog.logger.websocket
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
@@ -102,4 +104,11 @@ services:
         arguments:
             - @gos_pubsub_router.router
             - %kernel.debug%
+            - @?monolog.logger.websocket
+
+    gos_websocket.session.authenticator:
+        class: Gos\Bundle\WebSocketBundle\Client\Authenticator\SessionAuthenticator
+        arguments:
+            - %web_socket_firewalls%
+            - @security.context
             - @?monolog.logger.websocket

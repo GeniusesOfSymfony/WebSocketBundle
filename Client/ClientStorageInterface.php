@@ -14,13 +14,14 @@ interface ClientStorageInterface
     public function setStorageDriver(DriverInterface $driver);
 
     /**
-     * @param string $identifier
+     * @param string              $identifier
+     * @param ConnectionInterface $connection
      *
      * @throws StorageException
      *
      * @return string|UserInterface|false
      */
-    public function getClient($identifier);
+    public function getClient($identifier, ConnectionInterface $connection);
 
     /**
      * @param ConnectionInterface $conn
