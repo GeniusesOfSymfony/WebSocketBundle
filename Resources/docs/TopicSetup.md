@@ -5,13 +5,7 @@ Although the standard Gos WebSocket PubSub can be useful as a simple channel for
 Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
 
 ### What is a topic ?
-A topic is the representation of a pubsub channel. For example you want create a channel for your chat with room.
-
-You will have a prefix `chat` and multiple channel like `all`, `room1`, `room2` that give : 
-* `chat/all`
-* `chat/room1`
-* `chat/room2`
-* `chat/*`
+A topic is the server side representation of a pubsub channel.
 
 You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
 
@@ -103,13 +97,15 @@ class AcmeTopic implements TopicInterface
 
 ### Most important things in topic
 
-#### Topic::broadcast($msg, array $exclude = array(), array $eligible = array());
+### Broadcast full definition
+
+`Topic::broadcast($msg, array $exclude = array(), array $eligible = array());`
 
 Send a message to all the connections in this topic.
 
 **Note :** `$exclude` and `$include` work with Wamp Session ID available through `$connection->WAMP->sessionId`
 
-#### How get the current channel information ?
+#### How get the current channel information (route, attributes, path etc ...) ?
 
 `$request->getRouteName()` Will give the mathed route name
 
@@ -138,7 +134,7 @@ foreach($topic as $client){
 
 `$connection->event($topic->getId(), ['msg' => 'lol']);`
 
-#### How count the number of subscribers I have ?
+#### How count the number of subscribers I currently have ?
 
 `Topic` implements `Countable` interface, you just have to do `count($topic)`
 
@@ -146,14 +142,15 @@ foreach($topic as $client){
 
 The **4 methods** that must be implemented are:
 
-* `onSubscribe(ConnectionInterface $connection, Topic $topic)` When client subscribe to the topic
-* `onUnSubscribe(ConnectionInterface $connection, Topic $topic)` When client unsubscribe to the topic
-* `onPublish(ConnectionInterface $connection, Topic $topic, $event, array $exclude, array $eligible)` When client publish inside the topic
-* `getPrefix()` Give the prefix of channel this topic will catch
+* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client subscribe to the topic
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client unsubscribe to the topic
+* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` When client publish inside the topic
+* `getName()` Use for routing definition, used to point this class.
 
 Where
 * `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
+* `WampRequest` Is the representation of the request make trough websocket. 
 
 
 ##Step 2: Register your service with Symfony
