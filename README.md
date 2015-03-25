@@ -15,9 +15,21 @@ What can I do with this bundle
 Make real time application like
 * Chat Application
 * Real time notification
-* Browser game
+* Browser games
 
 More commonly, all application who meet real time.
+
+Built in feature
+-----------------
+
+* PHP Websocket server (IO / WAMP)
+* PHP Websocket client (IO / WAMP)
+* JS Websocket client (IO / WAMP)
+* PubSub (with routing)
+* Remote procedure
+* User authentication through websocket
+* Periodic call
+* Origin checker
 
 Resources
 --------------
