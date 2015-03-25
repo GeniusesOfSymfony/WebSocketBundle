@@ -85,7 +85,7 @@ class WampApplication implements WampServerInterface
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
         if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId, $conn);
             $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
             $this->logger->info(sprintf(
@@ -119,7 +119,7 @@ class WampApplication implements WampServerInterface
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
         if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId, $conn);
             $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
             $this->logger->info(sprintf(
@@ -141,7 +141,7 @@ class WampApplication implements WampServerInterface
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
         if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId, $conn);
             $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
             $this->logger->info(sprintf(

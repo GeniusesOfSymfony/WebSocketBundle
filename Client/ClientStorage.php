@@ -2,8 +2,11 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
+use Gos\Bundle\WebSocketBundle\Client\Authenticator\AuthenticatorInterface;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -16,6 +19,26 @@ class ClientStorage implements ClientStorageInterface
     protected $driver;
 
     /**
+     * @var AuthenticatorInterface
+     */
+    protected $authenticator;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param AuthenticatorInterface $authenticator
+     * @param LoggerInterface        $logger
+     */
+    public function __construct(AuthenticatorInterface $authenticator, LoggerInterface $logger = null)
+    {
+        $this->authenticator = $authenticator;
+        $this->logger = $logger;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setStorageDriver(DriverInterface $driver)
@@ -26,15 +49,29 @@ class ClientStorage implements ClientStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function getClient($identifier)
+    public function getClient($identifier, ConnectionInterface $connection)
     {
-        $result = $this->driver->fetch($identifier);
+        if (false === $this->hasClient($identifier)) { //The client can be exprired by the driver
+            $user = $this->authenticator->authenticate($connection);
+            $this->addClient($identifier, $user);
 
-        if (false === $result) {
-            throw new StorageException(sprintf('Client %s not found', $identifier));
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf(
+                   'Reloading expired session of user "%s"',
+                    $user instanceof UserInterface ? $user->getUsername() : $user
+                ), array(
+                    'connection_id' => $connection->resourceId,
+                    'session_id' => $connection->WAMP->sessionId,
+                    'storage_id' => $connection->WAMP->clientStorageId,
+                ));
+            }
+
+            return $user;
         }
 
-        return unserialize($result);
+        $serializedUser = $this->driver->fetch($identifier);
+
+        return unserialize($serializedUser);
     }
 
     /**
@@ -42,7 +79,7 @@ class ClientStorage implements ClientStorageInterface
      */
     public static function getStorageId(ConnectionInterface $conn)
     {
-        return $conn->resourceId;
+        return sha1($conn->resourceId . $conn->WAMP->sessionId);
     }
 
     /**
@@ -68,6 +105,10 @@ class ClientStorage implements ClientStorageInterface
      */
     public function removeClient($identifier)
     {
-        return $this->driver->delete($identifier);
+        if ($this->hasClient($identifier)) {
+            return $this->driver->delete($identifier);
+        }
+
+        return true;
     }
 }

@@ -39,6 +39,42 @@ User is directly authenticated against his firewall, anonymous users are allow.
 
 Each user connected to socket is persisted in our persistence layer. By default they are stored in php via SplStorage.
 
+##How use it inside of my Topic or RPC ?
+
+Inject the client storage service `gos_web_socket.client_storage` in your Topic / Rpc with depency injection. You must care, user can be a string or a UserInterface if you allow anonymous user !
+
+```php
+<?php
+
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeTopic implements TopicInterface 
+{
+    protected $clientStorage;
+    
+    public function __construct(ClientStorageInterface $clientStorages)
+    {
+        $this->clientStorage = $clientStorage;
+    }
+    
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        $sid = $this->clientStorage->getStorageId($connection); //You can also get it via $connection->Wamp->storageId
+        
+        $this->clientStorage->removeClient($sid); //Remove the user
+        $this->clientStorage->addClient($sid, $user); //Add new user
+        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId, $connection); //Get user
+        $this->clientStorage->hasClient($sid); //true/false
+    }
+}
+```
+
+**`ClientStorage::getClient`** 
+
 ###Customize client storage
 
 ```yaml
