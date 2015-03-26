@@ -185,54 +185,9 @@ gos_web_socket:
 
 ### Retrieve the current user
 
-This feature needs some configurations, please check [Session Setup](SessionSetup.md) before continue and understand how it's work.
+Look at [here](SessionSetup.md)
 
-To retrieve the user connected through websocket, you must inject client storage service in your topic.
-
-```yaml
-services:
-    acme_hello.topic_sample_service:
-        class: Acme\HelloBundle\Topic\AcmeTopic
-        arguments:
-        	- @gos_web_socket.client_storage
-        tags:
-            - { name: gos_web_socket.topic }
-```
-
-```php
-use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\Wamp\Topic;
-
-class AcmeTopic implements TopicInterface
-{
-    /**
-     * @var ClientStorage
-     */
-    protected $clientStorage;
-
-    /**
-     * @param ClientStorage $clientStorage
-     */
-    public function __construct(ClientStorage $clientStorage)
-    {
-        $this->clientStorage = $clientStorage;
-    }
-
-    /**
-     * @param ConnectionInterface $connection
-     * @param Topic               $topic
-     */
-    public function onSubscribe(ConnectionInterface $connection, Topic $topic)
-    {
-        /** @var UserInterface */
-        $user = $this->clientStorage->getClient(ClientStorage::getStorageId($connection));
-    }
-}
-```
-
-##Step 3: Connect client to your topic
+##Step 3: Connect client to your topics
 The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
 
 ```javascript
