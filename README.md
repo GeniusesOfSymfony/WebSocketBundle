@@ -1,6 +1,8 @@
 Gos Web Socket Bundle
 =====================
 
+[![Join the chat at https://gitter.im/GeniusesOfSymfony/WebSocketBundle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GeniusesOfSymfony/WebSocketBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 About
 --------------
 Gos Web Socket is a Symfony2 Bundle designed to bring together WebSocket functionality in a easy to use application architecture.
