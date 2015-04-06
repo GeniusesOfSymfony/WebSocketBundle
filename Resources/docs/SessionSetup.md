@@ -104,7 +104,7 @@ gos_web_socket:
     client:
 		...
         storage:
-            driver: @gos_web_scocket.client_storage.driver.predis
+            driver: @gos_web_socket.client_storage.driver.predis
 		...
 ```
 

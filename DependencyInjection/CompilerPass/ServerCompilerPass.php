@@ -20,7 +20,7 @@ class ServerCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.server');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addServer', [ new Reference($id)]);
+            $definition->addMethodCall('addServer', [new Reference($id)]);
         }
     }
 }

@@ -138,8 +138,20 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         //PubSubRouter
-        $pubsubConfig = $config['server']['router'];
-        $container->prependExtensionConfig('gos_pubsub_router', $pubsubConfig);
+        $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
+
+        if (!empty($pubsubConfig)) {
+            if (!isset($pubsubConfig['context']['tokenSeparator'])) {
+                $pubsubConfig['context']['tokenSeparator'] = '/';
+            }
+
+            $container->prependExtensionConfig('gos_pubsub_router', [
+                    'routers' => [
+                        'websocket' => $pubsubConfig,
+                    ],
+                ]
+            );
+        }
 
         //assetic
         if (isset($bundles['AsseticBundle'])) {

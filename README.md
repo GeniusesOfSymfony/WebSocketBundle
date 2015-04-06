@@ -42,7 +42,7 @@ This benchmark was done on my personal computer without any specific tweak.
 - Intel Core i7-2670QM 2.20 Ghz x 4
 - 8 Go Ram
 
-### Websocket Bundle config :
+#### Websocket Bundle config :
 
 ```yaml
 gos_web_socket:
@@ -66,10 +66,10 @@ gos_web_socket:
 
 ```
 
-### Thor
+#### Thor
 
 ```
-thor --amount 10000 ws://127.0.0.1.dev:1337 -C 5000 -W 4 -M 100
+thor --amount 10000 ws://notification.dev:1337 -C 5000 -W 4 -M 100
 ```
 
 - Create 5000 concurrent/parallel connections.
@@ -78,23 +78,23 @@ thor --amount 10000 ws://127.0.0.1.dev:1337 -C 5000 -W 4 -M 100
 - Send 100 messages per connection
 
 ```text
-Online               98648 milliseconds
-Time taken           98663 milliseconds
+Online               47030 milliseconds
+Time taken           47036 milliseconds
 Connected            10000
 Disconnected         0
 Failed               0
-Total transferred    25.57MB
+Total transferred    25.11MB
 Total received       1.93MB
 
 Durations (ms):
                      min     mean     stddev  median max    
-Handshaking          266     36869     16120   48627 50344  
-Latency              0       0             1       0 14     
+Handshaking          442     17510      7450   22799 23713  
+Latency              0       0             1       0 35     
 
 Percentile (ms):
                       50%     66%     75%     80%     90%     95%     98%     98%    100%   
-Handshaking          48627   49467   49647   49741   49915   50050   50163   50204   50344  
-Latency              0       0       1       1       1       1       1       1       14     
+Handshaking          22799   23238   23450   23490   23554   23598   23640   23655   23713  
+Latency              0       1       1       1       1       1       1       1       35 
 
 ```
 

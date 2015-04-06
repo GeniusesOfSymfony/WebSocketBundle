@@ -20,7 +20,7 @@ class TopicCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.topic');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addTopic', [ new Reference($id)]);
+            $definition->addMethodCall('addTopic', [new Reference($id)]);
         }
     }
 }

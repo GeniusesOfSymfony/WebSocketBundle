@@ -100,6 +100,6 @@ services:
     gos_web_socket.router.wamp:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
         arguments:
-            - @gos_pubsub_router.router
+            - @gos_pubsub_router.websocket
             - %kernel.debug%
             - @?monolog.logger.websocket

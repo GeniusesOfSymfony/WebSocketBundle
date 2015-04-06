@@ -1,4 +1,5 @@
 <?php
+
 namespace Gos\Bundle\WebSocketBundle\Server\App\Registry;
 
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;

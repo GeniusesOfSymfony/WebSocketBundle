@@ -20,7 +20,7 @@ class PeriodicCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.periodic');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addPeriodic', [ new Reference($id)]);
+            $definition->addMethodCall('addPeriodic', [new Reference($id)]);
         }
     }
 }

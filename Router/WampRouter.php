@@ -35,10 +35,6 @@ class WampRouter
         $this->pubSubRouter = $router;
         $this->logger = $logger;
         $this->debug = $debug;
-
-        $context = new RouterContext();
-        $context->setTokenSeparator('/');
-        $this->setContext($context);
     }
 
     /**
@@ -58,15 +54,26 @@ class WampRouter
     }
 
     /**
-     * @param Topic       $topic
-     * @param string|null $tokenSeparator
+     * @param Topic $topic
+     * @param string|null  $tokenSeparator
      *
      * @return WampRequest
+     * @throws ResourceNotFoundException
+     * @throws \Exception
      */
     public function match(Topic $topic, $tokenSeparator = null)
     {
         try {
             list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
+
+            if ($this->debug && null !== $this->logger) {
+                $this->logger->debug(sprintf(
+                    'Matched route "%s"',
+                    $routeName
+                ), $attributes);
+            }
+
+            return new WampRequest($routeName, $route, new ParameterBag($attributes));
         } catch (ResourceNotFoundException $e) {
             if (null !== $this->logger) {
                 $this->logger->error(sprintf(
@@ -74,16 +81,9 @@ class WampRouter
                     $topic->getId()
                 ));
             }
-        }
 
-        if ($this->debug && null !== $this->logger) {
-            $this->logger->debug(sprintf(
-                'Matched route "%s"',
-                $routeName
-            ), $attributes);
+            throw $e;
         }
-
-        return new WampRequest($routeName, $route, new ParameterBag($attributes));
     }
 
     /**

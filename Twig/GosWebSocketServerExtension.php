@@ -12,7 +12,7 @@ class GosWebSocketServerExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return "gos_web_socket_server";
+        return 'gos_web_socket_server';
     }
 
     /**

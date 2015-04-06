@@ -59,7 +59,7 @@ class DoctrineCacheDriverDecorator implements DriverInterface
      *
      * @param string $id The cache id.
      *
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
      */
     public function delete($id)
     {

@@ -20,7 +20,7 @@ class RpcCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.rpc');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addRpc', [ new Reference($id)]);
+            $definition->addMethodCall('addRpc', [new Reference($id)]);
         }
     }
 }
