@@ -124,7 +124,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
+        $pubsubConfig = isset($configs['server']['router']) ? $configs['server']['router'] : [];
 
         if (!empty($pubsubConfig)) {
             $container->getDefinition('gos_web_socket.router.wamp')

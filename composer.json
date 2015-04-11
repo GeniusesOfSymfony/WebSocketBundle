@@ -20,14 +20,14 @@
         "symfony/framework-bundle": "~2.4",
         "cboden/Ratchet": "~0.3",
         "gos/web-socket-bundle": "~0.1@dev",
-        "gos/pubsub-router-bundle": "~0.1@dev"
+        "gos/pubsub-router-bundle": "~0.1"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.x-dev"
+            "dev-master": "1.1.x-dev"
         }
     }
 }
