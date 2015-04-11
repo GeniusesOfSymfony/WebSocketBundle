@@ -97,9 +97,12 @@ services:
     gos_web_socket.server.in_memory.client_storage.driver:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
 
+    gos_web_socket.null.pubsub.router:
+        class: Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter
+
     gos_web_socket.router.wamp:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
         arguments:
-            - @gos_pubsub_router.websocket
+            - @gos_web_socket.null.pubsub.router
             - %kernel.debug%
             - @?monolog.logger.websocket

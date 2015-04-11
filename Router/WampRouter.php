@@ -6,6 +6,7 @@ use Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException;
 use Gos\Bundle\PubSubRouterBundle\Router\RouteCollection;
 use Gos\Bundle\PubSubRouterBundle\Router\Router;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterContext;
+use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Psr\Log\LoggerInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -30,7 +31,7 @@ class WampRouter
     /**
      * @param Router $router
      */
-    public function __construct(Router $router, $debug, LoggerInterface $logger = null)
+    public function __construct(RouterInterface $router = null, $debug, LoggerInterface $logger = null)
     {
         $this->pubSubRouter = $router;
         $this->logger = $logger;
@@ -54,17 +55,18 @@ class WampRouter
     }
 
     /**
-     * @param Topic $topic
-     * @param string|null  $tokenSeparator
+     * @param Topic       $topic
+     * @param string|null $tokenSeparator
      *
      * @return WampRequest
+     *
      * @throws ResourceNotFoundException
      * @throws \Exception
      */
     public function match(Topic $topic, $tokenSeparator = null)
     {
         try {
-            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
+            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId(), $tokenSeparator);
 
             if ($this->debug && null !== $this->logger) {
                 $this->logger->debug(sprintf(
@@ -87,24 +89,15 @@ class WampRouter
     }
 
     /**
-     * @param string $resource
+     * @param string      $routeName
+     * @param array       $parameters
+     * @param null|string $tokenSeparator
+     *
+     * @return string
      */
-    public function addResource($resource)
+    public function generate($routeName, Array $parameters = [], $tokenSeparator = null)
     {
-        $this->pubSubRouter->addResource($resource);
-    }
-
-    public function loadRoute()
-    {
-        $this->pubSubRouter->loadRoute();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLoaded()
-    {
-        return $this->pubSubRouter->isLoaded();
+        return $this->pubSubRouter->generate($routeName, $parameters, $tokenSeparator);
     }
 
     /**

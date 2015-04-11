@@ -123,6 +123,13 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 ]);
             }
         }
+
+        $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
+
+        if (!empty($pubsubConfig)) {
+            $container->getDefinition('gos_web_socket.router.wamp')
+                ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
+        }
     }
 
     /**
