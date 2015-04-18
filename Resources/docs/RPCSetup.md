@@ -110,7 +110,9 @@ The idea of having these network namespaces is to group relevant code into separ
 
 Now you have create your RPC service and implements your RPC call in the client, you must now link the path with your service.  `sample/add_func` will refer to AcmeService
 
-if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration :
+if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration
+
+**NOTE** : Don't forget to clear your cache take in account the new file.
 
 ```yaml
 gos_web_socket:

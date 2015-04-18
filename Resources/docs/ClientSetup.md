@@ -40,15 +40,15 @@ The following commands are available to a GosSocket object returned by WS.connec
 This allows you to listen for events called by GosSocket. The only events fired currently are "socket/connect" and "socket/disconnect".
 
 ```javascript
-var myWebSocket = WS.connect("ws://127.0.0.1:8080");
+var webSocket = WS.connect("ws://127.0.0.1:8080");
 
-myWebSocket.on("socket/connect", function(session){
+webSocket.on("socket/connect", function(session){
     //session is an Autobahn JS WAMP session.
 
     console.log("Successfully Connected!");
 })
 
-myWebSocket.on("socket/disconnect", function(error){
+webSocket.on("socket/disconnect", function(error){
     //error provides us with some insight into the disconnection: error.reason and error.code
 
     console.log("Disconnected for " + error.reason + " with code " + error.code);
@@ -66,7 +66,7 @@ For a more in depth description of PubSub architecture, see [Autobahn JS PubSub 
 These are all fairly straightforward, here's an example on using them:
 
 ```javascript
-myWebSocket.on("socket/connect", function(session){
+webSocket.on("socket/connect", function(session){
 
     //the callback function in "subscribe" is called everytime an event is published in that channel.
     session.subscribe("acme/channel", function(uri, payload){

@@ -212,7 +212,9 @@ The following javascript will show connecting to this topic, notice how "acme/ch
 
 Now will say to the system, topic named `acme.topic` (related to Topic::getName())` will handle channel pattern.
 
-if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration :
+if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration
+
+**NOTE** : Don't forget to clear your cache take in account the new file.
 
 ```yaml
 gos_web_socket:
@@ -227,6 +229,15 @@ gos_web_socket:
 ```
 
 Create the route to rely channel / topic 
+
+```yaml
+acme_topic:
+    channel: acme/channel
+    handler:
+        callback: 'acme.topic' #related to the getName() of your topic
+```
+
+###Advanced example
 
 ```yaml
 acme_topic_chat:
