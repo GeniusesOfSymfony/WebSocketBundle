@@ -63,6 +63,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');
             $clientListenerDef->addArgument((array) $clientConf['firewall']);
+            $clientListenerDef->addArgument($container->getParameter('web_socket_origin_check'));
 
             if (isset($clientConf['storage']['driver'])) {
                 $driverRef = ltrim($clientConf['storage']['driver'], '@');
