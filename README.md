@@ -76,6 +76,7 @@ public function registerBundles()
     $bundles = array(
         // ...
         new Gos\Bundle\WebSocketBundle\GosWebSocketBundle(),
+        new Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle(),
     );
 }
 ```
