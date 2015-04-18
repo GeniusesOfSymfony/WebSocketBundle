@@ -9,6 +9,9 @@ Much like Socket.IO it provides both server side and client side code ensuring y
 
 Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js), with [Symfony2](http://symfony.com/)
 
+**[Demo project](https://github.com/GeniusesOfSymfony/WebsocketAppDemo)**
+
+
 What can I do with this bundle
 ------------------------------
 
