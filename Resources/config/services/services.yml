@@ -88,6 +88,7 @@ services:
             - @gos_web_socket.client_storage
             - @security.context
             - @?monolog.logger.websocket
+            - %web_socket_origin_check%
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }

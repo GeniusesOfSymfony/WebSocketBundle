@@ -36,21 +36,29 @@ class ClientEventListener
     protected $logger;
 
     /**
+     * @var bool
+     */
+    protected $originChecker;
+
+    /**
      * @param ClientStorageInterface   $clientStorage
      * @param SecurityContextInterface $securityContext
      * @param LoggerInterface          $logger
      * @param array                    $firewalls
+     * @param bool                     $originChecker
      */
     public function __construct(
         ClientStorageInterface $clientStorage,
         SecurityContextInterface $securityContext,
         LoggerInterface $logger = null,
-        $firewalls = array()
+        $firewalls = array(),
+        $originChecker
     ) {
         $this->clientStorage = $clientStorage;
         $this->firewalls = $firewalls;
         $this->securityContext = $securityContext;
         $this->logger = $logger;
+        $this->originChecker = $originChecker;
     }
 
     /**
@@ -63,7 +71,7 @@ class ClientEventListener
     {
         $conn = $event->getConnection();
 
-        if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
+        if (true === $this->originChecker && 1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
             $this->logger->warning(sprintf('User firewall is not configured, we have set %s by default', $this->firewalls[0]));
         }
 
