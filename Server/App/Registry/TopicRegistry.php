@@ -42,7 +42,7 @@ class TopicRegistry
             throw new \Exception(sprintf(
                 'Topic %s does\'nt exist in [ %s ]',
                 $topicName,
-                array_keys($this->topics)
+                implode(', ', array_keys($this->topics))
             ));
         }
 
