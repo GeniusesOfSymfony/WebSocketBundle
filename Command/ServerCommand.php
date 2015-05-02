@@ -2,40 +2,17 @@
 
 namespace Gos\Bundle\WebSocketBundle\Command;
 
-use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
+ * @deprecated Will be removed in v2 use WebsocketServerCommand instead
  */
-class ServerCommand extends Command
+class ServerCommand extends WebsocketServerCommand
 {
-    /**
-     * @var EntryPoint
-     */
-    protected $entryPoint;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param EntryPoint      $entryPoint
-     * @param LoggerInterface $logger
-     */
-    public function __construct(EntryPoint $entryPoint, LoggerInterface $logger = null)
-    {
-        $this->entryPoint = $entryPoint;
-        $this->logger = $logger;
-
-        parent::__construct();
-    }
-
     protected function configure()
     {
         $this
@@ -50,6 +27,7 @@ class ServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->entryPoint->launch($input->getArgument('name'));
+        $output->writeln('<error>This command is deprecated and will be removed in v2, use gos:websocket:server instead</error>');
+        parent::execute($input, $output);
     }
 }

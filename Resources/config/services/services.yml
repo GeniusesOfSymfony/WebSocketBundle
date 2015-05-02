@@ -9,8 +9,17 @@ services:
         arguments:
             - @gos_web_socket.server.registry
 
+    #deprecated will be removed in v2, use gos_web_socket.websocket_server.command instead
     gos_web_socket.server_command:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
+        arguments:
+            - @gos_web_socket.entry_point
+            - @?monolog.logger.websocket
+        tags:
+            - { name: console.command }
+
+    gos_web_socket.websocket_server.command:
+        class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         arguments:
             - @gos_web_socket.entry_point
             - @?monolog.logger.websocket
