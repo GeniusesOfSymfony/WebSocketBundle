@@ -10,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
@@ -72,7 +73,7 @@ class WampApplication implements WampServerInterface
         $this->eventDispatcher = $eventDispatcher;
         $this->clientStorage = $clientStorage;
         $this->wampRouter = $wampRouter;
-        $this->logger = $logger;
+        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
     /**
@@ -84,16 +85,15 @@ class WampApplication implements WampServerInterface
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
-        if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
-            $this->logger->info(sprintf(
-                '%s publish to %s',
-                $username,
-                $topic->getId()
-            ));
-        }
+        $this->logger->info(sprintf(
+            '%s publish to %s',
+            $username,
+            $topic->getId()
+        ));
+
 
         $request = $this->wampRouter->match($topic);
 
@@ -118,16 +118,15 @@ class WampApplication implements WampServerInterface
      */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
-        if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
-            $this->logger->info(sprintf(
-                '%s subscribe to %s',
-                $username,
-                $topic->getId()
-            ));
-        }
+        $this->logger->info(sprintf(
+            '%s subscribe to %s',
+            $username,
+            $topic->getId()
+        ));
+
 
         $wampRequest = $this->wampRouter->match($topic);
 
@@ -140,16 +139,14 @@ class WampApplication implements WampServerInterface
      */
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
-        if (null !== $this->logger) {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
-            $this->logger->info(sprintf(
-                'User %s unsubscribed to %s',
-                $username,
-                $topic->getId()
-            ));
-        }
+        $this->logger->info(sprintf(
+            'User %s unsubscribed to %s',
+            $username,
+            $topic->getId()
+        ));
 
         $wampRequest = $this->wampRouter->match($topic);
 

@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,7 @@ class WebsocketServerCommand extends Command
     public function __construct(EntryPoint $entryPoint, LoggerInterface $logger = null)
     {
         $this->entryPoint = $entryPoint;
-        $this->logger = $logger;
+        $this->logger = null === $logger ? new NullLogger() : $logger;
 
         parent::__construct();
     }

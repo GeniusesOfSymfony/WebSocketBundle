@@ -8,6 +8,7 @@ use Gos\Bundle\PubSubRouterBundle\Router\Router;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterContext;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -34,7 +35,7 @@ class WampRouter
     public function __construct(RouterInterface $router = null, $debug, LoggerInterface $logger = null)
     {
         $this->pubSubRouter = $router;
-        $this->logger = $logger;
+        $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->debug = $debug;
     }
 
@@ -68,7 +69,7 @@ class WampRouter
         try {
             list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId(), $tokenSeparator);
 
-            if ($this->debug && null !== $this->logger) {
+            if ($this->debug) {
                 $this->logger->debug(sprintf(
                     'Matched route "%s"',
                     $routeName
@@ -77,12 +78,11 @@ class WampRouter
 
             return new WampRequest($routeName, $route, new ParameterBag($attributes));
         } catch (ResourceNotFoundException $e) {
-            if (null !== $this->logger) {
-                $this->logger->error(sprintf(
-                    'Unable to find route for %s',
-                    $topic->getId()
-                ));
-            }
+            $this->logger->error(sprintf(
+                'Unable to find route for %s',
+                $topic->getId()
+            ));
+
 
             throw $e;
         }

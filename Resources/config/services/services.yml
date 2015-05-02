@@ -87,6 +87,8 @@ services:
 
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
+        arguments:
+            - @?monolog.logger.websocket
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
