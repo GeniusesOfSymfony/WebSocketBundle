@@ -59,6 +59,8 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 $def->addMethodCall('setSessionHandler', [
                     new Reference(ltrim($clientConf['session_handler'], '@')),
                 ]);
+
+                $container->setAlias('gos_web_socket.session_handler', ltrim($clientConf['session_handler'], '@'));
             }
 
             $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');

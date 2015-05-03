@@ -117,3 +117,9 @@ services:
             - @gos_web_socket.null.pubsub.router
             - %kernel.debug%
             - @?monolog.logger.websocket
+
+    gos_web_socket.pdo.periodic_ping:
+        class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
+        arguments:
+            - @?pdo
+            - @?monolog.logger.websocket

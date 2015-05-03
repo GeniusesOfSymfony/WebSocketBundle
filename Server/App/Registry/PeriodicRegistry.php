@@ -16,7 +16,7 @@ class PeriodicRegistry
 
     public function __construct()
     {
-        $this->periodics = array();
+        $this->periodics = [];
     }
 
     /**
@@ -24,7 +24,7 @@ class PeriodicRegistry
      */
     public function addPeriodic(PeriodicInterface $periodic)
     {
-        $this->periodics = $periodic;
+        $this->periodics[] = $periodic;
     }
 
     /**
