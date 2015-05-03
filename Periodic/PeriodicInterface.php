@@ -10,7 +10,7 @@ interface PeriodicInterface
     public function tick();
 
     /**
-     * @return int (in millisecond)
+     * @return int (in second)
      */
     public function getTimeout();
 }
