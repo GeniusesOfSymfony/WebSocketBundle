@@ -10,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Ratchet\Http\HttpServer;
 use Ratchet\Http\HttpServerInterface;
 use Ratchet\Server\IoServer;
@@ -118,7 +119,7 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
-        $this->logger = $logger;
+        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
     /**
@@ -131,9 +132,7 @@ class WebSocketServer implements ServerInterface
 
     public function launch()
     {
-        if (null !== $this->logger) {
-            $this->logger->info('Starting web socket');
-        }
+        $this->logger->info('Starting web socket');
 
         $serverStack = new WampServer($this->wampApplication);
 
@@ -178,13 +177,11 @@ class WebSocketServer implements ServerInterface
         $event = new ServerEvent($this->loop);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
-        if (null !== $this->logger) {
-            $this->logger->info(sprintf(
-                'Launching %s on %s',
-                $this->getName(),
-                $this->getAddress()
-            ));
-        }
+        $this->logger->info(sprintf(
+            'Launching %s on %s',
+            $this->getName(),
+            $this->getAddress()
+        ));
 
         $this->loop->run();
     }
