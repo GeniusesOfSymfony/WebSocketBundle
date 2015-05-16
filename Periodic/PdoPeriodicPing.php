@@ -56,11 +56,12 @@ class PdoPeriodicPing implements PeriodicInterface
         }
 
         try{
+            $startTime = microtime(true);
             $this->pdo->query('SELECT 1');
-            $this->logger->notice('Successfully ping sql server');
+            $endTime = microtime(true);
+            $this->logger->notice(sprintf('Successfully ping sql server (~%s ms)', round(($endTime - $startTime) * 100000), 2));
         }catch (\PDOException $e){
             $this->logger->emergency('Sql server is gone, and unable to reconnect');
-
             throw $e;
         }
     }
