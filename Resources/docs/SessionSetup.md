@@ -90,14 +90,13 @@ Configure my predis client through SncRedisBundle
 ```yaml
 snc_redis:
     clients:
-        ws_client:
+        cache:
             type: predis
-            alias: client_storage.driver #snc_redis.client_storage.driver
+            alias: cache #snc_redis.cache
             dsn: redis://127.0.0.1/2
             logging: %kernel.debug%
             options:
-                profile: 2.2
-                connection_timeout: 10
+                connection_timeout: 0
                 read_write_timeout: 30
 
 gos_web_socket:
