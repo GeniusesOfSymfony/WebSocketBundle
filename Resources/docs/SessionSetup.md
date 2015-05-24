@@ -4,7 +4,27 @@ Thanks to Ratchet its easy to get the shared info from the same website session.
 [Ratchet documentation](http://socketo.me/docs/sessions), you must use a session handler other than the native one,
 such as [Symfony PDO Session Handler](http://symfony.com/doc/master/cookbook/configuration/pdo_session_storage.html).
 
-Once this is setup you will have something similar to the following in your config.yml
+Create the following services:
+
+```yml
+services:
+    pdo:
+        class: PDO
+        arguments:
+            dsn: mysql:host=%database_host%;port=%database_port%;dbname=%database_name%
+            user: %database_user%
+            password: %database_password%
+        calls:
+            - [ setAttribute, [3, 2] ] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+    
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: [@pdo, {lock_mode: 0}]
+```
+
+[Create table in your DB](http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#mysql)
+
+Configure the Session Handler in your config.yml
 
 ```yaml
 framework:
@@ -90,13 +110,14 @@ Configure my predis client through SncRedisBundle
 ```yaml
 snc_redis:
     clients:
-        cache:
+        ws_client:
             type: predis
-            alias: cache #snc_redis.cache
+            alias: client_storage.driver #snc_redis.client_storage.driver
             dsn: redis://127.0.0.1/2
             logging: %kernel.debug%
             options:
-                connection_timeout: 0
+                profile: 2.2
+                connection_timeout: 10
                 read_write_timeout: 30
 
 gos_web_socket:
