@@ -221,6 +221,116 @@ services:
 
 **NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
 
+#Retrieve current user
+
+Whenever `ConnectionInterface` instance is available your are able to retrieve the associated user.
+
+For example inside a topic : 
+
+```php
+use Ratchet\ConnectionInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeTopic implements TopicInterface
+{
+    protected $clientStorage;
+    
+    /**
+     * @param ClientStorageInterface $clientStorage
+     */
+    public function __construct(ClientStorageInterface $clientStorage)
+    {
+        $this->clientStorage = $clientStorage;
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param Topic               $topic
+     */
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        $currentUser = $this->clientStorage->getClient($this->clientStorage->getStorageId($connection)); //give UserInterface
+    }
+}
+```
+
+Use `Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait`
+
+```php
+use Ratchet\ConnectionInterface;
+use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeTopic implements TopicInterface
+{
+    use WebSocketUserTrait;
+    
+    /**
+     * @param ClientStorageInterface $clientStorage
+     */
+    public function __construct(ClientStorageInterface $clientStorage)
+    {
+        $this->clientStorage = $clientStorage;
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param Topic               $topic
+     */
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        $currentUser = $this->getCurrentUser($connection); //give UserInterface
+    }
+}
+```
+
+## Send a message to a specific user
+
+```php
+use Ratchet\ConnectionInterface;
+use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeTopic implements TopicInterface
+{
+    use WebSocketUserTrait;
+    
+    /**
+     * @param ClientStorageInterface $clientStorage
+     */
+    public function __construct(ClientStorageInterface $clientStorage)
+    {
+        $this->clientStorage = $clientStorage;
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param Topic               $topic
+     */
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        foreach($topic as $subscriber){
+            if(false !== $this->getCurrentUser($subscriber) && 'user2' === $this->getCurrentUser($subscriber)->getUsername){
+                //$subscriber is our targeted user
+                $topic->broadcast('message', array(), array($subscriber->WAMP->sessionId));
+            }
+        }
+    }
+}
+```
+
 For information on sharing the config between server and client, read the [Sharing Config](code/SharingConfig.md) Code Cookbook.
 
 _For info on bootstrapping the session with extra information, check out the [Events](Events.md)_

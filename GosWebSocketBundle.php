@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle;
 
+use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\DevCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PeriodicCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PingableDriverCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RpcCompilerPass;
@@ -25,5 +26,6 @@ class GosWebSocketBundle extends Bundle
         $container->addCompilerPass(new TopicCompilerPass());
         $container->addCompilerPass(new PeriodicCompilerPass());
         $container->addCompilerPass(new PingableDriverCompilerPass());
+        $container->addCompilerPass(new DevCompilerPass());
     }
 }

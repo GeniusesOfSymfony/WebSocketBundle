@@ -94,7 +94,6 @@ class WampApplication implements WampServerInterface
             $topic->getId()
         ));
 
-
         $request = $this->wampRouter->match($topic);
 
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
@@ -126,7 +125,6 @@ class WampApplication implements WampServerInterface
             $username,
             $topic->getId()
         ));
-
 
         $wampRequest = $this->wampRouter->match($topic);
 
@@ -169,11 +167,6 @@ class WampApplication implements WampServerInterface
     {
         $event = new ClientEvent($conn, ClientEvent::DISCONNECTED);
         $this->eventDispatcher->dispatch(Events::CLIENT_DISCONNECTED, $event);
-
-        foreach ($conn->WAMP->subscriptions as $subscription) {
-            $this->onUnSubscribe($conn, $subscription);
-            $subscription->remove($conn);
-        }
     }
 
     /**

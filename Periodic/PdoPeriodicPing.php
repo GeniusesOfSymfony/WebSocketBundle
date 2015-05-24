@@ -45,22 +45,23 @@ class PdoPeriodicPing implements PeriodicInterface
 
     public function tick()
     {
-        if(null === $this->pdo){
+        if (null === $this->pdo) {
             $this->logger->warning('Unable to ping sql server, service pdo is unavailable');
+
             return;
         }
 
         //if connection is persistent we don't need to ping
-        if(true === $this->pdo->getAttribute(\PDO::ATTR_PERSISTENT)){
+        if (true === $this->pdo->getAttribute(\PDO::ATTR_PERSISTENT)) {
             return;
         }
 
-        try{
+        try {
             $startTime = microtime(true);
             $this->pdo->query('SELECT 1');
             $endTime = microtime(true);
             $this->logger->notice(sprintf('Successfully ping sql server (~%s ms)', round(($endTime - $startTime) * 100000), 2));
-        }catch (\PDOException $e){
+        } catch (\PDOException $e) {
             $this->logger->emergency('Sql server is gone, and unable to reconnect');
             throw $e;
         }
@@ -73,6 +74,4 @@ class PdoPeriodicPing implements PeriodicInterface
     {
         return $this->timeout;
     }
-
-
 }

@@ -101,10 +101,20 @@ class TopicDispatcher implements TopicDispatcherInterface
         foreach ((array) $request->getRoute()->getCallback() as $callback) {
             $appTopic = $this->topicRegistry->getTopic($callback);
             if ($topic) {
-                if ($payload) { //its a publish call.
-                    $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
-                } else {
-                    $appTopic->{$calledMethod}($conn, $topic, $request);
+                try {
+                    if ($payload) { //its a publish call.
+                        $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
+                    } else {
+                        $appTopic->{$calledMethod}($conn, $topic, $request);
+                    }
+                } catch (\Exception $e) {
+                    $conn->callError($topic->getId(), $topic, $e->getMessage(), [
+                        'topic' => $topic,
+                        'request' => $request,
+                        'event' => $calledMethod,
+                    ]);
+
+                    return;
                 }
 
                 $dispatched = true;

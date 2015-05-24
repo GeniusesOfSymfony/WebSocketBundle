@@ -123,3 +123,8 @@ services:
         arguments:
             - @?pdo
             - @?monolog.logger.websocket
+
+    gos_web_socket.memory_usage.periodic:
+        class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
+        arguments:
+            - @?monolog.logger.websocket

@@ -2,13 +2,13 @@
 
 namespace Gos\Bundle\WebSocketBundle\Command;
 
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
+ *
  * @deprecated Will be removed in v2 use WebsocketServerCommand instead
  */
 class ServerCommand extends WebsocketServerCommand

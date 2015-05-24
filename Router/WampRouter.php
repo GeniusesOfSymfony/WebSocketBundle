@@ -83,7 +83,6 @@ class WampRouter
                 $topic->getId()
             ));
 
-
             throw $e;
         }
     }
