@@ -122,7 +122,6 @@ class WebSocketServer implements ServerInterface
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-
             $loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
             $this->logger->info(sprintf(
@@ -136,24 +135,22 @@ class WebSocketServer implements ServerInterface
 
         $stack
             ->push('Ratchet\Server\IoServer', $socket, $loop)
-            ->push('Ratchet\Http\HttpServer')
-        ;
+            ->push('Ratchet\Http\HttpServer');
 
-        if($this->originCheck){
+        if ($this->originCheck) {
             $stack->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck', $allowedOrigins, $this->eventDispatcher);
         }
 
         $stack
             ->push('Ratchet\WebSocket\WsServer')
             ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
-            ->push('Ratchet\Wamp\WampServer')
-        ;
+            ->push('Ratchet\Wamp\WampServer');
 
         $app = $stack->resolve($this->wampApplication);
 
         $pnctlEmitter = new PnctlEmitter($loop);
 
-        $pnctlEmitter->on(SIGTERM, function() use ($socket, $loop) {
+        $pnctlEmitter->on(SIGTERM, function () use ($socket, $loop) {
 
             $socket->emit('end');
             $socket->shutdown();
@@ -162,16 +159,16 @@ class WebSocketServer implements ServerInterface
             $this->logger->notice('Server stopped !');
         });
 
-        $pnctlEmitter->on(SIGINT, function() use ($socket, $loop) {
+        $pnctlEmitter->on(SIGINT, function () use ($socket, $loop) {
             $this->logger->notice('Press CTLR+C again to stop the server');
-            if(SIGINT === pcntl_sigtimedwait([SIGINT], $siginfo, 5)){
+            if (SIGINT === pcntl_sigtimedwait([SIGINT], $siginfo, 5)) {
                 $this->logger->notice('Stopping server ...');
 
                 $socket->emit('end');
                 $socket->shutdown();
 
-                foreach($this->periodicRegistry->getPeriodics() as $periodic){
-                    if($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)){
+                foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
+                    if ($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)) {
                         $loop->cancelTimer($periodic);
                     }
                 }
@@ -179,7 +176,7 @@ class WebSocketServer implements ServerInterface
                 $loop->stop();
 
                 $this->logger->notice('Server stopped !');
-            }else{
+            } else {
                 $this->logger->notice('CTLR+C not pressed, continue to run normally');
             }
         });
