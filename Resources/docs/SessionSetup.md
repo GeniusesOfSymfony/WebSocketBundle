@@ -300,7 +300,6 @@ use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
