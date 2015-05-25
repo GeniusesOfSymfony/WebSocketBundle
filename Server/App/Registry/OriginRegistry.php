@@ -14,7 +14,7 @@ class OriginRegistry
 
     public function __construct()
     {
-        $this->origins = array();
+        $this->origins = [];
     }
 
     /**

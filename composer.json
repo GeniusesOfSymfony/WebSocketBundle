@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
+        "php": ">=5.4",
         "symfony/framework-bundle": "~2.3",
         "cboden/Ratchet": "~0.3.0",
         "gos/pubsub-router-bundle": "~0.1.0",

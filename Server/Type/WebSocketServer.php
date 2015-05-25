@@ -7,46 +7,23 @@ use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
-use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use Gos\Component\PnctlEventLoopEmitter\PnctlEmitter;
+use Gos\Component\RatchetStack\Builder;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Ratchet\Http\HttpServer;
-use Ratchet\Http\HttpServerInterface;
-use Ratchet\Server\IoServer;
-use Ratchet\Session\SessionProvider;
-use Ratchet\Wamp\WampServer;
-use Ratchet\WebSocket\WsServer;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\TimerInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
 class WebSocketServer implements ServerInterface
 {
-    /**
-     * @var HttpServerInterface
-     */
-    protected $app;
-
-    /**
-     * @var IoServer
-     */
-    protected $server;
-
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
-
-    /**
-     * @var Server
-     */
-    protected $socket;
-
     /**
      * @var string
      */
@@ -120,6 +97,7 @@ class WebSocketServer implements ServerInterface
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
         $this->logger = null === $logger ? new NullLogger() : $logger;
+        $this->sessionHandler = new NullSessionHandler();
     }
 
     /**
@@ -134,41 +112,18 @@ class WebSocketServer implements ServerInterface
     {
         $this->logger->info('Starting web socket');
 
-        $serverStack = new WampServer($this->wampApplication);
-
-        if (null !== $this->sessionHandler) {
-            $serverStack = new SessionProvider(
-                $serverStack,
-                $this->sessionHandler
-            );
-        }
-
-        $serverStack = new WsServer($serverStack);
-
-        if (true === $this->originCheck) {
-            $serverStack = new OriginCheck(
-                $serverStack,
-                array('localhost', '127.0.0.1'),
-                $this->eventDispatcher
-            );
-
-            foreach ($this->originRegistry->getOrigins() as $origin) {
-                $serverStack->allowedOrigins[] = $origin;
-            }
-        }
-
-        $this->app = new HttpServer($serverStack);
+        $stack = new Builder();
 
         /* @var $loop LoopInterface */
-        $this->loop = Factory::create();
+        $loop = Factory::create();
 
-        $this->socket = new Server($this->loop);
-
-        $this->socket->listen($this->port, $this->host);
+        $socket = new Server($loop);
+        $socket->listen($this->port, $this->host);
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-            $this->loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
+
+            $loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
             $this->logger->info(sprintf(
                 'Register periodic callback %s, executed each %s seconds',
@@ -177,19 +132,70 @@ class WebSocketServer implements ServerInterface
             ));
         }
 
-        $this->server = new IoServer($this->app, $this->socket, $this->loop);
+        $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
+
+        $stack
+            ->push('Ratchet\Server\IoServer', $socket, $loop)
+            ->push('Ratchet\Http\HttpServer')
+        ;
+
+        if($this->originCheck){
+            $stack->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck', $allowedOrigins, $this->eventDispatcher);
+        }
+
+        $stack
+            ->push('Ratchet\WebSocket\WsServer')
+            ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
+            ->push('Ratchet\Wamp\WampServer')
+        ;
+
+        $app = $stack->resolve($this->wampApplication);
+
+        $pnctlEmitter = new PnctlEmitter($loop);
+
+        $pnctlEmitter->on(SIGTERM, function() use ($socket, $loop) {
+
+            $socket->emit('end');
+            $socket->shutdown();
+            $loop->stop();
+
+            $this->logger->notice('Server stopped !');
+        });
+
+        $pnctlEmitter->on(SIGINT, function() use ($socket, $loop) {
+            $this->logger->notice('Press CTLR+C again to stop the server');
+            if(SIGINT === pcntl_sigtimedwait([SIGINT], $siginfo, 5)){
+                $this->logger->notice('Stopping server ...');
+
+                $socket->emit('end');
+                $socket->shutdown();
+
+                foreach($this->periodicRegistry->getPeriodics() as $periodic){
+                    if($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)){
+                        $loop->cancelTimer($periodic);
+                    }
+                }
+
+                $loop->stop();
+
+                $this->logger->notice('Server stopped !');
+            }else{
+                $this->logger->notice('CTLR+C not pressed, continue to run normally');
+            }
+        });
 
         /* Server Event Loop to add other services in the same loop. */
-        $event = new ServerEvent($this->loop);
+        $event = new ServerEvent($loop);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
         $this->logger->info(sprintf(
-            'Launching %s on %s',
+            'Launching %s on %s PID: %s',
             $this->getName(),
-            $this->getAddress()
+            $this->getAddress(),
+            getmypid()
         ));
 
-        $this->loop->run();
+        $app->run();
     }
 
     /**

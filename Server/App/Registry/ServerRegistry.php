@@ -14,6 +14,11 @@ class ServerRegistry
      */
     protected $servers;
 
+    public function __construct()
+    {
+        $this->servers = [];
+    }
+
     /**
      * @param ServerInterface $server
      */

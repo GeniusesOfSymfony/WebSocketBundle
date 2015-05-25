@@ -16,7 +16,7 @@ class TopicRegistry
 
     public function __construct()
     {
-        $this->topics = array();
+        $this->topics = [];
     }
 
     /**
