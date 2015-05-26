@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -44,7 +45,7 @@ class TopicDispatcher implements TopicDispatcherInterface
     {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
-        $this->logger = $logger;
+        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
     /**
@@ -108,6 +109,12 @@ class TopicDispatcher implements TopicDispatcherInterface
                         $appTopic->{$calledMethod}($conn, $topic, $request);
                     }
                 } catch (\Exception $e) {
+                    $this->logger->error($e->getMessage(), [
+                        'code' => $e->getCode(),
+                        'file' => $e->getFile(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+
                     $conn->callError($topic->getId(), $topic, $e->getMessage(), [
                         'topic' => $topic,
                         'request' => $request,
