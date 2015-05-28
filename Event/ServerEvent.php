@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use React\EventLoop\LoopInterface;
+use React\Socket\Server;
 use Symfony\Component\EventDispatcher\Event;
 
 class ServerEvent extends Event
@@ -13,11 +14,18 @@ class ServerEvent extends Event
     protected $loop;
 
     /**
-     * @param LoopInterface $loop
+     * @var Server
      */
-    public function __construct(LoopInterface $loop)
+    protected $server;
+
+    /**
+     * @param LoopInterface $loop
+     * @param Server        $server
+     */
+    public function __construct(LoopInterface $loop, Server $server)
     {
         $this->loop = $loop;
+        $this->server = $server;
     }
 
     /**
@@ -28,5 +36,13 @@ class ServerEvent extends Event
     public function getEventLoop()
     {
         return $this->loop;
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer()
+    {
+        return $this->server;
     }
 }

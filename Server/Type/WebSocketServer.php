@@ -117,8 +117,8 @@ class WebSocketServer implements ServerInterface
         /* @var $loop LoopInterface */
         $loop = Factory::create();
 
-        $socket = new Server($loop);
-        $socket->listen($this->port, $this->host);
+        $server = new Server($loop);
+        $server->listen($this->port, $this->host);
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
@@ -134,7 +134,7 @@ class WebSocketServer implements ServerInterface
         $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
 
         $stack
-            ->push('Ratchet\Server\IoServer', $socket, $loop)
+            ->push('Ratchet\Server\IoServer', $server, $loop)
             ->push('Ratchet\Http\HttpServer');
 
         if ($this->originCheck) {
@@ -148,41 +148,8 @@ class WebSocketServer implements ServerInterface
 
         $app = $stack->resolve($this->wampApplication);
 
-        $pnctlEmitter = new PnctlEmitter($loop);
-
-        $pnctlEmitter->on(SIGTERM, function () use ($socket, $loop) {
-
-            $socket->emit('end');
-            $socket->shutdown();
-            $loop->stop();
-
-            $this->logger->notice('Server stopped !');
-        });
-
-        $pnctlEmitter->on(SIGINT, function () use ($socket, $loop) {
-            $this->logger->notice('Press CTLR+C again to stop the server');
-            if (SIGINT === pcntl_sigtimedwait([SIGINT], $siginfo, 5)) {
-                $this->logger->notice('Stopping server ...');
-
-                $socket->emit('end');
-                $socket->shutdown();
-
-                foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-                    if ($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)) {
-                        $loop->cancelTimer($periodic);
-                    }
-                }
-
-                $loop->stop();
-
-                $this->logger->notice('Server stopped !');
-            } else {
-                $this->logger->notice('CTLR+C not pressed, continue to run normally');
-            }
-        });
-
         /* Server Event Loop to add other services in the same loop. */
-        $event = new ServerEvent($loop);
+        $event = new ServerEvent($loop, $server);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
         $this->logger->info(sprintf(

@@ -27,6 +27,10 @@
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
     },
+    "suggest": {
+      "ext-libevent": ">=0.0.5",
+      "ext-libev": "*"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.2.x-dev"

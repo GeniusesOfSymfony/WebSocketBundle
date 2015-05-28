@@ -92,6 +92,7 @@ services:
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
+        # argument are set via compiler pass
 
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
@@ -99,6 +100,7 @@ services:
             - @gos_web_socket.client_storage
             - @security.context
             - @?monolog.logger.websocket
+            # other are set via compiler pass
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
@@ -128,3 +130,11 @@ services:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
         arguments:
             - @?monolog.logger.websocket
+
+    gos_web_socket.pnctl_event.listener:
+        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
+        arguments:
+            - @gos_web_socket.periodic.registry
+            - @?monolog.logger.websocket
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
