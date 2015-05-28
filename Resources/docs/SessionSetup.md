@@ -321,7 +321,7 @@ class AcmeTopic implements TopicInterface
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         foreach($topic as $subscriber){
-            if(false !== $this->getCurrentUser($subscriber) && 'user2' === $this->getCurrentUser($subscriber)->getUsername){
+            if(false !== $this->getCurrentUser($subscriber) && 'user2' === $this->getCurrentUser($subscriber)->getUsername()){
                 //$subscriber is our targeted user
                 $topic->broadcast('message', array(), array($subscriber->WAMP->sessionId));
             }
