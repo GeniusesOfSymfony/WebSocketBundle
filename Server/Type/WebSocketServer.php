@@ -10,6 +10,8 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Component\PnctlEventLoopEmitter\PnctlEmitter;
 use Gos\Component\RatchetStack\Builder;
+use ProxyManager\Proxy\LazyLoadingInterface;
+use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use React\EventLoop\Factory;
@@ -126,7 +128,7 @@ class WebSocketServer implements ServerInterface
 
             $this->logger->info(sprintf(
                 'Register periodic callback %s, executed each %s seconds',
-                get_class($periodic),
+                $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
                 $periodic->getTimeout()
             ));
         }

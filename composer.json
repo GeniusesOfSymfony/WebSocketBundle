@@ -29,7 +29,9 @@
     },
     "suggest": {
       "ext-libevent": ">=0.0.5",
-      "ext-libev": "*"
+      "ext-libev": "*",
+      "symfony/proxy-manager-bridge": "~2.3",
+      "ocramius/proxy-manager": "~1.0"
     },
     "extra": {
         "branch-alias": {
