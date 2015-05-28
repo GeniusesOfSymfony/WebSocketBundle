@@ -36,6 +36,8 @@ services:
 
     gos_web_socket.ws.server:
         class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
+        public: false
+        lazy: true
         arguments:
             - %web_socket_server.host%
             - %web_socket_server.port%
@@ -61,6 +63,7 @@ services:
 
     gos_web_socket.topic.dispatcher:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
+        lazy: true
         arguments:
             - @gos_web_socket.topic.registry
             - @gos_web_socket.router.wamp
@@ -77,6 +80,8 @@ services:
 
     gos_web_socket_server.wamp_application:
         class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
+        public: false
+        lazy: true
         arguments:
             - @gos_web_socket.rpc.dispatcher
             - @gos_web_socket.topic.dispatcher
@@ -92,6 +97,9 @@ services:
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
+        lazy: true
+        public: false
+        # argument are set via compiler pass
 
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
@@ -99,6 +107,8 @@ services:
             - @gos_web_socket.client_storage
             - @security.context
             - @?monolog.logger.websocket
+            # other are set via compiler pass
+        lazy: true
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
@@ -113,6 +123,7 @@ services:
 
     gos_web_socket.router.wamp:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
+        lazy: true
         arguments:
             - @gos_web_socket.null.pubsub.router
             - %kernel.debug%
@@ -120,11 +131,22 @@ services:
 
     gos_web_socket.pdo.periodic_ping:
         class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
+        lazy: true
         arguments:
             - @?pdo
             - @?monolog.logger.websocket
 
     gos_web_socket.memory_usage.periodic:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
+        lazy: true
         arguments:
             - @?monolog.logger.websocket
+
+    gos_web_socket.pnctl_event.listener:
+        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
+        lazy: true
+        arguments:
+            - @gos_web_socket.periodic.registry
+            - @?monolog.logger.websocket
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }

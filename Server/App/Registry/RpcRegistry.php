@@ -16,7 +16,7 @@ class RpcRegistry
 
     public function __construct()
     {
-        $this->rpcHandlers = array();
+        $this->rpcHandlers = [];
     }
 
     /**

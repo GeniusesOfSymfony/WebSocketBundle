@@ -143,7 +143,6 @@ class ClientEventListener
                 ? $user->getUsername()
                 : $user;
 
-
             $this->logger->info(sprintf(
                 '%s disconnected [%]',
                 $username,
@@ -153,7 +152,6 @@ class ClientEventListener
                 'session_id' => $conn->WAMP->sessionId,
                 'storage_id' => $conn->WAMP->clientStorageId,
             ));
-
         } catch (StorageException $e) {
             $this->logger->info(sprintf(
                 '%s disconnected [%s]',
@@ -179,7 +177,6 @@ class ClientEventListener
         $conn = $event->getConnection();
         $e = $event->getException();
 
-
         $loggerContext = array(
             'connection_id' => $conn->resourceId,
             'session_id' => $conn->WAMP->sessionId,
@@ -195,7 +192,6 @@ class ClientEventListener
             $e->getFile(),
             $e->getLine()
         ), $loggerContext);
-
     }
 
     /**
