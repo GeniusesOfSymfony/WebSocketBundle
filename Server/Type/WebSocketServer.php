@@ -10,13 +10,11 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Component\PnctlEventLoopEmitter\PnctlEmitter;
 use Gos\Component\RatchetStack\Builder;
-use ProxyManager\Proxy\LazyLoadingInterface;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
@@ -137,6 +135,7 @@ class WebSocketServer implements ServerInterface
 
         $stack
             ->push('Ratchet\Server\IoServer', $server, $loop)
+            ->push('Ratchet\Server\IpBlackList')
             ->push('Ratchet\Http\HttpServer');
 
         if ($this->originCheck) {
