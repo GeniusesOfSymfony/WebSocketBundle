@@ -8,7 +8,7 @@ use Ratchet\Wamp\Topic;
 
 interface TopicInterface
 {
-     /**
+    /**
       * @param  ConnectionInterface $connection
       * @param  Topic               $topic
       * @param WampRequest $request

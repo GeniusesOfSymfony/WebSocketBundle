@@ -112,7 +112,7 @@ class TopicDispatcher implements TopicDispatcherInterface
                     $this->logger->error($e->getMessage(), [
                         'code' => $e->getCode(),
                         'file' => $e->getFile(),
-                        'trace' => $e->getTraceAsString()
+                        'trace' => $e->getTraceAsString(),
                     ]);
 
                     $conn->callError($topic->getId(), $topic, $e->getMessage(), [

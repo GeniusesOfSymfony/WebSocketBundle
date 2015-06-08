@@ -35,7 +35,7 @@ class StartServerListener
      */
     public function bindPnctlEvent(ServerEvent $event)
     {
-        if(!extension_loaded('pcntl')){
+        if (!extension_loaded('pcntl')) {
             return;
         }
 
@@ -76,6 +76,5 @@ class StartServerListener
                 $this->logger->notice('CTLR+C not pressed, continue to run normally');
             }
         });
-
     }
 }
