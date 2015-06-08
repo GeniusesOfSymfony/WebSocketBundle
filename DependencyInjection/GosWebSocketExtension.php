@@ -194,7 +194,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                     'websocket' => array(
                         'type' => 'console',
                         'verbosity_levels' => array(
-                            'VERBOSITY_NORMAL' => Logger::DEBUG,
+                            'VERBOSITY_NORMAL' => true === $container->getParameter('kernel.debug') ? Logger::DEBUG : Logger::INFO,
                         ),
                         'channels' => array(
                             'type' => 'inclusive',
