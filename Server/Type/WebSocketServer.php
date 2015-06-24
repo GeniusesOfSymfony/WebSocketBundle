@@ -140,6 +140,7 @@ class WebSocketServer implements ServerInterface
 
         $stack
             ->push('Ratchet\Server\IoServer', $server, $loop)
+            ->push('Ratchet\Server\IpBlackList')
             ->push('Ratchet\Http\HttpServer');
 
         if ($this->originCheck) {
