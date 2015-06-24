@@ -46,6 +46,7 @@ Resources
 * [Session Management & User authentication](Resources/docs/SessionSetup.md)
 * [Server Events](Resources/docs/Events.md)
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
+* [Ship in production](Resources/docs/ShipInProduction.md)
 * [Performance Bench](Resources/docs/Performance.md)
 
 Code Cookbook
