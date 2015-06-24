@@ -24,9 +24,10 @@ class EntryPoint
     }
 
     /**
-     * Launches the relevant servers needed by Gos WebSocket.
+     * @param string $serverName
+     * @param bool   $profile
      */
-    public function launch($serverName)
+    public function launch($serverName, $profile)
     {
         $servers = $this->serverRegistry->getServers();
 
@@ -45,6 +46,6 @@ class EntryPoint
             $server = $servers[$serverName];
         }
 
-        $server->launch();
+        $server->launch($profile);
     }
 }

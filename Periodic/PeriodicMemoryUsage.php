@@ -25,7 +25,7 @@ class PeriodicMemoryUsage implements PeriodicInterface
      */
     public function tick()
     {
-        $this->logger->debug('Memory usage : ' . round((memory_get_usage() / (1024 * 1024)), 2) . 'Mo');
+        $this->logger->info('Memory usage : ' . round((memory_get_usage() / (1024 * 1024)), 4) . 'Mo');
     }
 
     /**

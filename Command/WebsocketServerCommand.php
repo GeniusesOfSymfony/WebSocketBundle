@@ -8,6 +8,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class WebsocketServerCommand extends Command
@@ -39,7 +40,8 @@ class WebsocketServerCommand extends Command
         $this
             ->setName('gos:websocket:server')
             ->setDescription('Starts the web socket servers')
-            ->addArgument('name', InputArgument::OPTIONAL, 'Server name');
+            ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
+            ->addOption('profile', 'p', InputOption::VALUE_NONE, 'Profiling server');
     }
 
     /**
@@ -48,6 +50,6 @@ class WebsocketServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->entryPoint->launch($input->getArgument('name'));
+        $this->entryPoint->launch($input->getArgument('name'), $input->getOption('profile'));
     }
 }

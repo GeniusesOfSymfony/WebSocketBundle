@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\Type;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
@@ -107,7 +108,7 @@ class WebSocketServer implements ServerInterface
         $this->sessionHandler = $sessionHandler;
     }
 
-    public function launch()
+    public function launch($profile)
     {
         $this->logger->info('Starting web socket');
 
@@ -118,6 +119,11 @@ class WebSocketServer implements ServerInterface
 
         $server = new Server($loop);
         $server->listen($this->port, $this->host);
+
+        if (true === $profile) {
+            $memoryUsagePeriodicTimer = new PeriodicMemoryUsage($this->logger);
+            $this->periodicRegistry->addPeriodic($memoryUsagePeriodicTimer);
+        }
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {

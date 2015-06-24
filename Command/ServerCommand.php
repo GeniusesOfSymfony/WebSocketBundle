@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -18,7 +19,8 @@ class ServerCommand extends WebsocketServerCommand
         $this
             ->setName('gos:server')
             ->setDescription('Starts the web socket servers')
-            ->addArgument('name', InputArgument::OPTIONAL, 'Server name');
+            ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
+            ->addOption('profile', 'p', InputOption::VALUE_NONE, 'Profiling server');
     }
 
     /**

@@ -7,7 +7,7 @@ interface ServerInterface
     /**
      * Launches the server loop.
      */
-    public function launch();
+    public function launch($profile);
 
     /**
      * Returns a string of the host:port for debugging / display purposes.
