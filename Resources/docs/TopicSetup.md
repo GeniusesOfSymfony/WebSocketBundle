@@ -150,8 +150,99 @@ The **4 methods** that must be implemented are:
 Where
 * `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
-* `WampRequest` Is the representation of the request make trough websocket. 
+* `WampRequest` Is the representation of the request make trough websocket.
 
+### Periodic Timer (Topic & Connection)
+
+Topic periodic timer are active when at least one client is connected.
+
+#### Attached on the topic (Means all subscribers are affected by this periodic timer)
+
+You must implement `TopicPeriodicTimerInterface` to attach periodic timer to your `Topic` object.
+
+> In other word, if you have something like : "Each 5 minutes all subscriber of my topic must recieve a message (ads, bot message etc...)" This feature is for that.
+
+You will need to add these 2 functions :
+
+* `setPeriodicTimer(TopicPeriodicTimer $periodicTimer)`
+* `registerPeriodicTimer(Topic $topic)`
+
+A trait is available to make your life easier, it implement `setPeriodicTimer` and related property: `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait`
+
+```php
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
+use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
+
+class AcmeTopic implements TopicInterface, TopicPeriodicTimerInterface
+{
+    /**
+     * @var TopicPeriodicTimer
+     */
+    protected $periodicTimer;
+
+    /**
+     * @param TopicPeriodicTimer $periodicTimer
+     */
+    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer)
+    {
+        $this->periodicTimer = $periodicTimer;
+    }
+
+    /**
+     * @param Topic $topic
+     *
+     * @return array
+     */
+    public function registerPeriodicTimer(Topic $topic)
+    {
+        //add
+        $this->periodicTimer->addPeriodicTimer($this, 'hello', 2, function() use ($topic){
+            $topic->broadcast('hello world');
+        });
+
+        //exist
+        $this->periodicTimer->isPeriodicTimerActive($this, 'hello'); // true or false
+
+        //remove
+        $this->periodicTimer->cancelPeriodicTimer($this, 'hello');
+    }
+```
+
+#### Attached on connection (means each client can have different periodic timer)
+
+This feature allow you to use Periodic Timer to emit periodically to your client.
+
+> In other word, if you have something like "Each 5 second this bob must recieve this message, and alice muste reciev another message each 10 minutes and then cancel timer of bob only" this feature is for you.
+
+```php
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer;
+
+/**
+ * @param  ConnectionInterface $connection
+ * @param  Topic               $topic
+ * @param WampRequest          $request
+ */
+public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+{
+    /** @var ConnectionPeriodicTimer $topicTimer */
+    $topicTimer = $connection->PeriodicTimer;
+
+    //Add periodic timer
+    $topicTimer->addPeriodicTimer('hello', 2, function() use ($topic, $connection) {
+        $connection->event($topic->getId(), ['msg' => 'hello world']);
+    });
+
+    //exist
+    $topicTimer->isPeriodicTimerActive('hello'); //true or false
+
+    //Remove periodic timer
+	$topicTimer->cancelPeriodicTimer('hello');
+}
+```
+
+:collision: **Periodic timer is bind on the current connection ! So if you broadcast from periodic timer your clients will recieve this message x * the number of subscribers**
 
 ##Step 2: Register your service with Symfony
 

@@ -39,6 +39,7 @@ services:
         public: false
         lazy: true
         arguments:
+            - @gos_web_socket.server.event_loop
             - %web_socket_server.host%
             - %web_socket_server.port%
             - @event_dispatcher
@@ -67,6 +68,7 @@ services:
         arguments:
             - @gos_web_socket.topic.registry
             - @gos_web_socket.router.wamp
+            - @gos_web_socket.topic.periodic_timer
             - @?monolog.logger.websocket
 
     gos_web_socket.topic.registry:
@@ -150,3 +152,13 @@ services:
             - @?monolog.logger.websocket
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
+
+    gos_web_socket.server.event_loop:
+        class: React\EventLoop\Factory
+        factory_class: React\EventLoop\Factory
+        factory_method: create
+
+    gos_web_socket.topic.periodic_timer:
+        class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
+        arguments:
+            - @gos_web_socket.server.event_loop

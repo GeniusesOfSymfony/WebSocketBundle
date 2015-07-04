@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Stack;
 
-use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
+use Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\WebSocket\WsServerInterface;
@@ -12,7 +12,7 @@ use React\EventLoop\Timer\TimerInterface;
 /**
  * Wrap WampServer nicely.
  */
-class WampPeriodicTimer implements MessageComponentInterface, WsServerInterface
+class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServerInterface
 {
     /**
      * @var MessageComponentInterface
@@ -34,13 +34,23 @@ class WampPeriodicTimer implements MessageComponentInterface, WsServerInterface
         $this->timerRegistry = [];
     }
 
+    /**
+     * @param ConnectionInterface $connection
+     *
+     * @return mixed
+     */
     public function onOpen(ConnectionInterface $connection)
     {
-        $connection->PeriodicTimer = new TopicPeriodicTimer($connection, $this->loop);
+        $connection->PeriodicTimer = new ConnectionPeriodicTimer($connection, $this->loop);
 
         return $this->decorated->onOpen($connection);
     }
 
+    /**
+     * @param ConnectionInterface $connection
+     *
+     * @return mixed
+     */
     public function onClose(ConnectionInterface $connection)
     {
         /** @var TimerInterface $timer */
@@ -51,16 +61,31 @@ class WampPeriodicTimer implements MessageComponentInterface, WsServerInterface
         return $this->decorated->onClose($connection);
     }
 
+    /**
+     * @param ConnectionInterface $connection
+     * @param \Exception          $e
+     *
+     * @return mixed
+     */
     public function onError(ConnectionInterface $connection, \Exception $e)
     {
         return $this->decorated->onError($connection, $e);
     }
 
+    /**
+     * @param ConnectionInterface $connection
+     * @param string              $msg
+     *
+     * @return mixed
+     */
     public function onMessage(ConnectionInterface $connection, $msg)
     {
         return $this->decorated->onMessage($connection, $msg);
     }
 
+    /**
+     * @return mixed
+     */
     public function getSubProtocols()
     {
         return $this->decorated->getSubProtocols();
