@@ -164,7 +164,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
 
         //assetic
-        if (isset($bundles['AsseticBundle'])) {
+        if (isset($bundles['AsseticBundle']) && true === $config['assetic']) {
             $asseticConfig = array(
                 'bundles' => array('GosWebSocketBundle'),
             );
