@@ -40,30 +40,31 @@ class ClientManipulator implements ClientManipulatorInterface
     {
         $storageId = $this->clientStorage->getStorageId($connection);
 
-        try{
+        try {
             return $this->clientStorage->getClient($storageId);
         } catch (ClientNotFoundException $e) { //User is gone due to ttl
             $this->authenticationProvider->authenticate($connection);
+
             return $this->getClient($connection);
         }
     }
 
     /**
-     * @param Topic $topic
-     * @param string      $username
+     * @param Topic  $topic
+     * @param string $username
      *
      * @return false|string|\Symfony\Component\Security\Core\User\UserInterface
      */
     public function findByUsername(Topic $topic, $username)
     {
-        foreach($topic as $connection){
+        foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if($client instanceof AnonymousToken || false === $client){
+            if ($client instanceof AnonymousToken || false === $client) {
                 continue;
             }
 
-            if($client->getUsername() === $username){
+            if ($client->getUsername() === $username) {
                 return ['client' => $client, 'connection' => $connection];
             }
         }
@@ -81,16 +82,16 @@ class ClientManipulator implements ClientManipulatorInterface
     {
         $results = [];
 
-        foreach($topic as $connection){
+        foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if(true !== $anonymous && ($client instanceof AnonymousToken || false === $client)){
+            if (true !== $anonymous && ($client instanceof AnonymousToken || false === $client)) {
                 continue;
             }
 
             $results[] = [
                 'client' => $client,
-                'connection' => $connection
+                'connection' => $connection,
             ];
         }
 
@@ -107,18 +108,18 @@ class ClientManipulator implements ClientManipulatorInterface
     {
         $results = [];
 
-        foreach($topic as $connection){
+        foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if($client instanceof AnonymousToken || false === $client){
+            if ($client instanceof AnonymousToken || false === $client) {
                 continue;
             }
 
-            foreach($client->getRoles() as $role){
-                if(in_array($role, $roles)){
+            foreach ($client->getRoles() as $role) {
+                if (in_array($role, $roles)) {
                     $results[] = [
                         'client' => $client,
-                        'connection' => $connection
+                        'connection' => $connection,
                     ];
 
                     continue 1;

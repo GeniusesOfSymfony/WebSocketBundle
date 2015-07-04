@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 interface ClientManipulatorInterface
 {
@@ -16,8 +15,8 @@ interface ClientManipulatorInterface
     public function getClient(ConnectionInterface $connection);
 
     /**
-     * @param Topic $topic
-     * @param string      $username
+     * @param Topic  $topic
+     * @param string $username
      *
      * @return array|false
      */

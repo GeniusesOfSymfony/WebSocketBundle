@@ -22,6 +22,7 @@ trait WebSocketUserTrait
     public function getCurrentUser(ConnectionInterface $connection)
     {
         @trigger_error('User ClientManipulator service instead, will be remove in 2.0', E_USER_DEPRECATED);
+
         return $this->clientStorage->getClient($this->clientStorage->getStorageId($connection));
     }
 }
