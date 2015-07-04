@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class WebsocketAuthenticationProvider
+class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface
 {
     /**
      * @var SecurityContextInterface

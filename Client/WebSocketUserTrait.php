@@ -4,6 +4,9 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Ratchet\ConnectionInterface;
 
+/**
+ * @deprecated Use ClientManipulator instead will be removed in 2.0
+ */
 trait WebSocketUserTrait
 {
     /**
@@ -18,6 +21,7 @@ trait WebSocketUserTrait
      */
     public function getCurrentUser(ConnectionInterface $connection)
     {
+        @trigger_error('User ClientManipulator service instead, will be remove in 2.0', E_USER_DEPRECATED);
         return $this->clientStorage->getClient($this->clientStorage->getStorageId($connection));
     }
 }

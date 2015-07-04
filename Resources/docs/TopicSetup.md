@@ -274,7 +274,7 @@ gos_web_socket:
         - @acme_hello.topic_sample_service
 ```
 
-### Retrieve the current user
+### Retrieve authenticated user through Symfony firewall
 
 Look at [here](SessionSetup.md)
 
@@ -319,7 +319,7 @@ gos_web_socket:
     ...
 ```
 
-Create the route to rely channel / topic 
+Create the route to rely channel / topic
 
 ```yaml
 acme_topic:

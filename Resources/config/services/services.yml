@@ -171,3 +171,9 @@ services:
             - %gos_web_socket.firewall%
             - @gos_web_socket.client_storage
             - @?monolog.logger.websocket
+
+    gos_web_socket.websocket.client_manipulator:
+        class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
+        arguments:
+            - @gos_web_socket.client_storage
+            - @gos_web_socket.websocket_authentification.provider
