@@ -108,6 +108,11 @@ class WebSocketServer implements ServerInterface
         $this->sessionHandler = $sessionHandler;
     }
 
+    /**
+     * @param bool $profile
+     *
+     * @throws \React\Socket\ConnectionException
+     */
     public function launch($profile)
     {
         $this->logger->info('Starting web socket');
@@ -148,6 +153,7 @@ class WebSocketServer implements ServerInterface
 
         $stack
             ->push('Ratchet\WebSocket\WsServer')
+            ->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\WampPeriodicTimer', $loop)
             ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
             ->push('Ratchet\Wamp\WampServer');
 
