@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
+use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
@@ -24,10 +26,17 @@ class ClientStorage implements ClientStorageInterface
     protected $logger;
 
     /**
+     * @var int
+     */
+    protected $ttl;
+
+    /**
+     * @param int             $ttl
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct($ttl, LoggerInterface $logger = null)
     {
+        $this->ttl = $ttl;
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
@@ -44,12 +53,16 @@ class ClientStorage implements ClientStorageInterface
      */
     public function getClient($identifier)
     {
-        $result = $this->driver->fetch($identifier);
+        try {
+            $result = $this->driver->fetch($identifier);
+        } catch (\Exception $e) {
+            throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
+        }
 
         $this->logger->debug('GET CLIENT ' . $identifier);
 
         if (false === $result) {
-            throw new StorageException(sprintf('Client %s not found', $identifier));
+            throw new ClientNotFoundException(sprintf('Client %s not found', $identifier));
         }
 
         return unserialize($result);
@@ -80,7 +93,13 @@ class ClientStorage implements ClientStorageInterface
 
         $this->logger->debug(sprintf('INSERT CLIENT ' . $identifier), $context);
 
-        if (false === $result = $this->driver->save($identifier, $serializedUser, 60 * 15)) {
+        try {
+            $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
+        } catch (\Exception $e) {
+            throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
+        }
+
+        if (false === $result) {
             throw new StorageException('Unable add client');
         }
     }
@@ -90,7 +109,13 @@ class ClientStorage implements ClientStorageInterface
      */
     public function hasClient($identifier)
     {
-        return $this->driver->contains($identifier);
+        try {
+            $result = $this->driver->contains($identifier);
+        } catch (\Exception $e) {
+            throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
+        }
+
+        return $result;
     }
 
     /**
@@ -100,6 +125,12 @@ class ClientStorage implements ClientStorageInterface
     {
         $this->logger->debug('REMOVE CLIENT ' . $identifier);
 
-        return $this->driver->delete($identifier);
+        try {
+            $result = $this->driver->delete($identifier);
+        } catch (\Exception $e) {
+            throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
+        }
+
+        return $result;
     }
 }

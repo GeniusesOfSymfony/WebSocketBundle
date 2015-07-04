@@ -51,8 +51,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
+        $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
+
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
+            $container->setParameter('gos_web_socket.firewall', (array) $clientConf['firewall']);
 
             if (isset($clientConf['session_handler'])) {
                 $def = $container->getDefinition('gos_web_socket.ws.server');
@@ -62,10 +65,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                 $container->setAlias('gos_web_socket.session_handler', ltrim($clientConf['session_handler'], '@'));
             }
-
-            $clientListenerDef = $container->getDefinition('gos_web_socket.client_event.listener');
-            $clientListenerDef->addArgument((array) $clientConf['firewall']);
-            $clientListenerDef->addArgument($container->getParameter('web_socket_origin_check'));
 
             if (isset($clientConf['storage']['driver'])) {
                 $driverRef = ltrim($clientConf['storage']['driver'], '@');

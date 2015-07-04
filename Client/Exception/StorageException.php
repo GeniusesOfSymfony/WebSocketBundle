@@ -1,6 +1,6 @@
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Client;
+namespace Gos\Bundle\WebSocketBundle\Client\Exception;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>

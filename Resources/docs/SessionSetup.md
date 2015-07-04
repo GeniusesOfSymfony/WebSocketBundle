@@ -4,6 +4,9 @@ Thanks to Ratchet its easy to get the shared info from the same website session.
 [Ratchet documentation](http://socketo.me/docs/sessions), you must use a session handler other than the native one,
 such as [Symfony PDO Session Handler](http://symfony.com/doc/master/cookbook/configuration/pdo_session_storage.html).
 
+**All session handler based on `\SessionHandlerInterface` work ! Not only PDO !**
+
+## Symfony PDO Session Handler
 Create the following services:
 
 ```yml
@@ -16,7 +19,7 @@ services:
             password: %database_password%
         calls:
             - [ setAttribute, [3, 2] ] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
-    
+
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: [@pdo, {lock_mode: 0}]
@@ -221,15 +224,17 @@ services:
 
 **NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
 
-#Retrieve current user
+#Retrieve authenticated user
 
-Whenever `ConnectionInterface` instance is available your are able to retrieve the associated user.
+Whenever `ConnectionInterface` instance is available your are able to retrieve the associated authenticated user (if he is authenticated against symfony firewall).
 
-For example inside a topic : 
+ClientManipulator class is available through DI `@gos_web_socket.websocket.client_manipulator`
+
+For example inside a topic :
 
 ```php
 use Ratchet\ConnectionInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
@@ -237,14 +242,14 @@ use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {
-    protected $clientStorage;
-    
+    protected $clientManipulator;
+
     /**
-     * @param ClientStorageInterface $clientStorage
+     * @param ClientManipulatorInterface $clientManipulator
      */
-    public function __construct(ClientStorageInterface $clientStorage)
+    public function __construct(ClientManipulatorInterface $clientManipulator)
     {
-        $this->clientStorage = $clientStorage;
+        $this->clientManipulator = $clientManipulator;
     }
 
     /**
@@ -253,41 +258,7 @@ class AcmeTopic implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $currentUser = $this->clientStorage->getClient($this->clientStorage->getStorageId($connection)); //give UserInterface
-    }
-}
-```
-
-Use `Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait`
-
-```php
-use Ratchet\ConnectionInterface;
-use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\Wamp\Topic;
-
-class AcmeTopic implements TopicInterface
-{
-    use WebSocketUserTrait;
-    
-    /**
-     * @param ClientStorageInterface $clientStorage
-     */
-    public function __construct(ClientStorageInterface $clientStorage)
-    {
-        $this->clientStorage = $clientStorage;
-    }
-
-    /**
-     * @param ConnectionInterface $connection
-     * @param Topic               $topic
-     */
-    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
-    {
-        $currentUser = $this->getCurrentUser($connection); //give UserInterface
+        $user = $this->clientManipulator->getClient($connection);
     }
 }
 ```
@@ -296,7 +267,7 @@ class AcmeTopic implements TopicInterface
 
 ```php
 use Ratchet\ConnectionInterface;
-use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
@@ -304,14 +275,14 @@ use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {
-    use WebSocketUserTrait;
-    
+    /**    protected $clientManipulator;
+
     /**
-     * @param ClientStorageInterface $clientStorage
+     * @param ClientManipulatorInterface $clientManipulator
      */
-    public function __construct(ClientStorageInterface $clientStorage)
+    public function __construct(ClientManipulatorInterface $clientManipulator)
     {
-        $this->clientStorage = $clientStorage;
+        $this->clientManipulator = $clientManipulator;
     }
 
     /**
@@ -320,11 +291,9 @@ class AcmeTopic implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        foreach($topic as $subscriber){
-            if(false !== $this->getCurrentUser($subscriber) && 'user2' === $this->getCurrentUser($subscriber)->getUsername()){
-                //$subscriber is our targeted user
-                $topic->broadcast('message', array(), array($subscriber->WAMP->sessionId));
-            }
+        $user1 = $this->clientManipulator->findByUsername($topic, 'user1');
+        if (false !== $user1) {
+            $topic->broadcast('message', array(), array($user1['connection']->WAMP->sessionId));
         }
     }
 }
