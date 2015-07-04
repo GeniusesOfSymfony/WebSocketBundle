@@ -165,6 +165,11 @@ class WampApplication implements WampServerInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
+        foreach($conn->WAMP->subscriptions as $topic){
+            $wampRequest = $this->wampRouter->match($topic);
+            $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
+        }
+
         $event = new ClientEvent($conn, ClientEvent::DISCONNECTED);
         $this->eventDispatcher->dispatch(Events::CLIENT_DISCONNECTED, $event);
     }
