@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 

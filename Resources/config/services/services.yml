@@ -95,6 +95,7 @@ services:
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         arguments:
+            - %web_socket_server.client_storage.ttl%
             - @?monolog.logger.websocket
 
     gos_web_socket.client_storage.doctrine.decorator:
@@ -108,8 +109,8 @@ services:
         arguments:
             - @gos_web_socket.client_storage
             - @security.context
+            - @gos_web_socket.websocket_authentification.provider
             - @?monolog.logger.websocket
-            # other are set via compiler pass
         lazy: true
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
@@ -162,3 +163,11 @@ services:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
         arguments:
             - @gos_web_socket.server.event_loop
+
+    gos_web_socket.websocket_authentification.provider:
+        class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
+        arguments:
+            - @security.context
+            - %gos_web_socket.firewall%
+            - @gos_web_socket.client_storage
+            - @?monolog.logger.websocket

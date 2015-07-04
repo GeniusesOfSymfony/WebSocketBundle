@@ -2,12 +2,11 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
+use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\StorageException;
+use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,11 +21,6 @@ class ClientEventListener
     protected $clientStorage;
 
     /**
-     * @var string[]
-     */
-    protected $firewalls;
-
-    /**
      * @var SecurityContextInterface
      */
     protected $securityContext;
@@ -37,94 +31,37 @@ class ClientEventListener
     protected $logger;
 
     /**
-     * @var bool
+     * @var WebsocketAuthenticationProvider
      */
-    protected $originChecker;
+    protected $authenticationProvider;
 
     /**
      * @param ClientStorageInterface   $clientStorage
      * @param SecurityContextInterface $securityContext
      * @param LoggerInterface          $logger
-     * @param array                    $firewalls
-     * @param bool                     $originChecker
      */
     public function __construct(
         ClientStorageInterface $clientStorage,
         SecurityContextInterface $securityContext,
-        LoggerInterface $logger = null,
-        $firewalls = array(),
-        $originChecker
+        WebsocketAuthenticationProvider $authenticationProvider,
+        LoggerInterface $logger = null
     ) {
         $this->clientStorage = $clientStorage;
-        $this->firewalls = $firewalls;
         $this->securityContext = $securityContext;
+        $this->authenticationProvider = $authenticationProvider;
         $this->logger = null === $logger ? new NullLogger() : $logger;
-        $this->originChecker = $originChecker;
     }
 
     /**
      * @param ClientEvent $event
      *
-     * @throws StorageException
      * @throws \Exception
+     * @throws \Gos\Bundle\WebSocketBundle\Client\Exception\StorageException
      */
     public function onClientConnect(ClientEvent $event)
     {
         $conn = $event->getConnection();
-
-        if (true === $this->originChecker && 1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
-            $this->logger->warning(sprintf('User firewall is not configured, we have set %s by default', $this->firewalls[0]));
-        }
-
-        $loggerContext = array(
-            'connection_id' => $conn->resourceId,
-            'session_id' => $conn->WAMP->sessionId,
-        );
-
-        $token = null;
-
-        if (isset($conn->Session) && $conn->Session) {
-            foreach ($this->firewalls as $firewall) {
-                if (false !== $serializedToken = $conn->Session->get('_security_' . $firewall, false)) {
-                    /** @var TokenInterface $token */
-                    $token = unserialize($serializedToken);
-                    break;
-                }
-            }
-        }
-
-        if (null === $token) {
-            $token = new AnonymousToken($this->firewalls[0], 'anon-' . $conn->WAMP->sessionId);
-        }
-
-        $this->securityContext->setToken($token);
-
-        $user = $token->getUser();
-
-        $username = $user instanceof UserInterface
-            ? $user->getUsername()
-            : $user;
-
-        try {
-            $identifier = $this->clientStorage->getStorageId($conn, $username);
-            $loggerContext['storage_id'] = $identifier;
-
-            $this->clientStorage->addClient($identifier, $user);
-            $conn->WAMP->clientStorageId = $identifier;
-
-            $this->logger->info(sprintf(
-                '%s connected [%]',
-                $username,
-                $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
-            ), $loggerContext);
-        } catch (StorageException $e) {
-            $this->logger->error(
-                $e->getMessage(),
-                $loggerContext
-            );
-
-            throw $e;
-        }
+        $this->authenticationProvider->authenticate($conn);
     }
 
     /**
@@ -136,35 +73,32 @@ class ClientEventListener
     {
         $conn = $event->getConnection();
 
+        $loggerContext = array(
+            'connection_id' => $conn->resourceId,
+            'session_id' => $conn->WAMP->sessionId,
+            'storage_id' => $conn->WAMP->clientStorageId,
+        );
+
         try {
             $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+
+            //go here only if getClient doesn't throw error
+            $this->clientStorage->removeClient($conn->resourceId);
 
             $username = $user instanceof UserInterface
                 ? $user->getUsername()
                 : $user;
 
+            $loggerContext['username'] = $username;
+
             $this->logger->info(sprintf(
                 '%s disconnected [%]',
                 $username,
                 $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
-            ), array(
-                'connection_id' => $conn->resourceId,
-                'session_id' => $conn->WAMP->sessionId,
-                'storage_id' => $conn->WAMP->clientStorageId,
-            ));
-        } catch (StorageException $e) {
-            $this->logger->info(sprintf(
-                '%s disconnected [%s]',
-                'Expired user',
-                ''
-            ), array(
-                'connection_id' => $conn->resourceId,
-                'session_id' => $conn->WAMP->sessionId,
-                'storage_id' => $conn->WAMP->clientStorageId,
-            ));
+            ), $loggerContext);
+        } catch (ClientNotFoundException $e) {
+            $this->logger->info('user timed out', $loggerContext);
         }
-
-        $this->clientStorage->removeClient($conn->resourceId);
     }
 
     /**
