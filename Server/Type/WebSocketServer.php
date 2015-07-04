@@ -13,7 +13,6 @@ use Gos\Component\RatchetStack\Builder;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,6 +23,9 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
  */
 class WebSocketServer implements ServerInterface
 {
+    /** @var  LoopInterface */
+    protected $loop;
+
     /**
      * @var string
      */
@@ -80,6 +82,7 @@ class WebSocketServer implements ServerInterface
      * @param LoggerInterface          $logger
      */
     public function __construct(
+        LoopInterface $loop,
         $host,
         $port,
         EventDispatcherInterface $eventDispatcher,
@@ -89,6 +92,7 @@ class WebSocketServer implements ServerInterface
         $originCheck,
         LoggerInterface $logger = null
     ) {
+        $this->loop = $loop;
         $this->host = $host;
         $this->port = $port;
         $this->eventDispatcher = $eventDispatcher;
@@ -108,16 +112,18 @@ class WebSocketServer implements ServerInterface
         $this->sessionHandler = $sessionHandler;
     }
 
+    /**
+     * @param bool $profile
+     *
+     * @throws \React\Socket\ConnectionException
+     */
     public function launch($profile)
     {
         $this->logger->info('Starting web socket');
 
         $stack = new Builder();
 
-        /* @var $loop LoopInterface */
-        $loop = Factory::create();
-
-        $server = new Server($loop);
+        $server = new Server($this->loop);
         $server->listen($this->port, $this->host);
 
         if (true === $profile) {
@@ -127,7 +133,7 @@ class WebSocketServer implements ServerInterface
 
         /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-            $loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
+            $this->loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
             $this->logger->info(sprintf(
                 'Register periodic callback %s, executed each %s seconds',
@@ -139,7 +145,7 @@ class WebSocketServer implements ServerInterface
         $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
 
         $stack
-            ->push('Ratchet\Server\IoServer', $server, $loop)
+            ->push('Ratchet\Server\IoServer', $server, $this->loop)
             ->push('Ratchet\Http\HttpServer');
 
         if ($this->originCheck) {
@@ -148,13 +154,14 @@ class WebSocketServer implements ServerInterface
 
         $stack
             ->push('Ratchet\WebSocket\WsServer')
+            ->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer', $this->loop)
             ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
             ->push('Ratchet\Wamp\WampServer');
 
         $app = $stack->resolve($this->wampApplication);
 
         /* Server Event Loop to add other services in the same loop. */
-        $event = new ServerEvent($loop, $server);
+        $event = new ServerEvent($this->loop, $server);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
         $this->logger->info(sprintf(

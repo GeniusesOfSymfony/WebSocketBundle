@@ -5,6 +5,8 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
+use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -25,6 +27,9 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     protected $router;
 
+    /** @var  TopicPeriodicTimer */
+    protected $topicPeriodicTimer;
+
     /**
      * @var LoggerInterface|null
      */
@@ -37,14 +42,20 @@ class TopicDispatcher implements TopicDispatcherInterface
     const PUBLISH = 'onPublish';
 
     /**
-     * @param TopicRegistry   $topicRegistry
-     * @param WampRouter      $router
-     * @param LoggerInterface $logger
+     * @param TopicRegistry      $topicRegistry
+     * @param WampRouter         $router
+     * @param TopicPeriodicTimer $topicPeriodicTimer
+     * @param LoggerInterface    $logger
      */
-    public function __construct(TopicRegistry $topicRegistry, WampRouter $router, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        TopicRegistry $topicRegistry,
+        WampRouter $router,
+        TopicPeriodicTimer $topicPeriodicTimer,
+        LoggerInterface $logger = null
+    ) {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
+        $this->topicPeriodicTimer = $topicPeriodicTimer;
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
@@ -101,7 +112,20 @@ class TopicDispatcher implements TopicDispatcherInterface
 
         foreach ((array) $request->getRoute()->getCallback() as $callback) {
             $appTopic = $this->topicRegistry->getTopic($callback);
+
             if ($topic) {
+                if ($appTopic instanceof TopicPeriodicTimerInterface) {
+                    $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
+
+                    if (false === $this->topicPeriodicTimer->isRegistered($appTopic) && 0 !== count($topic)) {
+                        $appTopic->registerPeriodicTimer($topic);
+                    }
+                }
+
+                if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
+                    $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+                }
+
                 try {
                     if ($payload) { //its a publish call.
                         $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
