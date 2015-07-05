@@ -27,7 +27,7 @@ class EntryPoint
      * @param string $serverName
      * @param bool   $profile
      */
-    public function launch($serverName, $profile)
+    public function launch($serverName, $host, $port, $profile)
     {
         $servers = $this->serverRegistry->getServers();
 
@@ -46,6 +46,6 @@ class EntryPoint
             $server = $servers[$serverName];
         }
 
-        $server->launch($profile);
+        $server->launch($host, $port, $profile);
     }
 }

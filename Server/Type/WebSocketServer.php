@@ -27,16 +27,6 @@ class WebSocketServer implements ServerInterface
     protected $loop;
 
     /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
      * @var \SessionHandler|null
      */
     protected $sessionHandler;
@@ -72,8 +62,6 @@ class WebSocketServer implements ServerInterface
     protected $logger;
 
     /**
-     * @param string                   $host
-     * @param int                      $port
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
@@ -83,8 +71,6 @@ class WebSocketServer implements ServerInterface
      */
     public function __construct(
         LoopInterface $loop,
-        $host,
-        $port,
         EventDispatcherInterface $eventDispatcher,
         PeriodicRegistry $periodicRegistry,
         WampApplication $wampApplication,
@@ -93,8 +79,6 @@ class WebSocketServer implements ServerInterface
         LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
-        $this->host = $host;
-        $this->port = $port;
         $this->eventDispatcher = $eventDispatcher;
         $this->periodicRegistry = $periodicRegistry;
         $this->wampApplication = $wampApplication;
@@ -117,14 +101,14 @@ class WebSocketServer implements ServerInterface
      *
      * @throws \React\Socket\ConnectionException
      */
-    public function launch($profile)
+    public function launch($host, $port, $profile)
     {
         $this->logger->info('Starting web socket');
 
         $stack = new Builder();
 
         $server = new Server($this->loop);
-        $server->listen($this->port, $this->host);
+        $server->listen($port, $host);
 
         if (true === $profile) {
             $memoryUsagePeriodicTimer = new PeriodicMemoryUsage($this->logger);
@@ -167,19 +151,11 @@ class WebSocketServer implements ServerInterface
         $this->logger->info(sprintf(
             'Launching %s on %s PID: %s',
             $this->getName(),
-            $this->getAddress(),
+            $host.':'.$port,
             getmypid()
         ));
 
         $app->run();
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->host . ':' . $this->port;
     }
 
     /**

@@ -14,6 +14,8 @@ services:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
         arguments:
             - @gos_web_socket.entry_point
+            - %web_socket_server.host%
+            - %web_socket_server.port%
             - @?monolog.logger.websocket
         tags:
             - { name: console.command }
@@ -22,6 +24,8 @@ services:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         arguments:
             - @gos_web_socket.entry_point
+            - %web_socket_server.host%
+            - %web_socket_server.port%
             - @?monolog.logger.websocket
         tags:
             - { name: console.command }
@@ -40,8 +44,6 @@ services:
         lazy: true
         arguments:
             - @gos_web_socket.server.event_loop
-            - %web_socket_server.host%
-            - %web_socket_server.port%
             - @event_dispatcher
             - @gos_web_socket.periodic.registry
             - @gos_web_socket_server.wamp_application
