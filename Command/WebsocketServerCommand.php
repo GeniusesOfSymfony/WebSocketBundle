@@ -24,12 +24,30 @@ class WebsocketServerCommand extends Command
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var int
+     */
+    protected $port;
+
+    /**
      * @param EntryPoint      $entryPoint
+     * @param string          $host
+     * @param int             $port
      * @param LoggerInterface $logger
      */
-    public function __construct(EntryPoint $entryPoint, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        EntryPoint $entryPoint,
+        $host,
+        $port,
+        LoggerInterface $logger = null
+    ) {
         $this->entryPoint = $entryPoint;
+        $this->port = (int) $port;
+        $this->host = $host;
         $this->logger = null === $logger ? new NullLogger() : $logger;
 
         parent::__construct();
@@ -41,7 +59,10 @@ class WebsocketServerCommand extends Command
             ->setName('gos:websocket:server')
             ->setDescription('Starts the web socket servers')
             ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
-            ->addOption('profile', 'p', InputOption::VALUE_NONE, 'Profiling server');
+            ->addOption('profile', 'm', InputOption::VALUE_NONE, 'Profiling server')
+            ->addOption('host', 'a', InputOption::VALUE_OPTIONAL, 'Host')
+            ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'port')
+        ;
     }
 
     /**
@@ -50,6 +71,11 @@ class WebsocketServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->entryPoint->launch($input->getArgument('name'), $input->getOption('profile'));
+        $this->entryPoint->launch(
+            $input->getArgument('name'),
+            $input->getOption('host') === null ? $this->host : $input->getOption('host'),
+            $input->getOption('port') === null ? $this->port : $input->getOption('port'),
+            $input->getOption('profile')
+        );
     }
 }
