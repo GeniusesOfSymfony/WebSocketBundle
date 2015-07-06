@@ -1,4 +1,9 @@
 services:
+    gos_web_socket.wamp.pipeline:
+        class: Gos\Bundle\WebSocketBundle\Pipeline\WampPipeline
+        arguments:
+            - @gos_web_socket.router.wamp
+
     gos_web_socket.twig.extension:
         class: Gos\Bundle\WebSocketBundle\Twig\GosWebSocketServerExtension
         tags:
@@ -95,6 +100,7 @@ services:
             - @event_dispatcher
             - @gos_web_socket.client_storage
             - @gos_web_socket.router.wamp
+            - @gos_web_socket.wamp.pipeline
             - @?monolog.logger.websocket
 
     gos_web_socket.client_storage:

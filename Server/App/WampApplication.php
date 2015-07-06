@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Pipeline\WampPipelineInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -54,11 +55,17 @@ class WampApplication implements WampServerInterface
     protected $wampRouter;
 
     /**
+     * @var WampPipelineInterface
+     */
+    protected $pipeline;
+
+    /**
      * @param RpcDispatcherInterface   $rpcDispatcher
      * @param TopicDispatcherInterface $topicDispatcher
      * @param EventDispatcherInterface $eventDispatcher
      * @param ClientStorageInterface   $clientStorage
      * @param WampRouter               $wampRouter
+     * @param WampPipelineInterface    $pipeline
      * @param LoggerInterface          $logger
      */
     public function __construct(
@@ -67,14 +74,18 @@ class WampApplication implements WampServerInterface
         EventDispatcherInterface $eventDispatcher,
         ClientStorageInterface $clientStorage,
         WampRouter $wampRouter,
+        WampPipelineInterface $pipeline,
         LoggerInterface $logger = null
     ) {
         $this->rpcDispatcher = $rpcDispatcher;
         $this->topicDispatcher = $topicDispatcher;
         $this->eventDispatcher = $eventDispatcher;
         $this->clientStorage = $clientStorage;
+        $this->pipeline = $pipeline;
         $this->wampRouter = $wampRouter;
         $this->logger = null === $logger ? new NullLogger() : $logger;
+
+        $this->pipeline->setWampApplication($this);
     }
 
     /**
@@ -86,14 +97,14 @@ class WampApplication implements WampServerInterface
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
-        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
-
-        $this->logger->info(sprintf(
-            '%s publish to %s',
-            $username,
-            $topic->getId()
-        ));
+//        $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+//        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
+//
+//        $this->logger->info(sprintf(
+//            '%s publish to %s',
+//            $username,
+//            $topic->getId()
+//        ));
 
         $request = $this->wampRouter->match($topic);
 
