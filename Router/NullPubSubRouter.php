@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Router;
 
 use Gos\Bundle\PubSubRouterBundle\Router\RouteCollection;
+use Gos\Bundle\PubSubRouterBundle\Router\RouteInterface;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterContext;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 
@@ -11,7 +12,7 @@ class NullPubSubRouter implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function generate($routeName, Array $parameters = [], $tokenSeparator)
+    public function generate($routeName, Array $parameters = [], $tokenSeparator = null)
     {
         throw new \Exception('Websocket router is not configured, see doc');
     }
@@ -19,7 +20,7 @@ class NullPubSubRouter implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function generateFromTokens(Array $tokens, Array $parameters = [], $tokenSeparator)
+    public function generateFromTokens(RouteInterface $route, Array $tokens, Array $parameters = [], $tokenSeparator)
     {
         throw new \Exception('Websocket router is not configured, see doc');
     }
