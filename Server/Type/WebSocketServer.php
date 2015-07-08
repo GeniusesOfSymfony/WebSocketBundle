@@ -17,6 +17,7 @@ use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
+use React\ZMQ\Context;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -143,6 +144,14 @@ class WebSocketServer implements ServerInterface
             ->push('Ratchet\Wamp\WampServer');
 
         $app = $stack->resolve($this->wampApplication);
+
+        //Transport layer (wild)
+        $context = new Context($this->loop);
+        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
+        $this->logger->info(sprintf('ZMQ transport listening on tcp://127.0.0.1:5555'));
+        $pull->bind('tcp://127.0.0.1:5555');
+        //check app implementents ZMQ interface to do that
+        $pull->on('message', array($this->wampApplication, 'onZMQMessage'));
 
         /* Server Event Loop to add other services in the same loop. */
         $event = new ServerEvent($this->loop, $server);

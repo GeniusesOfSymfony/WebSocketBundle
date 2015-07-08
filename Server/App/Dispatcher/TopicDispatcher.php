@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
+use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
@@ -30,6 +31,8 @@ class TopicDispatcher implements TopicDispatcherInterface
     /** @var  TopicPeriodicTimer */
     protected $topicPeriodicTimer;
 
+    protected $subscribedTopics;
+
     /**
      * @var LoggerInterface|null
      */
@@ -56,6 +59,7 @@ class TopicDispatcher implements TopicDispatcherInterface
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
+        $this->subscribedTopics = [];
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
@@ -66,7 +70,17 @@ class TopicDispatcher implements TopicDispatcherInterface
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
         //if topic service exists, notify it
-        $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
+        if($this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request)){
+            if(!isset($this->subscribedTopics[$request->getRouteName()])){
+                $this->subscribedTopics[$request->getRouteName()] = $topic;
+            }
+        }
+    }
+
+    public function onZmqMessage(MessageInterface $message)
+    {
+        dump($message);
+        die;
     }
 
     /**

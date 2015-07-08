@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -99,9 +100,18 @@ class WampApplication implements WampServerInterface
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
     }
 
+    public function onZmqMessage($entry)
+    {
+        $zmqMessage = json_decode($entry, true);
+
+        if (isset($zmqMessage['name']) && isset($zmqMessage['data'])) {
+            $this->topicDispatcher->onZMQMessage(new Message($zmqMessage['name'], $zmqMessage['data']));
+        }
+    }
+
     /**
      * @param ConnectionInterface $conn
-     * @param string              $id
+     * @param string           œ   $id
      * @param Topic               $topic
      * @param array               $params
      */
