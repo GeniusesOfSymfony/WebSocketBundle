@@ -35,4 +35,12 @@ class Message implements MessageInterface
     {
         return $this->data;
     }
+
+    function jsonSerialize()
+    {
+        return [
+            'name' => $this->name,
+            'data' => $this->data
+        ];
+    }
 }

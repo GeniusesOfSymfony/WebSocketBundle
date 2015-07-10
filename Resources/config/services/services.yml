@@ -49,6 +49,7 @@ services:
             - @gos_web_socket_server.wamp_application
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
+            - @gos_web_socket.pusher
             - @?monolog.logger.websocket
         tags:
             - { name: gos_web_socket.server }
@@ -179,3 +180,11 @@ services:
         arguments:
             - @gos_web_socket.client_storage
             - @gos_web_socket.websocket_authentification.provider
+
+    gos_web_socket.zmq.pusher:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        arguments:
+            - %gos_web_socket.pusher%
+
+    gos_web_socket.null.pusher:
+        class: Gos\Bundle\WebSocketBundle\Pusher\NullPusher

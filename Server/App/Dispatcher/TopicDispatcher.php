@@ -2,21 +2,22 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
-use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Rhumsaa\Uuid\Console\Exception;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class TopicDispatcher implements TopicDispatcherInterface
+class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterface
 {
     /**
      * @var TopicRegistry
@@ -31,18 +32,21 @@ class TopicDispatcher implements TopicDispatcherInterface
     /** @var  TopicPeriodicTimer */
     protected $topicPeriodicTimer;
 
-    protected $subscribedTopics;
-
     /**
      * @var LoggerInterface|null
      */
     protected $logger;
+
+    /** @var Topic[] */
+    protected $subscribedTopics;
 
     const SUBSCRIPTION = 'onSubscribe';
 
     const UNSUBSCRIPTION = 'onUnSubscribe';
 
     const PUBLISH = 'onPublish';
+
+    const PUSH = 'onPush';
 
     /**
      * @param TopicRegistry      $topicRegistry
@@ -61,6 +65,7 @@ class TopicDispatcher implements TopicDispatcherInterface
         $this->topicPeriodicTimer = $topicPeriodicTimer;
         $this->subscribedTopics = [];
         $this->logger = null === $logger ? new NullLogger() : $logger;
+        $this->subscribedTopics = [];
     }
 
     /**
@@ -69,18 +74,26 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
-        //if topic service exists, notify it
-        if($this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request)){
+        if(true === $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request)){
             if(!isset($this->subscribedTopics[$request->getRouteName()])){
                 $this->subscribedTopics[$request->getRouteName()] = $topic;
             }
         }
     }
 
-    public function onZmqMessage(MessageInterface $message)
+    /**
+     * @param WampRequest $request
+     * @param array|string            $data
+     */
+    public function onPush(WampRequest $request, $data)
     {
-        dump($message);
-        die;
+        if(!isset($this->subscribedTopics[$request->getRouteName()])){
+            //log
+            return;
+        }
+
+        $topic = $this->subscribedTopics[$request->getRouteName()];
+        $this->dispatch(self::PUSH, null, $topic, $request, $data);
     }
 
     /**
@@ -120,7 +133,7 @@ class TopicDispatcher implements TopicDispatcherInterface
      *
      * @return bool
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
+    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
     {
         $dispatched = false;
 
@@ -140,29 +153,39 @@ class TopicDispatcher implements TopicDispatcherInterface
                     $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
                 }
 
-                try {
-                    if ($payload) { //its a publish call.
-                        $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
-                    } else {
-                        $appTopic->{$calledMethod}($conn, $topic, $request);
+                if($calledMethod === static::PUSH){
+                    if(!$appTopic instanceof PushableTopicInterface){
+                        throw new Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
                     }
-                } catch (\Exception $e) {
-                    $this->logger->error($e->getMessage(), [
-                        'code' => $e->getCode(),
-                        'file' => $e->getFile(),
-                        'trace' => $e->getTraceAsString(),
-                    ]);
 
-                    $conn->callError($topic->getId(), $topic, $e->getMessage(), [
-                        'topic' => $topic,
-                        'request' => $request,
-                        'event' => $calledMethod,
-                    ]);
+                    $appTopic->onPush($topic, $request, $payload);
+                    $dispatched = true;
+                }else{
+                    try {
+                        if ($payload) { //its a publish call.
+                            $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
+                        } else {
+                            $appTopic->{$calledMethod}($conn, $topic, $request);
+                        }
 
-                    return;
+                        $dispatched = true;
+                    } catch (\Exception $e) {
+                        $this->logger->error($e->getMessage(), [
+                            'code' => $e->getCode(),
+                            'file' => $e->getFile(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+
+                        $conn->callError($topic->getId(), $topic, $e->getMessage(), [
+                            'topic' => $topic,
+                            'request' => $request,
+                            'event' => $calledMethod,
+                        ]);
+
+                        $dispatched = false;
+                    }
                 }
 
-                $dispatched = true;
             }
         }
 

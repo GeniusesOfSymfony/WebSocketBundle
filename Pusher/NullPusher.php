@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
-interface MessageInterface extends \JsonSerializable
+class NullPusher implements PusherInterface
 {
 
 }

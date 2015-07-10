@@ -100,13 +100,11 @@ class WampApplication implements WampServerInterface
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
     }
 
-    public function onZmqMessage($entry)
+    public function onPush($entry)
     {
-        $zmqMessage = json_decode($entry, true);
-
-        if (isset($zmqMessage['name']) && isset($zmqMessage['data'])) {
-            $this->topicDispatcher->onZMQMessage(new Message($zmqMessage['name'], $zmqMessage['data']));
-        }
+        $message = json_decode($entry, true);
+        $request = $this->wampRouter->match(new Topic($message['name']));
+        $this->topicDispatcher->onPush($request, $message['data']);
     }
 
     /**

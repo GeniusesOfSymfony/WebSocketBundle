@@ -6,6 +6,9 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
+use Gos\Bundle\WebSocketBundle\Pusher\NullPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
@@ -62,13 +65,18 @@ class WebSocketServer implements ServerInterface
      */
     protected $logger;
 
+    /** @var  PusherInterface */
+    protected $pusher;
+
     /**
+     * @param LoopInterface            $loop
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
      * @param OriginRegistry           $originRegistry
-     * @param bool                     $originCheck
-     * @param LoggerInterface          $logger
+     * @param bool                         $originCheck
+     * @param PusherInterface          $pusher
+     * @param LoggerInterface|null     $logger
      */
     public function __construct(
         LoopInterface $loop,
@@ -77,6 +85,7 @@ class WebSocketServer implements ServerInterface
         WampApplication $wampApplication,
         OriginRegistry $originRegistry,
         $originCheck,
+        PusherInterface $pusher,
         LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
@@ -85,6 +94,7 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
+        $this->pusher = $pusher;
         $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->sessionHandler = new NullSessionHandler();
     }
@@ -145,13 +155,25 @@ class WebSocketServer implements ServerInterface
 
         $app = $stack->resolve($this->wampApplication);
 
-        //Transport layer (wild)
-        $context = new Context($this->loop);
-        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
-        $this->logger->info(sprintf('ZMQ transport listening on tcp://127.0.0.1:5555'));
-        $pull->bind('tcp://127.0.0.1:5555');
-        //check app implementents ZMQ interface to do that
-        $pull->on('message', array($this->wampApplication, 'onZMQMessage'));
+        //Transport layer
+        if(!$this->pusher instanceof NullPusher){
+            switch(true){
+                case $this->pusher instanceof ZmqPusher :
+                    $pusherConfig = $this->pusher->getConfig();
+                    $context = new Context($this->loop);
+                    $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
+
+                    $this->logger->info(sprintf(
+                        'ZMQ transport listening on %s:%s',
+                        $pusherConfig['host'],
+                        $pusherConfig['port']
+                    ));
+
+                    $pull->bind($pusherConfig['host'].':'.$pusherConfig['port']);
+                    $pull->on('message', array($this->wampApplication, 'onPush'));
+                break;
+            }
+        }
 
         /* Server Event Loop to add other services in the same loop. */
         $event = new ServerEvent($this->loop, $server);

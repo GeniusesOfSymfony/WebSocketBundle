@@ -111,6 +111,16 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+            ->arrayNode('pusher')
+                ->children()
+                    ->scalarNode('type')->end()
+                    ->scalarNode('host')->end()
+                    ->scalarNode('port')->end()
+                    ->arrayNode('options')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
+            ->end()
         ->end();
 
         return $treeBuilder;
