@@ -16,7 +16,7 @@ class Configuration implements ConfigurationInterface
     const DEFAULT_ORIGIN_CHECKER = false;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {

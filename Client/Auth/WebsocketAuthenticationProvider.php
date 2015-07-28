@@ -58,7 +58,7 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
 
         if (isset($connection->Session) && $connection->Session) {
             foreach ($this->firewalls as $firewall) {
-                if (false !== $serializedToken = $connection->Session->get('_security_' . $firewall, false)) {
+                if (false !== $serializedToken = $connection->Session->get('_security_'.$firewall, false)) {
                     /** @var TokenInterface $token */
                     $token = unserialize($serializedToken);
                     break;
@@ -67,7 +67,7 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         }
 
         if (null === $token) {
-            $token = new AnonymousToken($this->firewalls[0], 'anon-' . $connection->WAMP->sessionId);
+            $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
         }
 
         if ($this->securityContext->getToken() !== $token) {

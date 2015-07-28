@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
-use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -100,16 +99,22 @@ class WampApplication implements WampServerInterface
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
     }
 
-    public function onPush($entry)
+    /**
+     * @param Topic $data
+     *
+     * @throws \Exception
+     * @throws \Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException
+     */
+    public function onPush($data)
     {
-        $message = json_decode($entry, true);
-        $request = $this->wampRouter->match(new Topic($message['name']));
+        $message = json_decode($data, true);
+        $request = $this->wampRouter->match(new Topic($message['topic']));
         $this->topicDispatcher->onPush($request, $message['data']);
     }
 
     /**
      * @param ConnectionInterface $conn
-     * @param string           œ   $id
+     * @param string              $id
      * @param Topic               $topic
      * @param array               $params
      */

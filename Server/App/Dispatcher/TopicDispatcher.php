@@ -11,13 +11,14 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\TopicManager;
 use Rhumsaa\Uuid\Console\Exception;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterface
+class TopicDispatcher implements TopicDispatcherInterface
 {
     /**
      * @var TopicRegistry
@@ -37,8 +38,8 @@ class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterfac
      */
     protected $logger;
 
-    /** @var Topic[] */
-    protected $subscribedTopics;
+    /** @var  TopicManager */
+    protected $topicManager;
 
     const SUBSCRIPTION = 'onSubscribe';
 
@@ -49,23 +50,24 @@ class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterfac
     const PUSH = 'onPush';
 
     /**
-     * @param TopicRegistry      $topicRegistry
-     * @param WampRouter         $router
-     * @param TopicPeriodicTimer $topicPeriodicTimer
-     * @param LoggerInterface    $logger
+     * @param TopicRegistry        $topicRegistry
+     * @param WampRouter           $router
+     * @param TopicPeriodicTimer   $topicPeriodicTimer
+     * @param TopicManager         $topicManager
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         TopicRegistry $topicRegistry,
         WampRouter $router,
         TopicPeriodicTimer $topicPeriodicTimer,
+        TopicManager $topicManager,
         LoggerInterface $logger = null
     ) {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
-        $this->subscribedTopics = [];
+        $this->topicManager = $topicManager;
         $this->logger = null === $logger ? new NullLogger() : $logger;
-        $this->subscribedTopics = [];
     }
 
     /**
@@ -74,25 +76,16 @@ class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterfac
      */
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
-        if(true === $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request)){
-            if(!isset($this->subscribedTopics[$request->getRouteName()])){
-                $this->subscribedTopics[$request->getRouteName()] = $topic;
-            }
-        }
+        $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
     }
 
     /**
-     * @param WampRequest $request
-     * @param array|string            $data
+     * @param WampRequest  $request
+     * @param array|string $data
      */
     public function onPush(WampRequest $request, $data)
     {
-        if(!isset($this->subscribedTopics[$request->getRouteName()])){
-            //log
-            return;
-        }
-
-        $topic = $this->subscribedTopics[$request->getRouteName()];
+        $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data);
     }
 
@@ -153,14 +146,14 @@ class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterfac
                     $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
                 }
 
-                if($calledMethod === static::PUSH){
-                    if(!$appTopic instanceof PushableTopicInterface){
+                if ($calledMethod === static::PUSH) {
+                    if (!$appTopic instanceof PushableTopicInterface) {
                         throw new Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
                     }
 
                     $appTopic->onPush($topic, $request, $payload);
                     $dispatched = true;
-                }else{
+                } else {
                     try {
                         if ($payload) { //its a publish call.
                             $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
@@ -185,7 +178,6 @@ class TopicDispatcher implements TopicDispatcherInterface, PushableTopicInterfac
                         $dispatched = false;
                     }
                 }
-
             }
         }
 

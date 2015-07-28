@@ -33,6 +33,12 @@ interface TopicDispatcherInterface
     public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible);
 
     /**
+     * @param WampRequest  $request
+     * @param array|string $data
+     */
+    public function onPush(WampRequest $request, $data);
+
+    /**
      * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic

@@ -56,7 +56,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
      */
     protected function getTid($name)
     {
-        return sha1($this->connection->resourceId . $this->connection->WAMP->sessionId . $name);
+        return sha1($this->connection->resourceId.$this->connection->WAMP->sessionId.$name);
     }
 
     /**

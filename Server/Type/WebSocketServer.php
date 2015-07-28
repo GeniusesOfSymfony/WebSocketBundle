@@ -16,8 +16,10 @@ use Gos\Component\RatchetStack\Builder;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Ratchet\Wamp\TopicManager;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
+use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use React\ZMQ\Context;
@@ -68,14 +70,18 @@ class WebSocketServer implements ServerInterface
     /** @var  PusherInterface */
     protected $pusher;
 
+    /** @var  TopicManager */
+    protected $topicManager;
+
     /**
      * @param LoopInterface            $loop
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
      * @param OriginRegistry           $originRegistry
-     * @param bool                         $originCheck
+     * @param bool                     $originCheck
      * @param PusherInterface          $pusher
+     * @param TopicManager             $topicManager
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
@@ -86,6 +92,7 @@ class WebSocketServer implements ServerInterface
         OriginRegistry $originRegistry,
         $originCheck,
         PusherInterface $pusher,
+        TopicManager $topicManager,
         LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
@@ -96,6 +103,7 @@ class WebSocketServer implements ServerInterface
         $this->originCheck = $originCheck;
         $this->pusher = $pusher;
         $this->logger = null === $logger ? new NullLogger() : $logger;
+        $this->topicManager = $topicManager;
         $this->sessionHandler = new NullSessionHandler();
     }
 
@@ -115,6 +123,9 @@ class WebSocketServer implements ServerInterface
     public function launch($host, $port, $profile)
     {
         $this->logger->info('Starting web socket');
+
+        //In order to avoid circular reference
+        $this->topicManager->setWampApplication($this->wampApplication);
 
         $stack = new Builder();
 
@@ -151,16 +162,19 @@ class WebSocketServer implements ServerInterface
             ->push('Ratchet\WebSocket\WsServer')
             ->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer', $this->loop)
             ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
-            ->push('Ratchet\Wamp\WampServer');
+            ->push('Ratchet\Wamp\WampServer', $this->topicManager);
 
         $app = $stack->resolve($this->wampApplication);
 
         //Transport layer
-        if(!$this->pusher instanceof NullPusher){
-            switch(true){
+        if (!$this->pusher instanceof NullPusher) {
+            switch (true) {
                 case $this->pusher instanceof ZmqPusher :
                     $pusherConfig = $this->pusher->getConfig();
+
                     $context = new Context($this->loop);
+
+                    /** @var SocketWrapper $pull */
                     $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
 
                     $this->logger->info(sprintf(
@@ -169,7 +183,7 @@ class WebSocketServer implements ServerInterface
                         $pusherConfig['port']
                     ));
 
-                    $pull->bind($pusherConfig['host'].':'.$pusherConfig['port']);
+                    $pull->bind('tcp://'.$pusherConfig['host'].':'.$pusherConfig['port']);
                     $pull->on('message', array($this->wampApplication, 'onPush'));
                 break;
             }

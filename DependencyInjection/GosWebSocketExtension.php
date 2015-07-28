@@ -16,13 +16,13 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new Loader\YamlFileLoader(
             $container,
-            new FileLocator(__DIR__ . '/../Resources/config/services')
+            new FileLocator(__DIR__.'/../Resources/config/services')
         );
 
         $loader->load('services.yml');
@@ -143,11 +143,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
 
         //pusher
-        if(isset($configs['pusher']) && !empty($configs['pusher'])){
+        if (isset($configs['pusher']) && !empty($configs['pusher'])) {
             $pusherConfig = $configs['pusher'];
             $container->setParameter('gos_web_socket.pusher', $pusherConfig);
             $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.'.$pusherConfig['type'].'.pusher');
-        }else{
+        } else {
             $container->setParameter('gos_web_socket.pusher', null);
             $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.null.pusher');
         }

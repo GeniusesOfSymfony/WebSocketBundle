@@ -50,6 +50,7 @@ services:
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
             - @gos_web_socket.pusher
+            - @gos_web_socket.wamp.topic_manager
             - @?monolog.logger.websocket
         tags:
             - { name: gos_web_socket.server }
@@ -72,6 +73,7 @@ services:
             - @gos_web_socket.topic.registry
             - @gos_web_socket.router.wamp
             - @gos_web_socket.topic.periodic_timer
+            - @gos_web_socket.wamp.topic_manager
             - @?monolog.logger.websocket
 
     gos_web_socket.topic.registry:
@@ -184,7 +186,16 @@ services:
     gos_web_socket.zmq.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
         arguments:
+            - @gos_web_socket.router.wamp
             - %gos_web_socket.pusher%
 
     gos_web_socket.null.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\NullPusher
+
+    gos_web_socket.wamp.topic_manager:
+        class: Ratchet\Wamp\TopicManager
+
+    gos_web_socket.kernel_event.terminate:
+        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
+        arguments:
+            - @gos_web_socket.pusher
