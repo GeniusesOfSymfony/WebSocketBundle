@@ -11,6 +11,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     const DEFAULT_TTL = 900;
+    const DEFAULT_PREFIX = false;
     const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
     const DEFAULT_FIREWALL = 'ws_firewall';
     const DEFAULT_ORIGIN_CHECKER = false;
@@ -44,6 +45,10 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('ttl')
                                 ->defaultValue(static::DEFAULT_TTL)
                                 ->example(3600)
+                            ->end()
+                            ->scalarNode('prefix')
+                                ->defaultValue(static::DEFAULT_PREFIX)
+                                ->example('client')
                             ->end()
                             ->scalarNode('decorator')->end()
                         ->end()

@@ -15,11 +15,18 @@ class PredisDriver implements DriverInterface
     protected $client;
 
     /**
-     * @param Client $client
+     * string $prefix
      */
-    public function __construct(Client $client)
+    protected $prefix;
+
+    /**
+     * @param Client $client
+     * @param string $prefix
+     */
+    public function __construct(Client $client, $prefix = '')
     {
         $this->client = $client;
+        $this->prefix = ($prefix !== false ? $prefix . ':' : '');
     }
 
     /**
@@ -27,7 +34,7 @@ class PredisDriver implements DriverInterface
      */
     public function fetch($id)
     {
-        $result = $this->client->get($id);
+        $result = $this->client->get($this->prefix . $id);
         if (null === $result) {
             return false;
         }
@@ -40,7 +47,7 @@ class PredisDriver implements DriverInterface
      */
     public function contains($id)
     {
-        return $this->client->exists($id);
+        return $this->client->exists($this->prefix . $id);
     }
 
     /**
@@ -49,9 +56,9 @@ class PredisDriver implements DriverInterface
     public function save($id, $data, $lifeTime = 0)
     {
         if ($lifeTime > 0) {
-            $response = $this->client->setex($id, $lifeTime, $data);
+            $response = $this->client->setex($this->prefix . $id, $lifeTime, $data);
         } else {
-            $response = $this->client->set($id, $data);
+            $response = $this->client->set($this->prefix . $id, $data);
         }
 
         return $response === true || $response == 'OK';
@@ -62,6 +69,6 @@ class PredisDriver implements DriverInterface
      */
     public function delete($id)
     {
-        return $this->client->del($id) > 0;
+        return $this->client->del($this->prefix . $id) > 0;
     }
 }
