@@ -26,7 +26,7 @@ class PredisDriver implements DriverInterface
     public function __construct(Client $client, $prefix = '')
     {
         $this->client = $client;
-        $this->prefix = ($prefix !== false ? $prefix . ':' : '');
+        $this->prefix = ($prefix !== '' ? $prefix . ':' : '');
     }
 
     /**
