@@ -49,7 +49,7 @@ services:
             - @gos_web_socket_server.wamp_application
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
-            - @gos_web_socket.pusher
+            - @gos_web_socket.server_push_handler
             - @gos_web_socket.wamp.topic_manager
             - @?monolog.logger.websocket
         tags:
@@ -199,3 +199,12 @@ services:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
         arguments:
             - @gos_web_socket.pusher
+
+    gos_web_socket.zmq.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
+        arguments:
+            - @gos_web_socket.pusher
+            - @?monolog.logger.websocket
+
+    gos_web_socket.null.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\NullServerPushHandler

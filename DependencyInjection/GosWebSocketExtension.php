@@ -144,12 +144,22 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //pusher
         if (isset($configs['pusher']) && !empty($configs['pusher'])) {
+
             $pusherConfig = $configs['pusher'];
+
+            //Pusher client side
             $container->setParameter('gos_web_socket.pusher', $pusherConfig);
             $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.'.$pusherConfig['type'].'.pusher');
+
+            //Pusher server side
+            $container->setAlias(
+                'gos_web_socket.server_push_handler',
+                'gos_web_socket.'.$pusherConfig['type'].'.server_push_handler'
+            );
         } else {
             $container->setParameter('gos_web_socket.pusher', null);
             $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.null.pusher');
+            $container->setAlias('gos_web_socket.server_push_handler', 'gos_web_socket.null.server_push_handler');
         }
     }
 
