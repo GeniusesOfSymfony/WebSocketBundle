@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ZmqPusher extends AbstractPusher
 {
@@ -15,27 +14,11 @@ class ZmqPusher extends AbstractPusher
         $config = $this->getConfig();
 
         if(false === $this->isConnected()){
-            $resolver = new OptionsResolver();
+            $config = $this->getConfig();
 
-            $resolver->setDefaults([
-                'persistent' => false,
-                'protocol' => 'tcp',
-            ]);
-
-            $resolver->setAllowedTypes([
-                'persistent' => ['bool'],
-                'protocol' => ['string'],
-            ]);
-
-            $resolver->setAllowedValues([
-                'protocol' => ['tcp', 'ipc', 'inproc', 'pgm', 'epgm'],
-            ]);
-
-            $options = $resolver->resolve($config['options']);
-
-            $context = new \ZMQContext(1, $options['persistent']);
+            $context = new \ZMQContext(1, $config['persistent']);
             $this->connection = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
-            $this->connection->connect($options['protocol'].'://'.$config['host'].':'.$config['port']);
+            $this->connection->connect($config['protocol'].'://'.$config['host'].':'.$config['port']);
             $this->setConnected();
         }
 

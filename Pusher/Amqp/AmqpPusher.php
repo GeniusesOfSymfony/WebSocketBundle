@@ -50,8 +50,10 @@ class AmqpPusher extends AbstractPusher
 
     public function close()
     {
-        if($this->isConnected()) {
-            $this->connection->disconnect();
+        if (false === $this->isConnected()) {
+            return;
         }
+
+        $this->connection->disconnect();
     }
 }

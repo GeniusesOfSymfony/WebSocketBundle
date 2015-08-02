@@ -107,4 +107,33 @@ $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1'
 
 **NOTE :** Websocket Pusher is not the most faster and powerfull because he have a lot of overhead.
 
+# Last word
+
+**You can use pushers all together !**
+
+**Config**
+
+```yml
+    pushers:
+        zmq:
+            default: true
+            host: 127.0.0.1
+            port: 5555
+            persistent: true
+            protocol: tcp
+        amqp:
+            host: 127.0.0.1
+            port: 5672
+            username: guest
+            password: guest
+```
+
+```php
+$pusher = $this->container->get('gos_web_socket.amqp.pusher');
+$pusher->push($message, 'user_notification', ['username' => 'user1']);
+
+$pusher = $this->container->get('gos_web_socket.zmq.pusher');
+$pusher->push($message, 'user_notification', ['username' => 'user1']);
+```
+
 
