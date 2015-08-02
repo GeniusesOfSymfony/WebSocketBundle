@@ -31,10 +31,11 @@ Built in feature
 * PHP Websocket client (IO / WAMP)
 * JS Websocket client (IO / WAMP)
 * PubSub (with routing)
-* Remote procedure
+* Remote procedure call
 * User authentication through websocket
 * Periodic call
 * Origin checker
+* Push (zmq, amqp)
 
 Resources
 --------------
@@ -48,6 +49,7 @@ Resources
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
 * [Ship in production](Resources/docs/ShipInProduction.md)
 * [Performance Bench](Resources/docs/Performance.md)
+* [Push integration](Resources/docs/Pusher.md)
 
 Code Cookbook
 --------------
