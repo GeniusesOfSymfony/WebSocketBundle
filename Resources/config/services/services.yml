@@ -221,7 +221,10 @@ services:
     gos_web_socket.kernel_event.terminate:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
         arguments:
-            - @gos_web_socket.pusher
+            - @gos_web_socket.pusher_registry
 
     gos_web_socket.push_message.serializer:
         class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer
+
+    gos_web_socket.pusher_registry:
+        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry

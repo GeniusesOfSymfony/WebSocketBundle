@@ -36,7 +36,7 @@ class ZmqServerPushHandler implements ServerPushHandlerInterface
      * @param LoggerInterface|null $logger
      */
     public function __construct(
-        PusherInterface $pusher,
+        ZmqPusher $pusher,
         WampRouter $router,
         MessageSerializer $serializer,
         LoggerInterface $logger = null

@@ -7,13 +7,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ZmqPusher extends AbstractPusher
 {
-    /** @var  \ZMQSocket */
-    protected $client;
-
     /**
      * @param string $data
      */
-    protected function doPush($data)
+    protected function doPush($data, array $context)
     {
         $config = $this->getConfig();
 
@@ -37,11 +34,12 @@ class ZmqPusher extends AbstractPusher
             $options = $resolver->resolve($config['options']);
 
             $context = new \ZMQContext(1, $options['persistent']);
-            $this->client = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
-            $this->client->connect($options['protocol'].'://'.$config['host'].':'.$config['port']);
+            $this->connection = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
+            $this->connection->connect($options['protocol'].'://'.$config['host'].':'.$config['port']);
+            $this->setConnected();
         }
 
-        $this->client->send($data);
+        $this->connection->send($data);
     }
 
     public function close()
@@ -52,6 +50,6 @@ class ZmqPusher extends AbstractPusher
 
         $config = $this->getConfig();
 
-        $this->client->disconnect($config['host'].':'.$config['port']);
+        $this->connection->disconnect($config['host'].':'.$config['port']);
     }
 }

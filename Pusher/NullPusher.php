@@ -26,4 +26,12 @@ class NullPusher implements PusherInterface
     {
         // stub
     }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config)
+    {
+        // TODO: Implement setConfig() method.
+    }
 }

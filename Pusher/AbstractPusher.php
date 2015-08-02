@@ -23,10 +23,11 @@ abstract class AbstractPusher implements PusherInterface
 
     /**
      * @param string $data
+     * @param array $context
      *
      * @return string
      */
-    abstract protected function doPush($data);
+    abstract protected function doPush($data, array $context);
 
     /**
      * @param MessageSerializer $serializer
@@ -80,14 +81,15 @@ abstract class AbstractPusher implements PusherInterface
      * @param array|string $data
      * @param string       $routeName
      * @param array[]      $routeParameters
+     * @param array        $context
      *
      * @return string|\Symfony\Component\Serializer\Encoder\scalar
      */
-    public function push($data, $routeName, $routeParameters)
+    public function push($data, $routeName, $routeParameters, Array $context = [])
     {
         $chanel = $this->router->generate($routeName, $routeParameters);
         $message = new Message($chanel, $data);
 
-        return $this->doPush($this->serializer->serialize($message));
+        return $this->doPush($this->serializer->serialize($message), $context);
     }
 }

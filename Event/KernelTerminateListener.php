@@ -2,22 +2,19 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 class KernelTerminateListener
 {
     /**
-     * @var PusherInterface
+     * @var PusherRegistry
      */
-    protected $pusher;
+    protected $pusherRegistry;
 
-    /**
-     * @param PusherInterface $pusher
-     */
-    public function __construct(PusherInterface $pusher)
+    public function __construct(PusherRegistry $pusherRegistry)
     {
-        $this->pusher = $pusher;
+        $this->pusherRegistry = $pusherRegistry;
     }
 
     /**
@@ -25,6 +22,8 @@ class KernelTerminateListener
      */
     public function closeConnection(PostResponseEvent $event)
     {
-        $this->pusher->close();
+        foreach($this->pusherRegistry->getPushers() as $pusher){
+            $pusher->close();
+        }
     }
 }

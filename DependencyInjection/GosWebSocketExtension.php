@@ -144,20 +144,29 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //pusher
         if (isset($configs['pushers']) && !empty($configs['pushers'])) {
-            $wsServerDef = $container->getDefinition('gos_web_socket.ws.server');
+            $pushers = array_filter($configs['pushers'], function($value){
+                if(isset($value['host']) && isset($value['port'])){
+                   return $value;
+                }
+            });
 
-            foreach($configs['pushers'] as $type => $pusherConfig){
+            $wsServerDef = $container->getDefinition('gos_web_socket.ws.server');
+            $pusherRegistryDef = $container->getDefinition('gos_web_socket.pusher_registry');
+
+            foreach($pushers as $type => $pusherConfig){
                 $pusherConfig['type'] = $type;
+                $pusherServiceName = 'gos_web_socket.'.$type.'.pusher';
 
                 if(in_array($type, ['zmq', 'amqp']) && !extension_loaded($type)){
                     throw new \RuntimeException(sprintf('%s pusher require %s php extension'));
                 }
 
                 if(isset($pusherConfig['default']) && $pusherConfig['default'] == true){
-                    $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.'.$type.'.pusher');
+                    $container->setAlias('gos_web_socket.pusher', $pusherServiceName);
                 }
 
-                $pusherServiceDef = $container->getDefinition('gos_web_socket.'.$type.'.pusher');
+                $pusherRegistryDef->addMethodCall('addPusher', [ new Reference($pusherServiceName) ]);
+                $pusherServiceDef = $container->getDefinition($pusherServiceName);
                 $pusherServiceDef->addMethodCall('setConfig', [$pusherConfig]);
 
                 $wsServerDef->addMethodCall('addServerPusherHandler', [

@@ -112,29 +112,97 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->arrayNode('pushers')
-                ->prototype('array')
-                    ->children()
-                        ->booleanNode('default')
-                            ->defaultValue(false)
-                        ->end()
-                        ->scalarNode('host')
-                            ->example('127.0.0.1')
-                            ->isRequired()
-                            ->cannotBeEmpty()
-                        ->end()
-                        ->scalarNode('port')
-                            ->example('1337')
-                            ->isRequired()
-                            ->cannotBeEmpty()
-                        ->end()
-                        ->arrayNode('options')
-                            ->prototype('scalar')->end()
-                        ->end()
-                    ->end()
+                ->append($this->addZmqNode())
+                ->append($this->addAmqpNode())
                 ->end()
             ->end()
         ->end();
 
         return $treeBuilder;
+    }
+
+    protected function addZmqNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('zmq');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('default')
+                    ->defaultValue(false)
+                ->end()
+                ->scalarNode('host')
+                    ->example('127.0.0.1')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('port')
+                    ->example('1337')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->booleanNode('persistent')
+                    ->defaultTrue()
+                ->end()
+                ->enumNode('protocol')
+                    ->defaultValue('tcp')
+                    ->values(['tcp', 'ipc', 'inproc', 'pgm', 'epgm'])
+                ->end()
+            ->end();
+
+        return $node;
+    }
+
+    protected function addAmqpNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('amqp');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('default')
+                    ->defaultValue(false)
+                ->end()
+                ->scalarNode('host')
+                    ->example('127.0.0.1')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('port')
+                    ->example('1337')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('username')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('password')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('vhost')
+                    ->defaultValue('/')
+                ->end()
+                ->scalarNode('read_timeout')
+                    ->defaultValue(0)
+                ->end()
+                ->scalarNode('write_timeout')
+                    ->defaultValue(0)
+                ->end()
+                ->scalarNode('connect_timeout')
+                    ->defaultValue(0)
+                ->end()
+                ->scalarNode('queue_name')
+                    ->defaultValue('gos_websocket')
+                ->end()
+                ->scalarNode('exchange_name')
+                    ->defaultValue('gos_websocket_exchange')
+                ->end()
+            ->end();
+
+        return $node;
     }
 }
