@@ -63,8 +63,8 @@ class WebSocketServer implements ServerInterface
      */
     protected $logger;
 
-    /** @var  ServerPushHandlerInterface */
-    protected $serverPushHandler;
+    /** @var  ServerPushHandlerInterface[] */
+    protected $serverPushHandlers;
 
     /** @var  TopicManager */
     protected $topicManager;
@@ -76,7 +76,6 @@ class WebSocketServer implements ServerInterface
      * @param WampApplication          $wampApplication
      * @param OriginRegistry           $originRegistry
      * @param bool                     $originCheck
-     * @param ServerPushHandlerInterface          $serverPushHandler
      * @param TopicManager             $topicManager
      * @param LoggerInterface|null     $logger
      */
@@ -87,7 +86,6 @@ class WebSocketServer implements ServerInterface
         WampApplication $wampApplication,
         OriginRegistry $originRegistry,
         $originCheck,
-        ServerPushHandlerInterface $serverPushHandler,
         TopicManager $topicManager,
         LoggerInterface $logger = null
     ) {
@@ -97,10 +95,18 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
-        $this->serverPushHandler = $serverPushHandler;
+        $this->serverPushHandler = [];
         $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->topicManager = $topicManager;
         $this->sessionHandler = new NullSessionHandler();
+    }
+
+    /**
+     * @param ServerPushHandlerInterface $handler
+     */
+    public function addServerPusherHandler(ServerPushHandlerInterface $handler)
+    {
+        $this->serverPushHandlers[] = $handler;
     }
 
     /**
@@ -162,8 +168,10 @@ class WebSocketServer implements ServerInterface
 
         $app = $stack->resolve($this->wampApplication);
 
-        //Transport layer
-        $this->serverPushHandler->handle($this->loop, $this->wampApplication);
+        //Push Transport Layer
+        foreach($this->serverPushHandlers as $handler){
+            $handler->handle($this->loop, $this->wampApplication);
+        }
 
         /* Server Event Loop to add other services in the same loop. */
         $event = new ServerEvent($this->loop, $server);

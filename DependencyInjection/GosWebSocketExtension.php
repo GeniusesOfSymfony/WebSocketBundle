@@ -143,23 +143,29 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
 
         //pusher
-        if (isset($configs['pusher']) && !empty($configs['pusher'])) {
+        if (isset($configs['pushers']) && !empty($configs['pushers'])) {
+            $wsServerDef = $container->getDefinition('gos_web_socket.ws.server');
 
-            $pusherConfig = $configs['pusher'];
+            foreach($configs['pushers'] as $type => $pusherConfig){
+                $pusherConfig['type'] = $type;
 
-            //Pusher client side
-            $container->setParameter('gos_web_socket.pusher', $pusherConfig);
-            $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.'.$pusherConfig['type'].'.pusher');
+                if(in_array($type, ['zmq', 'amqp']) && !extension_loaded($type)){
+                    throw new \RuntimeException(sprintf('%s pusher require %s php extension'));
+                }
 
-            //Pusher server side
-            $container->setAlias(
-                'gos_web_socket.server_push_handler',
-                'gos_web_socket.'.$pusherConfig['type'].'.server_push_handler'
-            );
+                if(isset($pusherConfig['default']) && $pusherConfig['default'] == true){
+                    $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.'.$type.'.pusher');
+                }
+
+                $pusherServiceDef = $container->getDefinition('gos_web_socket.'.$type.'.pusher');
+                $pusherServiceDef->addMethodCall('setConfig', [$pusherConfig]);
+
+                $wsServerDef->addMethodCall('addServerPusherHandler', [
+                    new Reference('gos_web_socket.'.$type.'.server_push_handler')
+                ]);
+            }
         } else {
-            $container->setParameter('gos_web_socket.pusher', null);
             $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.null.pusher');
-            $container->setAlias('gos_web_socket.server_push_handler', 'gos_web_socket.null.server_push_handler');
         }
     }
 

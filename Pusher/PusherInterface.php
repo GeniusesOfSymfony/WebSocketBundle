@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 interface PusherInterface
 {
     /**
-     * @param MessageInterface $data
+     * @param string|array $data
      * @param string           $routeName
      * @param array[]          $routeParameters
      */
@@ -15,6 +15,11 @@ interface PusherInterface
      * @return array
      */
     public function getConfig();
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config);
 
     public function close();
 }

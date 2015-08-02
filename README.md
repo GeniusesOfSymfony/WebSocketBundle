@@ -4,7 +4,7 @@ Gos Web Socket Bundle
 ![Websocket](ws_logo.jpeg)
 
 About
---------------
+------
 Gos Web Socket is a Symfony2 Bundle designed to bring together WebSocket functionality in a easy to use application architecture.
 
 Much like Socket.IO it provides both server side and client side code ensuring you have to write as little as possible to get your app up and running.
@@ -38,7 +38,7 @@ Built in feature
 * Push (zmq, amqp)
 
 Resources
---------------
+----------
 * [Installation Instructions](#installation-instructions)
 * [Client Setup](Resources/docs/ClientSetup.md)
 * [Server Side of RPC](Resources/docs/RPCSetup.md)
@@ -67,7 +67,7 @@ You must achieve these following steps before send your first message through we
 Let's do it !
 
 Installation Instructions
---------------
+-------------------------
 
 ###Step 1: Install via composer
 

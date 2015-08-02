@@ -31,6 +31,7 @@
       "ext-libevent": ">=0.0.5",
       "ext-libev": "*",
       "ext-zmq": "*",
+      "ext-amqp": "*",
       "symfony/proxy-manager-bridge": "~2.3",
       "ocramius/proxy-manager": "~1.0"
     },

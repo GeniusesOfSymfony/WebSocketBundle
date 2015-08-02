@@ -10,6 +10,7 @@ interface PushableTopicInterface
     /**
      * @param WampRequest  $request
      * @param string|array $data
+     * @param string $provider
      */
-    public function onPush(Topic $topic, WampRequest $request, $data);
+    public function onPush(Topic $topic, WampRequest $request, $data, $provider);
 }

@@ -49,7 +49,6 @@ services:
             - @gos_web_socket_server.wamp_application
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
-            - @gos_web_socket.server_push_handler
             - @gos_web_socket.wamp.topic_manager
             - @?monolog.logger.websocket
         tags:
@@ -183,11 +182,35 @@ services:
             - @gos_web_socket.client_storage
             - @gos_web_socket.websocket_authentification.provider
 
+    gos_web_socket.abstract.pusher:
+        class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
+        calls:
+            - [ setRouter, [ @gos_web_socket.router.wamp ] ]
+            - [ setSerializer, [ @gos_web_socket.push_message.serializer ] ]
+
     gos_web_socket.zmq.pusher:
+        parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+
+    gos_web_socket.zmq.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:
+            - @gos_web_socket.zmq.pusher
             - @gos_web_socket.router.wamp
-            - %gos_web_socket.pusher%
+            - @gos_web_socket.push_message.serializer
+            - @?monolog.logger.websocket
+
+    gos_web_socket.amqp.pusher:
+        parent: gos_web_socket.abstract.pusher
+        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
+
+    gos_web_socket.amqp.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
+        arguments:
+            - @gos_web_socket.amqp.pusher
+            - @gos_web_socket.router.wamp
+            - @gos_web_socket.push_message.serializer
+            - @?monolog.logger.websocket
 
     gos_web_socket.null.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\NullPusher
@@ -200,11 +223,5 @@ services:
         arguments:
             - @gos_web_socket.pusher
 
-    gos_web_socket.zmq.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
-        arguments:
-            - @gos_web_socket.pusher
-            - @?monolog.logger.websocket
-
-    gos_web_socket.null.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\NullServerPushHandler
+    gos_web_socket.push_message.serializer:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer

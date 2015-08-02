@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -100,16 +101,18 @@ class WampApplication implements WampServerInterface
     }
 
     /**
-     * @param Topic $data
-     *
-     * @throws \Exception
-     * @throws \Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException
+     * @param WampRequest $request
+     * @param string            $data
+     * @param string            $provider
      */
-    public function onPush($data)
+    public function onPush(WampRequest $request, $data, $provider)
     {
-        $message = json_decode($data, true);
-        $request = $this->wampRouter->match(new Topic($message['topic']));
-        $this->topicDispatcher->onPush($request, $message['data']);
+        $this->logger->info(sprintf('Pusher %s has pushed', $provider), [
+            'provider' => $provider,
+            'topic' => $request->getMatched()
+        ]);
+
+        $this->topicDispatcher->onPush($request, $data, $provider);
     }
 
     /**

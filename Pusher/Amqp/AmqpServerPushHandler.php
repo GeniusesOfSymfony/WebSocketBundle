@@ -1,8 +1,7 @@
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
+namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
-use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
@@ -15,7 +14,7 @@ use React\ZMQ\Context;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 
-class ZmqServerPushHandler implements ServerPushHandlerInterface
+class AmqpServerPushHandler implements ServerPushHandlerInterface
 {
     /** @var PusherInterface  */
     protected $pusher;
@@ -54,25 +53,25 @@ class ZmqServerPushHandler implements ServerPushHandlerInterface
     public function handle(LoopInterface $loop, WampServerInterface $app)
     {
         $config = $this->pusher->getConfig();
-
-        $context = new Context($loop);
-
-        /** @var SocketWrapper $pull */
-        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
-
+//
+//        $context = new Context($loop);
+//
+//        /** @var SocketWrapper $pull */
+//        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
+//
         $this->logger->info(sprintf(
-            'ZMQ transport listening on %s:%s',
+            'AMQP transport listening on %s:%s',
             $config['host'],
             $config['port']
         ));
 
-        $pull->bind('tcp://'.$config['host'].':'.$config['port']);
-
-        $pull->on('message', function($data) use ($app, $config) {
-            /** @var MessageInterface $message */
-            $message = $this->serializer->deserialize($data);
-            $request = $this->router->match(new Topic($message->getTopic()));
-            $app->onPush($request, $message->getData(), $config['type']);
-        });
+//        $pull->bind('tcp://'.$config['host'].':'.$config['port']);
+//
+//        $pull->on('message', function($data) use ($app, $config) {
+//            /** @var MessageInterface $message */
+//            $message = $this->serializer->deserialize($data);
+//            $request = $this->router->match(new Topic($message->getTopic()));
+//            $app->onPush($request, $message->getData(), $config['type']);
+//        });
     }
 }

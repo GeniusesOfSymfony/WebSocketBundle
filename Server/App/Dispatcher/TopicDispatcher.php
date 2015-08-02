@@ -82,11 +82,12 @@ class TopicDispatcher implements TopicDispatcherInterface
     /**
      * @param WampRequest  $request
      * @param array|string $data
+     * @param string       $provider
      */
-    public function onPush(WampRequest $request, $data)
+    public function onPush(WampRequest $request, $data, $provider)
     {
         $topic = $this->topicManager->getTopic($request->getMatched());
-        $this->dispatch(self::PUSH, null, $topic, $request, $data);
+        $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
     /**
@@ -120,13 +121,14 @@ class TopicDispatcher implements TopicDispatcherInterface
      * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic
-     * @param null                $payload
-     * @param null                $exclude
-     * @param null                $eligible
+     * @param null|string                $payload
+     * @param string[]|null                $exclude
+     * @param string[]|null                $eligible
+     * @param string|null
      *
      * @return bool
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
+    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         $dispatched = false;
 
@@ -151,7 +153,7 @@ class TopicDispatcher implements TopicDispatcherInterface
                         throw new Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
                     }
 
-                    $appTopic->onPush($topic, $request, $payload);
+                    $appTopic->onPush($topic, $request, $payload, $provider);
                     $dispatched = true;
                 } else {
                     try {

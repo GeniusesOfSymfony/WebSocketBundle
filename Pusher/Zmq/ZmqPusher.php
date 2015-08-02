@@ -2,54 +2,22 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
-use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
-use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ZmqPusher implements PusherInterface
+class ZmqPusher extends AbstractPusher
 {
-    /** @var  resource */
-    protected $connection;
-
-    /** @var  array */
-    protected $pusherConfig;
-
-    /** @var bool  */
-    protected $isConnected = false;
-
     /** @var  \ZMQSocket */
     protected $client;
 
-    /** @var  WampRouter */
-    protected $router;
-
     /**
-     * @param WampRouter $router
-     * @param array      $pusherConfig
+     * @param string $data
      */
-    public function __construct(WampRouter $router, Array $pusherConfig)
+    protected function doPush($data)
     {
-        $this->pusherConfig = $pusherConfig;
-        $this->router = $router;
-    }
+        $config = $this->getConfig();
 
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->pusherConfig;
-    }
-
-    /**
-     * @param MessageInterface $data
-     * @param string           $routeName
-     * @param array[]          $routeParameters
-     */
-    public function push($data, $routeName, $routeParameters)
-    {
-        if (false === $this->isConnected) {
+        if(false === $this->isConnected()){
             $resolver = new OptionsResolver();
 
             $resolver->setDefaults([
@@ -66,27 +34,24 @@ class ZmqPusher implements PusherInterface
                 'protocol' => ['tcp', 'ipc', 'inproc', 'pgm', 'epgm'],
             ]);
 
-            $options = $resolver->resolve($this->pusherConfig['options']);
+            $options = $resolver->resolve($config['options']);
 
             $context = new \ZMQContext(1, $options['persistent']);
             $this->client = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
-            $this->client->connect($options['protocol'].'://'.$this->pusherConfig['host'].':'.$this->pusherConfig['port']);
+            $this->client->connect($options['protocol'].'://'.$config['host'].':'.$config['port']);
         }
 
-        $chanel = $this->router->generate($routeName, $routeParameters);
-
-        $this->client->send(json_encode([
-            'topic' => $chanel,
-            'data' => $data,
-        ]));
+        $this->client->send($data);
     }
 
     public function close()
     {
-        if (false === $this->isConnected) {
+        if (false === $this->isConnected()) {
             return;
         }
 
-        $this->client->disconnect($this->pusherConfig['host'].':'.$this->pusherConfig['port']);
+        $config = $this->getConfig();
+
+        $this->client->disconnect($config['host'].':'.$config['port']);
     }
 }
