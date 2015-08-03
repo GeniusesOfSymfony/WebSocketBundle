@@ -59,7 +59,7 @@ class ClientStorage implements ClientStorageInterface
             throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
         }
 
-        $this->logger->debug('GET CLIENT '.$identifier);
+        $this->logger->debug('GET CLIENT ' . $identifier);
 
         if (false === $result) {
             throw new ClientNotFoundException(sprintf('Client %s not found', $identifier));
@@ -91,7 +91,7 @@ class ClientStorage implements ClientStorageInterface
             $context['username'] = $user->getUsername();
         }
 
-        $this->logger->debug(sprintf('INSERT CLIENT '.$identifier), $context);
+        $this->logger->debug(sprintf('INSERT CLIENT ' . $identifier), $context);
 
         try {
             $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
@@ -123,7 +123,7 @@ class ClientStorage implements ClientStorageInterface
      */
     public function removeClient($identifier)
     {
-        $this->logger->debug('REMOVE CLIENT '.$identifier);
+        $this->logger->debug('REMOVE CLIENT ' . $identifier);
 
         try {
             $result = $this->driver->delete($identifier);

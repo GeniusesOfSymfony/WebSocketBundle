@@ -22,7 +22,7 @@ class KernelTerminateListener
      */
     public function closeConnection(PostResponseEvent $event)
     {
-        foreach($this->pusherRegistry->getPushers() as $pusher){
+        foreach ($this->pusherRegistry->getPushers() as $pusher) {
             $pusher->close();
         }
     }

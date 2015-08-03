@@ -50,6 +50,7 @@ services:
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
             - @gos_web_socket.wamp.topic_manager
+            - @gos_web_socket.server_push_handler.registry
             - @?monolog.logger.websocket
         tags:
             - { name: gos_web_socket.server }
@@ -154,6 +155,7 @@ services:
         lazy: true
         arguments:
             - @gos_web_socket.periodic.registry
+            - @gos_web_socket.server_push_handler.registry
             - @?monolog.logger.websocket
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
@@ -191,6 +193,8 @@ services:
     gos_web_socket.zmq.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        tags:
+            - { name: gos_web_socket.pusher, alias: zmq }
 
     gos_web_socket.zmq.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
@@ -199,10 +203,14 @@ services:
             - @gos_web_socket.router.wamp
             - @gos_web_socket.push_message.serializer
             - @?monolog.logger.websocket
+        tags:
+            - { name: gos_web_socket.push_handler, alias: zmq }
 
     gos_web_socket.amqp.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
+        tags:
+            - { name: gos_web_socket.pusher, alias: amqp }
 
     gos_web_socket.amqp.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
@@ -211,9 +219,8 @@ services:
             - @gos_web_socket.router.wamp
             - @gos_web_socket.push_message.serializer
             - @?monolog.logger.websocket
-
-    gos_web_socket.null.pusher:
-        class: Gos\Bundle\WebSocketBundle\Pusher\NullPusher
+        tags:
+            - {name: gos_web_socket.push_handler, alias: amqp }
 
     gos_web_socket.wamp.topic_manager:
         class: Ratchet\Wamp\TopicManager
@@ -228,3 +235,6 @@ services:
 
     gos_web_socket.pusher_registry:
         class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
+
+    gos_web_socket.server_push_handler.registry:
+        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry

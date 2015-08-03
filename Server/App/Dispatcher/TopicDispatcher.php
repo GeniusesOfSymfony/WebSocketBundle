@@ -121,9 +121,9 @@ class TopicDispatcher implements TopicDispatcherInterface
      * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic
-     * @param null|string                $payload
-     * @param string[]|null                $exclude
-     * @param string[]|null                $eligible
+     * @param null|string         $payload
+     * @param string[]|null       $exclude
+     * @param string[]|null       $eligible
      * @param string|null
      *
      * @return bool

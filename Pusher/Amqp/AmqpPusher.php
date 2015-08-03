@@ -21,11 +21,19 @@ class AmqpPusher extends AbstractPusher
     {
         $config = $this->getConfig();
 
-        if(false === $this->connected){
+        if (false === $this->connected) {
+            if (!extension_loaded('amqp')) {
+                throw new \RuntimeException(sprintf(
+                    '%s pusher require %s php extension',
+                    get_class($this),
+                    'amqp'
+                ));
+            }
+
             $this->connection = new \AMQPConnection($config);
             $this->connection->connect();
 
-            list(,$exchange) = Utils::setupConnection($this->connection, $config);
+            list(, $exchange) = Utils::setupConnection($this->connection, $config);
 
             $this->setConnected();
         }
@@ -35,7 +43,7 @@ class AmqpPusher extends AbstractPusher
         $resolver->setDefaults([
             'routing_key' => null,
             'publish_flags' => AMQP_NOPARAM,
-            'attributes' => array()
+            'attributes' => array(),
         ]);
 
         $context = $resolver->resolve($context);

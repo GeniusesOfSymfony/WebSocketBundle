@@ -21,9 +21,12 @@ abstract class AbstractPusher implements PusherInterface
 
     protected $connection;
 
+    /** @var  string */
+    protected $name;
+
     /**
      * @param string $data
-     * @param array $context
+     * @param array  $context
      *
      * @return string
      */
@@ -67,6 +70,22 @@ abstract class AbstractPusher implements PusherInterface
     public function setConnected($bool = true)
     {
         $this->connected = $bool;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**

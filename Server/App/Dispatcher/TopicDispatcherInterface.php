@@ -35,7 +35,7 @@ interface TopicDispatcherInterface
     /**
      * @param WampRequest  $request
      * @param array|string $data
-     * @param string $provider
+     * @param string       $provider
      */
     public function onPush(WampRequest $request, $data, $provider);
 

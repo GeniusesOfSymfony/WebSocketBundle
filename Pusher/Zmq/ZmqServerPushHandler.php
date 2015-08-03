@@ -2,10 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
+use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
-use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Psr\Log\LoggerInterface;
 use Ratchet\Wamp\Topic;
@@ -15,7 +15,7 @@ use React\ZMQ\Context;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 
-class ZmqServerPushHandler implements ServerPushHandlerInterface
+class ZmqServerPushHandler extends AbstractServerPushHandler
 {
     /** @var PusherInterface  */
     protected $pusher;
@@ -28,6 +28,9 @@ class ZmqServerPushHandler implements ServerPushHandlerInterface
 
     /** @var  MessageSerializer */
     protected $serializer;
+
+    /** @var  Context */
+    protected $consumer;
 
     /**
      * @param PusherInterface      $pusher
@@ -53,12 +56,12 @@ class ZmqServerPushHandler implements ServerPushHandlerInterface
      */
     public function handle(LoopInterface $loop, WampServerInterface $app)
     {
-        $config = $this->pusher->getConfig();
+        $config = $this->getConfig();
 
         $context = new Context($loop);
 
-        /** @var SocketWrapper $pull */
-        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
+        /* @var SocketWrapper $pull */
+        $this->consumer = $context->getSocket(\ZMQ::SOCKET_PULL);
 
         $this->logger->info(sprintf(
             'ZMQ transport listening on %s:%s',
@@ -66,13 +69,18 @@ class ZmqServerPushHandler implements ServerPushHandlerInterface
             $config['port']
         ));
 
-        $pull->bind('tcp://'.$config['host'].':'.$config['port']);
+        $this->consumer->bind('tcp://' . $config['host'] . ':' . $config['port']);
 
-        $pull->on('message', function($data) use ($app, $config) {
+        $this->consumer->on('message', function ($data) use ($app, $config) {
             /** @var MessageInterface $message */
             $message = $this->serializer->deserialize($data);
             $request = $this->router->match(new Topic($message->getTopic()));
-            $app->onPush($request, $message->getData(), $config['type']);
+            $app->onPush($request, $message->getData(), $this->getName());
         });
+    }
+
+    public function close()
+    {
+        $this->consumer->close();
     }
 }

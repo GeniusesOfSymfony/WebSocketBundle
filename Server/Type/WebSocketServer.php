@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
-use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
@@ -63,8 +63,8 @@ class WebSocketServer implements ServerInterface
      */
     protected $logger;
 
-    /** @var  ServerPushHandlerInterface[] */
-    protected $serverPushHandlers;
+    /** @var  ServerPushHandlerRegistry */
+    protected $serverPusherHandlerRegistry;
 
     /** @var  TopicManager */
     protected $topicManager;
@@ -87,6 +87,7 @@ class WebSocketServer implements ServerInterface
         OriginRegistry $originRegistry,
         $originCheck,
         TopicManager $topicManager,
+        ServerPushHandlerRegistry $serverPushHandlerRegistry,
         LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
@@ -95,18 +96,10 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
-        $this->serverPushHandler = [];
         $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->topicManager = $topicManager;
+        $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
         $this->sessionHandler = new NullSessionHandler();
-    }
-
-    /**
-     * @param ServerPushHandlerInterface $handler
-     */
-    public function addServerPusherHandler(ServerPushHandlerInterface $handler)
-    {
-        $this->serverPushHandlers[] = $handler;
     }
 
     /**
@@ -169,8 +162,17 @@ class WebSocketServer implements ServerInterface
         $app = $stack->resolve($this->wampApplication);
 
         //Push Transport Layer
-        foreach($this->serverPushHandlers as $handler){
-            $handler->handle($this->loop, $this->wampApplication);
+        foreach ($this->serverPusherHandlerRegistry->getPushers() as $handler) {
+            try {
+                $handler->handle($this->loop, $this->wampApplication);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage(), [
+                    'code' => $e->getCode(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'push_handler_name' => $handler->getName(),
+                ]);
+            }
         }
 
         /* Server Event Loop to add other services in the same loop. */
@@ -180,7 +182,7 @@ class WebSocketServer implements ServerInterface
         $this->logger->info(sprintf(
             'Launching %s on %s PID: %s',
             $this->getName(),
-            $host.':'.$port,
+            $host . ':' . $port,
             getmypid()
         ));
 

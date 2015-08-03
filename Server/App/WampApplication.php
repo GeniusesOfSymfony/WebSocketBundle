@@ -102,14 +102,14 @@ class WampApplication implements WampServerInterface
 
     /**
      * @param WampRequest $request
-     * @param string            $data
-     * @param string            $provider
+     * @param string      $data
+     * @param string      $provider
      */
     public function onPush(WampRequest $request, $data, $provider)
     {
         $this->logger->info(sprintf('Pusher %s has pushed', $provider), [
             'provider' => $provider,
-            'topic' => $request->getMatched()
+            'topic' => $request->getMatched(),
         ]);
 
         $this->topicDispatcher->onPush($request, $data, $provider);

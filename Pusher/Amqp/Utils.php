@@ -22,11 +22,10 @@ class Utils
 //        $exchange->bind($config['queue_name'], 'gos.websocket.pusher');
 
 
-
         return [
             $channel,
             $exchange,
-            $queue
+            $queue,
         ];
     }
 }

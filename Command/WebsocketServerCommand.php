@@ -61,8 +61,7 @@ class WebsocketServerCommand extends Command
             ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
             ->addOption('profile', 'm', InputOption::VALUE_NONE, 'Profiling server')
             ->addOption('host', 'a', InputOption::VALUE_OPTIONAL, 'Host')
-            ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'port')
-        ;
+            ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'port');
     }
 
     /**

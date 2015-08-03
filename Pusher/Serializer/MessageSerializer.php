@@ -32,11 +32,11 @@ class MessageSerializer
     public function __construct()
     {
         $this->normalizers = [
-            new GetSetMethodNormalizer()
+            new GetSetMethodNormalizer(),
         ];
 
         $this->encoders = [
-            new JsonEncoder()
+            new JsonEncoder(),
         ];
 
         $this->serializer = new Serializer($this->normalizers, $this->encoders);
@@ -57,6 +57,7 @@ class MessageSerializer
     public function deserialize($data)
     {
         $class = null === $this->class ? 'Gos\Bundle\WebSocketBundle\Pusher\Message' : $this->class;
+
         return $this->serializer->deserialize($data, $class, 'json');
     }
 }

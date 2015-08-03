@@ -6,8 +6,8 @@ interface PusherInterface
 {
     /**
      * @param string|array $data
-     * @param string           $routeName
-     * @param array[]          $routeParameters
+     * @param string       $routeName
+     * @param array[]      $routeParameters
      */
     public function push($data, $routeName, $routeParameters);
 
@@ -22,4 +22,9 @@ interface PusherInterface
     public function setConfig($config);
 
     public function close();
+
+    /**
+     * @return string
+     */
+    public function getName();
 }

@@ -22,7 +22,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
     {
         $loader = new Loader\YamlFileLoader(
             $container,
-            new FileLocator(__DIR__.'/../Resources/config/services')
+            new FileLocator(__DIR__ . '/../Resources/config/services')
         );
 
         $loader->load('services.yml');
@@ -134,47 +134,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         //PubSub router
         $pubsubConfig = isset($configs['server']['router'])
             ? $configs['server']['router']
-            : []
-        ;
+            : [];
 
         if (!empty($pubsubConfig)) {
             $container->getDefinition('gos_web_socket.router.wamp')
                 ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
-        }
-
-        //pusher
-        if (isset($configs['pushers']) && !empty($configs['pushers'])) {
-            $pushers = array_filter($configs['pushers'], function($value){
-                if(isset($value['host']) && isset($value['port'])){
-                   return $value;
-                }
-            });
-
-            $wsServerDef = $container->getDefinition('gos_web_socket.ws.server');
-            $pusherRegistryDef = $container->getDefinition('gos_web_socket.pusher_registry');
-
-            foreach($pushers as $type => $pusherConfig){
-                $pusherConfig['type'] = $type;
-                $pusherServiceName = 'gos_web_socket.'.$type.'.pusher';
-
-                if(in_array($type, ['zmq', 'amqp']) && !extension_loaded($type)){
-                    throw new \RuntimeException(sprintf('%s pusher require %s php extension'));
-                }
-
-                if(isset($pusherConfig['default']) && $pusherConfig['default'] == true){
-                    $container->setAlias('gos_web_socket.pusher', $pusherServiceName);
-                }
-
-                $pusherRegistryDef->addMethodCall('addPusher', [ new Reference($pusherServiceName) ]);
-                $pusherServiceDef = $container->getDefinition($pusherServiceName);
-                $pusherServiceDef->addMethodCall('setConfig', [$pusherConfig]);
-
-                $wsServerDef->addMethodCall('addServerPusherHandler', [
-                    new Reference('gos_web_socket.'.$type.'.server_push_handler')
-                ]);
-            }
-        } else {
-            $container->setAlias('gos_web_socket.pusher', 'gos_web_socket.null.pusher');
         }
     }
 

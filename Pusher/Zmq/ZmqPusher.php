@@ -8,17 +8,24 @@ class ZmqPusher extends AbstractPusher
 {
     /**
      * @param string $data
+     * @param array  $context
      */
     protected function doPush($data, array $context)
     {
-        $config = $this->getConfig();
+        if (false === $this->isConnected()) {
+            if (!extension_loaded('zmq')) {
+                throw new \RuntimeException(sprintf(
+                    '%s pusher require %s php extension',
+                    get_class($this),
+                    $this->getName()
+                ));
+            }
 
-        if(false === $this->isConnected()){
             $config = $this->getConfig();
 
             $context = new \ZMQContext(1, $config['persistent']);
             $this->connection = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
-            $this->connection->connect($config['protocol'].'://'.$config['host'].':'.$config['port']);
+            $this->connection->connect($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
             $this->setConnected();
         }
 
@@ -33,6 +40,6 @@ class ZmqPusher extends AbstractPusher
 
         $config = $this->getConfig();
 
-        $this->connection->disconnect($config['host'].':'.$config['port']);
+        $this->connection->disconnect($config['host'] . ':' . $config['port']);
     }
 }

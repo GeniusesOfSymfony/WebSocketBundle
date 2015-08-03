@@ -14,11 +14,21 @@ class PusherRegistry
 
     /**
      * @param PusherInterface $pusher
+     * @param string          $name
      */
-    public function addPusher(PusherInterface $pusher)
+    public function addPusher(PusherInterface $pusher, $name)
     {
-        $config = $pusher->getConfig();
-        $this->pushers[$config['type']] = $pusher;
+        $this->pushers[$name] = $pusher;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return PusherInterface
+     */
+    public function getPusher($name)
+    {
+        return $this->pushers[$name];
     }
 
     /**
