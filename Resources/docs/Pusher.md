@@ -107,6 +107,15 @@ $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1'
 
 **NOTE :** Websocket Pusher is not the most faster and powerfull because he have a lot of overhead.
 
+# Pusher event
+
+When pusher send message or fail to send it, we dispatch event to allow you to plug your own logic.
+
+- **Success** : `gos_web_socket.push_success`
+- **Fail** : `gos_web_socket.push_fail`
+
+Will give an `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` where can access to the message and to the handler.
+
 # Last word
 
 **You can use pushers all together !**
