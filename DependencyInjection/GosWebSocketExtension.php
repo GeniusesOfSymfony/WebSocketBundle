@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -53,6 +53,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
 
+        //client
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
             $container->setParameter('gos_web_socket.firewall', (array) $clientConf['firewall']);
@@ -86,6 +87,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
+        //rpc
         if (!empty($configs['rpc'])) {
             $def = $container->getDefinition('gos_web_socket.rpc.registry');
 
@@ -96,6 +98,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
+        //topic
         if (!empty($configs['topics'])) {
             $def = $container->getDefinition('gos_web_socket.topic.registry');
 
@@ -106,6 +109,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
+        //periodic
         if (!empty($configs['periodic'])) {
             $def = $container->getDefinition('gos_web_socket.periodic.registry');
 
@@ -116,6 +120,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
+        //server
         if (!empty($configs['servers'])) {
             $def = $container->getDefinition('gos_web_socket.server.registry');
 
@@ -126,7 +131,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        $pubsubConfig = isset($configs['server']['router']) ? $configs['server']['router'] : [];
+        //PubSub router
+        $pubsubConfig = isset($configs['server']['router'])
+            ? $configs['server']['router']
+            : [];
 
         if (!empty($pubsubConfig)) {
             $container->getDefinition('gos_web_socket.router.wamp')

@@ -49,6 +49,8 @@ services:
             - @gos_web_socket_server.wamp_application
             - @gos_web_socket.origins.registry
             - %web_socket_origin_check%
+            - @gos_web_socket.wamp.topic_manager
+            - @gos_web_socket.server_push_handler.registry
             - @?monolog.logger.websocket
         tags:
             - { name: gos_web_socket.server }
@@ -71,6 +73,7 @@ services:
             - @gos_web_socket.topic.registry
             - @gos_web_socket.router.wamp
             - @gos_web_socket.topic.periodic_timer
+            - @gos_web_socket.wamp.topic_manager
             - @?monolog.logger.websocket
 
     gos_web_socket.topic.registry:
@@ -152,6 +155,7 @@ services:
         lazy: true
         arguments:
             - @gos_web_socket.periodic.registry
+            - @gos_web_socket.server_push_handler.registry
             - @?monolog.logger.websocket
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
@@ -179,3 +183,60 @@ services:
         arguments:
             - @gos_web_socket.client_storage
             - @gos_web_socket.websocket_authentification.provider
+
+    gos_web_socket.abstract.pusher:
+        class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
+        calls:
+            - [ setRouter, [ @gos_web_socket.router.wamp ] ]
+            - [ setSerializer, [ @gos_web_socket.push_message.serializer ] ]
+
+    gos_web_socket.zmq.pusher:
+        parent: gos_web_socket.abstract.pusher
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        tags:
+            - { name: gos_web_socket.pusher, alias: zmq }
+
+    gos_web_socket.zmq.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
+        arguments:
+            - @gos_web_socket.zmq.pusher
+            - @gos_web_socket.router.wamp
+            - @gos_web_socket.push_message.serializer
+            - @event_dispatcher
+            - @?monolog.logger.websocket
+        tags:
+            - { name: gos_web_socket.push_handler, alias: zmq }
+
+    gos_web_socket.amqp.pusher:
+        parent: gos_web_socket.abstract.pusher
+        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
+        tags:
+            - { name: gos_web_socket.pusher, alias: amqp }
+
+    gos_web_socket.amqp.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
+        arguments:
+            - @gos_web_socket.amqp.pusher
+            - @gos_web_socket.router.wamp
+            - @gos_web_socket.push_message.serializer
+            - @event_dispatcher
+            - @?monolog.logger.websocket
+        tags:
+            - {name: gos_web_socket.push_handler, alias: amqp }
+
+    gos_web_socket.wamp.topic_manager:
+        class: Ratchet\Wamp\TopicManager
+
+    gos_web_socket.kernel_event.terminate:
+        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
+        arguments:
+            - @gos_web_socket.pusher_registry
+
+    gos_web_socket.push_message.serializer:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer
+
+    gos_web_socket.pusher_registry:
+        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
+
+    gos_web_socket.server_push_handler.registry:
+        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry

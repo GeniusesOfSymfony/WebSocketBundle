@@ -76,7 +76,7 @@ class WampRouter
                 ), $attributes);
             }
 
-            return new WampRequest($routeName, $route, new ParameterBag($attributes));
+            return new WampRequest($routeName, $route, new ParameterBag($attributes), $topic->getId());
         } catch (ResourceNotFoundException $e) {
             $this->logger->error(sprintf(
                 'Unable to find route for %s',

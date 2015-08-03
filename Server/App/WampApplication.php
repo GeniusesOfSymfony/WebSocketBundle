@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -97,6 +98,21 @@ class WampApplication implements WampServerInterface
         $request = $this->wampRouter->match($topic);
 
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
+    }
+
+    /**
+     * @param WampRequest $request
+     * @param string      $data
+     * @param string      $provider
+     */
+    public function onPush(WampRequest $request, $data, $provider)
+    {
+        $this->logger->info(sprintf('Pusher %s has pushed', $provider), [
+            'provider' => $provider,
+            'topic' => $request->getMatched(),
+        ]);
+
+        $this->topicDispatcher->onPush($request, $data, $provider);
     }
 
     /**

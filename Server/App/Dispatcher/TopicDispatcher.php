@@ -5,11 +5,14 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\TopicManager;
+use Rhumsaa\Uuid\Console\Exception;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
@@ -35,27 +38,35 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     protected $logger;
 
+    /** @var  TopicManager */
+    protected $topicManager;
+
     const SUBSCRIPTION = 'onSubscribe';
 
     const UNSUBSCRIPTION = 'onUnSubscribe';
 
     const PUBLISH = 'onPublish';
 
+    const PUSH = 'onPush';
+
     /**
-     * @param TopicRegistry      $topicRegistry
-     * @param WampRouter         $router
-     * @param TopicPeriodicTimer $topicPeriodicTimer
-     * @param LoggerInterface    $logger
+     * @param TopicRegistry        $topicRegistry
+     * @param WampRouter           $router
+     * @param TopicPeriodicTimer   $topicPeriodicTimer
+     * @param TopicManager         $topicManager
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         TopicRegistry $topicRegistry,
         WampRouter $router,
         TopicPeriodicTimer $topicPeriodicTimer,
+        TopicManager $topicManager,
         LoggerInterface $logger = null
     ) {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
+        $this->topicManager = $topicManager;
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
@@ -65,8 +76,18 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
-        //if topic service exists, notify it
         $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
+    }
+
+    /**
+     * @param WampRequest  $request
+     * @param array|string $data
+     * @param string       $provider
+     */
+    public function onPush(WampRequest $request, $data, $provider)
+    {
+        $topic = $this->topicManager->getTopic($request->getMatched());
+        $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
     /**
@@ -100,13 +121,14 @@ class TopicDispatcher implements TopicDispatcherInterface
      * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic
-     * @param null                $payload
-     * @param null                $exclude
-     * @param null                $eligible
+     * @param null|string         $payload
+     * @param string[]|null       $exclude
+     * @param string[]|null       $eligible
+     * @param string|null
      *
      * @return bool
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null)
+    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         $dispatched = false;
 
@@ -126,29 +148,38 @@ class TopicDispatcher implements TopicDispatcherInterface
                     $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
                 }
 
-                try {
-                    if ($payload) { //its a publish call.
-                        $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
-                    } else {
-                        $appTopic->{$calledMethod}($conn, $topic, $request);
+                if ($calledMethod === static::PUSH) {
+                    if (!$appTopic instanceof PushableTopicInterface) {
+                        throw new Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
                     }
-                } catch (\Exception $e) {
-                    $this->logger->error($e->getMessage(), [
-                        'code' => $e->getCode(),
-                        'file' => $e->getFile(),
-                        'trace' => $e->getTraceAsString(),
-                    ]);
 
-                    $conn->callError($topic->getId(), $topic, $e->getMessage(), [
-                        'topic' => $topic,
-                        'request' => $request,
-                        'event' => $calledMethod,
-                    ]);
+                    $appTopic->onPush($topic, $request, $payload, $provider);
+                    $dispatched = true;
+                } else {
+                    try {
+                        if ($payload) { //its a publish call.
+                            $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
+                        } else {
+                            $appTopic->{$calledMethod}($conn, $topic, $request);
+                        }
 
-                    return;
+                        $dispatched = true;
+                    } catch (\Exception $e) {
+                        $this->logger->error($e->getMessage(), [
+                            'code' => $e->getCode(),
+                            'file' => $e->getFile(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+
+                        $conn->callError($topic->getId(), $topic, $e->getMessage(), [
+                            'topic' => $topic,
+                            'request' => $request,
+                            'event' => $calledMethod,
+                        ]);
+
+                        $dispatched = false;
+                    }
                 }
-
-                $dispatched = true;
             }
         }
 

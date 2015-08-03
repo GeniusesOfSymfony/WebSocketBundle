@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
+use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
@@ -13,6 +14,7 @@ use Gos\Component\RatchetStack\Builder;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Ratchet\Wamp\TopicManager;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -61,13 +63,21 @@ class WebSocketServer implements ServerInterface
      */
     protected $logger;
 
+    /** @var  ServerPushHandlerRegistry */
+    protected $serverPusherHandlerRegistry;
+
+    /** @var  TopicManager */
+    protected $topicManager;
+
     /**
+     * @param LoopInterface            $loop
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
      * @param OriginRegistry           $originRegistry
      * @param bool                     $originCheck
-     * @param LoggerInterface          $logger
+     * @param TopicManager             $topicManager
+     * @param LoggerInterface|null     $logger
      */
     public function __construct(
         LoopInterface $loop,
@@ -76,6 +86,8 @@ class WebSocketServer implements ServerInterface
         WampApplication $wampApplication,
         OriginRegistry $originRegistry,
         $originCheck,
+        TopicManager $topicManager,
+        ServerPushHandlerRegistry $serverPushHandlerRegistry,
         LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
@@ -85,6 +97,8 @@ class WebSocketServer implements ServerInterface
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
         $this->logger = null === $logger ? new NullLogger() : $logger;
+        $this->topicManager = $topicManager;
+        $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
         $this->sessionHandler = new NullSessionHandler();
     }
 
@@ -104,6 +118,9 @@ class WebSocketServer implements ServerInterface
     public function launch($host, $port, $profile)
     {
         $this->logger->info('Starting web socket');
+
+        //In order to avoid circular reference
+        $this->topicManager->setWampApplication($this->wampApplication);
 
         $stack = new Builder();
 
@@ -140,9 +157,23 @@ class WebSocketServer implements ServerInterface
             ->push('Ratchet\WebSocket\WsServer')
             ->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer', $this->loop)
             ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
-            ->push('Ratchet\Wamp\WampServer');
+            ->push('Ratchet\Wamp\WampServer', $this->topicManager);
 
         $app = $stack->resolve($this->wampApplication);
+
+        //Push Transport Layer
+        foreach ($this->serverPusherHandlerRegistry->getPushers() as $handler) {
+            try {
+                $handler->handle($this->loop, $this->wampApplication);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage(), [
+                    'code' => $e->getCode(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'push_handler_name' => $handler->getName(),
+                ]);
+            }
+        }
 
         /* Server Event Loop to add other services in the same loop. */
         $event = new ServerEvent($this->loop, $server);
@@ -151,7 +182,7 @@ class WebSocketServer implements ServerInterface
         $this->logger->info(sprintf(
             'Launching %s on %s PID: %s',
             $this->getName(),
-            $host.':'.$port,
+            $host . ':' . $port,
             getmypid()
         ));
 

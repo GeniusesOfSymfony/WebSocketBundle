@@ -22,16 +22,21 @@ class WampRequest
      */
     protected $routeName;
 
+    /** @var  string */
+    protected $matched;
+
     /**
      * @param string         $routeName
      * @param RouteInterface $route
      * @param ParameterBag   $attributes
+     * @param string         $matched
      */
-    public function __construct($routeName, $route, ParameterBag $attributes)
+    public function __construct($routeName, $route, ParameterBag $attributes, $matched)
     {
         $this->attributes = $attributes;
         $this->route = $route;
         $this->routeName = $routeName;
+        $this->matched = $matched;
     }
 
     /**
@@ -56,5 +61,13 @@ class WampRequest
     public function getRouteName()
     {
         return $this->routeName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMatched()
+    {
+        return $this->matched;
     }
 }

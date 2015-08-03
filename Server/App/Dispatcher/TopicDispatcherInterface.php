@@ -33,6 +33,13 @@ interface TopicDispatcherInterface
     public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible);
 
     /**
+     * @param WampRequest  $request
+     * @param array|string $data
+     * @param string       $provider
+     */
+    public function onPush(WampRequest $request, $data, $provider);
+
+    /**
      * @param string              $calledMethod
      * @param ConnectionInterface $conn
      * @param Topic               $topic
@@ -43,5 +50,5 @@ interface TopicDispatcherInterface
      *
      * @return bool
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null);
+    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null);
 }
