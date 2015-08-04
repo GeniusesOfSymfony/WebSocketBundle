@@ -107,6 +107,31 @@ $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1'
 
 **NOTE :** Websocket Pusher is not the most faster and powerfull because he have a lot of overhead.
 
+## Rely push to your topic
+
+Implement `PushableTopicInterface` interface to your topic 
+```php
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeTopic implements TopicInterface, PushableTopicInterface
+{
+    /**
+     * @param Topic        $topic
+     * @param WampRequest  $request
+     * @param array|string $data
+     * @param string       $provider The name of pusher who push the data
+     */
+    public function onPush(Topic $topic, WampRequest $request, $data, $provider)
+    {
+        $topic->broadcast($data);
+    }
+}
+```
+
 # Pusher event
 
 When pusher send message or fail to send it, we dispatch event to allow you to plug your own logic.
@@ -144,5 +169,3 @@ $pusher->push($message, 'user_notification', ['username' => 'user1']);
 $pusher = $this->container->get('gos_web_socket.zmq.pusher');
 $pusher->push($message, 'user_notification', ['username' => 'user1']);
 ```
-
-
