@@ -52,6 +52,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
 
         $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
+        $container->setParameter('web_socket_server.client_storage.prefix', $configs['client']['storage']['prefix']);
 
         //client
         if (isset($configs['client'])) {

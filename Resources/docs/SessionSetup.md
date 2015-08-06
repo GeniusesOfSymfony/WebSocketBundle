@@ -71,6 +71,8 @@ gos_web_socket:
         session_handler: @session.handler.pdo
         storage:
             driver: @gos_web_scocket.client_storage.predis.driver
+            ttl: 28800 #(optionally) time to live if you use redis driver
+            prefix: client #(optionally) prefix if you use redis driver, create key "client:1" instead key "1"
 ```
 
 ### Doctrine Cache Bundle as Client Storage Driver
@@ -148,21 +150,26 @@ class PredisDriver implements DriverInterface
     protected $client;
 
     /**
-     * @param Client $client
+     * string $prefix
      */
-    public function __construct(Client $client)
+    protected $prefix;
+
+    /**
+     * @param Client $client
+     * @param string $prefix
+     */
+    public function __construct(Client $client, $prefix = '')
     {
         $this->client = $client;
+        $this->prefix = ($prefix !== false ? $prefix . ':' : '');
     }
 
     /**
-     * @param string $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function fetch($id)
     {
-        $result = $this->client->get($id);
+        $result = $this->client->get($this->prefix . $id);
         if (null === $result) {
             return false;
         }
@@ -171,43 +178,33 @@ class PredisDriver implements DriverInterface
     }
 
     /**
-     * @param $id
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function contains($id)
     {
-        return $this->client->exists($id);
+        return $this->client->exists($this->prefix . $id);
     }
 
     /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return bool True if saved, false otherwise
+     * {@inheritdoc}
      */
     public function save($id, $data, $lifeTime = 0)
     {
         if ($lifeTime > 0) {
-            $response = $this->client->setex($id, $lifeTime, $data);
+            $response = $this->client->setex($this->prefix . $id, $lifeTime, $data);
         } else {
-            $response = $this->client->set($id, $data);
+            $response = $this->client->set($this->prefix . $id, $data);
         }
 
         return $response === true || $response == 'OK';
     }
 
     /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * {@inheritdoc}
      */
     public function delete($id)
     {
-        return $this->client->del($id) > 0;
+        return $this->client->del($this->prefix . $id) > 0;
     }
 }
 ```
@@ -220,6 +217,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
         arguments:
             - @snc_redis.cache
+            - %web_socket_server.client_storage.prefix% #(optionally)if you use prefix
 ```
 
 **NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
