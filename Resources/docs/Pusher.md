@@ -87,7 +87,7 @@ gos_web_socket:
         amqp:
             host: 127.0.0.1
             port: 5672
-            username: guest
+            login: guest
             password: guest
             vhost: '/'
 ```
@@ -158,7 +158,7 @@ Will give an `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` where can acces
         amqp:
             host: 127.0.0.1
             port: 5672
-            username: guest
+            login: guest
             password: guest
 ```
 
