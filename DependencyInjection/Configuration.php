@@ -180,7 +180,7 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('username')
+                ->scalarNode('login')
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
