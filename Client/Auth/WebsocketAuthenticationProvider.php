@@ -52,6 +52,11 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
+    /**
+     * @param ConnectionInterface $connection
+     *
+     * @return TokenInterface
+     */
     protected function getToken(ConnectionInterface $connection)
     {
         $token = null;
@@ -78,14 +83,19 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
     }
 
     /**
-     * @param TokenInterface $token
+     * @param ConnectionInterface $conn
+     *
+     * @return TokenInterface
+     *
+     * @throws StorageException
+     * @throws \Exception
      */
     public function authenticate(ConnectionInterface $conn)
     {
         if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
             $this->logger->warning(sprintf(
-                'User firewall is not configured, we have set %s by default',
-                $this->firewalls[0])
+                    'User firewall is not configured, we have set %s by default',
+                    $this->firewalls[0])
             );
         }
 
@@ -114,21 +124,10 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         $conn->WAMP->clientStorageId = $identifier;
 
         $this->logger->info(sprintf(
-            '%s connected [%]',
-            $username,
-            $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+            '%s connected',
+            $username
         ), $loggerContext);
 
         return $token;
-    }
-
-    /**
-     * @param TokenInterface $token
-     *
-     * @return bool
-     */
-    public function supports(TokenInterface $token)
-    {
-        return $token instanceof WebsocketToken;
     }
 }

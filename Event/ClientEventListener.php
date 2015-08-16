@@ -92,9 +92,8 @@ class ClientEventListener
             $loggerContext['username'] = $username;
 
             $this->logger->info(sprintf(
-                '%s disconnected [%]',
-                $username,
-                $user instanceof UserInterface ? implode(', ', $user->getRoles()) : array()
+                '%s disconnected',
+                $username
             ), $loggerContext);
         } catch (ClientNotFoundException $e) {
             $this->logger->info('user timed out', $loggerContext);

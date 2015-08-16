@@ -15,7 +15,7 @@ class PredisDriver implements DriverInterface
     protected $client;
 
     /**
-     * string $prefix
+     * string $prefix.
      */
     protected $prefix;
 
