@@ -213,6 +213,14 @@ services:
         tags:
             - { name: gos_web_socket.pusher, alias: amqp }
 
+    gos_web_socket.wamp.pusher:
+        parent: gos_web_socket.abstract.pusher
+        class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
+        arguments:
+            - @gos_web_socket.push_message.serializer
+        tags:
+            - { name: gos_web_socket.pusher, alias: wamp }
+
     gos_web_socket.amqp.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
         arguments:

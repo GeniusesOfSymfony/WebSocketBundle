@@ -105,7 +105,27 @@ $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1'
 **NOTE :** `$context` is optional but you can pass option to publish method like 'routing_key', 'publish_flags' and 'attributes' (**See** : https://github.com/pdezwart/php-amqp/blob/master/amqp_exchange.c#L576) 
 ## Websocket Pusher
 
-**NOTE :** Websocket Pusher is not the most faster and powerfull because he have a lot of overhead.
+**NOTE :** Websocket Pusher is not the most faster and powerful because he have a lot of overhead (Handshake have high cost).
+
+**NOTE 2 :** He call directly `onPublish` method not `onPush` because we use WAMP protocol.
+
+**1. Bundle Configuration**
+
+```yml
+gos_web_socket:
+    pushers:
+        wamp:
+            host: 127.0.0.1
+            port: 1337
+```
+
+**2. Push**
+
+```php
+$pusher = $this->container->get('gos_web_socket.wamp.pusher');
+//push(data, route_name, route_arguments)
+$pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1']);
+```
 
 ## Rely push to your topic
 

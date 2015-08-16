@@ -16,7 +16,7 @@ class Message implements MessageInterface
      */
     public function __construct($topic, $data)
     {
-        $this->name = $topic;
+        $this->topic = $topic;
         $this->data = $data;
     }
 
@@ -25,7 +25,7 @@ class Message implements MessageInterface
      */
     public function getTopic()
     {
-        return $this->name;
+        return $this->topic;
     }
 
     /**

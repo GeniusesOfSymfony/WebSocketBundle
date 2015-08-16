@@ -119,11 +119,41 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('pushers')
                 ->append($this->addZmqNode())
                 ->append($this->addAmqpNode())
+                ->append($this->addWampNode())
                 ->end()
             ->end()
         ->end();
 
         return $treeBuilder;
+    }
+
+    protected function addWampNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('wamp');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('host')
+                    ->example('127.0.0.1')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('port')
+                    ->example('1337')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->booleanNode('ssl')
+                    ->defaultValue(false)
+                ->end()
+                ->scalarNode('origin')
+                    ->defaultValue(null)
+                ->end()
+            ->end();
+
+        return $node;
     }
 
     protected function addZmqNode()
