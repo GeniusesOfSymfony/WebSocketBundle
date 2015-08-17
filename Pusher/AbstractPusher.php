@@ -104,7 +104,7 @@ abstract class AbstractPusher implements PusherInterface
      *
      * @return string|\Symfony\Component\Serializer\Encoder\scalar
      */
-    public function push($data, $routeName, $routeParameters, Array $context = [])
+    public function push($data, $routeName, Array $routeParameters = array(), Array $context = [])
     {
         $channel = $this->router->generate($routeName, $routeParameters);
         $message = new Message($channel, $data);
