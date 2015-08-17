@@ -36,9 +36,8 @@ gos_web_socket:
             default: true
             host: 127.0.0.1
             port: 5555
-            options:
-                persistent: true
-                protocol: tcp
+            persistent: true
+            protocol: tcp
 ```
 
 **NOTE :** if `default` set to true service is available through 'gos_web_socket.pusher' insteadof 'gos_web_socket.zmq.pusher'
