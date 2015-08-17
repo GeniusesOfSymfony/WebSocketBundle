@@ -21,7 +21,7 @@ sudo php5enmod zmq
 You will need to install a new dependency through composer:
 
 ```cmd
-composer require react/zmq
+composer require gos/react-amqp
 ```
 
 Then reload php-fpm server or apache/nginx if you are not using php-fpm
