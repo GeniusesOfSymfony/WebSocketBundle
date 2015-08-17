@@ -8,12 +8,11 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\TopicManager;
-use Rhumsaa\Uuid\Console\Exception;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -150,7 +149,7 @@ class TopicDispatcher implements TopicDispatcherInterface
 
                 if ($calledMethod === static::PUSH) {
                     if (!$appTopic instanceof PushableTopicInterface) {
-                        throw new Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
+                        throw new \Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
                     }
 
                     $appTopic->onPush($topic, $request, $payload, $provider);
