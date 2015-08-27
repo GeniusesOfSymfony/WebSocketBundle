@@ -60,7 +60,7 @@ class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken || false === $client) {
+            if ($client instanceof AnonymousToken || false === $client || is_string($client)) {
                 continue;
             }
 
@@ -85,7 +85,7 @@ class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if (true !== $anonymous && ($client instanceof AnonymousToken || false === $client)) {
+            if (true !== $anonymous && ($client instanceof AnonymousToken || false === $client || is_string($client))) {
                 continue;
             }
 
@@ -111,7 +111,7 @@ class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken || false === $client) {
+            if ($client instanceof AnonymousToken || false === $client || is_string($client)) {
                 continue;
             }
 
