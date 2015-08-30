@@ -20,6 +20,16 @@ services:
         tags:
             - { name: console.command }
 
+    gos_web_socket.load_balancer.command:
+        class: Gos\Bundle\WebSocketBundle\Command\ClusterCommand
+        arguments:
+            - @gos_web_socket.entry_point
+            - %web_socket_server.host%
+            - %web_socket_server.port%
+            - @?monolog.logger.websocket
+        tags:
+            - { name: console.command }
+
     gos_web_socket.websocket_server.command:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         arguments:
