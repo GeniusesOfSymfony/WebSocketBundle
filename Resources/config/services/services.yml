@@ -248,3 +248,10 @@ services:
 
     gos_web_socket.server_push_handler.registry:
         class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
+
+    gos_web_socket.data_collector:
+        class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
+        arguments:
+            - @debug.stopwatch
+        tags:
+            - { name: data_collector, template: 'GosWebSocketBundle:Collector:websocket.html.twig', id: 'websocket' }

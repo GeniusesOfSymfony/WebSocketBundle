@@ -39,14 +39,14 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
     protected $eventDispatcher;
 
     /**
-     * @param ZmqPusher                $pusher
+     * @param PusherInterface                $pusher
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
-        ZmqPusher $pusher,
+        PusherInterface $pusher,
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,

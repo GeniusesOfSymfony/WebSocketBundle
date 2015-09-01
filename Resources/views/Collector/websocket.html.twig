@@ -1,0 +1,31 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <img width="20" height="28" alt="Redis" style="border-width: 0; vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAFR0lEQVR42u3cwW0UURBF0QmhQpgQOgSH4tWsCYHMAWEhswEh0d2/6r9zpNqOBDPvAnbjxwMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPib5+v1+ub634/36vBx5QqHgYkAImBkIoAIOBFABJwIIAJOBBABJwKIgBMBRMCJACLgRAARcCKACDgRQAScCCACTgQQAScCiIATAUTAiQAi4EQAEXAigAg4EUAEnAggAk4EEAEnAoiAEwFEwIkAIuBEABFwIoAIOBFABJwIIAJOBBABJwLQ3rsInK4ECxHIjED5WwsikBmB8k8XRCAzAuXrF4hAZgTKFzERgcwIlO9kIAKZESjfzkQEMiNQnmlABDIjUB5sQgQyI1CebkQEMiNQHnFGBDIjUB5xhswIlEecITMC5RHn/b0tuqcItB5WecQ5wMIP5Vd/E2g7rPKIswAIQGYEyiPOAiAAmREojzgLgABkRqA84iwAApAZgfKIswAIQGYEyiPOAiAA5/nipxiLgABkBqAGjsr/cxAAAQgd/87fzkQAjP8fxi8CAiAA4eMXAQEQgPDxi4AACED4+EVAAAQgfPwiIAACED5+ERAAAQgfvwgIgACEj18EBMAbFT5+ERCA6Ddq3PhFQATGBKD5GzV2/CJw2a9fAEIiMH78IiAAYwLQLALbjD89AhY+KABNIrDd+JMjYOHDArA4AtuOPzUCFj4wAIsisP34EyNg4UMDcHMEYsafFgELHxyAmyIQN/6kCFj48ABcHIHY8adEwMI3CMBFEYgff0IELHyTAJwcAeMPiYCFb/JAx4kRMP6gCJi3CBh/cARMWwSMf/FoBEAEVkfA+BcORwBEYGUEjH/xeARABFZFwPgbDEgARGBFBIy/yYgEQATujoDxNxqSAIjAnW/4m8Fe8/sqACLgBEAARMCd+OEsARAAEcj+N3UJgACIQPYX1EoABEAEsr+aXgIgACKQ/a20EgABEIHs76OXAAiACGQ/RFMCIAAikP0YbQmAAIhA9v+mKwEQABHI/qEaJQACIAKzAlA7RUAAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AACACwREQAEQgOAICgAgER0AAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AACACwREQAEQgOAICgAgER0AAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AALBdBFZ/OCdFQADYKgJdPqBTIiAAbBOBbh/SCREQALaIQNcPavcICADjI9D9w9o5AgLA6AhM+cB2jYAAMDYC0z60HSMgAIyMwP+8qAh8RkAAGBeBM15UBD4iIACMisCZLyoCP1/vKQB09+tPq/ezX1gEZv7emUTY+H9740WgSQQEgFvHLwK9IiAA3D5+EegTAQFgyfhFoEcEBIBl4xeB9REQAJaOXwTWRkAAWD5+EVgXAQGgxfhFYE0EBIA24xeB+yMgALQa/5UReHw8Mz/lnje9f8fCXyPGf3sEgO7jFwEIH78IQPj4RQDCxy8CED5+EYDw8YsAhI9fBCB8/CIA4eMXAbjQsOfmRQBOdogAiIAIgAiIAIiAc+fF+jAtEXAigAg4EUAEnAggAk4EEAEnAoiAEwFEwIkAIuBEABFwIoAIOBFABJwIIAJOBBABJwKIgBMBRMCJACLgRAARcCKACDgRQAScCCACTgQQAScCiIATAUTAiQAi4EQAEXAigAg4EUAEnAggAk4EEAEnAoiAGxKBp2kBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMCffQdOWJjHZ1hSBAAAAABJRU5ErkJggg==">
+        <span class="sf-toolbar-status">10</span>
+    {% endset %}
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Queries</b>
+            <span>ds</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Query time</b>
+            <span>1 ms</span>
+        </div>
+    {% endset %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block head %}
+    {# si le « panel » du profiler web nécessite des fichiers JS ou CSS spécifiques #}
+{% endblock %}
+
+{% block menu %}
+    {# le contenu du menu #}
+{% endblock %}
+
+{% block panel %}
+    {# le contenu du « panel » #}
+{% endblock %}
