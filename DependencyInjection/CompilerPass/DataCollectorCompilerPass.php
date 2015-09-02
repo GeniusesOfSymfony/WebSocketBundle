@@ -29,6 +29,7 @@ class DataCollectorCompilerPass implements CompilerPassInterface
             $container->register($id, 'Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator')
                 ->addArgument(new Reference($id.'.inner'))
                 ->addArgument(new Reference('debug.stopwatch'))
+                ->addArgument(new Reference('gos_web_socket.data_collector'))
                 ->setDecoratedService($newPusherId)
             ;
         }

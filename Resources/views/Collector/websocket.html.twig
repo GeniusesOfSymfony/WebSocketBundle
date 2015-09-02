@@ -2,30 +2,39 @@
 
 {% block toolbar %}
     {% set icon %}
-        <img width="20" height="28" alt="Redis" style="border-width: 0; vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAFR0lEQVR42u3cwW0UURBF0QmhQpgQOgSH4tWsCYHMAWEhswEh0d2/6r9zpNqOBDPvAnbjxwMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPib5+v1+ub634/36vBx5QqHgYkAImBkIoAIOBFABJwIIAJOBBABJwKIgBMBRMCJACLgRAARcCKACDgRQAScCCACTgQQAScCiIATAUTAiQAi4EQAEXAigAg4EUAEnAggAk4EEAEnAoiAEwFEwIkAIuBEABFwIoAIOBFABJwIIAJOBBABJwLQ3rsInK4ECxHIjED5WwsikBmB8k8XRCAzAuXrF4hAZgTKFzERgcwIlO9kIAKZESjfzkQEMiNQnmlABDIjUB5sQgQyI1CebkQEMiNQHnFGBDIjUB5xhswIlEecITMC5RHn/b0tuqcItB5WecQ5wMIP5Vd/E2g7rPKIswAIQGYEyiPOAiAAmREojzgLgABkRqA84iwAApAZgfKIswAIQGYEyiPOAiAA5/nipxiLgABkBqAGjsr/cxAAAQgd/87fzkQAjP8fxi8CAiAA4eMXAQEQgPDxi4AACED4+EVAAAQgfPwiIAACED5+ERAAAQgfvwgIgACEj18EBMAbFT5+ERCA6Ddq3PhFQATGBKD5GzV2/CJw2a9fAEIiMH78IiAAYwLQLALbjD89AhY+KABNIrDd+JMjYOHDArA4AtuOPzUCFj4wAIsisP34EyNg4UMDcHMEYsafFgELHxyAmyIQN/6kCFj48ABcHIHY8adEwMI3CMBFEYgff0IELHyTAJwcAeMPiYCFb/JAx4kRMP6gCJi3CBh/cARMWwSMf/FoBEAEVkfA+BcORwBEYGUEjH/xeARABFZFwPgbDEgARGBFBIy/yYgEQATujoDxNxqSAIjAnW/4m8Fe8/sqACLgBEAARMCd+OEsARAAEcj+N3UJgACIQPYX1EoABEAEsr+aXgIgACKQ/a20EgABEIHs76OXAAiACGQ/RFMCIAAikP0YbQmAAIhA9v+mKwEQABHI/qEaJQACIAKzAlA7RUAAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AACACwREQAEQgOAICgAgER0AAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AACACwREQAEQgOAICgAgER0AAEIHgCAgAIhAcAQFABIIjIACIQHAEBAARCI6AALBdBFZ/OCdFQADYKgJdPqBTIiAAbBOBbh/SCREQALaIQNcPavcICADjI9D9w9o5AgLA6AhM+cB2jYAAMDYC0z60HSMgAIyMwP+8qAh8RkAAGBeBM15UBD4iIACMisCZLyoCP1/vKQB09+tPq/ezX1gEZv7emUTY+H9740WgSQQEgFvHLwK9IiAA3D5+EegTAQFgyfhFoEcEBIBl4xeB9REQAJaOXwTWRkAAWD5+EVgXAQGgxfhFYE0EBIA24xeB+yMgALQa/5UReHw8Mz/lnje9f8fCXyPGf3sEgO7jFwEIH78IQPj4RQDCxy8CED5+EYDw8YsAhI9fBCB8/CIA4eMXAbjQsOfmRQBOdogAiIAIgAiIAIiAc+fF+jAtEXAigAg4EUAEnAggAk4EEAEnAoiAEwFEwIkAIuBEABFwIoAIOBFABJwIIAJOBBABJwKIgBMBRMCJACLgRAARcCKACDgRQAScCCACTgQQAScCiIATAUTAiQAi4EQAEXAigAg4EUAEnAggAk4EEAEnAoiAGxKBp2kBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMCffQdOWJjHZ1hSBAAAAABJRU5ErkJggg==">
-        <span class="sf-toolbar-status">10</span>
+        <img width="28" height="28" alt="Redis" style="border-width: 0; vertical-align: middle; margin-right: 5px;"
+
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAACvElEQVR42u2WS2hTQRSG00IR62ORGjUaF7pIYjAJIc8mMdmrUBB8QN24UZC6ERSrK92qK8G9IL4WCkqhoBUEQQpC6cKFCt0UpRRU0L4ErX4/zIXhYpNpbpcdOGTunXPON3POmXMTCq2PtR79/f3hWq12kNF0kUwmsz0QMJfLRQBeaTQaE8hkO6nX63fz+Xw0CLObUybZ/cNms/kb+dtKgC4BHYnFYuEg0K5CoZDA2RPkTzuoNgb0VSqVCgfN524cHeG0J/1SrVbP8/vOioKgI3Z4i8XiHtJznGmPE5AwbSyVSnsrlcp+SSQS2Wyv47AB5K0FXVIqsImzoQNEZ0zvmF8ol8tb2wJRLOLwGU4+StLpdNOvg/NjOP5hhXcO3dvY3We+6L3jpJfR7WsJVNmrEj1n5PW0r6J34fgmOgtWEX3h3SUAQ8ynkGUjs7wb1rVzBvI8jkHVgt1i/bscWsCv6F1X/ojQKeYz5v2y7BW1FYFU3U52dQ/lX15hYPSGfB4FdsMP8xzrNDqludPD1tqkDtEyrHSSGEajdjUqZxguWLCfOhXP8x4U4HvdZ+YnVgXUiMfj24C+XqkRCIbaBhwOIt9M+D4hqY6AGtFoVNBRdZb/dJt51gaTyWQfJzvD87Sp7M6BGtlsVo3gMYZzyGcViBdWnQzoWaNzDnmhuxsIqEEnSeL4DoYXkWsqEKv0pwVThXLRB5AdQYFd6iAAH1AQQ3KsalSBKGf8fkBeojNgulI3uodMPrX+HLuSM00Vi+EYO13kd0r3TKVvvi4picKokwkmm0QiscVbo3HsI0K9zkA1Yu9Omkqc0T1T2FyEDR5mM7HV5K9HjVi90X/hXUSfOjb5lE0mlB4nqLq+OdVsp1By+UhpcIaq6xvouMvfEL8AngB6lZrY5Bxefd3ViF3/bPkFcINm0htaH2s9/gH39f9Ki6w5qQAAAABJRU5ErkJggg=="
+
+
+        >
+        <span class="sf-toolbar-status">{{ collector.pushTotal }}</span>
     {% endset %}
     {% set text %}
         <div class="sf-toolbar-info-piece">
-            <b>Queries</b>
-            <span>ds</span>
+            <b>Push</b>
+            <span>{{ collector.pushTotal }}</span>
         </div>
+
+        {% for pusher, duration in collector.durations %}
+            <div class="sf-toolbar-info-piece">
+                <b>{{ pusher|upper }} ({{ collector.pusherCounts[pusher] }})</b>
+                <span>{{ '%0.2f'|format(duration) }} ms</span>
+            </div>
+        {% endfor %}
+
         <div class="sf-toolbar-info-piece">
-            <b>Query time</b>
-            <span>1 ms</span>
+            <b>Total time</b>
+            <span>{{ '%0.2f'|format(collector.totalDuration) }} ms</span>
         </div>
     {% endset %}
-    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
-{% endblock %}
 
-{% block head %}
-    {# si le « panel » du profiler web nécessite des fichiers JS ou CSS spécifiques #}
-{% endblock %}
+    {% set icon %}
+        <a href="#">{{ icon }}</a>
+    {% endset %}
 
-{% block menu %}
-    {# le contenu du menu #}
-{% endblock %}
-
-{% block panel %}
-    {# le contenu du « panel » #}
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
 {% endblock %}
