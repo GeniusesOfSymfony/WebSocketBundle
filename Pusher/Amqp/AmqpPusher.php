@@ -33,7 +33,7 @@ class AmqpPusher extends AbstractPusher
             $this->connection = new \AMQPConnection($config);
             $this->connection->connect();
 
-            list(, $exchange) = Utils::setupConnection($this->connection, $config);
+            list(, $this->exchange) = Utils::setupConnection($this->connection, $config);
 
             $this->setConnected();
         }
@@ -48,7 +48,7 @@ class AmqpPusher extends AbstractPusher
 
         $context = $resolver->resolve($context);
 
-        $exchange->publish(
+        $this->exchange->publish(
             $data,
             $context['routing_key'],
             $context['publish_flags'],

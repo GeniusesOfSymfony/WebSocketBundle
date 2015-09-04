@@ -45,7 +45,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
-        AmqpPusher $pusher,
+        PusherInterface $pusher,
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
