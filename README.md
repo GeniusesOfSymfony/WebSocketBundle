@@ -1,6 +1,7 @@
 Gos Web Socket Bundle
 =====================
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GeniusesOfSymfony/WebSocketBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v/stable)](https://packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads)](https://packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license)](https://packagist.org/packages/gos/web-socket-bundle)
 ![Websocket](ws_logo.jpeg)
 
 About
