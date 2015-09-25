@@ -1,7 +1,7 @@
 #Ship in production
 
 How run your websocket server in production ?
-------------------------------------
+---------------------------------------------
 
 ```cmd
 app/console gos:websocket:server --env=prod

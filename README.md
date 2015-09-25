@@ -51,6 +51,7 @@ Resources
 * [Ship in production](Resources/docs/ShipInProduction.md)
 * [Performance Bench](Resources/docs/Performance.md)
 * [Push integration](Resources/docs/Pusher.md)
+* [SSL configuration](Resources/docs/Ssl.md)
 
 Code Cookbook
 --------------
