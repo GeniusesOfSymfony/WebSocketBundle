@@ -2,7 +2,7 @@
 
 Install [Stunnel](https://www.stunnel.org/index.html) : 
 
-
+```cmd
  sudo apt-get install stunnel
  ```
 
