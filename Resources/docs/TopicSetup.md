@@ -50,7 +50,7 @@ class AcmeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @return voids
+     * @return void
      */
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
