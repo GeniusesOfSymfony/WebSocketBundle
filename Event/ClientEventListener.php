@@ -7,7 +7,6 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -21,11 +20,6 @@ class ClientEventListener
     protected $clientStorage;
 
     /**
-     * @var SecurityContextInterface
-     */
-    protected $securityContext;
-
-    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -36,18 +30,16 @@ class ClientEventListener
     protected $authenticationProvider;
 
     /**
-     * @param ClientStorageInterface   $clientStorage
-     * @param SecurityContextInterface $securityContext
-     * @param LoggerInterface          $logger
+     * @param ClientStorageInterface $clientStorage
+     * @param WebsocketAuthenticationProvider $authenticationProvider
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         ClientStorageInterface $clientStorage,
-        SecurityContextInterface $securityContext,
         WebsocketAuthenticationProvider $authenticationProvider,
         LoggerInterface $logger = null
     ) {
         $this->clientStorage = $clientStorage;
-        $this->securityContext = $securityContext;
         $this->authenticationProvider = $authenticationProvider;
         $this->logger = null === $logger ? new NullLogger() : $logger;
     }
