@@ -63,7 +63,7 @@ class AcmeTopic implements TopicInterface
      * This will receive any Publish requests for this topic.
      *
      * @param ConnectionInterface $connection
-     * @param $Topic topic
+     * @param Topic topic
      * @param WampRequest $request
      * @param $event
      * @param array $exclude
@@ -75,12 +75,12 @@ class AcmeTopic implements TopicInterface
         /*
         	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
 
-            if ($topic->getId() == "acme/channel/shout")
+            if ($topic->getId() === 'acme/channel/shout')
      	       //shout something to all subs.
         */
 
         $topic->broadcast([
-        	'msg' => $event
+        	'msg' => $event,
         ]);
     }
 
@@ -125,7 +125,7 @@ For example, your channel pattern is `chat/user/{room}`, user subscribe to `chat
 
 ```php
 /** @var ConnectionInterface $client **/
-foreach($topic as $client){
+foreach ($topic as $client) {
     //Do stuff ...
 }
 ```
@@ -197,7 +197,7 @@ class AcmeTopic implements TopicInterface, TopicPeriodicTimerInterface
     public function registerPeriodicTimer(Topic $topic)
     {
         //add
-        $this->periodicTimer->addPeriodicTimer($this, 'hello', 2, function() use ($topic){
+        $this->periodicTimer->addPeriodicTimer($this, 'hello', 2, function() use ($topic) {
             $topic->broadcast('hello world');
         });
 
@@ -238,7 +238,7 @@ public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampR
     $topicTimer->isPeriodicTimerActive('hello'); //true or false
 
     //Remove periodic timer
-	$topicTimer->cancelPeriodicTimer('hello');
+    $topicTimer->cancelPeriodicTimer('hello');
 }
 ```
 
