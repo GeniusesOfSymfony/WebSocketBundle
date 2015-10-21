@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -32,7 +33,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         // Set the SecurityContext for Symfony <2.6
         // Should go back to simple configuration after drop <2.6 support
-        if (interface_exists('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')) {
+        if (version_compare(Kernel::VERSION_ID, '20600', '>=')) {
             $tokenStorageReference = new Reference('security.token_storage');
         } else {
             $tokenStorageReference = new Reference('security.context');
