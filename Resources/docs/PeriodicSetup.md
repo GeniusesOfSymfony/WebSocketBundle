@@ -26,7 +26,10 @@ class AcmePeriodic implements PeriodicInterface
     {
         echo "Executed once every 5 seconds" . PHP_EOL;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTimeout()
     {
         return 5000;
