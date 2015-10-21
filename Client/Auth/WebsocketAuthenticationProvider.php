@@ -10,14 +10,15 @@ use Symfony\Component\HttpKernel\Log\NullLogger;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface
 {
     /**
-     * @var SecurityContextInterface
+     * @var SecurityContextInterface|TokenStorageInterface
      */
-    protected $securityContext;
+    protected $tokenStorage;
 
     /**
      * @var array
@@ -35,18 +36,22 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
     protected $clientStorage;
 
     /**
-     * @param SecurityContextInterface $securityContext
+     * @param SecurityContextInterface|TokenStorageInterface $tokenStorage
      * @param array                    $firewalls
      * @param ClientStorageInterface   $clientStorage
      * @param LoggerInterface          $logger
      */
     public function __construct(
-        SecurityContextInterface $securityContext,
+        $tokenStorage,
         $firewalls = array(),
         ClientStorageInterface $clientStorage,
         LoggerInterface $logger = null
     ) {
-        $this->securityContext = $securityContext;
+        if (!$tokenStorage instanceof TokenStorageInterface && !$tokenStorage instanceof SecurityContextInterface) {
+            throw new \InvalidArgumentException('Argument 1 should be an instance of Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface or Symfony\Component\Security\Core\SecurityContextInterface');
+        }
+
+        $this->tokenStorage = $tokenStorage;
         $this->firewalls = $firewalls;
         $this->clientStorage = $clientStorage;
         $this->logger = null === $logger ? new NullLogger() : $logger;
@@ -75,8 +80,8 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
             $token = new AnonymousToken($this->firewalls[0], 'anon-' . $connection->WAMP->sessionId);
         }
 
-        if ($this->securityContext->getToken() !== $token) {
-            $this->securityContext->setToken($token);
+        if ($this->tokenStorage->getToken() !== $token) {
+            $this->tokenStorage->setToken($token);
         }
 
         return $token;

@@ -113,7 +113,6 @@ services:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
             - @gos_web_socket.client_storage
-            - @security.context
             - @gos_web_socket.websocket_authentification.provider
             - @?monolog.logger.websocket
         lazy: true
@@ -173,7 +172,7 @@ services:
     gos_web_socket.websocket_authentification.provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         arguments:
-            - @security.context
+            - #security.token_storage or security.context for Symfony <2.6
             - %gos_web_socket.firewall%
             - @gos_web_socket.client_storage
             - @?monolog.logger.websocket
