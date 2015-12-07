@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "symfony/framework-bundle": "~2.3",
+        "symfony/framework-bundle": "~2.3|~3.0",
         "gos/pubsub-router-bundle": "~0.1.0",
         "gos/websocket-client": "~0.1.0",
         "gos/ratchet-stack": "~0.1",
