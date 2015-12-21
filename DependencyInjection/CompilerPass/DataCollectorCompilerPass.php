@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 class DataCollectorCompilerPass implements CompilerPassInterface
@@ -14,7 +13,7 @@ class DataCollectorCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->getParameter('kernel.debug') && $container->has('debug.stopwatch')) {
+        if (!$container->getParameter('kernel.debug') || !$container->has('debug.stopwatch')) {
             return;
         }
 
