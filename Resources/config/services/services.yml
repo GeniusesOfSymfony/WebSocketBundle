@@ -7,35 +7,34 @@ services:
     gos_web_socket.entry_point:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
         arguments:
-            -'@gos_web_socket.server.registry'
+            - '@gos_web_socket.server.registry'
 
     #deprecated will be removed in v2, use gos_web_socket.websocket_server.command instead
     gos_web_socket.server_command:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
-        deprecated: true
         arguments:
-            -'@gos_web_socket.entry_point'
-            -'%web_socket_server.host%'
-            -'%web_socket_server.port%'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.entry_point'
+            - '%web_socket_server.host%'
+            - '%web_socket_server.port%'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: console.command }
 
     gos_web_socket.websocket_server.command:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         arguments:
-            -'@gos_web_socket.entry_point'
-            -'%web_socket_server.host%'
-            -'%web_socket_server.port%'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.entry_point'
+            - '%web_socket_server.host%'
+            - '%web_socket_server.port%'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: console.command }
 
     gos_web_socket.ws.client:
         class: Gos\Component\WebSocketClient\Wamp\Client
         arguments:
-            -'%web_socket_server.host%'
-            -'%web_socket_server.port%'
+            - '%web_socket_server.host%'
+            - '%web_socket_server.port%'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket' ] ]
 
@@ -44,15 +43,15 @@ services:
         public: false
         lazy: true
         arguments:
-            -'@gos_web_socket.server.event_loop'
-            -'@event_dispatcher'
-            -'@gos_web_socket.periodic.registry'
-            -'@gos_web_socket_server.wamp_application'
-            -'@gos_web_socket.origins.registry'
-            -'%web_socket_origin_check%'
-            -'@gos_web_socket.wamp.topic_manager'
-            -'@gos_web_socket.server_push_handler.registry'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.server.event_loop'
+            - '@event_dispatcher'
+            - '@gos_web_socket.periodic.registry'
+            - '@gos_web_socket_server.wamp_application'
+            - '@gos_web_socket.origins.registry'
+            - '%web_socket_origin_check%'
+            - '@gos_web_socket.wamp.topic_manager'
+            - '@gos_web_socket.server_push_handler.registry'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.server }
 
@@ -62,7 +61,7 @@ services:
     gos_web_socket.rpc.dispatcher:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
         arguments:
-            -'@gos_web_socket.rpc.registry'
+            - '@gos_web_socket.rpc.registry'
 
     gos_web_socket.rpc.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
@@ -71,11 +70,11 @@ services:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
         lazy: true
         arguments:
-            -'@gos_web_socket.topic.registry'
-            -'@gos_web_socket.router.wamp'
-            -'@gos_web_socket.topic.periodic_timer'
-            -'@gos_web_socket.wamp.topic_manager'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.topic.registry'
+            - '@gos_web_socket.router.wamp'
+            - '@gos_web_socket.topic.periodic_timer'
+            - '@gos_web_socket.wamp.topic_manager'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.topic.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
@@ -91,18 +90,18 @@ services:
         public: false
         lazy: true
         arguments:
-            -'@gos_web_socket.rpc.dispatcher'
-            -'@gos_web_socket.topic.dispatcher'
-            -'@event_dispatcher'
-            -'@gos_web_socket.client_storage'
-            -'@gos_web_socket.router.wamp'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.rpc.dispatcher'
+            - '@gos_web_socket.topic.dispatcher'
+            - '@event_dispatcher'
+            - '@gos_web_socket.client_storage'
+            - '@gos_web_socket.router.wamp'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         arguments:
-            -'%web_socket_server.client_storage.ttl%'
-            -'@?monolog.logger.websocket'
+            - '%web_socket_server.client_storage.ttl%'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
@@ -113,9 +112,9 @@ services:
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
-            -'@gos_web_socket.client_storage'
-            -'@gos_web_socket.websocket_authentification.provider'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.client_storage'
+            - '@gos_web_socket.websocket_authentification.provider'
+            - '@?monolog.logger.websocket'
         lazy: true
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
@@ -133,30 +132,30 @@ services:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
         lazy: true
         arguments:
-            -'@gos_web_socket.null.pubsub.router'
-            -'%kernel.debug%'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.null.pubsub.router'
+            - '%kernel.debug%'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.pdo.periodic_ping:
         class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
         lazy: true
         arguments:
-            -'@?pdo'
-            -'@?monolog.logger.websocket'
+            - '@?pdo'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.memory_usage.periodic:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
         lazy: true
         arguments:
-            -'@?monolog.logger.websocket'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.pnctl_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
         lazy: true
         arguments:
-            -'@gos_web_socket.periodic.registry'
-            -'@gos_web_socket.server_push_handler.registry'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.periodic.registry'
+            - '@gos_web_socket.server_push_handler.registry'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
 
@@ -168,21 +167,21 @@ services:
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
         arguments:
-            -'@gos_web_socket.server.event_loop'
+            - '@gos_web_socket.server.event_loop'
 
     gos_web_socket.websocket_authentification.provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         arguments:
             - #security.token_storage or security.context for Symfony <2.6
-            -'%gos_web_socket.firewall%'
-            -'@gos_web_socket.client_storage'
-            -'@?monolog.logger.websocket'
+            - '%gos_web_socket.firewall%'
+            - '@gos_web_socket.client_storage'
+            - '@?monolog.logger.websocket'
 
     gos_web_socket.websocket.client_manipulator:
         class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
         arguments:
-            -'@gos_web_socket.client_storage'
-            -'@gos_web_socket.websocket_authentification.provider'
+            - '@gos_web_socket.client_storage'
+            - '@gos_web_socket.websocket_authentification.provider'
 
     gos_web_socket.abstract.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
@@ -199,11 +198,11 @@ services:
     gos_web_socket.zmq.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:
-            -'@gos_web_socket.zmq.pusher'
-            -'@gos_web_socket.router.wamp'
-            -'@gos_web_socket.push_message.serializer'
-            -'@event_dispatcher'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.zmq.pusher'
+            - '@gos_web_socket.router.wamp'
+            - '@gos_web_socket.push_message.serializer'
+            - '@event_dispatcher'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.push_handler, alias: zmq }
 
@@ -217,18 +216,18 @@ services:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
         arguments:
-            -'@gos_web_socket.push_message.serializer'
+            - '@gos_web_socket.push_message.serializer'
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
 
     gos_web_socket.amqp.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
         arguments:
-            -'@gos_web_socket.amqp.pusher'
-            -'@gos_web_socket.router.wamp'
-            -'@gos_web_socket.push_message.serializer'
-            -'@event_dispatcher'
-            -'@?monolog.logger.websocket'
+            - '@gos_web_socket.amqp.pusher'
+            - '@gos_web_socket.router.wamp'
+            - '@gos_web_socket.push_message.serializer'
+            - '@event_dispatcher'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
@@ -238,7 +237,7 @@ services:
     gos_web_socket.kernel_event.terminate:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
         arguments:
-            -'@gos_web_socket.pusher_registry'
+            - '@gos_web_socket.pusher_registry'
 
     gos_web_socket.push_message.serializer:
         class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer
