@@ -131,10 +131,10 @@ class TopicDispatcher implements TopicDispatcherInterface
     {
         $dispatched = false;
 
-        foreach ((array) $request->getRoute()->getCallback() as $callback) {
-            $appTopic = $this->topicRegistry->getTopic($callback);
+        if ($topic) {
+            foreach ((array) $request->getRoute()->getCallback() as $callback) {
+                $appTopic = $this->topicRegistry->getTopic($callback);
 
-            if ($topic) {
                 if ($appTopic instanceof TopicPeriodicTimerInterface) {
                     $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
 
