@@ -114,7 +114,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     {
         $namespace = spl_object_hash($topic);
 
-        if (isset($this->registry[$namespace][$name])) {
+        if (!isset($this->registry[$namespace][$name])) {
             return;
         }
 
