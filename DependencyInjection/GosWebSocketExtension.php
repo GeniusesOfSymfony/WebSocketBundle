@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -29,6 +30,18 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);
+
+        // Set the SecurityContext for Symfony <2.6
+        // Should go back to simple configuration after drop <2.6 support
+        if (version_compare(Kernel::VERSION_ID, '20600', '>=')) {
+            $tokenStorageReference = new Reference('security.token_storage');
+        } else {
+            $tokenStorageReference = new Reference('security.context');
+        }
+        $container
+            ->getDefinition('gos_web_socket.websocket_authentification.provider')
+            ->replaceArgument(0, $tokenStorageReference)
+        ;
 
         $container->setParameter(
             'web_socket_server.port',
