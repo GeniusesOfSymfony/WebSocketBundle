@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\DataCollectorCompilerPass;
-use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\LoopCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\LoopFactoryCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PeriodicCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PingableDriverCompilerPass;
