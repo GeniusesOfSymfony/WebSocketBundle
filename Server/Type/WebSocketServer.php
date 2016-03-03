@@ -15,6 +15,7 @@ use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\Wamp\TopicManager;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -70,7 +71,7 @@ class WebSocketServer implements ServerInterface
     protected $topicManager;
 
     /**
-     * @param LoopInterface            $loop
+     * @param Factory                  $loop
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
@@ -80,7 +81,7 @@ class WebSocketServer implements ServerInterface
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
-        LoopInterface $loop,
+        Factory $loop,
         EventDispatcherInterface $eventDispatcher,
         PeriodicRegistry $periodicRegistry,
         WampApplication $wampApplication,
@@ -90,7 +91,7 @@ class WebSocketServer implements ServerInterface
         ServerPushHandlerRegistry $serverPushHandlerRegistry,
         LoggerInterface $logger = null
     ) {
-        $this->loop = $loop;
+        $this->loop = $loop->create();
         $this->eventDispatcher = $eventDispatcher;
         $this->periodicRegistry = $periodicRegistry;
         $this->wampApplication = $wampApplication;
