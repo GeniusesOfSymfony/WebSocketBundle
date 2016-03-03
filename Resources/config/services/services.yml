@@ -161,8 +161,7 @@ services:
 
     gos_web_socket.server.event_loop:
         class: React\EventLoop\Factory
-        factory_class: React\EventLoop\Factory
-        factory_method: create
+        factory: ['React\EventLoop\Factory', 'create']
 
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer

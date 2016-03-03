@@ -20,11 +20,11 @@ class TopicPeriodicTimer implements \IteratorAggregate
 
     /**
      * @param ConnectionInterface $connection
-     * @param Factory             $loop
+     * @param LoopInterface       $loop
      */
-    public function __construct(Factory $loop)
+    public function __construct(LoopInterface $loop)
     {
-        $this->loop = $loop->create();
+        $this->loop = $loop;
         $this->registry = [];
     }
 

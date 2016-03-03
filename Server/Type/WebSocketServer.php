@@ -71,7 +71,7 @@ class WebSocketServer implements ServerInterface
     protected $topicManager;
 
     /**
-     * @param Factory                  $loop
+     * @param LoopInterface            $loop
      * @param EventDispatcherInterface $eventDispatcher
      * @param PeriodicRegistry         $periodicRegistry
      * @param WampApplication          $wampApplication
@@ -81,7 +81,7 @@ class WebSocketServer implements ServerInterface
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
-        Factory $loop,
+        LoopInterface $loop,
         EventDispatcherInterface $eventDispatcher,
         PeriodicRegistry $periodicRegistry,
         WampApplication $wampApplication,
@@ -91,7 +91,7 @@ class WebSocketServer implements ServerInterface
         ServerPushHandlerRegistry $serverPushHandlerRegistry,
         LoggerInterface $logger = null
     ) {
-        $this->loop = $loop->create();
+        $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
         $this->periodicRegistry = $periodicRegistry;
         $this->wampApplication = $wampApplication;
