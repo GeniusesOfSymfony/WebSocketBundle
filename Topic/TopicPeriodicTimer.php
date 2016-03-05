@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
 use Ratchet\ConnectionInterface;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 
 class TopicPeriodicTimer implements \IteratorAggregate
