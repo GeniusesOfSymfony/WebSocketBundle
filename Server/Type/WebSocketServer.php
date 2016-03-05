@@ -15,6 +15,7 @@ use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\Wamp\TopicManager;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
