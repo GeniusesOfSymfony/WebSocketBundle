@@ -3,22 +3,10 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Component\WebSocketClient\Wamp\Client;
 
 class WampPusher extends AbstractPusher
 {
-    /** @var  MessageSerializer */
-    protected $serializer;
-
-    /**
-     * @param MessageSerializer $serializer
-     */
-    public function __construct(MessageSerializer $serializer)
-    {
-        $this->serializer = $serializer;
-    }
-
     /**
      * @param string $data
      * @param array  $context
