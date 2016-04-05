@@ -17,6 +17,8 @@ gos_web_socket:
         router:
             resources:
                 - @AcmeBundle/Resources/config/pubsub/routing.yml
+            context:
+                tokenSeparator: "/"
     rpc:                  []
     topics:               []
     periodic:             []
