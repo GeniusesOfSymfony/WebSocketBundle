@@ -8,6 +8,7 @@ use Ratchet\Wamp\Topic;
 interface PushableTopicInterface
 {
     /**
+     * @param Topic        $topic
      * @param WampRequest  $request
      * @param string|array $data
      * @param string       $provider
