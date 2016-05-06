@@ -90,12 +90,14 @@ class StartServerListener
 
         $pnctlEmitter->on(SIGINT, function () use ($pnctlEmitter) {
 
-            $this->logger->notice('Press CTLR+C again to stop the server');
+            $this->logger->notice('Press CTRL+C again to stop the server');
+
+            $siginfo = [];
 
             if (SIGINT === pcntl_sigtimedwait([SIGINT], $siginfo, 5)) {
                 $pnctlEmitter->emit(SIGTERM);
             } else {
-                $this->logger->notice('CTLR+C not pressed, continue to run normally');
+                $this->logger->notice('CTRL+C not pressed, continue to run normally');
             }
         });
     }
