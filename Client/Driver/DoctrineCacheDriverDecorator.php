@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
-use Doctrine\Common\Cache\CacheProvider;
+use Doctrine\Common\Cache\Cache;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -10,14 +10,14 @@ use Doctrine\Common\Cache\CacheProvider;
 class DoctrineCacheDriverDecorator implements DriverInterface
 {
     /**
-     * @var CacheProvider
+     * @var Cache
      */
     protected $cacheProvider;
 
     /**
-     * @param CacheProvider $cacheProvider
+     * @param Cache $cacheProvider
      */
-    public function __construct(CacheProvider $cacheProvider)
+    public function __construct(Cache $cacheProvider)
     {
         $this->cacheProvider = $cacheProvider;
     }
