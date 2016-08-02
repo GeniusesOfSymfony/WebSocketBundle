@@ -15,17 +15,21 @@ class PingableDriverCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $sessionHandler = $container->getAlias('gos_web_socket.session_handler', Container::NULL_ON_INVALID_REFERENCE);
+        if (false === $container->hasParameter('database_driver')) {
+            return;
+        }
 
-        if (null === $sessionHandler || false === $sessionHandler instanceof PdoSessionHandler) {
+        if (false === $container->hasAlias('gos_web_socket.session_handler')) {
+            return;
+        }
+
+        $sessionHandler = $container->getAlias('gos_web_socket.session_handler');
+
+        if (false === $sessionHandler instanceof PdoSessionHandler) {
             return;
         }
 
         $periodicRegistryDef = $container->getDefinition('gos_web_socket.periodic.registry');
-
-        if (false === $container->hasParameter('database_driver')) {
-            return;
-        }
 
         $pdoDriver = ['pdo_mysql', 'pdo_sqlite', 'pdo_pgsql'];
 
