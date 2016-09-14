@@ -65,6 +65,7 @@ ENABLED=1
 ```
 
 
-Launch your websocket server in the *connect port*. 
+Launch your websocket server in the *connectport*.
+
 Connect the client on wss://my.domainname.com:*acceptport*
 
