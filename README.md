@@ -109,7 +109,7 @@ _Note: when connecting on the client, if possible use the same values as here to
 The Server Side WebSocket installation is now complete. You should be able to run this from the root of your symfony installation.
 
 ```command
-php app/console gos:websocket:server
+php bin/console gos:websocket:server
 ```
 
 If everything is successful, you will see something similar to the following:
