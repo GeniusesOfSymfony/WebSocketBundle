@@ -160,7 +160,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             if (!is_bool($configs['pushers']['wamp']['ssl'])) {
                 throw new \InvalidArgumentException(sprintf('The ssl node under wamp pusher configuration must be a boolean value'));
             }
-        }        
+        }
     }
 
     /**
