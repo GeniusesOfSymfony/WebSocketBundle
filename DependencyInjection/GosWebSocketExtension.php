@@ -154,6 +154,13 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $container->getDefinition('gos_web_socket.router.wamp')
                 ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
         }
+        
+        // WAMP Pusher Configuration
+        if (isset($configs['pushers']) && isset($configs['pushers']['wamp'])) {
+            if (!is_bool($configs['pushers']['wamp']['ssl'])) {
+                throw new \InvalidArgumentException(sprintf('The ssl node under wamp pusher configuration must be a boolean value'));
+            }
+        }        
     }
 
     /**
