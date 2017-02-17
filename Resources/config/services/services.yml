@@ -52,6 +52,7 @@ services:
             - '@gos_web_socket.wamp.topic_manager'
             - '@gos_web_socket.server_push_handler.registry'
             - '@?monolog.logger.websocket'
+            - '@gos_web_socket.handshake_middleware.registry'
         tags:
             - { name: gos_web_socket.server }
 
@@ -84,6 +85,9 @@ services:
 
     gos_web_socket.origins.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
+
+    gos_web_socket.handshake_middleware.registry:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\HandshakeMiddlewareRegistry
 
     gos_web_socket_server.wamp_application:
         class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication

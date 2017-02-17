@@ -19,6 +19,9 @@ gos_web_socket:
                 - @AcmeBundle/Resources/config/pubsub/routing.yml
             context:
                 tokenSeparator: "/"
+        handshake_middleware: []
+            # {class: Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface, arguments: ['@some_service']}
+                
     rpc:                  []
     topics:               []
     periodic:             []

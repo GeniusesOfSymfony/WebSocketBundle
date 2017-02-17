@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\HandshakeMiddlewareRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
@@ -70,6 +71,9 @@ class WebSocketServer implements ServerInterface
     /** @var  TopicManager */
     protected $topicManager;
 
+    /** @var  HandshakeMiddlewareRegistry */
+    protected $handshakeMiddlewareRegistry;
+
     /**
      * @param LoopInterface            $loop
      * @param EventDispatcherInterface $eventDispatcher
@@ -79,6 +83,7 @@ class WebSocketServer implements ServerInterface
      * @param bool                     $originCheck
      * @param TopicManager             $topicManager
      * @param LoggerInterface|null     $logger
+     * @param HandshakeMiddlewareRegistry $handshakeMiddlewareRegistry
      */
     public function __construct(
         LoopInterface $loop,
@@ -89,7 +94,8 @@ class WebSocketServer implements ServerInterface
         $originCheck,
         TopicManager $topicManager,
         ServerPushHandlerRegistry $serverPushHandlerRegistry,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        HandshakeMiddlewareRegistry $handshakeMiddlewareRegistry
     ) {
         $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
@@ -101,6 +107,7 @@ class WebSocketServer implements ServerInterface
         $this->topicManager = $topicManager;
         $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
         $this->sessionHandler = new NullSessionHandler();
+        $this->handshakeMiddlewareRegistry = $handshakeMiddlewareRegistry;
     }
 
     /**
@@ -152,6 +159,13 @@ class WebSocketServer implements ServerInterface
 
         if ($this->originCheck) {
             $stack->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck', $allowedOrigins, $this->eventDispatcher);
+        }
+
+
+        if (!empty($this->handshakeMiddlewareRegistry->getMiddlewares())) {
+            foreach ($this->handshakeMiddlewareRegistry->getMiddlewares() as $middleware) {
+                call_user_func([$stack, 'push'], $middleware);
+            }
         }
 
         $stack
