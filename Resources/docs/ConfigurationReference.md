@@ -20,7 +20,7 @@ gos_web_socket:
             context:
                 tokenSeparator: "/"
         handshake_middleware: []
-            # {class: Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface, arguments: ['@some_service']}
+            # - {class: Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface, arguments: ['@some_service']}
                 
     rpc:                  []
     topics:               []
