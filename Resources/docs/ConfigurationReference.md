@@ -20,7 +20,7 @@ gos_web_socket:
             context:
                 tokenSeparator: "/"
         handshake_middleware: []
-            # - @some_service # implements Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface
+            # - @some_service
                 
     rpc:                  []
     topics:               []
