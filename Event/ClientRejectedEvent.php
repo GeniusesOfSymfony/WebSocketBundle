@@ -13,7 +13,7 @@ class ClientRejectedEvent extends Event
     /**
      * @var string
      */
-    protected $origin;
+    protected $msg;
 
     /**
      * @var RequestInterface
@@ -21,21 +21,21 @@ class ClientRejectedEvent extends Event
     protected $request;
 
     /**
-     * @param string           $origin
+     * @param string           $msg
      * @param RequestInterface $request
      */
-    public function __construct($origin, RequestInterface $request = null)
+    public function __construct($msg, RequestInterface $request = null)
     {
-        $this->origin = $origin;
+        $this->msg = $msg;
         $this->request = $request;
     }
 
     /**
      * @return string
      */
-    public function getOrigin()
+    public function getMsg()
     {
-        return $this->origin;
+        return $this->msg;
     }
 
     /**

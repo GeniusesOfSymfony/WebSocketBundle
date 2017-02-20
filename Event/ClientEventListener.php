@@ -124,8 +124,8 @@ class ClientEventListener
      */
     public function onClientRejected(ClientRejectedEvent $event)
     {
-        $this->logger->warning('Client rejected, bad origin', [
-            'origin' => $event->getOrigin(),
+        $this->logger->warning('Client rejected, msg', [
+            'msg' => $event->getMsg(),
         ]);
     }
 }

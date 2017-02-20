@@ -45,7 +45,7 @@ class OriginCheck extends BaseOriginCheck
         if (!in_array($origin, $this->allowedOrigins)) {
             $this->eventDispatcher->dispatch(
                 Events::CLIENT_REJECTED,
-                new ClientRejectedEvent($origin, $request)
+                new ClientRejectedEvent('connection rejected from '. $origin, $request)
             );
 
             return $this->close($conn, 403);

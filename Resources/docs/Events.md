@@ -81,9 +81,9 @@ class AcmeClientEventListener
      */
 	public function onClientRejected(ClientRejectedEvent $event)
     {
-    	$origin = $event->getOrigin;
+    	$msg = $event->getMsg();
 
-		echo 'connection rejected from '. $origin . PHP_EOL;
+		echo $msg . PHP_EOL;
     }
 }
 ```
