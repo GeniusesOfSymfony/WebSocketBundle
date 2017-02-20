@@ -52,6 +52,7 @@ Resources
 * [Performance Bench](Resources/docs/Performance.md)
 * [Push integration](Resources/docs/Pusher.md)
 * [SSL configuration](Resources/docs/Ssl.md)
+* [Handshake Middleware For Server](Resources/docs/HandshakeMiddleware.md)
 
 Code Cookbook
 --------------

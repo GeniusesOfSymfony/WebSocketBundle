@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class Middleware extends HttpServerInterface
+class Middleware implements HttpServerInterface
 {
     /**
      * @var \Ratchet\MessageComponentInterface
@@ -43,9 +43,9 @@ class Middleware extends HttpServerInterface
      */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
-        $this->_middleware->onOpen($conn, $request);
+        $answer = $this->_middleware->onOpen($conn, $request);
 
-        return $this->_component->onOpen($conn, $request);
+        return $answer instanceof ComponentInterface ? $answer : $this->_component->onOpen($conn, $request);
     }
 
     /**
@@ -53,9 +53,9 @@ class Middleware extends HttpServerInterface
      */
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        $this->_middleware->onMessage($from, $msg);
+        $answer = $this->_middleware->onMessage($from, $msg);
 
-        return $this->_component->onMessage($from, $msg);
+        return $answer instanceof MessageInterface ? $answer : $this->_component->onMessage($from, $msg);
     }
 
     /**
@@ -63,9 +63,9 @@ class Middleware extends HttpServerInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
-        $this->_middleware->onClose($conn);
+        $answer = $this->_middleware->onClose($conn);
 
-        return $this->_component->onClose($conn);
+        return $answer instanceof ComponentInterface ? $answer : $this->_component->onClose($conn);
     }
 
     /**
@@ -73,24 +73,8 @@ class Middleware extends HttpServerInterface
      */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        $this->_middleware->onError($conn, $e);
+        $answer = $this->_middleware->onError($conn, $e);
 
-        return $this->_component->onError($conn, $e);
-    }
-
-    /**
-     * Close a connection with an HTTP response.
-     *
-     * @param \Ratchet\ConnectionInterface $conn
-     * @param int                          $code HTTP status code
-     */
-    protected function close(ConnectionInterface $conn, $code = 400)
-    {
-        $response = new Response($code, array(
-            'X-Powered-By' => \Ratchet\VERSION,
-        ));
-
-        $conn->send((string) $response);
-        $conn->close();
+        return $answer instanceof ComponentInterface ? $answer : $this->_component->onError($conn, $e);
     }
 }
