@@ -67,12 +67,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $HandshakeMiddlewareRegistryDef = $container->getDefinition('gos_web_socket.handshake_middleware.registry');
         if (!empty($configs['server']['handshake_middleware'])) {
             foreach ($configs['server']['handshake_middleware'] as $middleware) {
-                $arguments = [];
-                foreach ($middleware['arguments'] as $argument) {
-                    $arguments[] = new Reference(ltrim($argument, '@'));
-                }
-                $middleware['arguments'] = $arguments;
-                $HandshakeMiddlewareRegistryDef->addMethodCall('addMiddleware', [$middleware]);
+                $HandshakeMiddlewareRegistryDef->addMethodCall('addMiddleware', new Reference(ltrim($middleware, '@')));
             }
         }
 
