@@ -164,7 +164,7 @@ class WebSocketServer implements ServerInterface
 
         if (!empty($this->handshakeMiddlewareRegistry->getMiddlewares())) {
             foreach ($this->handshakeMiddlewareRegistry->getMiddlewares() as $middleware) {
-                call_user_func([$stack, 'push'], ['Gos\Bundle\WebSocketBundle\Server\App\Stack\Factory\Middleware', $middleware]);
+                call_user_func([$stack, 'push'], 'Gos\Bundle\WebSocketBundle\Server\App\Stack\Factory\Middleware', $middleware);
             }
         }
 
