@@ -9,6 +9,6 @@ You can add any middleware as service to server with your business logic
 # Gos Web Socket Bundle
 gos_web_socket:
     server:
-        handshake_middleware: []
+        handshake_middleware: 
             - @some_service # implements Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface
 ```
