@@ -20,18 +20,11 @@ class HandshakeMiddlewareRegistry
     }
 
     /**
-     * @param array $middleware
+     * @param HandshakeMiddlewareInterface $middleware
      * @throws \Exception
      */
-    public function addMiddleware($middleware)
+    public function addMiddleware(HandshakeMiddlewareInterface $middleware)
     {
-        $interfaces = class_implements($middleware);
-
-        if (!isset($interfaces['Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface'])) {
-            $className = get_class($middleware);
-            throw new \Exception('"Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface" in not implemented by "' . $className . '"');
-        }
-
         $this->middlewares[] = $middleware;
     }
 

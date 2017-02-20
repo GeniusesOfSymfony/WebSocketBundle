@@ -1,6 +1,6 @@
 <?php
 
-namespace WebSocketBundle\Server\Middleware;
+namespace Gos\Bundle\WebSocketBundle\Server\App\Stack\Factory;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
