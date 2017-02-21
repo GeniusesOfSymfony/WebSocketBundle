@@ -76,11 +76,11 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
             }
         }
 
-        if (null === $token) {
+        if (null === $token && !$this->tokenStorage->getToken()) {
             $token = new AnonymousToken($this->firewalls[0], 'anon-' . $connection->WAMP->sessionId);
         }
 
-        if ($this->tokenStorage->getToken() !== $token) {
+        if ($token && $this->tokenStorage->getToken() !== $token) {
             $this->tokenStorage->setToken($token);
         }
 
