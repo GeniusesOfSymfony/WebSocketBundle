@@ -36,6 +36,7 @@ class Middleware implements HttpServerInterface
     ) {
         $this->_component = $component;
         $this->_middleware = $middleware;
+        $this->_middleware->setComponent($component);
     }
 
     /**
@@ -43,9 +44,7 @@ class Middleware implements HttpServerInterface
      */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
-        $answer = $this->_middleware->onOpen($conn, $request);
-
-        return $answer instanceof ConnectionInterface ? $answer : $this->_component->onOpen($conn, $request);
+        return $this->_middleware->onOpen($conn, $request);
     }
 
     /**
@@ -53,9 +52,7 @@ class Middleware implements HttpServerInterface
      */
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        $this->_middleware->onMessage($from, $msg);
-
-        return $this->_component->onMessage($from, $msg);
+        return $this->_middleware->onMessage($from, $msg);
     }
 
     /**
@@ -63,9 +60,7 @@ class Middleware implements HttpServerInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
-        $this->_middleware->onClose($conn);
-
-        return $this->_component->onClose($conn);
+        return $this->_middleware->onClose($conn);
     }
 
     /**
@@ -73,8 +68,6 @@ class Middleware implements HttpServerInterface
      */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        $this->_middleware->onError($conn, $e);
-
-        return $this->_component->onError($conn, $e);
+        return $this->_middleware->onError($conn, $e);
     }
 }

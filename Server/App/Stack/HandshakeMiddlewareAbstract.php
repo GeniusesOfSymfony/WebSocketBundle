@@ -17,17 +17,50 @@ abstract class HandshakeMiddlewareAbstract implements HttpServerInterface
      */
     protected $_component;
 
+    /**
+     * @param MessageComponentInterface $component
+     */
     public function setComponent(MessageComponentInterface $component)
     {
         $this->_component = $component;
     }
 
     /**
-     * @param \Ratchet\ConnectionInterface          $conn
-     * @param \Guzzle\Http\Message\RequestInterface $request null is default because PHP won't let me overload; don't pass null!!!
-     *
-     * @return ConnectionInterface|void
-     * @throws \UnexpectedValueException if a RequestInterface is not passed
+     * @param ConnectionInterface $conn
+     * @param RequestInterface|null $request
+     * @return mixed
      */
-    abstract public function onOpen(ConnectionInterface $conn, RequestInterface $request = null);
+    public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
+    {
+        return $this->_component->onOpen($conn, $request);
+    }
+
+    /**
+     * @param ConnectionInterface $conn
+     * @return mixed
+     */
+    public function onClose(ConnectionInterface $conn)
+    {
+        return $this->_component->onClose($conn);
+    }
+
+    /**
+     * @param ConnectionInterface $conn
+     * @param \Exception $e
+     * @return mixed
+     */
+    public function onError(ConnectionInterface $conn, \Exception $e)
+    {
+        return $this->_component->onError($conn, $e);
+    }
+
+    /**
+     * @param ConnectionInterface $from
+     * @param string $msg
+     * @return mixed
+     */
+    public function onMessage(ConnectionInterface $from, $msg)
+    {
+        return $this->_component->onMessage($from, $msg);
+    }
 }
