@@ -97,7 +97,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->arrayNode('handshake_middleware')
                         ->prototype('scalar')
-                            ->example('@some_service # implements Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface')
+                            ->example('@some_service # have to extends Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareAbstract')
                         ->end()
                     ->end()
                 ->end()

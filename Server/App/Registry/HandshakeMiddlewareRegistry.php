@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Registry;
 
-use Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareAbstract;
 
 /**
  * @author Tkachew <7tkachew@gmail.com>
@@ -10,7 +10,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface;
 class HandshakeMiddlewareRegistry
 {
     /**
-     * @var HandshakeMiddlewareInterface[]
+     * @var HandshakeMiddlewareAbstract[]
      */
     protected $middlewares;
 
@@ -20,16 +20,16 @@ class HandshakeMiddlewareRegistry
     }
 
     /**
-     * @param HandshakeMiddlewareInterface $middleware
+     * @param HandshakeMiddlewareAbstract $middleware
      * @throws \Exception
      */
-    public function addMiddleware(HandshakeMiddlewareInterface $middleware)
+    public function addMiddleware(HandshakeMiddlewareAbstract $middleware)
     {
         $this->middlewares[] = $middleware;
     }
 
     /**
-     * @return HandshakeMiddlewareInterface[]
+     * @return HandshakeMiddlewareAbstract[]
      */
     public function getMiddlewares()
     {

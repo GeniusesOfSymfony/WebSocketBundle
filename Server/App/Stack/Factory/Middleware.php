@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Stack\Factory;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
-use Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareInterface;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\HandshakeMiddlewareAbstract;
 use Guzzle\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\HttpServerInterface;
@@ -22,17 +22,17 @@ class Middleware implements HttpServerInterface
     protected $_component;
 
     /**
-     * @var HandshakeMiddlewareInterface
+     * @var HandshakeMiddlewareAbstract
      */
     protected $_middleware;
 
     /**
      * @param MessageComponentInterface $component
-     * @param HandshakeMiddlewareInterface  $middleware
+     * @param HandshakeMiddlewareAbstract  $middleware
      */
     public function __construct(
         MessageComponentInterface $component,
-        HandshakeMiddlewareInterface $middleware
+        HandshakeMiddlewareAbstract $middleware
     ) {
         $this->_component = $component;
         $this->_middleware = $middleware;

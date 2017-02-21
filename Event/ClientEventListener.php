@@ -124,8 +124,6 @@ class ClientEventListener
      */
     public function onClientRejected(ClientRejectedEvent $event)
     {
-        $this->logger->warning('Client rejected, msg', [
-            'msg' => $event->getMsg(),
-        ]);
+        $this->logger->warning('Client rejected, ' . $event->getMsg());
     }
 }
