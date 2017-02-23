@@ -14,7 +14,7 @@ interface FirewalledTopicInterface
      * @param null|string         $payload
      * @param string[]|null       $exclude
      * @param string[]|null       $eligible
-     * @param string|null
+     * @param string|null         $provider
      *
      * @return string|null        $error
      */
