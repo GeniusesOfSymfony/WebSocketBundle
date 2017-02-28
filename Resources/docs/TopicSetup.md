@@ -152,6 +152,64 @@ Where
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
 * `WampRequest` Is the representation of the request make trough websocket.
 
+### Firewall setup (Topic)
+
+It is possible to extend basic functionality of Topic Services to exclude unwanted connections.
+You must implement `FirewalledTopicInterface` to implement firewall functinoality into your `Topic` object.
+
+FirewalledTopicInterface requires your `Topic` to implement one additional function:
+
+* `checkConnection(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
+
+Possible return values are:
+
+* `$error` [string]: the connection is rejected for the reason $error
+* `null` : the connection is granted
+
+A possible implementation is the following:
+
+```php
+<?php
+
+namespace Acme\HomeBundle\Topics;
+
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\FirewalledTopicInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeFirewalledTopic implements TopicInterface, FirewalledTopicInterface
+{
+    /**
+     * @param ConnectionInterface $conn
+     * @param Topic               $topic
+     * @param null|string         $payload
+     * @param string[]|null       $exclude
+     * @param string[]|null       $eligible
+     * @param string|null         $provider
+     *
+     * @return string|null        $error
+     */
+    public function checkConnection(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    {
+        // check input data to verify if connection must be blocked
+        if ( /* ... */ )
+        {
+            // return error string to deny access
+            return 'Unauhtorized';
+        }
+        else
+        {
+            // return null to grant access
+            return null;
+        }
+    }
+}
+
+```
+
+
 ### Periodic Timer (Topic & Connection)
 
 Topic periodic timer are active when at least one client is connected.
