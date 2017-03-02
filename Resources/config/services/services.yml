@@ -51,8 +51,8 @@ services:
             - '%web_socket_origin_check%'
             - '@gos_web_socket.wamp.topic_manager'
             - '@gos_web_socket.server_push_handler.registry'
-            - '@?monolog.logger.websocket'
             - '@gos_web_socket.handshake_middleware.registry'
+            - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.server }
 

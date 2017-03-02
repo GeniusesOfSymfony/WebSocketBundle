@@ -82,8 +82,9 @@ class WebSocketServer implements ServerInterface
      * @param OriginRegistry           $originRegistry
      * @param bool                     $originCheck
      * @param TopicManager             $topicManager
-     * @param LoggerInterface|null     $logger
+     * @param ServerPushHandlerRegistry $serverPushHandlerRegistry
      * @param HandshakeMiddlewareRegistry $handshakeMiddlewareRegistry
+     * @param LoggerInterface|null     $logger
      */
     public function __construct(
         LoopInterface $loop,
@@ -94,8 +95,8 @@ class WebSocketServer implements ServerInterface
         $originCheck,
         TopicManager $topicManager,
         ServerPushHandlerRegistry $serverPushHandlerRegistry,
-        LoggerInterface $logger = null,
-        HandshakeMiddlewareRegistry $handshakeMiddlewareRegistry
+        HandshakeMiddlewareRegistry $handshakeMiddlewareRegistry,
+        LoggerInterface $logger = null
     ) {
         $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
