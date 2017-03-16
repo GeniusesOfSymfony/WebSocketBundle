@@ -156,7 +156,7 @@ class TopicDispatcher implements TopicDispatcherInterface
                     $dispatched = true;
                 } else {
                     try {
-                        if ($payload) { //its a publish call.
+                        if (null !== $payload) { //its a publish call.
                             $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
                         } else {
                             $appTopic->{$calledMethod}($conn, $topic, $request);
