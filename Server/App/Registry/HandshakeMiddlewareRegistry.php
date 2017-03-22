@@ -21,7 +21,6 @@ class HandshakeMiddlewareRegistry
 
     /**
      * @param HandshakeMiddlewareAbstract $middleware
-     * @throws \Exception
      */
     public function addMiddleware(HandshakeMiddlewareAbstract $middleware)
     {
