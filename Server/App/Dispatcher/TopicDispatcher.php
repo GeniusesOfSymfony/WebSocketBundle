@@ -140,11 +140,10 @@ class TopicDispatcher implements TopicDispatcherInterface
                 $appTopic = $this->topicRegistry->getTopic($callback);
 
                 if ($appTopic instanceof SecuredTopicInterface) {
-
                     try {
-                        $appTopic->secure($conn, $topic, $request, $payload , $exclude , $eligible , $provider);
-                    } catch ( FirewallRejectionException $e ) {
-                        $conn->callError($topic->getId(), $topic, 'You are not authorized to perform this action.'.PHP_EOL.$e->getMessage(), [
+                        $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
+                    } catch (FirewallRejectionException $e) {
+                        $conn->callError($topic->getId(), $topic, sprintf('You are not authorized to perform this action: %s', $e->getMessage()), [
                             'topic' => $topic,
                             'request' => $request,
                             'event' => $calledMethod,
