@@ -155,16 +155,13 @@ Where
 ### Firewall setup (Topic)
 
 It is possible to extend basic functionality of Topic Services to exclude unwanted connections.
-You must implement `FirewalledTopicInterface` to implement firewall functinoality into your `Topic` object.
+You must implement `SecuredTopicInterface` to implement firewall functionality into your `Topic` object.
 
-FirewalledTopicInterface requires your `Topic` to implement one additional function:
+SecuredTopicInterface requires your `Topic` to implement one additional function:
 
-* `checkConnection(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
+* `secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
 
-Possible return values are:
-
-* `$error` [string]: the connection is rejected for the reason $error
-* `null` : the connection is granted
+It must throw an exception (instance of `FirewallRejectionException`) if connection security check fails.
 
 A possible implementation is the following:
 
@@ -175,11 +172,12 @@ namespace Acme\HomeBundle\Topics;
 
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\FirewalledTopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
+use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class AcmeFirewalledTopic implements TopicInterface, FirewalledTopicInterface
+class AcmeSecuredTopic implements TopicInterface, SecuredTopicInterface
 {
     /**
      * @param ConnectionInterface $conn
@@ -191,18 +189,13 @@ class AcmeFirewalledTopic implements TopicInterface, FirewalledTopicInterface
      *
      * @return string|null        $error
      */
-    public function checkConnection(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         // check input data to verify if connection must be blocked
-        if ( /* ... */ )
-        {
-            // return error string to deny access
-            return 'Unauhtorized';
-        }
-        else
-        {
-            // return null to grant access
-            return null;
+        if ( /* ... */ ) {
+            throw new FirewallRejectionException();
+        } else {
+            // grant access
         }
     }
 }

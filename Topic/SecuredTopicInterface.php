@@ -4,9 +4,10 @@ namespace Gos\Bundle\WebSocketBundle\Topic;
 
 use Ratchet\ConnectionInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 use Ratchet\Wamp\Topic;
 
-interface FirewalledTopicInterface
+interface SecuredTopicInterface
 {
     /**
      * @param ConnectionInterface $conn
@@ -16,7 +17,7 @@ interface FirewalledTopicInterface
      * @param string[]|null       $eligible
      * @param string|null         $provider
      *
-     * @return string|null        $error
+     * @throws \Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException
      */
-    public function checkConnection(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null);
+    public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null);
 }
