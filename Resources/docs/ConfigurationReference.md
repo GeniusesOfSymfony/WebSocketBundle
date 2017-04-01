@@ -11,8 +11,8 @@ gos_web_socket:
     shared_config: true
     assetic: true #use assetic bundle
     server:
-        port: ~ # Required, Example 127.0.0.1
-        host: ~ # Required, Example 1337s
+        port: ~ # Required, Example 1337
+        host: ~ # Required, Example 127.0.0.1
         origin_check:         false
         router:
             resources:

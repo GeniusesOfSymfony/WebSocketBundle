@@ -107,7 +107,7 @@ Send a message to all the connections in this topic.
 
 #### How get the current channel information (route, attributes, path etc ...) ?
 
-`$request->getRouteName()` Will give the mathed route name
+`$request->getRouteName()` Will give the matched route name
 
 `$request->getRoute()` will give [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/RouteInterface.php) object.
 
