@@ -1,4 +1,4 @@
-#Share config between server and client
+# Share config between server and client
 
 Its useful to keep the server configuration isolated from the application. Here is a trivial way to share the Gos WebSocket Config between the server and the client.
 
@@ -11,7 +11,7 @@ gos_web_socket:
 
 ## How Access to the shared config
 
-###Twig
+### Twig
 ```html
 <script type="text/javascript">
     var _WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";
@@ -26,7 +26,7 @@ var myWs = WS.connect(_WS_URI);
 
 Alternatively, if you don't like polluting your global scope, you can render it directly into your javascript file by processing it via a controller.
 
-###Symfony2 DIC
+### Symfony2 DIC
 
 In service YAML :
 ```yaml

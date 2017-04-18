@@ -71,11 +71,11 @@ Let's do it !
 Installation Instructions
 -------------------------
 
-###Step 1: Install via composer
+### Step 1: Install via composer
 
 `composer require gos/web-socket-bundle`
 
-###Step 2: Add to your App Kernel
+### Step 2: Add to your App Kernel
 
 ```php
 <?php
@@ -90,7 +90,7 @@ public function registerBundles()
     );
 }
 ```
-###Step 3: Configure WebSocket Server
+### Step 3: Configure WebSocket Server
 
 Add the following to your app/config.yml
 

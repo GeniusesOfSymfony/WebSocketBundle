@@ -1,6 +1,6 @@
-#Client Setup
+# Client Setup
 
-###Step 1: Include Javascript
+### Step 1: Include Javascript
 To include the relevant javascript libraries necessary for Gos WebSocket, add these to your root layout file just before the closing body tag.
 
 ```twig
@@ -23,7 +23,7 @@ php app/console assetic:dump --env=prod --no-debug
 
 This is to ensure the client js libraries are available.
 
-###Step 2: gos_web_socket_client.js
+### Step 2: gos_web_socket_client.js
 
 Once the javascript is included, you can start using gos_web_socket_client.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
 

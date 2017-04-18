@@ -1,4 +1,4 @@
-#Session sharing and user authentication
+# Session sharing and user authentication
 
 Thanks to Ratchet its easy to get the shared info from the same website session. As per the
 [Ratchet documentation](http://socketo.me/docs/sessions), you must use a session handler other than the native one,
@@ -58,11 +58,11 @@ User is directly authenticated against his firewall, anonymous users are allow.
 **Anonymous user is represented by string, example : anon-54e3352d535d2**
 **Authenticated user is represented by UserInterface object**
 
-##Client storage
+## Client storage
 
 Each user connected to socket is persisted in our persistence layer. By default they are stored in php via SplStorage.
 
-###Customize client storage
+### Customize client storage
 
 ```yaml
 gos_web_socket:
@@ -222,7 +222,7 @@ services:
 
 **NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
 
-#Retrieve authenticated user
+# Retrieve authenticated user
 
 Whenever `ConnectionInterface` instance is available your are able to retrieve the associated authenticated user (if he is authenticated against symfony firewall).
 
