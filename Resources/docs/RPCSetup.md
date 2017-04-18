@@ -1,4 +1,4 @@
-#Remote Procedure Call Setup
+# Remote Procedure Call Setup
 
 Every remote procedure call (RPC) in Gos WebSocket has its own "network namespace" in order to dispatch requests to the correct command.
 
@@ -6,12 +6,12 @@ In Symfony RPCs are setup as services. This allows you full control of what to d
 
 If you are new to services, please see [Symfony2: Service Container](http://symfony.com/doc/master/book/service_container.html)
 
-##Overview
+## Overview
 * Create the service class
 * Register you service with Symfony
 * Register your service with PubSubRouter
 
-##Step 1: Create the Service Class
+## Step 1: Create the Service Class
 
 ```php
 <?php
@@ -57,7 +57,7 @@ To return a result from the procedure, simply return anything other than false o
 
 If you return false or null, it will return an error to the client, informing them the procedure call did not work correctly.
 
-##Step 2: Register your service with Symfony
+## Step 2: Register your service with Symfony
 
 If you are using YML, edit "YourBundle/Resources/config/services.yml", add:
 
@@ -106,7 +106,7 @@ e.g.
 
 The idea of having these network namespaces is to group relevant code into separate files.
 
-##Step 3: Register your service with PubSubRouter
+## Step 3: Register your service with PubSubRouter
 
 Now you have create your RPC service and implements your RPC call in the client, you must now link the path with your service.  `sample/add_func` will refer to AcmeService
 

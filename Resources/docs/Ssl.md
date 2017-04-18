@@ -1,8 +1,8 @@
-#SSL Configuration
+# SSL Configuration
 
 For wss:// connections we recommend using stunnel. It is used to open a secured port and then forward it to a not secured port on the same other different machine. You can also use Nginx or HaProxy
 
-##Using stunnel
+## Using stunnel
 
 Install [Stunnel](https://www.stunnel.org/index.html) : 
 
@@ -30,12 +30,12 @@ pid = /stunnel.pid
 
 # Only use this options if for making it more secure after you get it to work.
 # User id
-#setuid = nobody
+# setuid = nobody
 # Group id
-#setgid = nobody
+# setgid = nobody
 
 # IMPORTANT: If the websocketserver is on the same server as the webserver use this:
-#local = my.domainname.com # Insert here your domain that is secured with https.
+# local = my.domainname.com # Insert here your domain that is secured with https.
 
 [websockets]
 accept = 8443

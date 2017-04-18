@@ -1,4 +1,4 @@
-#Topic Handler Setup
+# Topic Handler Setup
 
 Although the standard Gos WebSocket PubSub can be useful as a simple channel for allowing messages to be pushed to users, anymore advanced functionality will require custom Topic Handlers.
 
@@ -9,14 +9,14 @@ A topic is the server side representation of a pubsub channel.
 
 You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
 
-##Overview
+## Overview
 
 * Create the topic handler service
 * Register your service with symfony
 * Connect the client with your topic
 * Link the topic with channel with pubsub router
 
-##Step 1: Create the Topic Handler Service
+## Step 1: Create the Topic Handler Service
 
 ```php
 <?php
@@ -244,7 +244,7 @@ public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampR
 
 :collision: **Periodic timer is bind on the current connection ! So if you broadcast from periodic timer your clients will recieve this message x * the number of subscribers**
 
-##Step 2: Register your service with Symfony
+## Step 2: Register your service with Symfony
 
 If you are using **YML**, edit `YourBundle/Resources/config/services.yml`
 
@@ -278,7 +278,7 @@ gos_web_socket:
 
 Look at [here](SessionSetup.md)
 
-##Step 3: Connect client to your topics
+## Step 3: Connect client to your topics
 The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
 
 ```javascript
@@ -296,7 +296,7 @@ The following javascript will show connecting to this topic, notice how "acme/ch
     session.publish("acme/channel", {msg: "I won't see this"});
 ```
 
-##Step 4 : Link channel & topic with pubsub router
+## Step 4 : Link channel & topic with pubsub router
 
 * Channel can be static e.g : `acme/user`
 * Channel can be dynamic e.g : `acme/user/*`
@@ -328,7 +328,7 @@ acme_topic:
         callback: 'acme.topic' #related to the getName() of your topic
 ```
 
-###Advanced example
+### Advanced example
 
 ```yaml
 acme_topic_chat:
