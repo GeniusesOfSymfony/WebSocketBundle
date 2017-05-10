@@ -55,6 +55,8 @@ the same URL, so the cookies can be read.
 
 User is directly authenticated against his firewall, anonymous users are allow.
 
+**Important:** The firewall must be the firewall context name if exist. Else the firewall name
+
 **Anonymous user is represented by string, example : anon-54e3352d535d2**
 **Authenticated user is represented by UserInterface object**
 
