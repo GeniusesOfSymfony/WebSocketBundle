@@ -33,16 +33,13 @@ For Symfony > 3.3
 ```yml
 services:
         # ...
-
-   Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         public:    false
         arguments:
-            - 'mysql:dbname=mydatabase'
-            - { db_username: myuser, db_password: mypassword }
+            - 'mysql:host=%database_host%;port=%database_port%;dbname=%database_name%'
+            - { db_username: '%database_user%', db_password: '%database_password%' }
 ```
-
-
-
 
 
 
