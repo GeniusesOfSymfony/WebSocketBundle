@@ -27,7 +27,7 @@ services:
         arguments: [@pdo, {lock_mode: 0}]
 ```
 
-For Symfony > 3.3
+For Symfony 3.3
 
 
 ```yml
