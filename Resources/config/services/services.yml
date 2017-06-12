@@ -183,6 +183,7 @@ services:
 
     gos_web_socket.abstract.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
+        public: false
         calls:
             - [ setRouter, ['@gos_web_socket.router.wamp' ] ]
             - [ setSerializer, ['@gos_web_socket.push_message.serializer' ] ]
