@@ -89,7 +89,7 @@ class WampApplication implements WampServerInterface
         $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
         $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
-        $this->logger->info(sprintf(
+        $this->logger->debug(sprintf(
             '%s publish to %s',
             $username,
             $topic->getId()
