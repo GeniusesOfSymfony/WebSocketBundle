@@ -25,6 +25,7 @@ class ZmqPusher extends AbstractPusher
 
             $context = new \ZMQContext(1, $config['persistent']);
             $this->connection = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
+            $this->connection->setSockOpt(\ZMQ::SOCKOPT_LINGER, $config['linger']);
             $this->connection->connect($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
             $this->setConnected();
         }

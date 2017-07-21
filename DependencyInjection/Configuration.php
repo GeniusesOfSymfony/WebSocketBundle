@@ -193,6 +193,9 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('tcp')
                     ->values(['tcp', 'ipc', 'inproc', 'pgm', 'epgm'])
                 ->end()
+                ->integerNode('linger')
+                    ->defaultValue(-1)
+                ->end()
             ->end();
 
         return $node;
