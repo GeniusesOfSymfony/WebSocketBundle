@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider;
+use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Psr\Log\LoggerInterface;
@@ -36,7 +36,7 @@ class ClientEventListener
      */
     public function __construct(
         ClientStorageInterface $clientStorage,
-        WebsocketAuthenticationProvider $authenticationProvider,
+        WebsocketAuthenticationProviderInterface $authenticationProvider,
         LoggerInterface $logger = null
     ) {
         $this->clientStorage = $clientStorage;
