@@ -1,12 +1,10 @@
 # Origin Check
 
-## Con
+## Configuration
 
 ```yaml
 gos_web_socket:
-	...
     server:
-		...
         origin_check: true
     origins:
         - www.mydomain.tld
