@@ -9,6 +9,8 @@ such as [Symfony PDO Session Handler](http://symfony.com/doc/master/cookbook/con
 ## Symfony PDO Session Handler
 Create the following services:
 
+For Symfony <3.3
+
 ```yml
 services:
     pdo:
@@ -24,6 +26,22 @@ services:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: [@pdo, {lock_mode: 0}]
 ```
+
+For Symfony 3.3
+
+
+```yml
+services:
+        # ...
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        public:    false
+        arguments:
+            - 'mysql:host=%database_host%;port=%database_port%;dbname=%database_name%'
+            - { db_username: '%database_user%', db_password: '%database_password%' }
+```
+
+
 
 [Create table in your DB](http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#mysql)
 
