@@ -25,6 +25,16 @@ services:
         arguments: [@pdo, {lock_mode: 0}]
 ```
 
+For Symfony3.3 use arguments in format:
+
+```yml
+arguments:
+    - 'mysql:host=%database_host%;port=%database_port%;dbname=%database_name%'
+    - '%database_user%'
+    - '%database_password%'
+```  
+
+
 [Create table in your DB](http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#mysql)
 
 Configure the Session Handler in your config.yml
