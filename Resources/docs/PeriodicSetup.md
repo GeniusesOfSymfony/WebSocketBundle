@@ -32,7 +32,7 @@ class AcmePeriodic implements PeriodicInterface
      */
     public function getTimeout()
     {
-        return 5000;
+        return 5;
     }
 }
 
