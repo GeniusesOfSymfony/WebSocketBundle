@@ -78,7 +78,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
             $config['port']
         ));
 
-        $this->consumer->bind('tcp://' . $config['host'] . ':' . $config['port']);
+        $this->consumer->bind($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
 
         $this->consumer->on('message', function ($data) use ($app, $config) {
 
@@ -91,7 +91,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
                 $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($data, $this));
             } catch (\Exception $e) {
                 $this->logger->error(
-                    'AMQP handler failed to ack message', [
+                    'zmq handler failed to ack message', [
                         'exception_message' => $e->getMessage(),
                         'file' => $e->getFile(),
                         'line' => $e->getLine(),
