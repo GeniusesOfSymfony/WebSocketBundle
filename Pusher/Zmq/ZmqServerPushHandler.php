@@ -91,7 +91,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
                 $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($data, $this));
             } catch (\Exception $e) {
                 $this->logger->error(
-                    'AMQP handler failed to ack message', [
+                    'zmq handler failed to ack message', [
                         'exception_message' => $e->getMessage(),
                         'file' => $e->getFile(),
                         'line' => $e->getLine(),
