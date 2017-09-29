@@ -78,7 +78,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
             $config['port']
         ));
 
-        $this->consumer->bind('tcp://' . $config['host'] . ':' . $config['port']);
+        $this->consumer->bind($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
 
         $this->consumer->on('message', function ($data) use ($app, $config) {
 
