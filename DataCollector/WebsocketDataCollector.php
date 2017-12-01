@@ -105,6 +105,21 @@ class WebsocketDataCollector extends DataCollector
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->rawData = [];
+
+        $this->data = [
+            'pusher_counts' => [],
+            'push_total' => 0,
+            'durations' => [],
+            'duration_total' => 0
+        ];
+    }
+
+    /**
      * Returns the name of the collector.
      *
      * @return string The collector name
