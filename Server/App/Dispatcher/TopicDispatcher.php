@@ -5,6 +5,8 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
@@ -13,6 +15,7 @@ use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\TopicManager;
+
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -132,8 +135,25 @@ class TopicDispatcher implements TopicDispatcherInterface
         $dispatched = false;
 
         if ($topic) {
+
             foreach ((array) $request->getRoute()->getCallback() as $callback) {
                 $appTopic = $this->topicRegistry->getTopic($callback);
+
+                if ($appTopic instanceof SecuredTopicInterface) {
+                    try {
+                        $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
+                    } catch (FirewallRejectionException $e) {
+                        $conn->callError($topic->getId(), $topic, sprintf('You are not authorized to perform this action: %s', $e->getMessage()), [
+                            'topic' => $topic,
+                            'request' => $request,
+                            'event' => $calledMethod,
+                        ]);
+
+                        $conn->close();
+                        $dispatched = false;
+                        return $dispatched ;
+                    }
+                }
 
                 if ($appTopic instanceof TopicPeriodicTimerInterface) {
                     $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
