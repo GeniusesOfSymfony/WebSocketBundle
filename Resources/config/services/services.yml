@@ -248,4 +248,4 @@ services:
     gos_web_socket.data_collector:
         class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
         tags:
-            - { name: data_collector, template: 'GosWebSocketBundle:Collector:websocket.html.twig', id: 'websocket' }
+            - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }
