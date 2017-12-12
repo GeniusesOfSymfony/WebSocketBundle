@@ -17,18 +17,18 @@
     ],
     "require": {
         "php": ">=5.4",
-        "symfony/framework-bundle": "~2.3|~3.0|~4.0",
-        "gos/pubsub-router-bundle": "~0.2",
-        "gos/websocket-client": "~0.1.0",
-        "gos/ratchet-stack": "~0.1",
-        "gos/pnctl-event-loop-emitter" : "~0.1",
-        "gos/ratchet": "~0.3.5"
+        "symfony/framework-bundle": "^2.3|^3.0|^4.0",
+        "gos/pubsub-router-bundle": "^0.3",
+        "gos/websocket-client": "^0.1",
+        "gos/ratchet-stack": "^0.1",
+        "gos/pnctl-event-loop-emitter" : "^0.1",
+        "gos/ratchet": "^0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
     },
     "replace" : {
-        "cboden/ratchet": "~0.3.0"
+        "cboden/ratchet": "^3.0"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
