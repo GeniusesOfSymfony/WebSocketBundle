@@ -28,7 +28,7 @@
         "phpunit/phpunit": "^4.8"
     },
     "replace" : {
-        "cboden/ratchet": "^3.0"
+        "cboden/ratchet": "^0.3"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
