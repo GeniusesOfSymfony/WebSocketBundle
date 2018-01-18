@@ -34,6 +34,16 @@ arguments:
     - '%database_password%'
 ```  
 
+If you're using Doctrine & want to re-use the same connection:
+
+```yml
+services:
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: 
+            - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+            - {lock_mode: 0}
+````
 
 [Create table in your DB](http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#mysql)
 
