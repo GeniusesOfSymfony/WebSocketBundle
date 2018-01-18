@@ -9,13 +9,18 @@ use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
-use Gos\Component\RatchetStack\Builder;
+use Gos\Bundle\WebSocketBundle\Server\WampServer;
+use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Ratchet\Wamp\TopicManager;
-use React\EventLoop\Factory;
+use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
+use Ratchet\Session\SessionProvider;
+use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -67,18 +72,21 @@ class WebSocketServer implements ServerInterface
     /** @var  ServerPushHandlerRegistry */
     protected $serverPusherHandlerRegistry;
 
-    /** @var  TopicManager */
+    /**
+     * @var TopicManager
+     */
     protected $topicManager;
 
     /**
-     * @param LoopInterface            $loop
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param PeriodicRegistry         $periodicRegistry
-     * @param WampApplication          $wampApplication
-     * @param OriginRegistry           $originRegistry
-     * @param bool                     $originCheck
-     * @param TopicManager             $topicManager
-     * @param LoggerInterface|null     $logger
+     * @param LoopInterface             $loop
+     * @param EventDispatcherInterface  $eventDispatcher
+     * @param PeriodicRegistry          $periodicRegistry
+     * @param WampApplication           $wampApplication
+     * @param OriginRegistry            $originRegistry
+     * @param bool                      $originCheck
+     * @param TopicManager              $topicManager
+     * @param ServerPushHandlerRegistry $serverPushHandlerRegistry
+     * @param LoggerInterface|null      $logger
      */
     public function __construct(
         LoopInterface $loop,
@@ -120,13 +128,8 @@ class WebSocketServer implements ServerInterface
     {
         $this->logger->info('Starting web socket');
 
-        //In order to avoid circular reference
-        $this->topicManager->setWampApplication($this->wampApplication);
 
-        $stack = new Builder();
-
-        $server = new Server($this->loop);
-        $server->listen($port, $host);
+        $server = new Server("$host:$port", $this->loop);
 
         if (true === $profile) {
             $memoryUsagePeriodicTimer = new PeriodicMemoryUsage($this->logger);
@@ -146,21 +149,26 @@ class WebSocketServer implements ServerInterface
 
         $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
 
-        $stack
-            ->push('Ratchet\Server\IoServer', $server, $this->loop)
-            ->push('Ratchet\Http\HttpServer');
-
-        if ($this->originCheck) {
-            $stack->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck', $allowedOrigins, $this->eventDispatcher);
-        }
-
-        $stack
-            ->push('Ratchet\WebSocket\WsServer')
-            ->push('Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer', $this->loop)
-            ->push('Ratchet\Session\SessionProvider', $this->sessionHandler)
-            ->push('Ratchet\Wamp\WampServer', $this->topicManager);
-
-        $app = $stack->resolve($this->wampApplication);
+        $app = new IoServer(
+            new HttpServer(
+                new OriginCheck(
+                    new SessionProvider(
+                        new WsServer(
+                            new WampConnectionPeriodicTimer(
+                                new WampServer($this->wampApplication, $this->topicManager),
+                                $this->loop
+                            )
+                        ),
+                        $this->sessionHandler
+                    ),
+                    $this->originCheck,
+                    $allowedOrigins,
+                    $this->eventDispatcher
+                )
+            ),
+            $server,
+            $this->loop
+        );
 
         //Push Transport Layer
         foreach ($this->serverPusherHandlerRegistry->getPushers() as $handler) {

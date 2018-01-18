@@ -229,7 +229,10 @@ services:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
     gos_web_socket.wamp.topic_manager:
-        class: Ratchet\Wamp\TopicManager
+        class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
+        arguments:
+            - '@gos_web_socket_server.wamp_application'
+
 
     gos_web_socket.kernel_event.terminate:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener

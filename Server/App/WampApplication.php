@@ -133,6 +133,7 @@ class WampApplication implements WampServerInterface
      */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
+
         $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
         $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
