@@ -149,16 +149,19 @@ class WebSocketServer implements ServerInterface
 
         $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
 
+        $wsServer = new WsServer(
+            new WampConnectionPeriodicTimer(
+                new WampServer($this->wampApplication, $this->topicManager),
+                $this->loop
+            )
+        );
+        $wsServer->setStrictSubProtocolCheck(false);
+
         $app = new IoServer(
             new HttpServer(
                 new OriginCheck(
                     new SessionProvider(
-                        new WsServer(
-                            new WampConnectionPeriodicTimer(
-                                new WampServer($this->wampApplication, $this->topicManager),
-                                $this->loop
-                            )
-                        ),
+                        $wsServer,
                         $this->sessionHandler
                     ),
                     $this->originCheck,
