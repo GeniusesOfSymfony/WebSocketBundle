@@ -35,9 +35,10 @@ class OriginCheck extends BaseOriginCheck
     public function __construct(
         MessageComponentInterface $component,
         $check = true,
-        array $allowed = array(),
+        array $allowed = [],
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $this->eventDispatcher = $eventDispatcher;
         parent::__construct($component, $allowed);
         $this->check = $check;
@@ -52,7 +53,7 @@ class OriginCheck extends BaseOriginCheck
             return $this->_component->onOpen($conn, $request);
         }
 
-        $header = (string) $request->getHeaderLine('Origin');
+        $header = (string)$request->getHeaderLine('Origin');
 
         $origin = parse_url($header, PHP_URL_HOST) ?: $header;
 
@@ -70,12 +71,14 @@ class OriginCheck extends BaseOriginCheck
 
     /**
      * Close a connection with an HTTP response
+     *
      * @param \Ratchet\ConnectionInterface $conn
      * @param int                          $code HTTP status code
      */
-    protected function close(ConnectionInterface $conn, $code = 400, array $additional_headers = []) {
+    protected function close(ConnectionInterface $conn, $code = 400, array $additional_headers = [])
+    {
         $response = new Response($code, array_merge([
-            'X-Powered-By' => \Ratchet\VERSION
+            'X-Powered-By' => \Ratchet\VERSION,
         ], $additional_headers));
 
         $conn->send(gPsr\str($response));
