@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
-
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
