@@ -46,7 +46,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     {
         try {
             $this->wampProtocol->onMessage($conn, $msg);
-        } catch (Exception $we) {
+        } catch (\Exception $we) {
             $conn->close(1007);
         }
     }
@@ -75,4 +75,3 @@ class WampServer implements MessageComponentInterface, WsServerInterface
         return $this->wampProtocol->getSubProtocols();
     }
 }
-
