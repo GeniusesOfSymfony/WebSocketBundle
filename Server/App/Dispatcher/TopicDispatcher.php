@@ -8,13 +8,13 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Ratchet\Wamp\TopicManager;
 
 
 /**
@@ -51,7 +51,9 @@ class TopicDispatcher implements TopicDispatcherInterface
 
     const PUSH = 'onPush';
 
-    /**
+    /**use Ratchet\MessageComponentInterface;
+    use Ratchet\WebSocket\WsServerInterface;
+    use Ratchet\ConnectionInterface;
      * @param TopicRegistry        $topicRegistry
      * @param WampRouter           $router
      * @param TopicPeriodicTimer   $topicPeriodicTimer
