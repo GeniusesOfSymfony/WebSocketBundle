@@ -3,10 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
 class PingableDriverCompilerPass implements CompilerPassInterface
 {
@@ -23,9 +21,9 @@ class PingableDriverCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $sessionHandler = $container->get((string) $container->getAlias('gos_web_socket.session_handler'));
+        $sessionHandlerDefinition = $container->getDefinition((string) $container->getAlias('gos_web_socket.session_handler'));
 
-        if (false === $sessionHandler instanceof PdoSessionHandler) {
+        if (!\in_array(\SessionHandlerInterface::class, \class_implements($sessionHandlerDefinition->getClass()), true)) {
             return;
         }
 
