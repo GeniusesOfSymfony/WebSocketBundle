@@ -18,7 +18,7 @@ services:
             - '%web_socket_server.port%'
             - '@?monolog.logger.websocket'
         tags:
-            - { name: console.command }
+            - { name: console.command, command: gos:server }
 
     gos_web_socket.websocket_server.command:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
@@ -28,7 +28,7 @@ services:
             - '%web_socket_server.port%'
             - '@?monolog.logger.websocket'
         tags:
-            - { name: console.command }
+            - { name: console.command, command: gos:websocket:server }
 
     gos_web_socket.ws.client:
         class: Gos\Component\WebSocketClient\Wamp\Client
