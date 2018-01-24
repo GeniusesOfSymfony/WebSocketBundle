@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
 class PingableDriverCompilerPass implements CompilerPassInterface
 {
@@ -23,8 +24,17 @@ class PingableDriverCompilerPass implements CompilerPassInterface
 
         $sessionHandlerDefinition = $container->getDefinition((string) $container->getAlias('gos_web_socket.session_handler'));
 
-        if (!\in_array(\SessionHandlerInterface::class, \class_implements($sessionHandlerDefinition->getClass()), true)) {
+        if (!class_exists($sessionHandlerDefinition->getClass()) || !\in_array(PdoSessionHandler::class, \class_parents($sessionHandlerDefinition->getClass()), true)) {
             return;
+        }
+
+        if (!$container->hasDefinition('pdo') || !$container->hasAlias('pdo')) {
+            $pdoReference = $sessionHandlerDefinition->getArgument(0);
+            if (!$pdoReference instanceof Reference || \PDO::class !== $container->getDefinition((string) $pdoReference)->getClass()) {
+                return;
+            }
+            $periodicPingDefinition = $container->getDefinition('gos_web_socket.pdo.periodic_ping');
+            $periodicPingDefinition->setArgument(0, $pdoReference);
         }
 
         $periodicRegistryDef = $container->getDefinition('gos_web_socket.periodic.registry');
