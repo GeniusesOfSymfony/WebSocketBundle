@@ -24,7 +24,7 @@ class PingableDriverCompilerPass implements CompilerPassInterface
 
         $sessionHandlerDefinition = $container->getDefinition((string) $container->getAlias('gos_web_socket.session_handler'));
 
-        if (!class_exists($sessionHandlerDefinition->getClass()) || !\in_array(PdoSessionHandler::class, \class_parents($sessionHandlerDefinition->getClass()), true)) {
+        if (PdoSessionHandler::class !== $sessionHandlerDefinition->getClass() && ( !class_exists($sessionHandlerDefinition->getClass()) || !\in_array(PdoSessionHandler::class, \class_parents($sessionHandlerDefinition->getClass()), true))) {
             return;
         }
 
