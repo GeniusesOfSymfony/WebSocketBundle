@@ -57,7 +57,7 @@ class StartServerListener
         }
 
         $server->emit('end');
-        $server->shutdown();
+        $server->close();
 
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
             if ($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)) {

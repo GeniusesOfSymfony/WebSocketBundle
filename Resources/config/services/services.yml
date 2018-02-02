@@ -18,7 +18,7 @@ services:
             - '%web_socket_server.port%'
             - '@?monolog.logger.websocket'
         tags:
-            - { name: console.command }
+            - { name: console.command, command: gos:server }
 
     gos_web_socket.websocket_server.command:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
@@ -28,7 +28,7 @@ services:
             - '%web_socket_server.port%'
             - '@?monolog.logger.websocket'
         tags:
-            - { name: console.command }
+            - { name: console.command, command: gos:websocket:server }
 
     gos_web_socket.ws.client:
         class: Gos\Component\WebSocketClient\Wamp\Client
@@ -229,7 +229,10 @@ services:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
     gos_web_socket.wamp.topic_manager:
-        class: Ratchet\Wamp\TopicManager
+        class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
+        arguments:
+            - '@gos_web_socket_server.wamp_application'
+
 
     gos_web_socket.kernel_event.terminate:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
