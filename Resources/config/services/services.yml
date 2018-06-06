@@ -57,6 +57,9 @@ services:
 
     Gos\Bundle\WebSocketBundle\Topic\TopicManager:
         public: false
+        calls:
+           - [setWampApplication, ['@Gos\Bundle\WebSocketBundle\Server\App\WampApplication']]
+
 
     Gos\Bundle\WebSocketBundle\Server\App\WampApplication:
         public: false
