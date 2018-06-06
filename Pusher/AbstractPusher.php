@@ -24,6 +24,12 @@ abstract class AbstractPusher implements PusherInterface
     /** @var  string */
     protected $name;
 
+    public function __construct(WampRouter $router, MessageSerializer $serializer)
+    {
+        $this->router = $router;
+        $this->serializer = $serializer;
+    }
+
     /**
      * @param string $data
      * @param array  $context

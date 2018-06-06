@@ -125,7 +125,7 @@ gos_web_socket:
         session_handler: @session.handler.pdo
         storage:
             driver: @gos_web_socket.client_storage.driver.redis
-            decorator: @gos_web_socket.client_storage.doctrine.decorator
+            decorator: @Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
 ```
 
 ### Create your own Driver
@@ -248,7 +248,7 @@ services:
 
 Whenever `ConnectionInterface` instance is available your are able to retrieve the associated authenticated user (if he is authenticated against symfony firewall).
 
-ClientManipulator class is available through DI `@gos_web_socket.websocket.client_manipulator`
+ClientManipulator class is available through DI `@Gos\Bundle\WebSocketBundle\Client\ClientManipulator`
 
 For example inside a topic :
 

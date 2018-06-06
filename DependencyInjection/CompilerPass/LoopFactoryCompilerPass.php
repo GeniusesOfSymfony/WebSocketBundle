@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
+use React\EventLoop\Factory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -17,15 +18,10 @@ class LoopFactoryCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('gos_web_socket.server.event_loop');
+        $definition = $container->getDefinition(Factory::class);
 
         if (method_exists($definition, 'setFactory')) {
             $definition->setFactory('React\EventLoop\Factory::create');
-        } else {
-            // SF < 2.6
-            $definition
-                ->setFactoryClass('React\EventLoop\Factory')
-                ->setFactoryMethod('create');
         }
     }
 }

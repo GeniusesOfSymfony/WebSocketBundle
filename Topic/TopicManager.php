@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
+use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
@@ -23,6 +24,16 @@ class TopicManager implements WsServerInterface, WampServerInterface
      * @var array
      */
     protected $topicLookup = [];
+
+    /**
+     * TopicManager constructor.
+     *
+     * @param WampApplication $wampApplication
+     */
+    public function __construct(WampApplication $wampApplication)
+    {
+        $this->app = $wampApplication;
+    }
 
     public function setWampApplication(WampServerInterface $app)
     {

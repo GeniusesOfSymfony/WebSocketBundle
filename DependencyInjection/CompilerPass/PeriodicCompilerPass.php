@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,7 +17,7 @@ class PeriodicCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('gos_web_socket.periodic.registry');
+        $definition = $container->getDefinition(PeriodicRegistry::class);
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.periodic');
 
         foreach ($taggedServices as $id => $attributes) {

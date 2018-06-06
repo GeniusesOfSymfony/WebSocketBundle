@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
+use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -28,7 +29,7 @@ class DataCollectorCompilerPass implements CompilerPassInterface
             $container->register($id, 'Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator')
                 ->addArgument(new Reference($id.'.inner'))
                 ->addArgument(new Reference('debug.stopwatch'))
-                ->addArgument(new Reference('gos_web_socket.data_collector'))
+                ->addArgument(new Reference(WebsocketDataCollector::class))
                 ->setDecoratedService($newPusherId)
             ;
         }

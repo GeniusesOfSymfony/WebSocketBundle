@@ -2,6 +2,8 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
+use Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -33,17 +35,17 @@ class PingableDriverCompilerPass implements CompilerPassInterface
             if (!$pdoReference instanceof Reference || \PDO::class !== $container->getDefinition((string) $pdoReference)->getClass()) {
                 return;
             }
-            $periodicPingDefinition = $container->getDefinition('gos_web_socket.pdo.periodic_ping');
+            $periodicPingDefinition = $container->getDefinition(PdoPeriodicPing::class);
             $periodicPingDefinition->setArgument(0, $pdoReference);
         }
 
-        $periodicRegistryDef = $container->getDefinition('gos_web_socket.periodic.registry');
+        $periodicRegistryDef = $container->getDefinition(PeriodicRegistry::class);
 
         $pdoDriver = ['pdo_mysql', 'pdo_sqlite', 'pdo_pgsql'];
 
         if (in_array($container->getParameter('database_driver'), $pdoDriver)) {
             $periodicRegistryDef->addMethodCall(
-                'addPeriodic', [new Reference('gos_web_socket.pdo.periodic_ping')]
+                'addPeriodic', [new Reference(PdoPeriodicPing::class)]
             );
         }
     }

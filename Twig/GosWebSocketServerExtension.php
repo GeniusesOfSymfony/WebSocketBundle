@@ -40,6 +40,6 @@ class GosWebSocketServerExtension extends \Twig_Extension
      */
     public function clientOutput(\Twig_Environment $twig)
     {
-        return $twig->render('GosWebSocketBundle::client.html.twig');
+        return $twig->render('@GosWebSocket/client.html.twig');
     }
 }

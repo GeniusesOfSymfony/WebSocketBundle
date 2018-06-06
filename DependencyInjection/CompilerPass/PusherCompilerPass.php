@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
+use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +35,7 @@ class PusherCompilerPass implements CompilerPassInterface
         });
 
         //Pusher
-        $definition = $container->getDefinition('gos_web_socket.pusher_registry');
+        $definition = $container->getDefinition(PusherRegistry::class);
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.pusher');
 
         foreach ($taggedServices as $id => $attributes) {
@@ -53,7 +55,7 @@ class PusherCompilerPass implements CompilerPassInterface
         }
 
         //ServerPushHandler
-        $definition = $container->getDefinition('gos_web_socket.server_push_handler.registry');
+        $definition = $container->getDefinition(ServerPushHandlerRegistry::class);
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.push_handler');
 
         foreach ($taggedServices as $id => $attributes) {

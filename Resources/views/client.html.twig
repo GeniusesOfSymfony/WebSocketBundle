@@ -1,6 +1,5 @@
-{% javascripts
-    '@GosWebSocketBundle/Resources/public/js/vendor/autobahn.min.js'
-    '@GosWebSocketBundle/Resources/public/js/gos_web_socket_client.js'
-%}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+{% block javascripts %}
+    {# Dont forget to install assets in public folder. #}
+    <script type="text/javascript" src="/bundles/goswebsocket/js/vendor/autobahn.min.js"></script>
+    <script type="text/javascript" src="/bundles/goswebsocket/js/gos_web_socket_client.js"></script>
+{% endblock %}

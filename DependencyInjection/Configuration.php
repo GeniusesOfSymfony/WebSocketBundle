@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -12,7 +13,7 @@ class Configuration implements ConfigurationInterface
 {
     const DEFAULT_TTL = 900;
     const DEFAULT_PREFIX = '';
-    const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
+    const DEFAULT_CLIENT_STORAGE_SERVICE = '@Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver';
     const DEFAULT_FIREWALL = 'ws_firewall';
     const DEFAULT_ORIGIN_CHECKER = false;
     const DEFAULT_TOKEN_SEPARATOR = '/';
@@ -41,7 +42,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('driver')
                                 ->defaultValue(static::DEFAULT_CLIENT_STORAGE_SERVICE)
-                                ->example('@gos_web_socket.server.in_memory.client_storage.driver')
+                                ->example('@'.InMemoryDriver::class)
                             ->end()
                             ->scalarNode('ttl')
                                 ->defaultValue(static::DEFAULT_TTL)

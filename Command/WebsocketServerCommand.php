@@ -41,8 +41,8 @@ class WebsocketServerCommand extends Command
      */
     public function __construct(
         EntryPoint $entryPoint,
-        $host,
-        $port,
+        string $host,
+        int $port,
         LoggerInterface $logger = null
     ) {
         $this->entryPoint = $entryPoint;

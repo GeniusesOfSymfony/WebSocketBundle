@@ -40,7 +40,7 @@ gos_web_socket:
             protocol: tcp
 ```
 
-**NOTE :** if `default` set to true service is available through 'gos_web_socket.pusher' insteadof 'gos_web_socket.zmq.pusher'
+**NOTE :** if `default` set to true service is available through 'gos_web_socket.pusher' insteadof 'Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher'
 
 After that, you will see this message when you start the websocket server
 
@@ -51,7 +51,7 @@ After that, you will see this message when you start the websocket server
 **3. Push**
 
 ```php
-$pusher = $this->container->get('gos_web_socket.zmq.pusher');
+$pusher = $this->container->get('Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher');
 //push(data, route_name, route_arguments)
 $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1']);
 ```
@@ -96,7 +96,7 @@ gos_web_socket:
 **3. Push**
 
 ```php
-$pusher = $this->container->get('gos_web_socket.amqp.pusher');
+$pusher = $this->container->get('Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher');
 //push(data, route_name, route_arguments, $context)
 $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1', $context]);
 ```
@@ -121,7 +121,7 @@ gos_web_socket:
 **2. Push**
 
 ```php
-$pusher = $this->container->get('gos_web_socket.wamp.pusher');
+$pusher = $this->container->get('Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher');
 //push(data, route_name, route_arguments)
 $pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1']);
 ```
@@ -182,9 +182,9 @@ Will give an `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` where can acces
 ```
 
 ```php
-$pusher = $this->container->get('gos_web_socket.amqp.pusher');
+$pusher = $this->container->get('Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher');
 $pusher->push($message, 'user_notification', ['username' => 'user1']);
 
-$pusher = $this->container->get('gos_web_socket.zmq.pusher');
+$pusher = $this->container->get('Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher');
 $pusher->push($message, 'user_notification', ['username' => 'user1']);
 ```

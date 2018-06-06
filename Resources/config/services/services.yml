@@ -1,253 +1,167 @@
 services:
-    gos_web_socket.twig.extension:
-        class: Gos\Bundle\WebSocketBundle\Twig\GosWebSocketServerExtension
-        tags:
-            - { name: "twig.extension" }
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
 
-    gos_web_socket.entry_point:
-        class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
-        arguments:
-            - '@gos_web_socket.server.registry'
+    Gos\Bundle\WebSocketBundle\:
+      resource: '../../../*'
+      exclude: '../../../{Entity,Migrations,Tests,GosWebSocketBundle.php}'
 
-    #deprecated will be removed in v2, use gos_web_socket.websocket_server.command instead
-    gos_web_socket.server_command:
-        class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
+    Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand:
         arguments:
-            - '@gos_web_socket.entry_point'
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
-            - '@?monolog.logger.websocket'
+            $host: '%web_socket_server.host%'
+            $port: '%web_socket_server.port%'
         tags:
-            - { name: console.command, command: gos:server }
-
-    gos_web_socket.websocket_server.command:
-        class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
-        arguments:
-            - '@gos_web_socket.entry_point'
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
-            - '@?monolog.logger.websocket'
-        tags:
+            - { name: monolog.logger, channel: websocket }
             - { name: console.command, command: gos:websocket:server }
 
-    gos_web_socket.ws.client:
-        class: Gos\Component\WebSocketClient\Wamp\Client
+    Gos\Component\WebSocketClient\Wamp\Client:
         arguments:
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket' ] ]
+           $host: '%web_socket_server.host%'
+           $port: '%web_socket_server.port%'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.ws.server:
-        class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
-        public: false
+    Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer:
         lazy: true
         arguments:
-            - '@gos_web_socket.server.event_loop'
-            - '@event_dispatcher'
-            - '@gos_web_socket.periodic.registry'
-            - '@gos_web_socket_server.wamp_application'
-            - '@gos_web_socket.origins.registry'
-            - '%web_socket_origin_check%'
-            - '@gos_web_socket.wamp.topic_manager'
-            - '@gos_web_socket.server_push_handler.registry'
-            - '@?monolog.logger.websocket'
+            $loop: '@React\EventLoop\Factory'
+            $eventDispatcher: '@event_dispatcher'
+            $periodicRegistry: '@Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry'
+            $wampApplication: '@Gos\Bundle\WebSocketBundle\Server\App\WampApplication'
+            $originRegistry: '@Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry'
+            $originCheck: '%web_socket_origin_check%'
+            $topicManager: '@Gos\Bundle\WebSocketBundle\Topic\TopicManager'
+            $serverPushHandlerRegistry: '@Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry'
         tags:
+            - { name: monolog.logger, channel: websocket }
             - { name: gos_web_socket.server }
 
-    gos_web_socket.server.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
-
-    gos_web_socket.rpc.dispatcher:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
+    Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher:
         arguments:
-            - '@gos_web_socket.rpc.registry'
+            - '@Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry'
 
-    gos_web_socket.rpc.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
-
-    gos_web_socket.topic.dispatcher:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
+    Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher:
         lazy: true
         arguments:
-            - '@gos_web_socket.topic.registry'
-            - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.topic.periodic_timer'
-            - '@gos_web_socket.wamp.topic_manager'
-            - '@?monolog.logger.websocket'
+            $topicRegistry: '@Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry'
+            $router: '@Gos\Bundle\WebSocketBundle\Router\WampRouter'
+            $topicPeriodicTimer: '@Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer'
+            $topicManager: '@Gos\Bundle\WebSocketBundle\Topic\TopicManager'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.topic.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
+    Gos\Bundle\WebSocketBundle\Topic\TopicManager:
+        public: false
 
-    gos_web_socket.periodic.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
-
-    gos_web_socket.origins.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
-
-    gos_web_socket_server.wamp_application:
-        class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
+    Gos\Bundle\WebSocketBundle\Server\App\WampApplication:
         public: false
         lazy: true
         arguments:
-            - '@gos_web_socket.rpc.dispatcher'
-            - '@gos_web_socket.topic.dispatcher'
-            - '@event_dispatcher'
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.router.wamp'
-            - '@?monolog.logger.websocket'
+            $rpcDispatcher: '@Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher'
+            $topicDispatcher: '@Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher'
+            $eventDispatcher: '@event_dispatcher'
+            $clientStorage: '@Gos\Bundle\WebSocketBundle\Client\ClientStorage'
+            $wampRouter: '@Gos\Bundle\WebSocketBundle\Router\WampRouter'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.client_storage:
-        class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
+    Gos\Bundle\WebSocketBundle\Client\ClientStorage:
         arguments:
-            - '%web_socket_server.client_storage.ttl%'
-            - '@?monolog.logger.websocket'
+            $ttl: '%web_socket_server.client_storage.ttl%'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.client_storage.doctrine.decorator:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
+    Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator:
         lazy: true
-        public: false
         # argument are set via compiler pass
 
-    gos_web_socket.client_event.listener:
-        class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
+    Gos\Bundle\WebSocketBundle\Event\ClientEventListener:
         arguments:
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.websocket_authentification.provider'
-            - '@?monolog.logger.websocket'
+            $clientStorage: '@Gos\Bundle\WebSocketBundle\Client\ClientStorage'
+            $authenticationProvider: '@Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider'
         lazy: true
         tags:
+            - { name: monolog.logger, channel: websocket }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
-    gos_web_socket.server.in_memory.client_storage.driver:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
-
-    gos_web_socket.null.pubsub.router:
-        class: Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter
-
-    gos_web_socket.router.wamp:
-        class: Gos\Bundle\WebSocketBundle\Router\WampRouter
+    Gos\Bundle\WebSocketBundle\Router\WampRouter:
         lazy: true
         arguments:
-            - '@gos_web_socket.null.pubsub.router'
-            - '%kernel.debug%'
-            - '@?monolog.logger.websocket'
+            $router: '@Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter'
+            $debug: '%kernel.debug%'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.pdo.periodic_ping:
-        class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
+    Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing:
         lazy: true
         arguments:
-            - '@?pdo'
-            - '@?monolog.logger.websocket'
+            $pdo: '@?pdo'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.memory_usage.periodic:
-        class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
+    Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage:
+        lazy: true
+        tags:
+            - { name: monolog.logger, channel: websocket }
+
+    Gos\Bundle\WebSocketBundle\Event\StartServerListener:
         lazy: true
         arguments:
-            - '@?monolog.logger.websocket'
-
-    gos_web_socket.pnctl_event.listener:
-        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
-        lazy: true
-        arguments:
-            - '@gos_web_socket.periodic.registry'
-            - '@gos_web_socket.server_push_handler.registry'
-            - '@?monolog.logger.websocket'
+            $serverPushHandlerRegistry: '@Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry'
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.server.event_loop:
-        class: React\EventLoop\Factory
+    React\EventLoop\Factory:
+        public: false
 
-    gos_web_socket.topic.periodic_timer:
-        class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
+    Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer:
         arguments:
-            - '@gos_web_socket.server.event_loop'
+            $loop: '@React\EventLoop\Factory'
 
-    gos_web_socket.websocket_authentification.provider:
-        class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
+    Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider:
         arguments:
-            - #security.token_storage or security.context for Symfony <2.6
-            - '%gos_web_socket.firewall%'
-            - '@gos_web_socket.client_storage'
-            - '@?monolog.logger.websocket'
+            $tokenStorage: '@security.token_storage'
+            $firewalls: '%gos_web_socket.firewall%'
+            $clientStorage: '@Gos\Bundle\WebSocketBundle\Client\ClientStorage'
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.websocket.client_manipulator:
-        class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
+    Gos\Bundle\WebSocketBundle\Client\ClientManipulator:
         arguments:
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.websocket_authentification.provider'
+            $clientStorage: '@Gos\Bundle\WebSocketBundle\Client\ClientStorage'
+            $authenticationProvider: '@Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider'
 
-    gos_web_socket.abstract.pusher:
-        class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
-        abstract: true
-        calls:
-            - [ setRouter, ['@gos_web_socket.router.wamp' ] ]
-            - [ setSerializer, ['@gos_web_socket.push_message.serializer' ] ]
-
-    gos_web_socket.zmq.pusher:
-        parent: gos_web_socket.abstract.pusher
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+    Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher:
         tags:
             - { name: gos_web_socket.pusher, alias: zmq }
 
-    gos_web_socket.zmq.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
-        arguments:
-            - '@gos_web_socket.zmq.pusher'
-            - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
-            - '@event_dispatcher'
-            - '@?monolog.logger.websocket'
+    Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler:
         tags:
             - { name: gos_web_socket.push_handler, alias: zmq }
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.amqp.pusher:
-        parent: gos_web_socket.abstract.pusher
-        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
+    Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher:
         tags:
             - { name: gos_web_socket.pusher, alias: amqp }
 
-    gos_web_socket.wamp.pusher:
-        parent: gos_web_socket.abstract.pusher
-        class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
+    Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher:
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
 
-    gos_web_socket.amqp.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
-        arguments:
-            - '@gos_web_socket.amqp.pusher'
-            - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
-            - '@event_dispatcher'
-            - '@?monolog.logger.websocket'
+    Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler:
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
+            - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.wamp.topic_manager:
-        class: Gos\Bundle\WebSocketBundle\Topic\TopicManager        
-        calls:
-            - [ setWampApplication, ['@gos_web_socket_server.wamp_application' ] ]
-
-    gos_web_socket.kernel_event.terminate:
-        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
-        arguments:
-            - '@gos_web_socket.pusher_registry'
-
-    gos_web_socket.push_message.serializer:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer
-
-    gos_web_socket.pusher_registry:
-        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
-
-    gos_web_socket.server_push_handler.registry:
-        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
-
-    gos_web_socket.data_collector:
-        class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
+    Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector:
         tags:
             - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }

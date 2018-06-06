@@ -42,15 +42,11 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
      * @param LoggerInterface          $logger
      */
     public function __construct(
-        $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         $firewalls = array(),
         ClientStorageInterface $clientStorage,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
-        if (!$tokenStorage instanceof TokenStorageInterface && !$tokenStorage instanceof SecurityContextInterface) {
-            throw new \InvalidArgumentException('Argument 1 should be an instance of Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface or Symfony\Component\Security\Core\SecurityContextInterface');
-        }
-
         $this->tokenStorage = $tokenStorage;
         $this->firewalls = $firewalls;
         $this->clientStorage = $clientStorage;

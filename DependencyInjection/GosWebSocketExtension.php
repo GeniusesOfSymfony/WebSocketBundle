@@ -2,6 +2,14 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
+use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -9,7 +17,6 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -31,18 +38,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);
 
-        // Set the SecurityContext for Symfony <2.6
-        // Should go back to simple configuration after drop <2.6 support
-        if (version_compare(Kernel::VERSION_ID, '20600', '>=')) {
-            $tokenStorageReference = new Reference('security.token_storage');
-        } else {
-            $tokenStorageReference = new Reference('security.context');
-        }
-        $container
-            ->getDefinition('gos_web_socket.websocket_authentification.provider')
-            ->replaceArgument(0, $tokenStorageReference)
-        ;
-
         $container->setParameter(
             'web_socket_server.port',
             $configs['server']['port']
@@ -53,7 +48,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $configs['server']['host']
         );
 
-        $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
+        $originsRegistryDef = $container->getDefinition(OriginRegistry::class);
         $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
 
         if (!empty($configs['origins'])) {
@@ -70,10 +65,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         //client
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
-            $container->setParameter('gos_web_socket.firewall', (array) $clientConf['firewall']);
+            $container->setParameter('gos_web_socket.firewall', (array)$clientConf['firewall']);
 
             if (isset($clientConf['session_handler'])) {
-                $def = $container->getDefinition('gos_web_socket.ws.server');
+                $def = $container->getDefinition(WebSocketServer::class);
                 $def->addMethodCall('setSessionHandler', [
                     new Reference(ltrim($clientConf['session_handler'], '@')),
                 ]);
@@ -83,7 +78,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             if (isset($clientConf['storage']['driver'])) {
                 $driverRef = ltrim($clientConf['storage']['driver'], '@');
-                $clientStorageDef = $container->getDefinition('gos_web_socket.client_storage');
+                $clientStorageDef = $container->getDefinition(ClientStorage::class);
 
                 if (isset($clientConf['storage']['decorator'])) {
                     $decoratorRef = ltrim($clientConf['storage']['decorator'], '@');
@@ -103,7 +98,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //rpc
         if (!empty($configs['rpc'])) {
-            $def = $container->getDefinition('gos_web_socket.rpc.registry');
+            $def = $container->getDefinition(RpcRegistry::class);
 
             foreach ($configs['rpc'] as $rpc) {
                 $def->addMethodCall('addRpc', [
@@ -114,7 +109,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //topic
         if (!empty($configs['topics'])) {
-            $def = $container->getDefinition('gos_web_socket.topic.registry');
+            $def = $container->getDefinition(TopicRegistry::class);
 
             foreach ($configs['topics'] as $topic) {
                 $def->addMethodCall('addTopic', [
@@ -125,7 +120,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //periodic
         if (!empty($configs['periodic'])) {
-            $def = $container->getDefinition('gos_web_socket.periodic.registry');
+            $def = $container->getDefinition(PeriodicRegistry::class);
 
             foreach ($configs['periodic'] as $periodic) {
                 $def->addMethodCall('addPeriodic', [
@@ -136,7 +131,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //server
         if (!empty($configs['servers'])) {
-            $def = $container->getDefinition('gos_web_socket.server.registry');
+            $def = $container->getDefinition(ServerRegistry::class);
 
             foreach ($configs['servers'] as $server) {
                 $def->addMethodCall('addServer', [
@@ -151,10 +146,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             : [];
 
         if (!empty($pubsubConfig)) {
-            $container->getDefinition('gos_web_socket.router.wamp')
-                ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
+            $container->getDefinition(WampRouter::class)
+                ->replaceArgument('$router', new Reference('gos_pubsub_router.websocket'));
         }
-        
+
         // WAMP Pusher Configuration
         if (isset($configs['pushers']) && isset($configs['pushers']['wamp'])) {
             if (!is_bool($configs['pushers']['wamp']['ssl'])) {

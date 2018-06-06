@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,7 +17,7 @@ class ServerCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('gos_web_socket.server.registry');
+        $definition = $container->getDefinition(ServerRegistry::class);
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.server');
 
         foreach ($taggedServices as $id => $attributes) {
