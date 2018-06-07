@@ -24,15 +24,15 @@ class PingableDriverCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $sessionHandlerDefinition = $container->getDefinition((string) $container->getAlias('gos_web_socket.session_handler'));
+        $sessionHandlerDefinition = $container->getDefinition((string)$container->getAlias('gos_web_socket.session_handler'));
 
-        if (PdoSessionHandler::class !== $sessionHandlerDefinition->getClass() && ( !class_exists($sessionHandlerDefinition->getClass()) || !\in_array(PdoSessionHandler::class, \class_parents($sessionHandlerDefinition->getClass()), true))) {
+        if (PdoSessionHandler::class !== $sessionHandlerDefinition->getClass() && (!class_exists($sessionHandlerDefinition->getClass()) || !\in_array(PdoSessionHandler::class, \class_parents($sessionHandlerDefinition->getClass()), true))) {
             return;
         }
 
         if (!$container->hasDefinition('pdo') || !$container->hasAlias('pdo')) {
             $pdoReference = $sessionHandlerDefinition->getArgument(0);
-            if (!$pdoReference instanceof Reference || \PDO::class !== $container->getDefinition((string) $pdoReference)->getClass()) {
+            if (!$pdoReference instanceof Reference || \PDO::class !== $container->getDefinition((string)$pdoReference)->getClass()) {
                 return;
             }
             $periodicPingDefinition = $container->getDefinition(PdoPeriodicPing::class);
@@ -45,7 +45,8 @@ class PingableDriverCompilerPass implements CompilerPassInterface
 
         if (in_array($container->getParameter('database_driver'), $pdoDriver)) {
             $periodicRegistryDef->addMethodCall(
-                'addPeriodic', [new Reference(PdoPeriodicPing::class)]
+                'addPeriodic',
+                [new Reference(PdoPeriodicPing::class)]
             );
         }
     }
