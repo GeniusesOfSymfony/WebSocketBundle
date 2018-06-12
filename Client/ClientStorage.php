@@ -96,10 +96,12 @@ class ClientStorage implements ClientStorageInterface
         try {
             $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
         } catch (\Exception $e) {
+            $this->logger->debug(sprintf('Driver %s failed', get_class($this)));
             throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
         }
 
         if (false === $result) {
+            $this->logger->debug("Unable add client");
             throw new StorageException('Unable add client');
         }
     }
@@ -112,6 +114,7 @@ class ClientStorage implements ClientStorageInterface
         try {
             $result = $this->driver->contains($identifier);
         } catch (\Exception $e) {
+            $this->logger->debug(sprintf('Driver %s failed', get_class($this)));
             throw new StorageException(sprintf('Driver %s failed', get_class($this)), $e->getCode(), $e);
         }
 
