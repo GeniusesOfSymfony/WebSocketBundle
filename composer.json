@@ -23,7 +23,7 @@
     "require": {
         "php": ">=7.2",
         "symfony/framework-bundle": "^4.0",
-        "gos/pubsub-router-bundle": "^0.3",
+        "gos/pubsub-router-bundle": "dev-master",
         "gos/websocket-client": "^0.1",
         "gos/pnctl-event-loop-emitter" : "^0.1",
         "ocramius/proxy-manager": "^2.2",
