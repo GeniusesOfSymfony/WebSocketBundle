@@ -2,67 +2,15 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
-use Doctrine\Common\Cache\CacheProvider;
+use Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator as BaseDoctrineCacheDriverDecorator;
+
+@trigger_error('The DoctrineCacheDriverDecorator class is deprecated will be removed in 2.0. Use the parent DoctrineCacheDriverDecorator instead.', E_USER_DEPRECATED);
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
+ *
+ * @deprecated to be removed in 2.0. Use the parent DoctrineCacheDriverDecorator instead.
  */
-class DoctrineCacheDriverDecorator implements DriverInterface
+class DoctrineCacheDriverDecorator extends BaseDoctrineCacheDriverDecorator implements DriverInterface
 {
-    /**
-     * @var CacheProvider
-     */
-    protected $cacheProvider;
-
-    /**
-     * @param CacheProvider $cacheProvider
-     */
-    public function __construct(CacheProvider $cacheProvider)
-    {
-        $this->cacheProvider = $cacheProvider;
-    }
-
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function fetch($id)
-    {
-        return $this->cacheProvider->fetch($id);
-    }
-
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function contains($id)
-    {
-        return $this->cacheProvider->contains($id);
-    }
-
-    /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return mixed
-     */
-    public function save($id, $data, $lifeTime = 0)
-    {
-        return $this->cacheProvider->save($id, $data, $lifeTime);
-    }
-
-    /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
-     */
-    public function delete($id)
-    {
-        return $this->cacheProvider->delete($id);
-    }
 }
