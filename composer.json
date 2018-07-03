@@ -35,6 +35,8 @@
       "ext-libev": "*",
       "ext-zmq": "*",
       "ext-amqp": "*",
+      "doctrine/cache": "* to use doctrine/cache as a client driver",
+      "symfony/cache": ">=3.1 to use symfony/cache as a client driver",
       "symfony/proxy-manager-bridge": "~2.3"
     },
     "extra": {

@@ -128,6 +128,30 @@ gos_web_socket:
             decorator: @gos_web_socket.client_storage.doctrine.decorator
 ```
 
+### Symfony Cache as Client Storage Driver
+
+We natively provide decorator for the [Symfony Cache Component](https://symfony.com/doc/current/components/cache.html) to decorate Cache provider into client storage driver.
+
+Create redis cache provider
+
+```yaml
+framework:
+    cache:
+        default_redis_provider: redis://localhost
+```
+
+Use it as driver for client storage.
+
+```yaml
+gos_web_socket:
+    client:
+        firewall: secured_area
+        session_handler: @session.handler.pdo
+        storage:
+            driver: @cache.adapter.redis
+            decorator: @gos_web_socket.client_storage.symfony.decorator
+```
+
 ### Create your own Driver
 
 For example, you want store your client through redis server like previous example. But I want use Predis client instead of native redis client. We will use [SncRedisBundle](https://github.com/snc/SncRedisBundle) to provide my predis client.
