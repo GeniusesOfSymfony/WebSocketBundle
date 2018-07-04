@@ -2,16 +2,15 @@
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
-use Ratchet\ConnectionInterface;
-use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\TimerInterface;
 
 class TopicPeriodicTimer implements \IteratorAggregate
 {
     /**
-     * @var array
+     * @var TimerInterface[]
      */
-    protected $registry;
+    protected $registry = [];
 
     /**
      * @var LoopInterface
@@ -19,13 +18,11 @@ class TopicPeriodicTimer implements \IteratorAggregate
     protected $loop;
 
     /**
-     * @param ConnectionInterface $connection
-     * @param LoopInterface       $loop
+     * @param LoopInterface $loop
      */
     public function __construct(LoopInterface $loop)
     {
         $this->loop = $loop;
-        $this->registry = [];
     }
 
     /**
@@ -48,7 +45,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     /**
      * @param TopicInterface $topic
      *
-     * @return array
+     * @return TimerInterface[]
      */
     public function getPeriodicTimers(TopicInterface $topic)
     {
@@ -100,11 +97,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     {
         $namespace = spl_object_hash($topic);
 
-        if (!isset($this->registry[$namespace][$name])) {
-            return false;
-        }
-
-        return $this->loop->isTimerActive($this->registry[$namespace][$name]);
+        return isset($this->registry[$namespace][$name]);
     }
 
     /**

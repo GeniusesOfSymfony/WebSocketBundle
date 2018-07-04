@@ -8,7 +8,7 @@ use Gos\Component\PnctlEventLoopEmitter\PnctlEmitter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
+use React\EventLoop\TimerInterface;
 use React\Socket\Server;
 
 class StartServerListener
@@ -60,7 +60,7 @@ class StartServerListener
         $server->close();
 
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-            if ($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)) {
+            if ($periodic instanceof TimerInterface) {
                 $loop->cancelTimer($periodic);
             }
         }

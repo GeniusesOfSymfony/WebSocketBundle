@@ -4,11 +4,12 @@ namespace Gos\Bundle\WebSocketBundle\Topic;
 
 use Ratchet\ConnectionInterface;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\TimerInterface;
 
 class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
 {
     /**
-     * @var array
+     * @var TimerInterface[]
      */
     protected $registry;
 
@@ -36,7 +37,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     /**
      * @param $name
      *
-     * @return bool
+     * @return TimerInterface|bool
      */
     public function getPeriodicTimer($name)
     {
@@ -78,11 +79,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     {
         $tid = $this->getTid($name);
 
-        if (!isset($this->registry[$tid])) {
-            return false;
-        }
-
-        return $this->loop->isTimerActive($this->registry[$tid]);
+        return isset($this->registry[$tid]);
     }
 
     /**
@@ -110,7 +107,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * return int.
+     * return int
      */
     public function count()
     {
