@@ -20,7 +20,6 @@
         "symfony/framework-bundle": "^2.3|^3.0|^4.0",
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",
-        "gos/pnctl-event-loop-emitter" : "^0.1",
         "ocramius/proxy-manager": "^1.0|^2.1",
         "cboden/ratchet": "^0.4.1",
         "react/event-loop": "^1.0"
