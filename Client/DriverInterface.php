@@ -2,37 +2,13 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
-interface DriverInterface
+use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface as BaseDriverInterface;
+
+@trigger_error('The DriverInterface interface is deprecated will be removed in 2.0. Use the parent DriverInterface instead.', E_USER_DEPRECATED);
+
+/**
+ * @deprecated to be removed in 2.0. Use the parent DriverInterface instead.
+ */
+interface DriverInterface extends BaseDriverInterface
 {
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function fetch($id);
-
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function contains($id);
-
-    /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return mixed
-     */
-    public function save($id, $data, $lifeTime = 0);
-
-    /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
-     */
-    public function delete($id);
 }
