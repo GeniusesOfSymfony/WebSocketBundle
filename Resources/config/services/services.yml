@@ -109,6 +109,12 @@ services:
         public: false
         # argument are set via compiler pass
 
+    gos_web_socket.client_storage.symfony.decorator:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
+        lazy: true
+        public: false
+        # argument are set via compiler pass
+
     gos_web_socket.client_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         arguments:
@@ -229,7 +235,7 @@ services:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
     gos_web_socket.wamp.topic_manager:
-        class: Gos\Bundle\WebSocketBundle\Topic\TopicManager        
+        class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
         calls:
             - [ setWampApplication, ['@gos_web_socket_server.wamp_application' ] ]
 
