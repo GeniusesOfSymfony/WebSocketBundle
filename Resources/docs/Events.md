@@ -65,7 +65,7 @@ class AcmeClientEventListener
     /**
      * Called whenever server start
      *
-     * @param ServentEvent $event
+     * @param ServerEvent $event
      */
     public function onServerStart(ServerEvent $event)
     {
@@ -79,11 +79,11 @@ class AcmeClientEventListener
      *
      * @param ClientRejectedEvent $event
      */
-	public function onClientRejected(ClientRejectedEvent $event)
+    public function onClientRejected(ClientRejectedEvent $event)
     {
     	$origin = $event->getOrigin;
 
-		echo 'connection rejected from '. $origin . PHP_EOL;
+	echo 'connection rejected from '. $origin . PHP_EOL;
     }
 }
 ```
