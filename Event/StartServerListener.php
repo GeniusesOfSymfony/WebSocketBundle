@@ -4,11 +4,10 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
-use Gos\Component\PnctlEventLoopEmitter\PnctlEmitter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
+use React\EventLoop\TimerInterface;
 use React\Socket\Server;
 
 class StartServerListener
@@ -60,7 +59,7 @@ class StartServerListener
         $server->close();
 
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-            if ($periodic instanceof TimerInterface && $loop->isTimerActive($periodic)) {
+            if ($periodic instanceof TimerInterface) {
                 $loop->cancelTimer($periodic);
             }
         }
@@ -75,21 +74,11 @@ class StartServerListener
      */
     public function bindPnctlEvent(ServerEvent $event)
     {
-        if (!extension_loaded('pcntl')) {
-            return;
-        }
-
         $loop = $event->getEventLoop();
         $server = $event->getServer();
 
-        $pnctlEmitter = new PnctlEmitter($loop);
-
-        $pnctlEmitter->on(SIGTERM, function () use ($server, $loop) {
+        $loop->addSignal(SIGINT, function () use ($server, $loop) {
             $this->closure($server, $loop);
-        });
-
-        $pnctlEmitter->on(SIGINT, function () use ($pnctlEmitter) {
-            $pnctlEmitter->emit(SIGTERM);
         });
     }
 }

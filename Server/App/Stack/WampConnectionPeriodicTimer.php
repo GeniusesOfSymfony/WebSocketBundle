@@ -7,7 +7,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\WebSocket\WsServerInterface;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
+use React\EventLoop\TimerInterface;
 
 /**
  * Wrap WampServer nicely.
