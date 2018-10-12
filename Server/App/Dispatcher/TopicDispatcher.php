@@ -132,7 +132,7 @@ class TopicDispatcher implements TopicDispatcherInterface
      *
      * @return bool
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         $dispatched = false;
 
