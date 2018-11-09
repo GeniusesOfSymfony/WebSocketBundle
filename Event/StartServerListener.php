@@ -77,8 +77,7 @@ class StartServerListener
         $loop = $event->getEventLoop();
         $server = $event->getServer();
 
-        if(defined('SIGINT'))
-        {
+        if (defined('SIGINT')) {
             $loop->addSignal(SIGINT, function () use ($server, $loop) {
                 $this->closure($server, $loop);
             });
