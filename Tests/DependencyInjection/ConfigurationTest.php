@@ -3,12 +3,13 @@
 namespace Gos\Bundle\WebSocketBundle\Tests;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
  * Class ConfigurationTest
  */
-final class ConfigurationTest extends \PHPUnit_Framework_TestCase
+final class ConfigurationTest extends TestCase
 {
     public function testContextConfigurationIsOptional()
     {
