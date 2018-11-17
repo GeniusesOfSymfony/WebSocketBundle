@@ -4,7 +4,7 @@ Every remote procedure call (RPC) in Gos WebSocket has its own "network namespac
 
 In Symfony RPCs are setup as services. This allows you full control of what to do with the class, whether its a mailer or an entity manager.
 
-If you are new to services, please see [Symfony2: Service Container](http://symfony.com/doc/master/book/service_container.html)
+If you are new to services, please see [Symfony: Service Container](http://symfony.com/doc/master/book/service_container.html)
 
 ## Overview
 * Create the service class
@@ -75,7 +75,7 @@ services:
         tags:
             - { name: gos_web_socket.rpc }
 ```
-For other formats, please check the [Symfony2 Documents](http://symfony.com/doc/master/book/service_container.html)
+For other formats, please check the [Symfony Documents](http://symfony.com/doc/master/book/service_container.html)
 
 **or** register via "app/config/config.yml"
 

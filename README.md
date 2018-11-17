@@ -6,11 +6,11 @@ Gos Web Socket Bundle
 
 About
 ------
-Gos Web Socket is a Symfony2 Bundle designed to bring together WebSocket functionality in a easy to use application architecture.
+Gos Web Socket is a Symfony Bundle designed to bring together WebSocket functionality in a easy to use application architecture.
 
 Much like Socket.IO it provides both server side and client side code ensuring you have to write as little as possible to get your app up and running.
 
-Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js), with [Symfony2](http://symfony.com/)
+Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js), with [Symfony](http://symfony.com/)
 
 **[Demo project](https://github.com/GeniusesOfSymfony/WebsocketAppDemo)**
 
