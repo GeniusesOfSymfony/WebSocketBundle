@@ -34,6 +34,7 @@ var WS = (function()
 
             //Function on connect
             function(session){
+                that._session = session;
                 that.fire({type: "socket/connect", data: session });
             },
 
