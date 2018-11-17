@@ -26,7 +26,6 @@ services:
             - '@gos_web_socket.entry_point'
             - '%web_socket_server.host%'
             - '%web_socket_server.port%'
-            - '@?monolog.logger.websocket'
         tags:
             - { name: console.command, command: gos:websocket:server }
 
