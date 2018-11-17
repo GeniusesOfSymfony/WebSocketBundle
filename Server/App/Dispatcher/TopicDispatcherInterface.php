@@ -40,15 +40,17 @@ interface TopicDispatcherInterface
     public function onPush(WampRequest $request, $data, $provider);
 
     /**
-     * @param string              $calledMethod
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param WampRequest         $request
-     * @param null                $payload
-     * @param null                $exclude
-     * @param null                $eligible
+     * @param string                   $calledMethod
+     * @param null|ConnectionInterface $conn
+     * @param Topic                    $topic
+     * @param WampRequest              $request
+     * @param null                     $payload
+     * @param null                     $exclude
+     * @param null                     $eligible
+     * @param null                     $provider
      *
      * @return bool
+     * @throws \Exception
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null);
+    public function dispatch($calledMethod, ?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null);
 }

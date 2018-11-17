@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=7.2",
         "symfony/framework-bundle": "^2.3|^3.0|^4.0",
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",

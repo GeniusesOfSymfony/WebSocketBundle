@@ -122,19 +122,25 @@ class TopicDispatcher implements TopicDispatcherInterface
     }
 
     /**
-     * @param string              $calledMethod
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param null|string         $payload
-     * @param string[]|null       $exclude
-     * @param string[]|null       $eligible
-     * @param string|null
+     * @param string                   $calledMethod
+     * @param null|ConnectionInterface $conn
+     * @param Topic                    $topic
+     * @param WampRequest              $request
+     * @param null                     $payload
+     * @param null                     $exclude
+     * @param null                     $eligible
+     * @param null                     $provider
      *
      * @return bool
+     * @throws \Exception
      */
-    public function dispatch($calledMethod, ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function dispatch($calledMethod, ?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         $dispatched = false;
+
+        if (null === $conn && $calledMethod !== static::PUSH) {
+            throw new \RuntimeException(sprintf('You must provide a connection for method %s', $calledMethod));
+        }
 
         if ($topic) {
 
