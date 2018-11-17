@@ -31,7 +31,6 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new PingableDriverCompilerPass())
             ->addCompilerPass(new PusherCompilerPass())
             ->addCompilerPass(new DataCollectorCompilerPass())
-            ->addCompilerPass(new LoopFactoryCompilerPass())
         ;
     }
 }

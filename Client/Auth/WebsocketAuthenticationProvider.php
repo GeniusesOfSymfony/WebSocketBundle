@@ -9,14 +9,13 @@ use Ratchet\ConnectionInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface
 {
     /**
-     * @var SecurityContextInterface|TokenStorageInterface
+     * @var TokenStorageInterface
      */
     protected $tokenStorage;
 
@@ -36,21 +35,17 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
     protected $clientStorage;
 
     /**
-     * @param SecurityContextInterface|TokenStorageInterface $tokenStorage
-     * @param array                    $firewalls
-     * @param ClientStorageInterface   $clientStorage
-     * @param LoggerInterface          $logger
+     * @param TokenStorageInterface  $tokenStorage
+     * @param array                  $firewalls
+     * @param ClientStorageInterface $clientStorage
+     * @param LoggerInterface        $logger
      */
     public function __construct(
-        $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         $firewalls = array(),
         ClientStorageInterface $clientStorage,
         LoggerInterface $logger = null
     ) {
-        if (!$tokenStorage instanceof TokenStorageInterface && !$tokenStorage instanceof SecurityContextInterface) {
-            throw new \InvalidArgumentException('Argument 1 should be an instance of Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface or Symfony\Component\Security\Core\SecurityContextInterface');
-        }
-
         $this->tokenStorage = $tokenStorage;
         $this->firewalls = $firewalls;
         $this->clientStorage = $clientStorage;

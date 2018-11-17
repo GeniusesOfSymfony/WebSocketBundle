@@ -155,7 +155,8 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
 
     gos_web_socket.server.event_loop:
-        class: React\EventLoop\Factory
+        class: React\EventLoop\LoopInterface
+        factory: ['React\EventLoop\Factory', 'create']
 
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
@@ -165,7 +166,7 @@ services:
     gos_web_socket.websocket_authentification.provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         arguments:
-            - #security.token_storage or security.context for Symfony <2.6
+            - '@security.token_storage'
             - '%gos_web_socket.firewall%'
             - '@gos_web_socket.client_storage'
             - '@?monolog.logger.websocket'
