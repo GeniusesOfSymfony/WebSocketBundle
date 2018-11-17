@@ -1,6 +1,6 @@
 var WS = (function()
 {
-    var GosSocket = function(uri, config){
+    var GosSocket = function(uri, sessionConfig){
 
         /**
          * Holds the uri to connect to
@@ -24,10 +24,10 @@ var WS = (function()
         this._listeners = {};
 
         //calls the Gos Socket connect function.
-        this.connect();
+        this.connect(sessionConfig);
     };
 
-    GosSocket.prototype.connect = function () {
+    GosSocket.prototype.connect = function (sessionConfig) {
         var that = this;
 
         ab.connect(this._uri,
@@ -43,7 +43,9 @@ var WS = (function()
                 that._session = false;
 
                 that.fire({type: "socket/disconnect", data: {code: code, reason: reason}});
-            }
+            },
+
+            sessionConfig
         );
     };
 
@@ -104,9 +106,9 @@ var WS = (function()
     };
 
     return {
-        connect: function(uri)
+        connect: function(uri, sessionConfig)
         {
-            return new GosSocket(uri);
+            return new GosSocket(uri, sessionConfig);
         }
     }
 
