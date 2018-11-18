@@ -28,7 +28,7 @@ class WebsocketServerCommand extends Command
      */
     protected $port;
 
-    public function __construct(EntryPoint $entryPoint, string$host, int $port)
+    public function __construct(EntryPoint $entryPoint, string $host, int $port)
     {
         parent::__construct();
 
