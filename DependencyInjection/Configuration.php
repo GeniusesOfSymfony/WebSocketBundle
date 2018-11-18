@@ -10,12 +10,12 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    const DEFAULT_TTL = 900;
-    const DEFAULT_PREFIX = '';
-    const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
-    const DEFAULT_FIREWALL = 'ws_firewall';
-    const DEFAULT_ORIGIN_CHECKER = false;
-    const DEFAULT_TOKEN_SEPARATOR = '/';
+    private const DEFAULT_TTL = 900;
+    private const DEFAULT_PREFIX = '';
+    private const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
+    private const DEFAULT_FIREWALL = 'ws_firewall';
+    private const DEFAULT_ORIGIN_CHECKER = false;
+    public const DEFAULT_TOKEN_SEPARATOR = '/';
 
     /**
      * {@inheritdoc}
