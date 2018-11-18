@@ -9,17 +9,6 @@ services:
         arguments:
             - '@gos_web_socket.server.registry'
 
-    #deprecated will be removed in v2, use gos_web_socket.websocket_server.command instead
-    gos_web_socket.server_command:
-        class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
-        arguments:
-            - '@gos_web_socket.entry_point'
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
-            - '@?monolog.logger.websocket'
-        tags:
-            - { name: console.command, command: gos:server }
-
     gos_web_socket.websocket_server.command:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         arguments:
@@ -165,7 +154,8 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
 
     gos_web_socket.server.event_loop:
-        class: React\EventLoop\Factory
+        class: React\EventLoop\LoopInterface
+        factory: ['React\EventLoop\Factory', 'create']
 
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
@@ -175,7 +165,7 @@ services:
     gos_web_socket.websocket_authentification.provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         arguments:
-            - #security.token_storage or security.context for Symfony <2.6
+            - '@security.token_storage'
             - '%gos_web_socket.firewall%'
             - '@gos_web_socket.client_storage'
             - '@?monolog.logger.websocket'
