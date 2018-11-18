@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "symfony/console": "^3.4|^4.0",
         "symfony/framework-bundle": "^3.4|^4.0",
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",
@@ -25,10 +26,16 @@
         "react/event-loop": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^6.0|^7.0"
     },
     "autoload": {
-        "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
+        "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": { "Gos\\Bundle\\WebSocketBundle\\Tests\\": "Tests/" }
     },
     "suggest": {
       "ext-libevent": ">=0.0.5",
@@ -43,5 +50,6 @@
         "branch-alias": {
             "dev-master": "2.x-dev"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }

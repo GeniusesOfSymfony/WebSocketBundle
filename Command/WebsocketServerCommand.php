@@ -3,8 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,15 +11,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WebsocketServerCommand extends Command
 {
+    protected static $defaultName = 'gos:websocket:server';
+
     /**
      * @var EntryPoint
      */
     protected $entryPoint;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var string
@@ -33,41 +28,25 @@ class WebsocketServerCommand extends Command
      */
     protected $port;
 
-    /**
-     * @param EntryPoint      $entryPoint
-     * @param string          $host
-     * @param int             $port
-     * @param LoggerInterface $logger
-     */
-    public function __construct(
-        EntryPoint $entryPoint,
-        $host,
-        $port,
-        LoggerInterface $logger = null
-    ) {
-        $this->entryPoint = $entryPoint;
-        $this->port = (int) $port;
-        $this->host = $host;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
-
+    public function __construct(EntryPoint $entryPoint, string$host, int $port)
+    {
         parent::__construct();
+
+        $this->entryPoint = $entryPoint;
+        $this->port = $port;
+        $this->host = $host;
     }
 
     protected function configure()
     {
         $this
-            ->setName('gos:websocket:server')
-            ->setDescription('Starts the web socket servers')
-            ->addArgument('name', InputArgument::OPTIONAL, 'Server name')
-            ->addOption('profile', 'm', InputOption::VALUE_NONE, 'Profiling server')
-            ->addOption('host', 'a', InputOption::VALUE_OPTIONAL, 'Host')
-            ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'port');
+            ->setDescription('Starts the websocket server')
+            ->addArgument('name', InputArgument::OPTIONAL, 'Name of the server to start, launches the first registered server if not specified')
+            ->addOption('profile', 'm', InputOption::VALUE_NONE, 'Enable profiling of the server')
+            ->addOption('host', 'a', InputOption::VALUE_OPTIONAL, 'The hostname of the websocket server')
+            ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'The port of the websocket server');
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->entryPoint->launch(
