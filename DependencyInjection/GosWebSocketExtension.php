@@ -27,29 +27,27 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $loader->load('services.yml');
 
-        $configuration = new Configuration();
-        $configs = $this->processConfiguration($configuration, $configs);
+        $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
-        $container->setParameter(
-            'web_socket_server.port',
-            $configs['server']['port']
-        );
+        if (isset($configs['server'])) {
+            if (isset($configs['server']['port'])) {
+                $container->setParameter('web_socket_server.port', $configs['server']['port']);
+            }
 
-        $container->setParameter(
-            'web_socket_server.host',
-            $configs['server']['host']
-        );
+            if (isset($configs['server']['host'])) {
+                $container->setParameter('web_socket_server.host', $configs['server']['host']);
+            }
 
-        $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
-        $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
-
-        $this->registerTwigGlobals($configs, $container);
+            if (isset($configs['server']['origin_check'])) {
+                $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
+            }
+        }
 
         if (!empty($configs['origins'])) {
+            $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
+
             foreach ($configs['origins'] as $origin) {
-                $originsRegistryDef->addMethodCall('addOrigin', [
-                    $origin,
-                ]);
+                $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
             }
         }
 
@@ -152,31 +150,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
     }
 
-    private function registerTwigGlobals(array $configs, ContainerBuilder $container): void
-    {
-        if (!isset($configs['shared_config']) || !$configs['shared_config']) {
-            return;
-        }
-
-        if (!$container->hasDefinition('twig')) {
-            throw new \RuntimeException('Shared configuration requires the "twig" service (did you enable TwigBundle?)');
-        }
-
-        if (!isset($configs['server'])) {
-            return;
-        }
-
-        $definition = $container->getDefinition('twig');
-
-        if (isset($config['server']['host'])) {
-            $def->addMethodCall('addGlobal', ['gos_web_socket_server_host', $config['server']['host']]);
-        }
-
-        if (isset($config['server']['port'])) {
-            $def->addMethodCall('addGlobal', ['gos_web_socket_server_port', $config['server']['port']]);
-        }
-    }
-
     /**
      * @param ContainerBuilder $container
      *
@@ -192,39 +165,62 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
 
-        //PubSubRouter
-        $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
+        // GosPubSubRouterBundle
+        if (isset($config['server'])) {
+            $pubsubConfig = $config['server']['router'] ?? [];
 
-        if (!empty($pubsubConfig)) {
-            if (!isset($pubsubConfig['context']['tokenSeparator'])) {
-                $pubsubConfig['context']['tokenSeparator'] = Configuration::DEFAULT_TOKEN_SEPARATOR;
+            if (!empty($pubsubConfig)) {
+                if (!isset($pubsubConfig['context']['tokenSeparator'])) {
+                    $pubsubConfig['context']['tokenSeparator'] = Configuration::DEFAULT_TOKEN_SEPARATOR;
+                }
+
+                $container->prependExtensionConfig(
+                    'gos_pubsub_router',
+                    [
+                        'routers' => [
+                            'websocket' => $pubsubConfig,
+                        ],
+                    ]
+                );
             }
-
-            $container->prependExtensionConfig('gos_pubsub_router', [
-                    'routers' => [
-                        'websocket' => $pubsubConfig,
-                    ],
-                ]
-            );
         }
 
-        //monolog
+        // TwigBundle
+        if (isset($bundles['TwigBundle'])) {
+            if (isset($config['shared_config'], $config['server']) && $config['shared_config']) {
+                $twigConfig = ['globals' => []];
+
+                if (isset($config['server']['host'])) {
+                    $twigConfig['globals']['gos_web_socket_server_host'] = $config['server']['host'];
+                }
+
+                if (isset($config['server']['port'])) {
+                    $twigConfig['globals']['gos_web_socket_server_port'] = $config['server']['port'];
+                }
+
+                if (!empty($twigConfig['globals'])) {
+                    $container->prependExtensionConfig('twig', $twigConfig);
+                }
+            }
+        }
+
+        // MonologBundle
         if (isset($bundles['MonologBundle'])) {
-            $monologConfig = array(
-                'channels' => array('websocket'),
-                'handlers' => array(
-                    'websocket' => array(
+            $monologConfig = [
+                'channels' => ['websocket'],
+                'handlers' => [
+                    'websocket' => [
                         'type' => 'console',
-                        'verbosity_levels' => array(
-                            'VERBOSITY_NORMAL' => true === $container->getParameter('kernel.debug') ? Logger::DEBUG : Logger::INFO,
-                        ),
-                        'channels' => array(
+                        'verbosity_levels' => [
+                            'VERBOSITY_NORMAL' => $container->getParameter('kernel.debug') ? Logger::DEBUG : Logger::INFO,
+                        ],
+                        'channels' => [
                             'type' => 'inclusive',
-                            'elements' => array('websocket'),
-                        ),
-                    ),
-                ),
-            );
+                            'elements' => ['websocket'],
+                        ],
+                    ],
+                ],
+            ];
 
             $container->prependExtensionConfig('monolog', $monologConfig);
         }
