@@ -9,7 +9,6 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -43,6 +42,8 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
         $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
+
+        $this->registerTwigGlobals($configs, $container);
 
         if (!empty($configs['origins'])) {
             foreach ($configs['origins'] as $origin) {
@@ -151,6 +152,31 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
     }
 
+    private function registerTwigGlobals(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['shared_config']) || !$configs['shared_config']) {
+            return;
+        }
+
+        if (!$container->hasDefinition('twig')) {
+            throw new \RuntimeException('Shared configuration requires the "twig" service (did you enable TwigBundle?)');
+        }
+
+        if (!isset($configs['server'])) {
+            return;
+        }
+
+        $definition = $container->getDefinition('twig');
+
+        if (isset($config['server']['host'])) {
+            $def->addMethodCall('addGlobal', ['gos_web_socket_server_host', $config['server']['host']]);
+        }
+
+        if (isset($config['server']['port'])) {
+            $def->addMethodCall('addGlobal', ['gos_web_socket_server_port', $config['server']['port']]);
+        }
+    }
+
     /**
      * @param ContainerBuilder $container
      *
@@ -160,8 +186,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
     {
         $bundles = $container->getParameter('kernel.bundles');
 
-        $configs = $container->getExtensionConfig($this->getAlias());
-        $config = $this->processConfiguration(new Configuration(), $configs);
+        if (!isset($bundles['GosPubSubRouterBundle'])) {
+            throw new \RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
+        }
+
+        $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
 
         //PubSubRouter
         $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
@@ -186,20 +215,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             );
 
             $container->prependExtensionConfig('assetic', $asseticConfig);
-        }
-
-        //twig
-        if (isset($config['shared_config']) && true === $config['shared_config']) {
-            if (!isset($bundles['TwigBundle'])) {
-                throw new \RuntimeException('Shared configuration required Twig Bundle');
-            }
-
-            $twigConfig = array('globals' => array(
-                'gos_web_socket_server_host' => $config['server']['host'],
-                'gos_web_socket_server_port' => $config['server']['port'],
-            ));
-
-            $container->prependExtensionConfig('twig', $twigConfig);
         }
 
         //monolog
