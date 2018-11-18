@@ -6,79 +6,123 @@ use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
-/**
- * Class ConfigurationTest
- */
 final class ConfigurationTest extends TestCase
 {
-    public function testContextConfigurationIsOptional()
-    {
-        /* Config:
-         *
-         * server:
-         *   host: "127.0.0.1"
-         *   port: "8080"
-         */
-        $configs = array(
-            array(
-                'server' => array(
-                    'host' => "127.0.0.1",
-                    'port' => "8080",
-                ),
-            ),
-        );
-
-        $config = $this->process($configs);
-
-        $this->assertEquals('127.0.0.1', $config['server']['host']);
-        $this->assertEquals('8080', $config['server']['port']);
-    }
-
-    /**
-     * Processes an array of configurations and returns a compiled version.
-     *
-     * @param array $configs An array of raw configurations
-     *
-     * @return array A normalized array
-     */
-    protected function process($configs)
+    public function testDefaultConfig()
     {
         $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), []);
 
-        return $processor->processConfiguration(new Configuration(), $configs);
+        $this->assertEquals(self::getBundleDefaultConfig(), $config);
     }
 
-    public function testTokenSeparatorIsSet()
+    public function testConfigWithAServer()
     {
-        /*
-         * Config:
-         *
-         * server:
-         *   host: "127.0.0.1"
-         *   port: "8080"
-         *   router:
-         *     context:
-         *       tokenSeparator: "-"
-         */
-        $configs = array(
-            array(
-                'server' => array(
-                    'host' => "127.0.0.1",
-                    'port' => "8080",
-                    'router' => array(
-                        'context' => array(
-                            "tokenSeparator" => "/",
-                        ),
-                    ),
-                ),
-            ),
-        );
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+            ],
+        ];
 
-        $config = $this->process($configs);
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
-            '/',
-            $config['server']['router']['context']['tokenSeparator']
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
         );
+    }
+
+    public function testConfigWithAServerAndPubSubRouter()
+    {
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+                'router' => [
+                    'resources' => [
+                        'example.yaml',
+                    ],
+                    'context' => [
+                        'tokenSeparator' => '/',
+                    ],
+                ]
+            ],
+        ];
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+
+        $this->assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithPushers()
+    {
+        $extraConfig = [
+            'pushers' => [
+                'wamp' => [
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'ssl' => false,
+                    'origin' => null,
+                ],
+                'zmq' => [
+                    'default' => false,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'persistent' => true,
+                    'protocol' => 'tcp',
+                    'linger' => -1,
+                ],
+                'amqp' => [
+                    'default' => false,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'login' => 'username',
+                    'password' => 'password',
+                    'vhost' => '/',
+                    'read_timeout' => 0,
+                    'write_timeout' => 0,
+                    'connect_timeout' => 0,
+                    'queue_name' => 'gos_websocket',
+                    'exchange_name' => 'gos_websocket_exchange',
+                ],
+            ],
+        ];
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+
+        $this->assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    protected static function getBundleDefaultConfig()
+    {
+        return [
+            'client' => [
+                'firewall' => 'ws_firewall',
+                'storage' => [
+                    'driver' => '@gos_web_socket.server.in_memory.client_storage.driver',
+                    'ttl' => 900,
+                    'prefix' => ''
+                ],
+            ],
+            'assetic' => true,
+            'shared_config' => true,
+            'rpc' => [],
+            'topics' => [],
+            'periodic' => [],
+            'servers' => [],
+            'origins' => [],
+        ];
     }
 }
