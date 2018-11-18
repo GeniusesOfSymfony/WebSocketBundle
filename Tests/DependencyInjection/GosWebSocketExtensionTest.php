@@ -9,8 +9,9 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Component\DependencyInjection\Reference;
 
-class ConfigurationTest extends AbstractExtensionTestCase
+class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 {
     public function testContainerIsLoadedWithDefaultConfiguration()
     {
@@ -108,6 +109,148 @@ class ConfigurationTest extends AbstractExtensionTestCase
             ],
             $this->container->getExtensionConfig('monolog'),
             'The Monolog should be configured when able.'
+        );
+    }
+
+    public function testContainerIsLoadedWithOriginsConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('kernel.debug', true);
+
+        $this->load(
+            [
+                'origins' => [
+                    'github.com',
+                ],
+            ]
+        );
+
+        $originRegistryDefinition = $this->container->getDefinition('gos_web_socket.origins.registry');
+
+        $this->assertCount(
+            1,
+            $originRegistryDefinition->getMethodCalls(),
+            'The origins should be added to the `gos_web_socket.origins.registry` service.'
+        );
+    }
+
+    public function testContainerIsLoadedWithClientConfiguredWithoutCacheDecorator()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('kernel.debug', true);
+
+        $this->load(
+            [
+                'client' => [
+                    'session_handler' => 'session.handler.pdo',
+                    'firewall' => 'ws_firewall',
+                    'storage' => [
+                        'driver' => 'gos_web_socket.server.in_memory.client_storage.driver',
+                        'ttl' => 900,
+                        'prefix' => '',
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
+        $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
+
+        $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
+
+        $this->assertCount(
+            1,
+            $wsServerDefinition->getMethodCalls(),
+            'The session handler should be added to the `gos_web_socket.ws.server` service.'
+        );
+
+        $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
+        $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
+
+        $this->assertCount(
+            1,
+            $clientStorageMethodCalls,
+            'The session handler should be added to the `gos_web_socket.client_storage` service.'
+        );
+
+        /** @var Reference $reference */
+        $reference = $clientStorageMethodCalls[0][1][0];
+
+        $this->assertSame(
+            'gos_web_socket.server.in_memory.client_storage.driver',
+            (string) $reference,
+            'The storage driver should be the configured driver from the `client.storage.driver` node.'
+        );
+    }
+
+    public function testContainerIsLoadedWithClientConfiguredWithCacheDecorator()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('kernel.debug', true);
+
+        $this->load(
+            [
+                'client' => [
+                    'session_handler' => 'session.handler.pdo',
+                    'firewall' => 'ws_firewall',
+                    'storage' => [
+                        'driver' => 'gos_web_socket.server.in_memory.client_storage.driver',
+                        'ttl' => 900,
+                        'prefix' => '',
+                        'decorator' => 'gos_web_socket.client_storage.symfony.decorator',
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
+        $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
+
+        $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
+
+        $this->assertCount(
+            1,
+            $wsServerDefinition->getMethodCalls(),
+            'The session handler should be added to the `gos_web_socket.ws.server` service.'
+        );
+
+        $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
+        $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
+
+        $this->assertCount(
+            1,
+            $clientStorageMethodCalls,
+            'The session handler should be added to the `gos_web_socket.client_storage` service.'
+        );
+
+        /** @var Reference $reference */
+        $reference = $clientStorageMethodCalls[0][1][0];
+
+        $this->assertSame(
+            'gos_web_socket.client_storage.symfony.decorator',
+            (string) $reference,
+            'The storage driver should be the configured driver from the `client.storage.decorator` node.'
         );
     }
 

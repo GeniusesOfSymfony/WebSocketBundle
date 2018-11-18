@@ -29,6 +29,9 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
+        $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
+        $container->setParameter('web_socket_server.client_storage.prefix', $configs['client']['storage']['prefix']);
+
         if (isset($configs['server'])) {
             if (isset($configs['server']['port'])) {
                 $container->setParameter('web_socket_server.port', $configs['server']['port']);
@@ -51,40 +54,33 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
-        $container->setParameter('web_socket_server.client_storage.prefix', $configs['client']['storage']['prefix']);
-
-        //client
         if (isset($configs['client'])) {
             $clientConf = $configs['client'];
             $container->setParameter('gos_web_socket.firewall', (array) $clientConf['firewall']);
 
             if (isset($clientConf['session_handler'])) {
-                $def = $container->getDefinition('gos_web_socket.ws.server');
-                $def->addMethodCall('setSessionHandler', [
-                    new Reference(ltrim($clientConf['session_handler'], '@')),
-                ]);
+                $sessionHandler = ltrim($clientConf['session_handler'], '@');
 
-                $container->setAlias('gos_web_socket.session_handler', ltrim($clientConf['session_handler'], '@'));
+                $container->getDefinition('gos_web_socket.ws.server')
+                    ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
+
+                $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
             }
 
             if (isset($clientConf['storage']['driver'])) {
                 $driverRef = ltrim($clientConf['storage']['driver'], '@');
-                $clientStorageDef = $container->getDefinition('gos_web_socket.client_storage');
+                $storageDriver = $driverRef;
 
                 if (isset($clientConf['storage']['decorator'])) {
                     $decoratorRef = ltrim($clientConf['storage']['decorator'], '@');
-                    $decoratorDef = $container->getDefinition($decoratorRef);
-                    $decoratorDef->addArgument(new Reference($driverRef));
+                    $container->getDefinition($decoratorRef)
+                        ->addArgument(new Reference($driverRef));
 
-                    $clientStorageDef->addMethodCall('setStorageDriver', [
-                        new Reference($decoratorRef),
-                    ]);
-                } else {
-                    $clientStorageDef->addMethodCall('setStorageDriver', [
-                        new Reference($driverRef),
-                    ]);
+                    $storageDriver = $decoratorRef;
                 }
+
+                $container->getDefinition('gos_web_socket.client_storage')
+                    ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
             }
         }
 
