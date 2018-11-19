@@ -1,6 +1,6 @@
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Tests;
+namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;

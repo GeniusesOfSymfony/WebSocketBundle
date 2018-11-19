@@ -31,6 +31,7 @@
         "matthiasnoback/symfony-dependency-injection-test": "^3.0",
         "phpunit/phpunit": "^7.0",
         "symfony/monolog-bundle": "^3.0",
+        "symfony/stopwatch": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0"
     },
     "autoload": {
