@@ -1,9 +1,4 @@
 services:
-    gos_web_socket.twig.extension:
-        class: Gos\Bundle\WebSocketBundle\Twig\GosWebSocketServerExtension
-        tags:
-            - { name: "twig.extension" }
-
     gos_web_socket.entry_point:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
         arguments:

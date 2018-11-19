@@ -1,31 +1,29 @@
 # Client Setup
 
-### Step 1: Include Javascript
-To include the relevant javascript libraries necessary for Gos WebSocket, add these to your root layout file just before the closing body tag.
+### Step 1: Include JavaScript
+To include the relevant JavaScript libraries necessary for GosWebSocketBundle, add these to your root layout file just before the closing body tag.
 
 ```twig
-{{ ws_client() }}
+<script src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
+<script src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
 ```
-_Note: This requires assetic and twig to be installed_
 
-If you are NOT using twig as a templating engine, you will need to include the following javascript files from the bundle:
+_Note: This requires Twig and the FrameworkBundle to be installed and the `assets:install` command to be run_
+
+```sh
+php bin/console assets:install
+```
+
+If you are NOT using Twig as a templating engine, you will need to include the following JavaScript files from the bundle:
 
 ```javascript
 GosWebSocketBundle/Resources/public/js/vendor/autobahn.min.js
 GosWebSocketBundle/Resources/public/js/gos_web_socket_client.js
 ```
 
-If using the {{ ws_client() }} method, please ensure to run the following when using the production environment:
-
-```command
-php app/console assetic:dump --env=prod --no-debug
-```
-
-This is to ensure the client js libraries are available.
-
 ### Step 2: gos_web_socket_client.js
 
-Once the javascript is included, you can start using gos_web_socket_client.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
+Once the JavaScript is included, you can start using gos_web_socket_client.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
 
 A `WS` object is made available in the global scope of the page. This can be used to connect to the server as follows:
 
@@ -42,13 +40,13 @@ This allows you to listen for events called by GosSocket. The only events fired 
 ```javascript
 var webSocket = WS.connect("ws://127.0.0.1:8080");
 
-webSocket.on("socket/connect", function(session){
+webSocket.on("socket/connect", function (session) {
     //session is an Autobahn JS WAMP session.
 
     console.log("Successfully Connected!");
 })
 
-webSocket.on("socket/disconnect", function(error){
+webSocket.on("socket/disconnect", function (error) {
     //error provides us with some insight into the disconnection: error.reason and error.code
 
     console.log("Disconnected for " + error.reason + " with code " + error.code);
@@ -66,10 +64,10 @@ For a more in depth description of PubSub architecture, see [Autobahn JS PubSub 
 These are all fairly straightforward, here's an example on using them:
 
 ```javascript
-webSocket.on("socket/connect", function(session){
+webSocket.on("socket/connect", function (session) {
 
     //the callback function in "subscribe" is called everytime an event is published in that channel.
-    session.subscribe("acme/channel", function(uri, payload){
+    session.subscribe("acme/channel", function (uri, payload) {
         console.log("Received message", payload.msg);
     });
 

@@ -9,7 +9,6 @@ gos_web_socket:
             driver: @gos_web_socket.server.in_memory.client_storage.driver
             decorator: ~
     shared_config: true
-    assetic: true #use assetic bundle
     server:
         port: ~ # Required, Example 1337
         host: ~ # Required, Example 127.0.0.1

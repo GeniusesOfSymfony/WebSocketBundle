@@ -116,7 +116,6 @@ final class ConfigurationTest extends TestCase
                     'prefix' => ''
                 ],
             ],
-            'assetic' => true,
             'shared_config' => true,
             'rpc' => [],
             'topics' => [],
