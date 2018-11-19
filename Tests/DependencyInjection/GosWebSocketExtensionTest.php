@@ -108,7 +108,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                 ],
             ],
             $this->container->getExtensionConfig('monolog'),
-            'The Monolog should be configured when able.'
+            'The MonologBundle should be configured when able.'
         );
     }
 
