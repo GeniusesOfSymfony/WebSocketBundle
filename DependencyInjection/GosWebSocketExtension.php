@@ -44,6 +44,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             if (isset($configs['server']['origin_check'])) {
                 $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
             }
+
+            $pubsubConfig = $configs['server']['router'] ?? [];
+
+            // The router was configured through the prepend pass, we only need to change the router the WampRouter uses
+            if (!empty($pubsubConfig)) {
+                $container->getDefinition('gos_web_socket.router.wamp')
+                    ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
+            }
         }
 
         if (!empty($configs['origins'])) {
@@ -84,64 +92,35 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        //rpc
         if (!empty($configs['rpc'])) {
             $def = $container->getDefinition('gos_web_socket.rpc.registry');
 
             foreach ($configs['rpc'] as $rpc) {
-                $def->addMethodCall('addRpc', [
-                    new Reference(ltrim($rpc, '@')),
-                ]);
+                $def->addMethodCall('addRpc', [new Reference(ltrim($rpc, '@'))]);
             }
         }
 
-        //topic
         if (!empty($configs['topics'])) {
             $def = $container->getDefinition('gos_web_socket.topic.registry');
 
             foreach ($configs['topics'] as $topic) {
-                $def->addMethodCall('addTopic', [
-                    new Reference(ltrim($topic, '@')),
-                ]);
+                $def->addMethodCall('addTopic', [new Reference(ltrim($topic, '@'))]);
             }
         }
 
-        //periodic
         if (!empty($configs['periodic'])) {
             $def = $container->getDefinition('gos_web_socket.periodic.registry');
 
             foreach ($configs['periodic'] as $periodic) {
-                $def->addMethodCall('addPeriodic', [
-                    new Reference(ltrim($periodic, '@')),
-                ]);
+                $def->addMethodCall('addPeriodic', [new Reference(ltrim($periodic, '@'))]);
             }
         }
 
-        //server
         if (!empty($configs['servers'])) {
             $def = $container->getDefinition('gos_web_socket.server.registry');
 
             foreach ($configs['servers'] as $server) {
-                $def->addMethodCall('addServer', [
-                    new Reference(ltrim($server, '@')),
-                ]);
-            }
-        }
-
-        //PubSub router
-        $pubsubConfig = isset($configs['server']['router'])
-            ? $configs['server']['router']
-            : [];
-
-        if (!empty($pubsubConfig)) {
-            $container->getDefinition('gos_web_socket.router.wamp')
-                ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
-        }
-
-        // WAMP Pusher Configuration
-        if (isset($configs['pushers']) && isset($configs['pushers']['wamp'])) {
-            if (!is_bool($configs['pushers']['wamp']['ssl'])) {
-                throw new \InvalidArgumentException(sprintf('The ssl node under wamp pusher configuration must be a boolean value'));
+                $def->addMethodCall('addServer', [new Reference(ltrim($server, '@'))]);
             }
         }
     }

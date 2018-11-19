@@ -22,7 +22,9 @@
         "gos/websocket-client": "^0.1",
         "ocramius/proxy-manager": "^1.0|^2.1",
         "react/event-loop": "^1.0",
+        "symfony/config": "^3.4|^4.0",
         "symfony/console": "^3.4|^4.0",
+        "symfony/dependency-injection": "^3.4|^4.0",
         "symfony/framework-bundle": "^3.4|^4.0"
     },
     "require-dev": {

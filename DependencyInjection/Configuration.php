@@ -149,7 +149,7 @@ class Configuration implements ConfigurationInterface
                     ->example(1337)
                     ->isRequired()
                 ->end()
-                ->scalarNode('ssl')
+                ->booleanNode('ssl')
                     ->defaultValue(false)
                 ->end()
                 ->scalarNode('origin')
