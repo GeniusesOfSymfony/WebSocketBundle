@@ -5,127 +5,126 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Log\NullLogger;
+use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientEventListener
+class ClientEventListener implements LoggerAwareInterface
 {
-    /**
-     * @param ClientStorageInterface $clientStorage
-     */
-    protected $clientStorage;
+    use LoggerAwareTrait;
 
     /**
-     * @var LoggerInterface
+     * @param ClientStorageInterface
      */
-    protected $logger;
+    protected $clientStorage;
 
     /**
      * @var WebsocketAuthenticationProvider
      */
     protected $authenticationProvider;
 
-    /**
-     * @param ClientStorageInterface $clientStorage
-     * @param WebsocketAuthenticationProvider $authenticationProvider
-     * @param LoggerInterface|null $logger
-     */
     public function __construct(
         ClientStorageInterface $clientStorage,
-        WebsocketAuthenticationProviderInterface $authenticationProvider,
-        LoggerInterface $logger = null
+        WebsocketAuthenticationProviderInterface $authenticationProvider
     ) {
         $this->clientStorage = $clientStorage;
         $this->authenticationProvider = $authenticationProvider;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
-    /**
-     * @param ClientEvent $event
-     *
-     * @throws \Exception
-     * @throws \Gos\Bundle\WebSocketBundle\Client\Exception\StorageException
-     */
-    public function onClientConnect(ClientEvent $event)
+    public function onClientConnect(ClientEvent $event): void
     {
-        $conn = $event->getConnection();
-        $this->authenticationProvider->authenticate($conn);
+        $this->authenticationProvider->authenticate($event->getConnection());
     }
 
-    /**
-     * Called whenever a client disconnects.
-     *
-     * @param ClientEvent $event
-     */
-    public function onClientDisconnect(ClientEvent $event)
+    public function onClientDisconnect(ClientEvent $event): void
     {
         $conn = $event->getConnection();
 
-        $loggerContext = array(
+        $loggerContext = [
             'connection_id' => $conn->resourceId,
             'session_id' => $conn->WAMP->sessionId,
             'storage_id' => $conn->WAMP->clientStorageId,
-        );
+        ];
 
         try {
             $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
 
-            //go here only if getClient doesn't throw error
             $this->clientStorage->removeClient($conn->resourceId);
 
             $username = $user instanceof UserInterface
                 ? $user->getUsername()
                 : $user;
 
-            $loggerContext['username'] = $username;
-
-            $this->logger->info(sprintf(
-                '%s disconnected',
-                $username
-            ), $loggerContext);
+            if ($this->logger) {
+                $this->logger->info(
+                    sprintf('%s disconnected', $username),
+                    array_merge(
+                        $loggerContext,
+                        ['username' => $username]
+                    )
+                );
+            }
         } catch (ClientNotFoundException $e) {
-            $this->logger->info('user timed out', $loggerContext);
+            if ($this->logger) {
+                $this->logger->info(
+                    'User timed out',
+                    array_merge(
+                        $loggerContext,
+                        ['exception' => $e]
+                    )
+                );
+            }
+        } catch (StorageException $e) {
+            if ($this->logger) {
+                $this->logger->info(
+                    'Error processing user in storage',
+                    array_merge(
+                        $loggerContext,
+                        ['exception' => $e]
+                    )
+                );
+            }
         }
     }
 
-    /**
-     * Called whenever a client errors.
-     *
-     * @param ClientErrorEvent $event
-     */
-    public function onClientError(ClientErrorEvent $event)
+    public function onClientError(ClientErrorEvent $event): void
     {
+        if (!$this->logger) {
+            return;
+        }
+
         $conn = $event->getConnection();
         $e = $event->getException();
 
-        $loggerContext = array(
+        $loggerContext = [
             'connection_id' => $conn->resourceId,
             'session_id' => $conn->WAMP->sessionId,
-        );
+            'exception' => $e,
+        ];
 
         if ($this->clientStorage->hasClient($conn->resourceId)) {
             $loggerContext['client'] = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
         }
 
-        $this->logger->error(sprintf(
-            'Connection error occurred %s in %s line %s',
-            $e->getMessage(),
-            $e->getFile(),
-            $e->getLine()
-        ), $loggerContext);
+        $this->logger->error(
+            'Connection error',
+            $loggerContext
+        );
     }
 
-    /**
-     * @param ClientRejectedEvent $event
-     */
-    public function onClientRejected(ClientRejectedEvent $event)
+    public function onClientRejected(ClientRejectedEvent $event): void
     {
-        $this->logger->warning('Client rejected, bad origin', [
-            'origin' => $event->getOrigin(),
-        ]);
+        if ($this->logger) {
+            $this->logger->warning(
+                'Client rejected, bad origin',
+                [
+                    'origin' => $event->getOrigin(),
+                ]
+            );
+        }
     }
 }

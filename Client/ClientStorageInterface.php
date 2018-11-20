@@ -17,9 +17,9 @@ interface ClientStorageInterface
     /**
      * @param string $identifier
      *
-     * @throws StorageException
-     *
      * @return string|UserInterface|false
+     *
+     * @throws StorageException
      */
     public function getClient($identifier);
 

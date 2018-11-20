@@ -103,7 +103,8 @@ services:
         arguments:
             - '@gos_web_socket.client_storage'
             - '@gos_web_socket.websocket_authentification.provider'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
         lazy: true
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }

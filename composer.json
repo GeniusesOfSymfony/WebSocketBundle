@@ -21,11 +21,13 @@
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",
         "ocramius/proxy-manager": "^1.0|^2.1",
+        "psr/log": "^1.0",
         "react/event-loop": "^1.0",
         "symfony/config": "^3.4|^4.0",
         "symfony/console": "^3.4|^4.0",
         "symfony/dependency-injection": "^3.4|^4.0",
-        "symfony/framework-bundle": "^3.4|^4.0"
+        "symfony/framework-bundle": "^3.4|^4.0",
+        "symfony/security-core": "^3.4|^4.0"
     },
     "require-dev": {
         "matthiasnoback/symfony-dependency-injection-test": "^3.0",
