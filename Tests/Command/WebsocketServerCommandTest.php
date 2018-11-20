@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Command;
 
-use Gos\Bundle\PubSubRouterBundle\Router\RouterRegistry;
 use Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand;
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use PHPUnit\Framework\TestCase;
