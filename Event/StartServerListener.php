@@ -4,12 +4,14 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use React\EventLoop\TimerInterface;
 
-class StartServerListener
+class StartServerListener implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var PeriodicRegistry
      */
@@ -20,29 +22,14 @@ class StartServerListener
      */
     protected $serverPushHandlerRegistry;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param PeriodicRegistry          $periodicRegistry
-     * @param ServerPushHandlerRegistry $serverPushHandlerRegistry
-     * @param LoggerInterface|null      $logger
-     */
     public function __construct(
         PeriodicRegistry $periodicRegistry,
-        ServerPushHandlerRegistry $serverPushHandlerRegistry,
-        LoggerInterface $logger = null
+        ServerPushHandlerRegistry $serverPushHandlerRegistry
     ) {
         $this->periodicRegistry = $periodicRegistry;
         $this->serverPushHandlerRegistry = $serverPushHandlerRegistry;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
-    /**
-     * @param ServerEvent $event
-     */
     public function bindPnctlEvent(ServerEvent $event)
     {
         $loop = $event->getEventLoop();
@@ -50,11 +37,16 @@ class StartServerListener
 
         if (defined('SIGINT')) {
             $loop->addSignal(SIGINT, function () use ($server, $loop) {
-                $this->logger->notice('Stopping server ...');
+                if ($this->logger) {
+                    $this->logger->notice('Stopping server ...');
+                }
 
                 foreach ($this->serverPushHandlerRegistry->getPushers() as $handler) {
                     $handler->close();
-                    $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
+
+                    if ($this->logger) {
+                        $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
+                    }
                 }
 
                 $server->emit('end');
@@ -68,7 +60,9 @@ class StartServerListener
 
                 $loop->stop();
 
-                $this->logger->notice('Server stopped!');
+                if ($this->logger) {
+                    $this->logger->notice('Server stopped!');
+                }
             });
         }
     }

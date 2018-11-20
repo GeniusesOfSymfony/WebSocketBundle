@@ -19,7 +19,7 @@ services:
             - '%web_socket_server.host%'
             - '%web_socket_server.port%'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket' ] ]
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.ws.server:
         class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
@@ -145,7 +145,8 @@ services:
         arguments:
             - '@gos_web_socket.periodic.registry'
             - '@gos_web_socket.server_push_handler.registry'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
 
@@ -176,8 +177,8 @@ services:
         class: Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher
         abstract: true
         calls:
-            - [ setRouter, ['@gos_web_socket.router.wamp' ] ]
-            - [ setSerializer, ['@gos_web_socket.push_message.serializer' ] ]
+            - [ setRouter, ['@gos_web_socket.router.wamp'] ]
+            - [ setSerializer, ['@gos_web_socket.push_message.serializer'] ]
 
     gos_web_socket.zmq.pusher:
         parent: gos_web_socket.abstract.pusher
@@ -222,7 +223,7 @@ services:
     gos_web_socket.wamp.topic_manager:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
         calls:
-            - [ setWampApplication, ['@gos_web_socket_server.wamp_application' ] ]
+            - [ setWampApplication, ['@gos_web_socket_server.wamp_application'] ]
 
     gos_web_socket.kernel_event.terminate:
         class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
