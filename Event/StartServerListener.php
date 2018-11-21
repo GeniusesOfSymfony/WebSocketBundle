@@ -32,10 +32,10 @@ class StartServerListener implements LoggerAwareInterface
 
     public function bindPnctlEvent(ServerEvent $event)
     {
-        $loop = $event->getEventLoop();
-        $server = $event->getServer();
-
         if (defined('SIGINT')) {
+            $loop = $event->getEventLoop();
+            $server = $event->getServer();
+
             $loop->addSignal(SIGINT, function () use ($server, $loop) {
                 if ($this->logger) {
                     $this->logger->notice('Stopping server ...');
