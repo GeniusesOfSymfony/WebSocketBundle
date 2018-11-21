@@ -139,5 +139,9 @@ class TopicManager implements WsServerInterface, WampServerInterface
         }
 
         $this->topicLookup[$topic->getId()]->remove($conn);
+
+        if (0 === $topic->count()) {
+            unset($this->topicLookup[$topic->getId()]);
+        }
     }
 }
