@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Server;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
-use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -11,13 +10,10 @@ use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 class EntryPoint
 {
     /**
-     * @var ServerInterface[]
+     * @var ServerRegistry
      */
     protected $serverRegistry;
 
-    /**
-     * @param ServerRegistry $serverRegistry
-     */
     public function __construct(ServerRegistry $serverRegistry)
     {
         $this->serverRegistry = $serverRegistry;
@@ -25,25 +21,33 @@ class EntryPoint
 
     /**
      * @param string $serverName
+     * @param string $host
+     * @param int    $port
      * @param bool   $profile
      */
     public function launch($serverName, $host, $port, $profile)
     {
-        $servers = $this->serverRegistry->getServers();
-
         if (null === $serverName) {
+            $servers = $this->serverRegistry->getServers();
+
+            if (empty($servers)) {
+                throw new \RuntimeException('There are no servers registered to launch.');
+            }
+
             reset($servers);
             $server = current($servers);
         } else {
-            if (!isset($servers[$serverName])) {
-                throw new \RuntimeException(sprintf(
-                    'Unknown server %s in [%s]',
-                    $serverName,
-                    implode(', ', array_keys($servers))
-                ));
+            if (!$this->serverRegistry->hasServer($serverName)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unknown server %s, available servers are [ %s ]',
+                        $serverName,
+                        implode(', ', array_keys($this->serverRegistry->getServers()))
+                    )
+                );
             }
 
-            $server = $servers[$serverName];
+            $server = $this->serverRegistry->getServer($serverName);
         }
 
         $server->launch($host, $port, $profile);
