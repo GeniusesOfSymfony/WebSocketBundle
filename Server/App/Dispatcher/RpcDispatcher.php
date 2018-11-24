@@ -39,68 +39,90 @@ class RpcDispatcher implements RpcDispatcherInterface
         try {
             $procedure = $this->rpcRegistry->getRpc($callback);
         } catch (\Exception $e) {
-            $conn->callError($id, $topic, $e->getMessage(), [
-                'rpc' => $topic,
-                'request' => $request,
-            ]);
+            $conn->callError(
+                $id,
+                $topic,
+                $e->getMessage(),
+                [
+                    'code' => $e->getCode(),
+                    'rpc' => $topic,
+                    'params' => $params,
+                    'request' => $request,
+                ]
+            );
 
             return;
         }
 
         $method = $this->toCamelCase($request->getAttributes()->get('method'));
-        $result = null;
+
+        if (!method_exists($procedure, $method)) {
+            $conn->callError(
+                $id,
+                $topic,
+                'Could not execute RPC callback, method not found',
+                [
+                    'code' => 404,
+                    'rpc' => $topic,
+                    'params' => $params,
+                    'request' => $request,
+                ]
+            );
+
+            return;
+        }
 
         try {
             $result = call_user_func([$procedure, $method], $conn, $request, $params);
         } catch (\Exception $e) {
-            $conn->callError($id, $topic, $e->getMessage(),  [
-                'code' => $e->getCode(),
-                'rpc' => $topic,
-                'params' => $params,
-                'request' => $request,
-            ]);
+            $conn->callError(
+                $id,
+                $topic,
+                $e->getMessage(),
+                [
+                    'code' => $e->getCode(),
+                    'rpc' => $topic,
+                    'params' => $params,
+                    'request' => $request,
+                ]
+            );
 
             return;
         }
 
-        if ($result === null) {
-            $result = false;
-        }
-
-        if ($result) {
-            if ($result instanceof RpcResponse) {
-                $result = $result->getData();
-            } elseif (!is_array($result)) {
-                $result = [$result];
-            }
-
-            $conn->callResult($id, $result);
+        if ($result === null || $result === false) {
+            $conn->callError(
+                $id,
+                $topic,
+                'RPC Error',
+                [
+                    'code' => 500,
+                    'rpc' => $topic,
+                    'params' => $params,
+                    'request' => $request,
+                ]
+            );
 
             return;
-        } elseif ($result === false) {
-            $conn->callError($id, $topic, 'RPC Error',  [
-                'rpc' => $topic,
-                'params' => $params,
-                'request' => $request,
-            ]);
         }
 
-        $conn->callError($id, $topic, 'Unable to find that command',  [
-            'rpc' => $topic->getId(),
-            'params' => $params,
-            'request' => $request,
-        ]);
+        if ($result instanceof RpcResponse) {
+            $result = $result->getData();
+        } elseif (!is_array($result)) {
+            $result = [$result];
+        }
 
-        return;
+        $conn->callResult($id, $result);
     }
 
-    /**
-     * @param $str
-     *
-     * @return string
-     */
-    protected function toCamelCase($str)
+    private function toCamelCase(?string $str): string
     {
-        return preg_replace_callback('/_([a-z])/', function ($c) { return strtoupper($c[1]); }, $str);
+        return preg_replace_callback(
+            '/_([a-z])/',
+            function ($c): string {
+                return strtoupper($c[1]);
+            },
+            $str
+        );
     }
 }
