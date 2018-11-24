@@ -12,17 +12,10 @@ class TopicRegistry
     /**
      * @var TopicInterface[]
      */
-    protected $topics;
-
-    public function __construct()
-    {
-        $this->topics = [];
-    }
+    protected $topics = [];
 
     /**
      * @param TopicInterface $topic
-     *
-     * @throws \Exception
      */
     public function addTopic(TopicInterface $topic)
     {
@@ -34,18 +27,19 @@ class TopicRegistry
      *
      * @return TopicInterface
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function getTopic($topicName)
     {
-        if (!isset($this->topics[$topicName])) {
-            throw new \Exception(sprintf(
-                'Topic %s does\'nt exist in [ %s ]',
-                $topicName,
-                implode(', ', array_keys($this->topics))
-            ));
+        if (!$this->hasTopic($topicName)) {
+            throw new \InvalidArgumentException(sprintf('A topic named "%s" has not been registered.', $topicName));
         }
 
         return $this->topics[$topicName];
+    }
+
+    public function hasTopic(string $topicName): bool
+    {
+        return isset($this->topics[$topicName]);
     }
 }

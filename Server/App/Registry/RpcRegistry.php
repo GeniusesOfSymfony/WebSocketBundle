@@ -12,12 +12,7 @@ class RpcRegistry
     /**
      * @var RpcInterface[]
      */
-    protected $rpcHandlers;
-
-    public function __construct()
-    {
-        $this->rpcHandlers = [];
-    }
+    protected $rpcHandlers = [];
 
     /**
      * @param RpcInterface $rpcHandler
@@ -32,17 +27,19 @@ class RpcRegistry
      *
      * @return RpcInterface
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function getRpc($name)
     {
-        if (!isset($this->rpcHandlers[$name])) {
-            throw new \Exception(sprintf('rpc handler %s not exists, only [ %s ] are available',
-                $name,
-                implode(', ', array_keys($this->rpcHandlers))
-            ));
+        if (!$this->hasRpc($name)) {
+            throw new \InvalidArgumentException(sprintf('A RPC handler named "%s" has not been registered.', $name));
         }
 
         return $this->rpcHandlers[$name];
+    }
+
+    public function hasRpc(string $name): bool
+    {
+        return isset($this->rpcHandlers[$name]);
     }
 }
