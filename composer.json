@@ -20,7 +20,7 @@
         "cboden/ratchet": "^0.4.1",
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",
-        "ocramius/proxy-manager": "^1.0|^2.1",
+        "ocramius/proxy-manager": "~0.4|^1.0|^2.0",
         "psr/log": "^1.0",
         "react/event-loop": "^1.0",
         "symfony/config": "^3.4|^4.0",
@@ -58,7 +58,6 @@
         "ext-amqp": "*",
         "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
         "symfony/cache": ">=3.4 to use symfony/cache as a client driver",
-        "symfony/proxy-manager-bridge": "~2.3",
         "symfony/options-resolver": ">=3.4 to use the amqp pusher",
         "symfony/serializer": ">=3.4 to use the pushers",
         "symfony/stopwatch": ">=3.4 to use the data collectors"
