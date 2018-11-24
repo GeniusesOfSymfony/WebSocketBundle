@@ -173,7 +173,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
 
         $this->assertCount(
-            1,
+            2,
             $wsServerDefinition->getMethodCalls(),
             'The session handler should be added to the `gos_web_socket.ws.server` service.'
         );
@@ -230,7 +230,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
 
         $this->assertCount(
-            1,
+            2,
             $wsServerDefinition->getMethodCalls(),
             'The session handler should be added to the `gos_web_socket.ws.server` service.'
         );
