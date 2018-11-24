@@ -2,30 +2,21 @@
 
 namespace Gos\Bundle\WebSocketBundle\Periodic;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class PeriodicMemoryUsage implements PeriodicInterface
+class PeriodicMemoryUsage implements PeriodicInterface, LoggerAwareInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = null === $logger ? new NullLogger() : $logger;
-    }
+    use LoggerAwareTrait;
 
     /**
      * Function excecuted n timeout.
      */
     public function tick()
     {
-        $this->logger->info('Memory usage : ' . round((memory_get_usage() / (1024 * 1024)), 4) . 'Mo');
+        if ($this->logger) {
+            $this->logger->info('Memory usage : ' . round((memory_get_usage() / (1024 * 1024)), 4) . 'Mo');
+        }
     }
 
     /**

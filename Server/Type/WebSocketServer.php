@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Server\Type;
 
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
-use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
@@ -15,8 +14,8 @@ use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Bundle\WebSocketBundle\Server\WampServer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use ProxyManager\Proxy\ProxyInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\Session\SessionProvider;
@@ -28,8 +27,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class WebSocketServer implements ServerInterface
+class WebSocketServer implements ServerInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var LoopInterface
      */
@@ -66,11 +67,6 @@ class WebSocketServer implements ServerInterface
     protected $originCheck;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var ServerPushHandlerRegistry
      */
     protected $serverPusherHandlerRegistry;
@@ -89,7 +85,6 @@ class WebSocketServer implements ServerInterface
      * @param bool                      $originCheck
      * @param TopicManager              $topicManager
      * @param ServerPushHandlerRegistry $serverPushHandlerRegistry
-     * @param LoggerInterface|null      $logger
      */
     public function __construct(
         LoopInterface $loop,
@@ -99,8 +94,7 @@ class WebSocketServer implements ServerInterface
         OriginRegistry $originRegistry,
         $originCheck,
         TopicManager $topicManager,
-        ServerPushHandlerRegistry $serverPushHandlerRegistry,
-        LoggerInterface $logger = null
+        ServerPushHandlerRegistry $serverPushHandlerRegistry
     ) {
         $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
@@ -108,7 +102,6 @@ class WebSocketServer implements ServerInterface
         $this->wampApplication = $wampApplication;
         $this->originRegistry = $originRegistry;
         $this->originCheck = $originCheck;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->topicManager = $topicManager;
         $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
     }
@@ -128,25 +121,34 @@ class WebSocketServer implements ServerInterface
      */
     public function launch($host, $port, $profile)
     {
-        $this->logger->info('Starting web socket');
+        if ($this->logger) {
+            $this->logger->info('Starting web socket');
+        }
 
         $server = new Server("$host:$port", $this->loop);
 
         if (true === $profile) {
-            $memoryUsagePeriodicTimer = new PeriodicMemoryUsage($this->logger);
+            $memoryUsagePeriodicTimer = new PeriodicMemoryUsage();
+
+            if ($this->logger) {
+                $memoryUsagePeriodicTimer->setLogger($this->logger);
+            }
+
             $this->periodicRegistry->addPeriodic($memoryUsagePeriodicTimer);
         }
 
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
             $this->loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
-            $this->logger->info(
-                sprintf(
-                    'Registered periodic callback %s, executed every %s seconds',
-                    $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
-                    $periodic->getTimeout()
-                )
-            );
+            if ($this->logger) {
+                $this->logger->info(
+                    sprintf(
+                        'Registered periodic callback %s, executed every %s seconds',
+                        $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
+                        $periodic->getTimeout()
+                    )
+                );
+            }
         }
 
         $serverComponent = new WsServer(
@@ -187,13 +189,15 @@ class WebSocketServer implements ServerInterface
             try {
                 $handler->handle($this->loop, $this->wampApplication);
             } catch (\Exception $e) {
-                $this->logger->error(
-                    $e->getMessage(),
-                    [
-                        'exception' => $e,
-                        'push_handler_name' => $handler->getName(),
-                    ]
-                );
+                if ($this->logger) {
+                    $this->logger->error(
+                        $e->getMessage(),
+                        [
+                            'exception' => $e,
+                            'push_handler_name' => $handler->getName(),
+                        ]
+                    );
+                }
             }
         }
 
@@ -201,14 +205,16 @@ class WebSocketServer implements ServerInterface
         $event = new ServerEvent($this->loop, $server);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
-        $this->logger->info(
-            sprintf(
-                'Launching %s on %s PID: %s',
-                $this->getName(),
-                $host.':'.$port,
-                getmypid()
-            )
-        );
+        if ($this->logger) {
+            $this->logger->info(
+                sprintf(
+                    'Launching %s on %s PID: %s',
+                    $this->getName(),
+                    $host.':'.$port,
+                    getmypid()
+                )
+            );
+        }
 
         $app->run();
     }
