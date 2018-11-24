@@ -24,18 +24,19 @@ use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
 class WebSocketServer implements ServerInterface
 {
-    /** @var  LoopInterface */
+    /**
+     * @var LoopInterface
+     */
     protected $loop;
 
     /**
-     * @var \SessionHandler|null
+     * @var \SessionHandlerInterface|null
      */
     protected $sessionHandler;
 
@@ -55,7 +56,7 @@ class WebSocketServer implements ServerInterface
     protected $wampApplication;
 
     /**
-     * @var OriginRegistry|null
+     * @var OriginRegistry
      */
     protected $originRegistry;
 
@@ -69,7 +70,9 @@ class WebSocketServer implements ServerInterface
      */
     protected $logger;
 
-    /** @var  ServerPushHandlerRegistry */
+    /**
+     * @var ServerPushHandlerRegistry
+     */
     protected $serverPusherHandlerRegistry;
 
     /**
@@ -108,7 +111,6 @@ class WebSocketServer implements ServerInterface
         $this->logger = null === $logger ? new NullLogger() : $logger;
         $this->topicManager = $topicManager;
         $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
-        $this->sessionHandler = new NullSessionHandler();
     }
 
     /**
@@ -135,33 +137,36 @@ class WebSocketServer implements ServerInterface
             $this->periodicRegistry->addPeriodic($memoryUsagePeriodicTimer);
         }
 
-        /** @var PeriodicInterface $periodic */
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
             $this->loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
-            $this->logger->info(sprintf(
-                'Register periodic callback %s, executed each %s seconds',
-                $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
-                $periodic->getTimeout()
-            ));
+            $this->logger->info(
+                sprintf(
+                    'Registered periodic callback %s, executed every %s seconds',
+                    $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
+                    $periodic->getTimeout()
+                )
+            );
         }
 
-        $allowedOrigins = array_merge(array('localhost', '127.0.0.1'), $this->originRegistry->getOrigins());
-
-        $wsServer = new WsServer(
+        $serverComponent = new WsServer(
             new WampConnectionPeriodicTimer(
                 new WampServer($this->wampApplication, $this->topicManager),
                 $this->loop
             )
         );
-        $wsServer->setStrictSubProtocolCheck(false);
+        $serverComponent->setStrictSubProtocolCheck(false);
 
-        $serverComponent = new SessionProvider(
-            $wsServer,
-            $this->sessionHandler
-        );
+        if ($this->sessionHandler) {
+            $serverComponent = new SessionProvider(
+                $wsServer,
+                $this->sessionHandler
+            );
+        }
 
         if ($this->originCheck) {
+            $allowedOrigins = array_merge(['localhost', '127.0.0.1'], $this->originRegistry->getOrigins());
+
             $serverComponent = new OriginCheck(
                 $this->eventDispatcher,
                 $serverComponent,
@@ -177,30 +182,33 @@ class WebSocketServer implements ServerInterface
             $this->loop
         );
 
-        //Push Transport Layer
+        // Push Transport Layer
         foreach ($this->serverPusherHandlerRegistry->getPushers() as $handler) {
             try {
                 $handler->handle($this->loop, $this->wampApplication);
             } catch (\Exception $e) {
-                $this->logger->error($e->getMessage(), [
-                    'code' => $e->getCode(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'push_handler_name' => $handler->getName(),
-                ]);
+                $this->logger->error(
+                    $e->getMessage(),
+                    [
+                        'exception' => $e,
+                        'push_handler_name' => $handler->getName(),
+                    ]
+                );
             }
         }
 
-        /* Server Event Loop to add other services in the same loop. */
+        // Server Event Loop to add other services in the same loop.
         $event = new ServerEvent($this->loop, $server);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
-        $this->logger->info(sprintf(
-            'Launching %s on %s PID: %s',
-            $this->getName(),
-            $host . ':' . $port,
-            getmypid()
-        ));
+        $this->logger->info(
+            sprintf(
+                'Launching %s on %s PID: %s',
+                $this->getName(),
+                $host.':'.$port,
+                getmypid()
+            )
+        );
 
         $app->run();
     }
