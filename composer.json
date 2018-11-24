@@ -27,13 +27,18 @@
         "symfony/console": "^3.4|^4.0",
         "symfony/dependency-injection": "^3.4|^4.0",
         "symfony/event-dispatcher": "^3.4|^4.0",
-        "symfony/framework-bundle": "^3.4|^4.0",
+        "symfony/http-foundation": "^3.4|^4.0",
+        "symfony/http-kernel": "^3.4|^4.0",
         "symfony/security-core": "^3.4|^4.0"
     },
     "require-dev": {
+        "doctrine/cache": "^1.8",
         "matthiasnoback/symfony-dependency-injection-test": "^3.0",
         "phpunit/phpunit": "^7.0",
+        "symfony/cache": "^3.4|^4.0",
         "symfony/monolog-bundle": "^3.0",
+        "symfony/options-resolver": "^3.4|^4.0",
+        "symfony/serializer": "^3.4|^4.0",
         "symfony/stopwatch": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0"
     },
@@ -51,9 +56,12 @@
         "ext-libev": "*",
         "ext-zmq": "*",
         "ext-amqp": "*",
-        "doctrine/cache": "* to use doctrine/cache as a client driver",
-        "symfony/cache": ">=3.1 to use symfony/cache as a client driver",
-        "symfony/proxy-manager-bridge": "~2.3"
+        "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
+        "symfony/cache": ">=3.4 to use symfony/cache as a client driver",
+        "symfony/proxy-manager-bridge": "~2.3",
+        "symfony/options-resolver": ">=3.4 to use the amqp pusher",
+        "symfony/serializer": ">=3.4 to use the pushers",
+        "symfony/stopwatch": ">=3.4 to use the data collectors"
     },
     "extra": {
         "branch-alias": {
