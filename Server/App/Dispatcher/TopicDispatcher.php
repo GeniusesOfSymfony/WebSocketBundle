@@ -11,17 +11,23 @@ use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class TopicDispatcher implements TopicDispatcherInterface
+class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    public const SUBSCRIPTION = 'onSubscribe';
+    public const UNSUBSCRIPTION = 'onUnSubscribe';
+    public const PUBLISH = 'onPublish';
+    public const PUSH = 'onPush';
+
     /**
      * @var TopicRegistry
      */
@@ -32,46 +38,32 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     protected $router;
 
-    /** @var  TopicPeriodicTimer */
+    /**
+     * @var TopicPeriodicTimer
+     */
     protected $topicPeriodicTimer;
 
     /**
-     * @var LoggerInterface|null
+     * @var TopicManager
      */
-    protected $logger;
-
-    /** @var  TopicManager */
     protected $topicManager;
 
-    const SUBSCRIPTION = 'onSubscribe';
-
-    const UNSUBSCRIPTION = 'onUnSubscribe';
-
-    const PUBLISH = 'onPublish';
-
-    const PUSH = 'onPush';
-
-    /**use Ratchet\MessageComponentInterface;
-    use Ratchet\WebSocket\WsServerInterface;
-    use Ratchet\ConnectionInterface;
+    /**
      * @param TopicRegistry        $topicRegistry
      * @param WampRouter           $router
      * @param TopicPeriodicTimer   $topicPeriodicTimer
      * @param TopicManager         $topicManager
-     * @param LoggerInterface|null $logger
      */
     public function __construct(
         TopicRegistry $topicRegistry,
         WampRouter $router,
         TopicPeriodicTimer $topicPeriodicTimer,
-        TopicManager $topicManager,
-        LoggerInterface $logger = null
+        TopicManager $topicManager
     ) {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
         $this->topicManager = $topicManager;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
     }
 
     /**
@@ -100,7 +92,6 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
-        //if topic service exists, notify it
         $this->dispatch(self::UNSUBSCRIPTION, $conn, $topic, $request);
     }
 
@@ -114,10 +105,7 @@ class TopicDispatcher implements TopicDispatcherInterface
     public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
         if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
-            //default behaviour is to broadcast to all.
             $topic->broadcast($event);
-
-            return;
         }
     }
 
@@ -138,75 +126,115 @@ class TopicDispatcher implements TopicDispatcherInterface
     {
         $dispatched = false;
 
-        if (null === $conn && $calledMethod !== static::PUSH) {
-            throw new \RuntimeException(sprintf('You must provide a connection for method %s', $calledMethod));
+        if (!$topic) {
+            return false;
         }
 
-        if ($topic) {
-
-            foreach ((array) $request->getRoute()->getCallback() as $callback) {
+        foreach ((array) $request->getRoute()->getCallback() as $callback) {
+            try {
                 $appTopic = $this->topicRegistry->getTopic($callback);
+            } catch (\Exception $e) {
+                if ($this->logger) {
+                    $this->logger->error(
+                        sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback),
+                        [
+                            'exception' => $e,
+                        ]
+                    );
+                }
 
-                if ($appTopic instanceof SecuredTopicInterface) {
-                    try {
-                        $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
-                    } catch (FirewallRejectionException $e) {
-                        $conn->callError($topic->getId(), $topic, sprintf('You are not authorized to perform this action: %s', $e->getMessage()), [
+                continue;
+            }
+
+            if ($appTopic instanceof SecuredTopicInterface) {
+                try {
+                    $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
+                } catch (FirewallRejectionException $e) {
+                    if ($this->logger) {
+                        $this->logger->error($e->getMessage(), ['exception' => $e]);
+                    }
+
+                    $conn->callError(
+                        $topic->getId(),
+                        $topic,
+                        sprintf('You are not authorized to perform this action: %s', $e->getMessage()),
+                        [
+                            'code' => 401,
                             'topic' => $topic,
                             'request' => $request,
                             'event' => $calledMethod,
-                        ]);
+                        ]
+                    );
 
-                        $conn->close();
-                        $dispatched = false;
-                        return $dispatched ;
-                    }
+                    $conn->close();
+
+                    return false;
                 }
+            }
 
-                if ($appTopic instanceof TopicPeriodicTimerInterface) {
-                    $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
+            if ($appTopic instanceof TopicPeriodicTimerInterface) {
+                $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
 
-                    if (false === $this->topicPeriodicTimer->isRegistered($appTopic) && 0 !== count($topic)) {
-                        $appTopic->registerPeriodicTimer($topic);
-                    }
+                if (!$this->topicPeriodicTimer->isRegistered($appTopic) && count($topic) !== 0) {
+                    $appTopic->registerPeriodicTimer($topic);
                 }
+            }
 
-                if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
-                    $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
-                }
+            if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
+                $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+            }
 
-                if ($calledMethod === static::PUSH) {
-                    if (!$appTopic instanceof PushableTopicInterface) {
-                        throw new \Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
-                    }
-
-                    $appTopic->onPush($topic, $request, $payload, $provider);
-                    $dispatched = true;
-                } else {
-                    try {
-                        if (null !== $payload) { //its a publish call.
-                            $appTopic->{$calledMethod}($conn, $topic, $request, $payload, $exclude, $eligible);
-                        } else {
-                            $appTopic->{$calledMethod}($conn, $topic, $request);
+            try {
+                switch ($calledMethod) {
+                    case self::PUSH:
+                        if (!$appTopic instanceof PushableTopicInterface) {
+                            throw new \RuntimeException(sprintf('The "%s" topic does not support push notifications', $appTopic->getName()));
                         }
 
-                        $dispatched = true;
-                    } catch (\Exception $e) {
-                        $this->logger->error($e->getMessage(), [
-                            'code' => $e->getCode(),
-                            'file' => $e->getFile(),
-                            'trace' => $e->getTraceAsString(),
-                        ]);
+                        $appTopic->onPush($topic, $request, $payload, $provider);
 
-                        $conn->callError($topic->getId(), $topic, $e->getMessage(), [
-                            'topic' => $topic,
-                            'request' => $request,
-                            'event' => $calledMethod,
-                        ]);
+                        break;
 
-                        $dispatched = false;
-                    }
+                    case self::PUBLISH:
+                        $appTopic->onPublish($conn, $topic, $request, $payload, $exclude, $eligible);
+
+                        break;
+
+                    case self::SUBSCRIPTION:
+                    case self::UNSUBSCRIPTION:
+                        $appTopic->{$calledMethod}($conn, $topic, $request);
+
+                        break;
+
+                    default:
+                        throw new \InvalidArgumentException('The "'.$calledMethod.'" method is not supported.');
                 }
+
+                $dispatched = true;
+            } catch (\Exception $e) {
+                if ($this->logger) {
+                    $this->logger->error(
+                        'Websocket error processing topic callback function.',
+                        [
+                            'exception' => $e,
+                            'topic'     => $topic,
+                        ]
+                    );
+                }
+
+                $conn->callError(
+                    $topic->getId(),
+                    $topic,
+                    $e->getMessage(),
+                    [
+                        'code'    => 500,
+                        'topic'   => $topic,
+                        'request' => $request,
+                        'event'   => $calledMethod,
+                    ]
+                );
+
+                $dispatched = false;
             }
         }
 

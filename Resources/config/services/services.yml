@@ -58,7 +58,8 @@ services:
             - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.topic.periodic_timer'
             - '@gos_web_socket.wamp.topic_manager'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.topic.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
