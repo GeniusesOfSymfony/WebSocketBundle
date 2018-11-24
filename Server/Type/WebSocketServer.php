@@ -128,7 +128,6 @@ class WebSocketServer implements ServerInterface
     {
         $this->logger->info('Starting web socket');
 
-
         $server = new Server("$host:$port", $this->loop);
 
         if (true === $profile) {
@@ -157,17 +156,22 @@ class WebSocketServer implements ServerInterface
         );
         $wsServer->setStrictSubProtocolCheck(false);
 
+        $serverComponent = new SessionProvider(
+            $wsServer,
+            $this->sessionHandler
+        );
+
+        if ($this->originCheck) {
+            $serverComponent = new OriginCheck(
+                $this->eventDispatcher,
+                $serverComponent,
+                $allowedOrigins
+            );
+        }
+
         $app = new IoServer(
             new HttpServer(
-                new OriginCheck(
-                    new SessionProvider(
-                        $wsServer,
-                        $this->sessionHandler
-                    ),
-                    $this->originCheck,
-                    $allowedOrigins,
-                    $this->eventDispatcher
-                )
+                $serverComponent
             ),
             $server,
             $this->loop

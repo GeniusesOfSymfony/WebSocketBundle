@@ -4,10 +4,9 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Stack;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\Events;
-use GuzzleHttp\Psr7 as gPsr;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\Http\CloseResponseTrait;
 use Ratchet\Http\OriginCheck as BaseOriginCheck;
 use Ratchet\MessageComponentInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -17,31 +16,26 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class OriginCheck extends BaseOriginCheck
 {
+    use CloseResponseTrait;
+
     /**
      * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
-    /**
-     * @var bool
-     */
-    private $check;
 
     /**
-     * @param MessageComponentInterface $component
-     * @param bool                      $check
-     * @param string[]                  $allowed
      * @param EventDispatcherInterface  $eventDispatcher
+     * @param MessageComponentInterface $component
+     * @param string[]                  $allowed
      */
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         MessageComponentInterface $component,
-        $check = true,
-        array $allowed = [],
-        EventDispatcherInterface $eventDispatcher
-    )
-    {
+        array $allowed = []
+    ) {
         $this->eventDispatcher = $eventDispatcher;
+
         parent::__construct($component, $allowed);
-        $this->check = $check;
     }
 
     /**
@@ -49,12 +43,7 @@ class OriginCheck extends BaseOriginCheck
      */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
-        if (!$this->check) {
-            return $this->_component->onOpen($conn, $request);
-        }
-
-        $header = (string)$request->getHeaderLine('Origin');
-
+        $header = (string) $request->getHeaderLine('Origin');
         $origin = parse_url($header, PHP_URL_HOST) ?: $header;
 
         if (!in_array($origin, $this->allowedOrigins)) {
@@ -67,21 +56,5 @@ class OriginCheck extends BaseOriginCheck
         }
 
         return $this->_component->onOpen($conn, $request);
-    }
-
-    /**
-     * Close a connection with an HTTP response
-     *
-     * @param \Ratchet\ConnectionInterface $conn
-     * @param int                          $code HTTP status code
-     */
-    protected function close(ConnectionInterface $conn, $code = 400, array $additional_headers = [])
-    {
-        $response = new Response($code, array_merge([
-            'X-Powered-By' => \Ratchet\VERSION,
-        ], $additional_headers));
-
-        $conn->send(gPsr\str($response));
-        $conn->close();
     }
 }
