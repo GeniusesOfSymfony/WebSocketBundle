@@ -36,15 +36,13 @@ class RpcDispatcher implements RpcDispatcherInterface
     {
         $callback = $request->getRoute()->getCallback();
 
-        try {
-            $procedure = $this->rpcRegistry->getRpc($callback);
-        } catch (\Exception $e) {
+        if (!$this->rpcRegistry->hasRpc($callback)) {
             $conn->callError(
                 $id,
                 $topic,
-                $e->getMessage(),
+                sprintf('A RPC handler for the "%s" route has not been registered.', $request->getRouteName()),
                 [
-                    'code' => $e->getCode(),
+                    'code' => 404,
                     'rpc' => $topic,
                     'params' => $params,
                     'request' => $request,
@@ -53,6 +51,8 @@ class RpcDispatcher implements RpcDispatcherInterface
 
             return;
         }
+
+        $procedure = $this->rpcRegistry->getRpc($callback);
 
         $method = $this->toCamelCase($request->getAttributes()->get('method'));
 

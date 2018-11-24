@@ -53,6 +53,11 @@ class RpcDispatcherTest extends TestCase
         };
 
         $this->rpcRegistry->expects($this->once())
+            ->method('hasRpc')
+            ->with('@rpc.handler')
+            ->willReturn(true);
+
+        $this->rpcRegistry->expects($this->once())
             ->method('getRpc')
             ->with('@rpc.handler')
             ->willReturn($handler);
@@ -95,9 +100,12 @@ class RpcDispatcherTest extends TestCase
         };
 
         $this->rpcRegistry->expects($this->once())
-            ->method('getRpc')
+            ->method('hasRpc')
             ->with('@rpc.handler')
-            ->willThrowException(new \Exception('No handler'));
+            ->willReturn(false);
+
+        $this->rpcRegistry->expects($this->never())
+            ->method('getRpc');
 
         $route = new Route('hello/world', '@rpc.handler');
 
@@ -137,6 +145,11 @@ class RpcDispatcherTest extends TestCase
         };
 
         $this->rpcRegistry->expects($this->once())
+            ->method('hasRpc')
+            ->with('@rpc.handler')
+            ->willReturn(true);
+
+        $this->rpcRegistry->expects($this->once())
             ->method('getRpc')
             ->with('@rpc.handler')
             ->willReturn($handler);
@@ -170,6 +183,11 @@ class RpcDispatcherTest extends TestCase
         };
 
         $this->rpcRegistry->expects($this->once())
+            ->method('hasRpc')
+            ->with('@rpc.handler')
+            ->willReturn(true);
+
+        $this->rpcRegistry->expects($this->once())
             ->method('getRpc')
             ->with('@rpc.handler')
             ->willReturn($handler);
@@ -199,6 +217,11 @@ class RpcDispatcherTest extends TestCase
                 return;
             }
         };
+
+        $this->rpcRegistry->expects($this->once())
+            ->method('hasRpc')
+            ->with('@rpc.handler')
+            ->willReturn(true);
 
         $this->rpcRegistry->expects($this->once())
             ->method('getRpc')

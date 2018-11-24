@@ -131,20 +131,17 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
         }
 
         foreach ((array) $request->getRoute()->getCallback() as $callback) {
-            try {
-                $appTopic = $this->topicRegistry->getTopic($callback);
-            } catch (\Exception $e) {
+            if (!$this->topicRegistry->hasTopic($callback)) {
                 if ($this->logger) {
                     $this->logger->error(
-                        sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback),
-                        [
-                            'exception' => $e,
-                        ]
+                        sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback)
                     );
                 }
 
                 continue;
             }
+
+            $appTopic = $this->topicRegistry->getTopic($callback);
 
             if ($appTopic instanceof SecuredTopicInterface) {
                 try {
