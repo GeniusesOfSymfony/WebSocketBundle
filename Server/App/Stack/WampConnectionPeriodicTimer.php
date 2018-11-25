@@ -31,7 +31,6 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     {
         $this->decorated = $component;
         $this->loop = $loop;
-        $this->timerRegistry = [];
     }
 
     /**
