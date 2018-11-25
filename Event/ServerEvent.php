@@ -18,10 +18,16 @@ class ServerEvent extends Event
      */
     protected $server;
 
-    public function __construct(LoopInterface $loop, ServerInterface $server)
+    /**
+     * @var bool
+     */
+    protected $profile;
+
+    public function __construct(LoopInterface $loop, ServerInterface $server, bool $profile)
     {
         $this->loop = $loop;
         $this->server = $server;
+        $this->profile = $profile;
     }
 
     /**
@@ -38,5 +44,10 @@ class ServerEvent extends Event
     public function getServer()
     {
         return $this->server;
+    }
+
+    public function isProfiling(): bool
+    {
+        return $this->profile;
     }
 }
