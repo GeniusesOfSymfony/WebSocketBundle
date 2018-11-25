@@ -2,6 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
+use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
+use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,6 +32,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $loader->load('services.yml');
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
+
+        $container->registerForAutoconfiguration(PeriodicInterface::class)->addTag('gos_web_socket.periodic');
+        $container->registerForAutoconfiguration(RpcInterface::class)->addTag('gos_web_socket.rpc');
+        $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
+        $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
         $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
         $container->setParameter('web_socket_server.client_storage.prefix', $configs['client']['storage']['prefix']);
