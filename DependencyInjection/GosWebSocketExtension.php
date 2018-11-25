@@ -103,6 +103,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //rpc
         if (!empty($configs['rpc'])) {
+            @trigger_error(
+                'Configuring RPC handlers with the `gos_web_socket.rpc` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.rpc` tag to your service definitions instead.',
+                E_USER_DEPRECATED
+            );
+
             $def = $container->getDefinition('gos_web_socket.rpc.registry');
 
             foreach ($configs['rpc'] as $rpc) {
@@ -114,6 +119,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //topic
         if (!empty($configs['topics'])) {
+            @trigger_error(
+                'Configuring topic handlers with the `gos_web_socket.topics` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.topic` tag to your service definitions instead.',
+                E_USER_DEPRECATED
+            );
+
             $def = $container->getDefinition('gos_web_socket.topic.registry');
 
             foreach ($configs['topics'] as $topic) {
@@ -125,6 +135,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //periodic
         if (!empty($configs['periodic'])) {
+            @trigger_error(
+                'Configuring periodic handlers with the `gos_web_socket.periodic` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.periodic` tag to your service definitions instead.',
+                E_USER_DEPRECATED
+            );
+
             $def = $container->getDefinition('gos_web_socket.periodic.registry');
 
             foreach ($configs['periodic'] as $periodic) {
@@ -136,6 +151,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //server
         if (!empty($configs['servers'])) {
+            @trigger_error(
+                'Configuring servers with the `gos_web_socket.servers` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.server` tag to your service definitions instead.',
+                E_USER_DEPRECATED
+            );
+
             $def = $container->getDefinition('gos_web_socket.server.registry');
 
             foreach ($configs['servers'] as $server) {
@@ -154,7 +174,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $container->getDefinition('gos_web_socket.router.wamp')
                 ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
         }
-        
+
         // WAMP Pusher Configuration
         if (isset($configs['pushers']) && isset($configs['pushers']['wamp'])) {
             if (!is_bool($configs['pushers']['wamp']['ssl'])) {
