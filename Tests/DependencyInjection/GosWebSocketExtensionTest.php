@@ -170,12 +170,12 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
-        $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
+        $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
 
         $this->assertCount(
-            2,
-            $wsServerDefinition->getMethodCalls(),
-            'The session handler should be added to the `gos_web_socket.ws.server` service.'
+            1,
+            $serverBuilderDefinition->getMethodCalls(),
+            'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
         );
 
         $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
@@ -227,12 +227,12 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
-        $wsServerDefinition = $this->container->getDefinition('gos_web_socket.ws.server');
+        $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
 
         $this->assertCount(
-            2,
-            $wsServerDefinition->getMethodCalls(),
-            'The session handler should be added to the `gos_web_socket.ws.server` service.'
+            1,
+            $serverBuilderDefinition->getMethodCalls(),
+            'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
         );
 
         $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');

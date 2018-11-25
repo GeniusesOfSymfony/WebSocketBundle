@@ -26,18 +26,30 @@ services:
         public: false
         lazy: true
         arguments:
+            - '@gos_web_socket.ws.server_builder'
             - '@gos_web_socket.server.event_loop'
             - '@event_dispatcher'
             - '@gos_web_socket.periodic.registry'
             - '@gos_web_socket_server.wamp_application'
             - '@gos_web_socket.origins.registry'
             - '%web_socket_origin_check%'
-            - '@gos_web_socket.wamp.topic_manager'
             - '@gos_web_socket.server_push_handler.registry'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
             - { name: gos_web_socket.server }
+
+    gos_web_socket.ws.server_builder:
+        class: Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder
+        public: false
+        lazy: true
+        arguments:
+            - '@gos_web_socket.server.event_loop'
+            - '@gos_web_socket_server.wamp_application'
+            - '@gos_web_socket.wamp.topic_manager'
+            - '@gos_web_socket.origins.registry'
+            - '@event_dispatcher'
+            - '%web_socket_origin_check%'
 
     gos_web_socket.server.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry

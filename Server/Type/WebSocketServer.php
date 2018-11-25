@@ -6,20 +6,13 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
-use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
-use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
-use Gos\Bundle\WebSocketBundle\Server\App\Stack\WampConnectionPeriodicTimer;
+use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
-use Gos\Bundle\WebSocketBundle\Server\WampServer;
-use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
-use Ratchet\Session\SessionProvider;
-use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -32,14 +25,14 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @var ServerBuilder
+     */
+    protected $serverBuilder;
+
+    /**
      * @var LoopInterface
      */
     protected $loop;
-
-    /**
-     * @var \SessionHandlerInterface|null
-     */
-    protected $sessionHandler;
 
     /**
      * @var EventDispatcherInterface
@@ -57,61 +50,32 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
     protected $wampApplication;
 
     /**
-     * @var OriginRegistry
-     */
-    protected $originRegistry;
-
-    /**
-     * @var bool
-     */
-    protected $originCheck;
-
-    /**
      * @var ServerPushHandlerRegistry
      */
     protected $serverPusherHandlerRegistry;
 
     /**
-     * @var TopicManager
-     */
-    protected $topicManager;
-
-    /**
+     * @param ServerBuilder             $serverBuilder
      * @param LoopInterface             $loop
      * @param EventDispatcherInterface  $eventDispatcher
      * @param PeriodicRegistry          $periodicRegistry
      * @param WampApplication           $wampApplication
-     * @param OriginRegistry            $originRegistry
-     * @param bool                      $originCheck
-     * @param TopicManager              $topicManager
      * @param ServerPushHandlerRegistry $serverPushHandlerRegistry
      */
     public function __construct(
+        ServerBuilder $serverBuilder,
         LoopInterface $loop,
         EventDispatcherInterface $eventDispatcher,
         PeriodicRegistry $periodicRegistry,
         WampApplication $wampApplication,
-        OriginRegistry $originRegistry,
-        $originCheck,
-        TopicManager $topicManager,
         ServerPushHandlerRegistry $serverPushHandlerRegistry
     ) {
+        $this->serverBuilder = $serverBuilder;
         $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
         $this->periodicRegistry = $periodicRegistry;
         $this->wampApplication = $wampApplication;
-        $this->originRegistry = $originRegistry;
-        $this->originCheck = $originCheck;
-        $this->topicManager = $topicManager;
         $this->serverPusherHandlerRegistry = $serverPushHandlerRegistry;
-    }
-
-    /**
-     * @param \SessionHandlerInterface $sessionHandler
-     */
-    public function setSessionHandler(\SessionHandlerInterface $sessionHandler)
-    {
-        $this->sessionHandler = $sessionHandler;
     }
 
     /**
@@ -151,35 +115,8 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
             }
         }
 
-        $serverComponent = new WsServer(
-            new WampConnectionPeriodicTimer(
-                new WampServer($this->wampApplication, $this->topicManager),
-                $this->loop
-            )
-        );
-        $serverComponent->setStrictSubProtocolCheck(false);
-
-        if ($this->sessionHandler) {
-            $serverComponent = new SessionProvider(
-                $wsServer,
-                $this->sessionHandler
-            );
-        }
-
-        if ($this->originCheck) {
-            $allowedOrigins = array_merge(['localhost', '127.0.0.1'], $this->originRegistry->getOrigins());
-
-            $serverComponent = new OriginCheck(
-                $this->eventDispatcher,
-                $serverComponent,
-                $allowedOrigins
-            );
-        }
-
         $app = new IoServer(
-            new HttpServer(
-                $serverComponent
-            ),
+            $this->serverBuilder->buildMessageStack(),
             $server,
             $this->loop
         );
