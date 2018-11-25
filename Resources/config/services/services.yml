@@ -29,11 +29,6 @@ services:
             - '@gos_web_socket.ws.server_builder'
             - '@gos_web_socket.server.event_loop'
             - '@event_dispatcher'
-            - '@gos_web_socket.periodic.registry'
-            - '@gos_web_socket_server.wamp_application'
-            - '@gos_web_socket.origins.registry'
-            - '%web_socket_origin_check%'
-            - '@gos_web_socket.server_push_handler.registry'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
@@ -163,6 +158,37 @@ services:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
+
+    gos_web_socket.event_listener.register_periodic_memory_timer:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicMemoryTimerListener
+        lazy: true
+        arguments:
+            - '@gos_web_socket.periodic.registry'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
+
+    gos_web_socket.event_listener.register_periodic_timers:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicTimersListener
+        lazy: true
+        arguments:
+            - '@gos_web_socket.periodic.registry'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
+
+    gos_web_socket.event_listener.register_push_handlers:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener
+        lazy: true
+        arguments:
+            - '@gos_web_socket.server_push_handler.registry'
+            - '@gos_web_socket_server.wamp_application'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
 
     gos_web_socket.server.event_loop:
         class: React\EventLoop\LoopInterface

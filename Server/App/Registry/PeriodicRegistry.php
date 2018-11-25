@@ -12,12 +12,7 @@ class PeriodicRegistry
     /**
      * @var PeriodicInterface[]
      */
-    protected $periodics;
-
-    public function __construct()
-    {
-        $this->periodics = [];
-    }
+    protected $periodics = [];
 
     /**
      * @param PeriodicInterface $periodic

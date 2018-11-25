@@ -4,13 +4,10 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 class ServerPushHandlerRegistry
 {
-    /** @var array ServerPushHandlerInterface[] */
-    protected $pushHandlers;
-
-    public function __construct()
-    {
-        $this->pushHandlers = [];
-    }
+    /**
+     * @var array ServerPushHandlerInterface[]
+     */
+    protected $pushHandlers = [];
 
     /**
      * @param ServerPushHandlerInterface $handler
@@ -28,6 +25,10 @@ class ServerPushHandlerRegistry
      */
     public function getPushHandler($name)
     {
+        if (!$this->hasPushHandler($name)) {
+            throw new \InvalidArgumentException(sprintf('A push handler named "%s" has not been registered.', $name));
+        }
+
         return $this->pushHandlers[$name];
     }
 
@@ -37,5 +38,10 @@ class ServerPushHandlerRegistry
     public function getPushers()
     {
         return $this->pushHandlers;
+    }
+
+    public function hasPushHandler(string $name): bool
+    {
+        return isset($this->pushHandlers[$name]);
     }
 }
