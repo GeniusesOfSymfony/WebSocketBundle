@@ -101,7 +101,7 @@ class ClientStorage implements ClientStorageInterface
         }
 
         if (false === $result) {
-            $this->logger->debug("Unable add client");
+            $this->logger->debug('Unable add client');
             throw new StorageException('Unable add client');
         }
     }
