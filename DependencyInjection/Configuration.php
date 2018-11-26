@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
 {
     const DEFAULT_TTL = 900;
     const DEFAULT_PREFIX = '';
-    const DEFAULT_CLIENT_STORAGE_SERVICE = '@Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver';
+    const DEFAULT_CLIENT_STORAGE_SERVICE = '@'.InMemoryDriver::class';
     const DEFAULT_FIREWALL = 'ws_firewall';
     const DEFAULT_ORIGIN_CHECKER = false;
     const DEFAULT_TOKEN_SEPARATOR = '/';
