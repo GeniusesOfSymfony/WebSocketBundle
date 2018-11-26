@@ -117,10 +117,6 @@ final class ConfigurationTest extends TestCase
                 ],
             ],
             'shared_config' => true,
-            'rpc' => [],
-            'topics' => [],
-            'periodic' => [],
-            'servers' => [],
             'origins' => [],
         ];
     }
