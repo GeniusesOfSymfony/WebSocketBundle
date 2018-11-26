@@ -8,7 +8,7 @@ use React\EventLoop\TimerInterface;
 class TopicPeriodicTimer implements \IteratorAggregate
 {
     /**
-     * @var TimerInterface[]
+     * @var TimerInterface[][]
      */
     protected $registry = [];
 
@@ -29,7 +29,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
      * @param TopicInterface $topic
      * @param string         $name
      *
-     * @return bool
+     * @return TimerInterface|bool
      */
     public function getAllPeriodicTimers(TopicInterface $topic, $name)
     {
@@ -37,7 +37,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
             return false;
         }
 
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
         return $this->registry[$namespace][$name];
     }
@@ -49,24 +49,20 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     public function getPeriodicTimers(TopicInterface $topic)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
-        if (!isset($this->registry[$namespace])) {
-            return [];
-        }
-
-        return $this->registry[$namespace];
+        return $this->registry[$namespace] ?? [];
     }
 
     /**
      * @param TopicInterface $topic
      * @param string         $name
      * @param int|float      $timeout
-     * @param mixed          $callback
+     * @param callable       $callback
      */
     public function addPeriodicTimer(TopicInterface $topic, $name, $timeout, $callback)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
         if (!isset($this->registry[$namespace])) {
             $this->registry[$namespace] = [];
@@ -82,7 +78,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     public function isRegistered(TopicInterface $topic)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
         return isset($this->registry[$namespace]);
     }
@@ -95,7 +91,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     public function isPeriodicTimerActive(TopicInterface $topic, $name)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
         return isset($this->registry[$namespace][$name]);
     }
@@ -106,7 +102,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     public function cancelPeriodicTimer(TopicInterface $topic, $name)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
 
         if (!isset($this->registry[$namespace][$name])) {
             return;
@@ -122,7 +118,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     public function clearPeriodicTimer(TopicInterface $topic)
     {
-        $namespace = spl_object_hash($topic);
+        $namespace = $this->getTopicNamespace($topic);
         unset($this->registry[$namespace]);
     }
 
@@ -132,5 +128,10 @@ class TopicPeriodicTimer implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->registry);
+    }
+
+    private function getTopicNamespace(TopicInterface $topic): string
+    {
+        return spl_object_hash($topic);
     }
 }
