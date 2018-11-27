@@ -7,9 +7,10 @@ interface PusherInterface
     /**
      * @param string|array $data
      * @param string       $routeName
-     * @param array[]      $routeParameters
+     * @param array        $routeParameters
+     * @param array        $context
      */
-    public function push($data, $routeName, Array $routeParameters = array(), Array $context = []);
+    public function push($data, $routeName, array $routeParameters = [], array $context = []);
 
     /**
      * @return array

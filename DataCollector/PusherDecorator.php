@@ -7,30 +7,32 @@ use Gos\Bundle\PubSubRouterBundle\Request\PubSubRequest;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
- * This class is only put in front of Pusher in dev env
+ * Pusher decorating another Pusher to collect data
  */
 class PusherDecorator implements PusherInterface
 {
-    /** @var  PusherInterface */
+    /**
+     * @var PusherInterface
+     */
     protected $pusher;
 
     /**
-     * Useful when you debug to directly see the decorated class
-     * @var  string
+     * Class name of the Pusher which was decorated
+     *
+     * @var string
      */
     protected $decoratedClass;
 
-    /** @var  Stopwatch */
+    /**
+     * @var Stopwatch
+     */
     protected $stopwatch;
 
-    /** @var  WebsocketDataCollector */
+    /**
+     * @var WebsocketDataCollector
+     */
     protected $dataCollector;
 
-    /**
-     * @param PusherInterface $pusher
-     * @param Stopwatch $stopwatch
-     * @param WebsocketDataCollector $dataCollector
-     */
     public function __construct(PusherInterface $pusher, Stopwatch $stopwatch, WebsocketDataCollector $dataCollector)
     {
         $this->pusher = $pusher;
@@ -42,14 +44,17 @@ class PusherDecorator implements PusherInterface
     /**
      * @param string|array $data
      * @param string       $routeName
-     * @param array[]      $routeParameters
+     * @param array        $routeParameters
+     * @param array        $context
      */
-    public function push($data, $routeName, Array $routeParameters = array(), Array $context = [])
+    public function push($data, $routeName, array $routeParameters = [], array $context = [])
     {
         $eventName = 'push.'.$this->getName();
+
         $this->stopwatch->start($eventName, 'websocket');
         $this->pusher->push($data, $routeName, $routeParameters, $context);
         $this->stopwatch->stop($eventName);
+
         $this->dataCollector->collectData($this->stopwatch->getEvent($eventName), $this->getName());
     }
 
