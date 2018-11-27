@@ -9,38 +9,23 @@ use Symfony\Component\Stopwatch\StopwatchEvent;
 
 class WebsocketDataCollector extends DataCollector
 {
-    /** @var array */
-    protected $durations;
-
-    /** @var  [] */
-    protected $count;
-
-    /** @var  [] */
-    protected $rawData;
-
-    public function __construct()
-    {
-        $this->rawData = [];
-    }
+    /**
+     * @var array
+     */
+    protected $rawData = [];
 
     /**
      * Collects data for the given Request and Response.
-     *
-     * @param Request $request A Request instance
-     * @param Response $response A Response instance
-     * @param \Exception $exception An Exception instance
-     *
-     * @api
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $pusherDuration = [];
         $pusherCount = [];
-        $durationTotal = 0;
         $totalPush = 0;
+        $pusherDuration = [];
+        $durationTotal = 0;
 
-        foreach($this->rawData as $pusherName => $durations) {
-            if(!isset($pusherCount[$pusherName])){
+        foreach ($this->rawData as $pusherName => $durations) {
+            if (!isset($pusherCount[$pusherName])) {
                 $pusherCount[$pusherName] = 0;
             }
 
@@ -55,7 +40,7 @@ class WebsocketDataCollector extends DataCollector
             'pusher_counts' => $pusherCount,
             'push_total' => $totalPush,
             'durations' => $pusherDuration,
-            'duration_total' => $durationTotal
+            'duration_total' => $durationTotal,
         ];
     }
 
@@ -93,11 +78,11 @@ class WebsocketDataCollector extends DataCollector
 
     /**
      * @param StopwatchEvent $event
-     * @param $pusherName
+     * @param string         $pusherName
      */
     public function collectData(StopwatchEvent $event, $pusherName)
     {
-        if(!isset($this->rawData[$pusherName])){
+        if (!isset($this->rawData[$pusherName])) {
             $this->rawData[$pusherName] = [];
         }
 
@@ -115,16 +100,12 @@ class WebsocketDataCollector extends DataCollector
             'pusher_counts' => [],
             'push_total' => 0,
             'durations' => [],
-            'duration_total' => 0
+            'duration_total' => 0,
         ];
     }
 
     /**
      * Returns the name of the collector.
-     *
-     * @return string The collector name
-     *
-     * @api
      */
     public function getName()
     {
