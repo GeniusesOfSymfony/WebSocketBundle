@@ -22,21 +22,19 @@ class DataCollectorCompilerPass implements CompilerPassInterface
         $pushers = $container->findTaggedServiceIds('gos_web_socket.pusher');
 
         foreach ($pushers as $id => $attributes) {
-            $pusherInnerId = $id.'.inner';
-
-            $container->setDefinition($pusherInnerId, $container->getDefinition($id));
+            $collectorId = $id.'.data_collector';
 
             $collectingPusherDef = new Definition(
                 PusherDecorator::class,
                 [
-                    new Reference($pusherInnerId),
+                    new Reference($collectorId.'.inner'),
                     new Reference('debug.stopwatch'),
                     new Reference('gos_web_socket.data_collector'),
                 ]
             );
-            $collectingPusherDef->setDecoratedService($id, $pusherInnerId);
+            $collectingPusherDef->setDecoratedService($id);
 
-            $container->setDefinition($id, $collectingPusherDef);
+            $container->setDefinition($collectorId, $collectingPusherDef);
         }
     }
 }
