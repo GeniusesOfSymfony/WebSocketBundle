@@ -122,7 +122,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('wamp');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
+        if (method_exists($builder, 'getRootNode')) {
             $node = $builder->getRootNode();
         } else {
             // BC layer for symfony/config 4.1 and older
@@ -156,7 +156,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('zmq');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
+        if (method_exists($builder, 'getRootNode')) {
             $node = $builder->getRootNode();
         } else {
             // BC layer for symfony/config 4.1 and older
@@ -197,7 +197,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('amqp');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
+        if (method_exists($builder, 'getRootNode')) {
             $node = $builder->getRootNode();
         } else {
             // BC layer for symfony/config 4.1 and older
