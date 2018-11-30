@@ -22,8 +22,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('gos_web_socket');
+        $treeBuilder = new TreeBuilder('gos_web_socket');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('gos_web_socket');
+        }
 
         $rootNode->children()
             ->arrayNode('client')
@@ -114,8 +120,14 @@ class Configuration implements ConfigurationInterface
 
     protected function addWampNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('wamp');
+        $builder = new TreeBuilder('wamp');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('wamp');
+        }
 
         $node
             ->addDefaultsIfNotSet()
@@ -142,8 +154,14 @@ class Configuration implements ConfigurationInterface
 
     protected function addZmqNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('zmq');
+        $builder = new TreeBuilder('zmq');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('zmq');
+        }
 
         $node
             ->addDefaultsIfNotSet()
@@ -177,8 +195,14 @@ class Configuration implements ConfigurationInterface
 
     protected function addAmqpNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('amqp');
+        $builder = new TreeBuilder('amqp');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('amqp');
+        }
 
         $node
             ->addDefaultsIfNotSet()
