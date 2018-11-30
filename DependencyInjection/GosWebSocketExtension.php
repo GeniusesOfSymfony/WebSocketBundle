@@ -43,7 +43,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         if (isset($configs['server'])) {
             if (isset($configs['server']['port'])) {
-                $container->setParameter('web_socket_server.port', $configs['server']['port']);
+                $container->setParameter('web_socket_server.port', (int) $configs['server']['port']);
             }
 
             if (isset($configs['server']['host'])) {
@@ -147,7 +147,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 }
 
                 if (isset($config['server']['port'])) {
-                    $twigConfig['globals']['gos_web_socket_server_port'] = $config['server']['port'];
+                    $twigConfig['globals']['gos_web_socket_server_port'] = (int) $config['server']['port'];
                 }
 
                 if (!empty($twigConfig['globals'])) {
