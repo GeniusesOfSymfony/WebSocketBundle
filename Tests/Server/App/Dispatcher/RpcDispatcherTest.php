@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcResponse;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
@@ -35,9 +36,14 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallIsDispatchedToItsHandler()
     {
-        $handler = new class
+        $handler = new class implements RpcInterface
         {
             private $called = false;
+
+            public function getName()
+            {
+                return '@rpc.handler';
+            }
 
             public function handleCallback(): RpcResponse
             {
@@ -82,9 +88,14 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry()
     {
-        $handler = new class
+        $handler = new class implements RpcInterface
         {
             private $called = false;
+
+            public function getName()
+            {
+                return '@rpc.handler';
+            }
 
             public function handleCallback(): RpcResponse
             {
@@ -127,9 +138,14 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler()
     {
-        $handler = new class
+        $handler = new class implements RpcInterface
         {
             private $called = false;
+
+            public function getName()
+            {
+                return '@rpc.handler';
+            }
 
             public function handleCallback(): RpcResponse
             {
@@ -174,8 +190,13 @@ class RpcDispatcherTest extends TestCase
 
     public function testAThrowableFromAHandlerIsCaughtAndProcessed()
     {
-        $handler = new class
+        $handler = new class implements RpcInterface
         {
+            public function getName()
+            {
+                return '@rpc.handler';
+            }
+
             public function handleCallback(): RpcResponse
             {
                 throw new \Exception('Testing');
@@ -210,8 +231,13 @@ class RpcDispatcherTest extends TestCase
 
     public function testANullReturnFromAHandlerIsProcessed()
     {
-        $handler = new class
+        $handler = new class implements RpcInterface
         {
+            public function getName()
+            {
+                return '@rpc.handler';
+            }
+
             public function handleCallback(): void
             {
                 return;
