@@ -8,6 +8,8 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
+use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
@@ -105,7 +107,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
@@ -113,6 +115,125 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->onSubscribe($connection, $topic, $request);
 
         $this->assertTrue($handler->wasCalled());
+    }
+
+    public function testAWebsocketPushIsDispatchedToItsHandler()
+    {
+        $handler = new class implements TopicInterface, PushableTopicInterface
+        {
+            private $called = false;
+
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onPush(Topic $topic, WampRequest $request, $data, $provider)
+            {
+                $this->called = true;
+            }
+
+            public function getName()
+            {
+                return 'topic.handler';
+            }
+
+            public function wasCalled(): bool
+            {
+                return $this->called;
+            }
+        };
+
+        $this->topicManager->expects($this->once())
+            ->method('getTopic')
+            ->with('topic.handler')
+            ->willReturn($this->createMock(Topic::class));
+
+        $this->topicRegistry->expects($this->once())
+            ->method('hasTopic')
+            ->with('topic.handler')
+            ->willReturn(true);
+
+        $this->topicRegistry->expects($this->once())
+            ->method('getTopic')
+            ->with('topic.handler')
+            ->willReturn($handler);
+
+        $route = new Route('hello/world', 'topic.handler');
+
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
+
+        $this->dispatcher->onPush($request, 'test', 'provider');
+
+        $this->assertTrue($handler->wasCalled());
+    }
+
+    /**
+     * @expectedException \Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException
+     * @expectedExceptionMessage The "topic.handler" topic does not support push notifications
+     */
+    public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface()
+    {
+        $handler = new class implements TopicInterface
+        {
+            private $called = false;
+
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function getName()
+            {
+                return 'topic.handler';
+            }
+
+            public function wasCalled(): bool
+            {
+                return $this->called;
+            }
+        };
+
+        $this->topicManager->expects($this->once())
+            ->method('getTopic')
+            ->with('topic.handler')
+            ->willReturn($this->createMock(Topic::class));
+
+        $this->topicRegistry->expects($this->once())
+            ->method('hasTopic')
+            ->with('topic.handler')
+            ->willReturn(true);
+
+        $this->topicRegistry->expects($this->once())
+            ->method('getTopic')
+            ->with('topic.handler')
+            ->willReturn($handler);
+
+        $route = new Route('hello/world', 'topic.handler');
+
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
+
+        $this->dispatcher->onPush($request, 'test', 'provider');
     }
 
     public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler()
@@ -159,7 +280,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
@@ -213,7 +334,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
@@ -278,7 +399,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
@@ -346,7 +467,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
 
@@ -410,7 +531,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
 
@@ -478,7 +599,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
@@ -556,7 +677,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
@@ -635,7 +756,7 @@ final class TopicDispatcherTest extends TestCase
 
         $route = new Route('hello/world', 'topic.handler');
 
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), true);
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())

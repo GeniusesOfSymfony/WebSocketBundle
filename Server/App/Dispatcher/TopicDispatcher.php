@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
@@ -146,19 +147,21 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
                     $this->logger->error($e->getMessage(), ['exception' => $e]);
                 }
 
-                $conn->callError(
-                    $topic->getId(),
-                    $topic,
-                    sprintf('You are not authorized to perform this action: %s', $e->getMessage()),
-                    [
-                        'code' => 401,
-                        'topic' => $topic,
-                        'request' => $request,
-                        'event' => $calledMethod,
-                    ]
-                );
+                if ($conn) {
+                    $conn->callError(
+                        $topic->getId(),
+                        $topic,
+                        sprintf('You are not authorized to perform this action: %s', $e->getMessage()),
+                        [
+                            'code' => 401,
+                            'topic' => $topic,
+                            'request' => $request,
+                            'event' => $calledMethod,
+                        ]
+                    );
 
-                $conn->close();
+                    $conn->close();
+                }
 
                 return false;
             }
@@ -172,15 +175,11 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
             }
         }
 
-        if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
-            $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
-        }
-
         try {
             switch ($calledMethod) {
                 case self::PUSH:
                     if (!$appTopic instanceof PushableTopicInterface) {
-                        throw new \RuntimeException(sprintf('The "%s" topic does not support push notifications', $appTopic->getName()));
+                        throw new PushUnsupportedException($appTopic);
                     }
 
                     $appTopic->onPush($topic, $request, $payload, $provider);
@@ -193,8 +192,16 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
                     break;
 
                 case self::SUBSCRIPTION:
+                    $appTopic->onSubscribe($conn, $topic, $request);
+
+                    break;
+
                 case self::UNSUBSCRIPTION:
-                    $appTopic->{$calledMethod}($conn, $topic, $request);
+                    if (0 === count($topic)) {
+                        $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+                    }
+
+                    $appTopic->onUnSubscribe($conn, $topic, $request);
 
                     break;
 
@@ -203,6 +210,17 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
             }
 
             return true;
+        } catch (PushUnsupportedException $e) {
+            if ($this->logger) {
+                $this->logger->error(
+                    $e->getMessage(),
+                    [
+                        'exception' => $e,
+                    ]
+                );
+            }
+
+            throw $e;
         } catch (\Exception $e) {
             if ($this->logger) {
                 $this->logger->error(
@@ -214,17 +232,19 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
                 );
             }
 
-            $conn->callError(
-                $topic->getId(),
-                $topic,
-                $e->getMessage(),
-                [
-                    'code'    => 500,
-                    'topic'   => $topic,
-                    'request' => $request,
-                    'event'   => $calledMethod,
-                ]
-            );
+            if ($conn) {
+                $conn->callError(
+                    $topic->getId(),
+                    $topic,
+                    $e->getMessage(),
+                    [
+                        'code'    => 500,
+                        'topic'   => $topic,
+                        'request' => $request,
+                        'event'   => $calledMethod,
+                    ]
+                );
+            }
 
             return false;
         }
