@@ -763,6 +763,9 @@ final class TopicDispatcherTest extends TestCase
             ->method('callError');
 
         $topic = $this->createMock(Topic::class);
+        $topic->expects($this->any())
+            ->method('getIterator')
+            ->willReturn(new \ArrayIterator());
 
         $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
 
