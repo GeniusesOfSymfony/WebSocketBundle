@@ -28,7 +28,7 @@ interface ClientStorageInterface
      *
      * @return string
      */
-    public static function getStorageId(ConnectionInterface $conn);
+    public function getStorageId(ConnectionInterface $conn);
 
     /**
      * @param string               $identifier

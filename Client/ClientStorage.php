@@ -71,7 +71,7 @@ class ClientStorage implements ClientStorageInterface
     /**
      * {@inheritdoc}
      */
-    public static function getStorageId(ConnectionInterface $conn)
+    public function getStorageId(ConnectionInterface $conn)
     {
         return $conn->resourceId;
     }
