@@ -10,7 +10,7 @@ abstract class AbstractPusher implements PusherInterface
     /** @var  MessageSerializer */
     protected $serializer;
 
-    /** @var  Array */
+    /** @var  array */
     private $config;
 
     /** @var  WampRouter */
@@ -80,10 +80,7 @@ abstract class AbstractPusher implements PusherInterface
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -104,7 +101,7 @@ abstract class AbstractPusher implements PusherInterface
      *
      * @return string|\Symfony\Component\Serializer\Encoder\scalar
      */
-    public function push($data, $routeName, Array $routeParameters = array(), Array $context = [])
+    public function push($data, $routeName, array $routeParameters = array(), array $context = [])
     {
         $channel = $this->router->generate($routeName, $routeParameters);
         $message = new Message($channel, $data);

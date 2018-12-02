@@ -24,6 +24,8 @@ interface PusherInterface
 
     public function close();
 
+    public function setName(string $name): void;
+
     /**
      * @return string
      */

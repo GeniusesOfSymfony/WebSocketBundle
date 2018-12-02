@@ -44,6 +44,11 @@ class PusherRegistryTest extends TestCase
                 // no-op
             }
 
+            public function setName(string $name): void
+            {
+                // no-op
+            }
+
             public function getName()
             {
                 return 'test';
@@ -81,6 +86,11 @@ class PusherRegistryTest extends TestCase
             }
 
             public function close()
+            {
+                // no-op
+            }
+
+            public function setName(string $name): void
             {
                 // no-op
             }

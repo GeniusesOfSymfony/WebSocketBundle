@@ -79,6 +79,11 @@ class PusherDecorator implements PusherInterface
         $this->pusher->close();
     }
 
+    public function setName(string $name): void
+    {
+        $this->pusher->setName($name);
+    }
+
     /**
      * @return string
      */
