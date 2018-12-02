@@ -29,4 +29,9 @@ class PeriodicRegistry
     {
         return $this->periodics;
     }
+
+    public function hasPeriodic(PeriodicInterface $periodic): bool
+    {
+        return in_array($periodic, $this->periodics);
+    }
 }

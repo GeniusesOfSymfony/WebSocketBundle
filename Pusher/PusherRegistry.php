@@ -4,13 +4,10 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 class PusherRegistry
 {
-    /** @var PusherInterface[] */
-    protected $pushers;
-
-    public function __construct()
-    {
-        $this->pushers = [];
-    }
+    /**
+     * @var PusherInterface[]
+     */
+    protected $pushers = [];
 
     /**
      * @param PusherInterface $pusher
@@ -28,14 +25,23 @@ class PusherRegistry
      */
     public function getPusher($name)
     {
+        if (!$this->hasPusher($name)) {
+            throw new \InvalidArgumentException(sprintf('A pusher named "%s" has not been registered.', $name));
+        }
+
         return $this->pushers[$name];
     }
 
     /**
-     * @return array|PusherInterface[]
+     * @return PusherInterface[]
      */
     public function getPushers()
     {
         return $this->pushers;
+    }
+
+    public function hasPusher(string $name): bool
+    {
+        return isset($this->pushers[$name]);
     }
 }
