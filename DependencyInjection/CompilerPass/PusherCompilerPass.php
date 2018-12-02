@@ -49,7 +49,7 @@ class PusherCompilerPass implements CompilerPassInterface
                 ->addMethodCall('setName', [$alias])
                 ->addMethodCall('setConfig', [$pushers[$alias]]);
 
-            $definition->addMethodCall('addPusher', [new Reference($id), $alias]);
+            $definition->addMethodCall('addPusher', [new Reference($id)]);
         }
 
         //ServerPushHandler
@@ -69,7 +69,7 @@ class PusherCompilerPass implements CompilerPassInterface
                 ->addMethodCall('setName', [$alias])
                 ->addMethodCall('setConfig', [$pushers[$alias]]);
 
-            $definition->addMethodCall('addPushHandler', [new Reference($id), $alias]);
+            $definition->addMethodCall('addPushHandler', [new Reference($id)]);
         }
     }
 }

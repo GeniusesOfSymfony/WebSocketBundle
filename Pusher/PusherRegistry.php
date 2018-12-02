@@ -11,11 +11,10 @@ class PusherRegistry
 
     /**
      * @param PusherInterface $pusher
-     * @param string          $name
      */
-    public function addPusher(PusherInterface $pusher, $name)
+    public function addPusher(PusherInterface $pusher)
     {
-        $this->pushers[$name] = $pusher;
+        $this->pushers[$pusher->getName()] = $pusher;
     }
 
     /**

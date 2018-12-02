@@ -11,11 +11,10 @@ class ServerPushHandlerRegistry
 
     /**
      * @param ServerPushHandlerInterface $handler
-     * @param string                     $name
      */
-    public function addPushHandler(ServerPushHandlerInterface $handler, $name)
+    public function addPushHandler(ServerPushHandlerInterface $handler)
     {
-        $this->pushHandlers[$name] = $handler;
+        $this->pushHandlers[$handler->getName()] = $handler;
     }
 
     /**

@@ -50,7 +50,7 @@ class PusherRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addPusher($pusher, $pusher->getName());
+        $this->registry->addPusher($pusher);
 
         $this->assertSame($pusher, $this->registry->getPusher($pusher->getName()));
         $this->assertContains($pusher, $this->registry->getPushers());
@@ -91,7 +91,7 @@ class PusherRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addPusher($pusher, $pusher->getName());
+        $this->registry->addPusher($pusher);
 
         $this->registry->getPusher('main');
     }

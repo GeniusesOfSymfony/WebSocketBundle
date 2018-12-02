@@ -57,7 +57,7 @@ class ServerPushHandlerRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addPushHandler($handler, $handler->getName());
+        $this->registry->addPushHandler($handler);
 
         $this->assertSame($handler, $this->registry->getPushHandler($handler->getName()));
         $this->assertContains($handler, $this->registry->getPushers());
@@ -103,7 +103,7 @@ class ServerPushHandlerRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addPushHandler($handler, $handler->getName());
+        $this->registry->addPushHandler($handler);
 
         $this->registry->getPushHandler('main');
     }
