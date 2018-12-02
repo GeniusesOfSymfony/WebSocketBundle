@@ -34,7 +34,7 @@ class ClientManipulator implements ClientManipulatorInterface
     /**
      * @param ConnectionInterface $connection
      *
-     * @return false|string|\Symfony\Component\Security\Core\User\UserInterface
+     * @return bool|string|UserInterface
      */
     public function getClient(ConnectionInterface $connection)
     {
@@ -42,7 +42,8 @@ class ClientManipulator implements ClientManipulatorInterface
 
         try {
             return $this->clientStorage->getClient($storageId);
-        } catch (ClientNotFoundException $e) { //User is gone due to ttl
+        } catch (ClientNotFoundException $e) {
+            // User is gone due to ttl
             $this->authenticationProvider->authenticate($connection);
 
             return $this->getClient($connection);
@@ -53,7 +54,7 @@ class ClientManipulator implements ClientManipulatorInterface
      * @param Topic  $topic
      * @param string $username
      *
-     * @return false|string|\Symfony\Component\Security\Core\User\UserInterface
+     * @return array|bool
      */
     public function findByUsername(Topic $topic, $username)
     {
@@ -76,7 +77,7 @@ class ClientManipulator implements ClientManipulatorInterface
      * @param Topic $topic
      * @param bool  $anonymous
      *
-     * @return false|string|UserInterface
+     * @return array|bool
      */
     public function getAll(Topic $topic, $anonymous = false)
     {
@@ -102,7 +103,7 @@ class ClientManipulator implements ClientManipulatorInterface
      * @param Topic $topic
      * @param array $roles
      *
-     * @return UserInterface[]
+     * @return array|bool
      */
     public function findByRoles(Topic $topic, array $roles)
     {
