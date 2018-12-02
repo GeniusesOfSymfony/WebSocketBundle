@@ -124,117 +124,109 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
      */
     public function dispatch($calledMethod, ?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
-        $dispatched = false;
+        $callback = $request->getRoute()->getCallback();
 
-        if (!$topic) {
+        if (!$this->topicRegistry->hasTopic($callback)) {
+            if ($this->logger) {
+                $this->logger->error(
+                    sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback)
+                );
+            }
+
             return false;
         }
 
-        foreach ((array) $request->getRoute()->getCallback() as $callback) {
-            if (!$this->topicRegistry->hasTopic($callback)) {
-                if ($this->logger) {
-                    $this->logger->error(
-                        sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback)
-                    );
-                }
+        $appTopic = $this->topicRegistry->getTopic($callback);
 
-                continue;
-            }
-
-            $appTopic = $this->topicRegistry->getTopic($callback);
-
-            if ($appTopic instanceof SecuredTopicInterface) {
-                try {
-                    $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
-                } catch (FirewallRejectionException $e) {
-                    if ($this->logger) {
-                        $this->logger->error($e->getMessage(), ['exception' => $e]);
-                    }
-
-                    $conn->callError(
-                        $topic->getId(),
-                        $topic,
-                        sprintf('You are not authorized to perform this action: %s', $e->getMessage()),
-                        [
-                            'code' => 401,
-                            'topic' => $topic,
-                            'request' => $request,
-                            'event' => $calledMethod,
-                        ]
-                    );
-
-                    $conn->close();
-
-                    return false;
-                }
-            }
-
-            if ($appTopic instanceof TopicPeriodicTimerInterface) {
-                $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
-
-                if (!$this->topicPeriodicTimer->isRegistered($appTopic) && count($topic) !== 0) {
-                    $appTopic->registerPeriodicTimer($topic);
-                }
-            }
-
-            if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
-                $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
-            }
-
+        if ($appTopic instanceof SecuredTopicInterface) {
             try {
-                switch ($calledMethod) {
-                    case self::PUSH:
-                        if (!$appTopic instanceof PushableTopicInterface) {
-                            throw new \RuntimeException(sprintf('The "%s" topic does not support push notifications', $appTopic->getName()));
-                        }
-
-                        $appTopic->onPush($topic, $request, $payload, $provider);
-
-                        break;
-
-                    case self::PUBLISH:
-                        $appTopic->onPublish($conn, $topic, $request, $payload, $exclude, $eligible);
-
-                        break;
-
-                    case self::SUBSCRIPTION:
-                    case self::UNSUBSCRIPTION:
-                        $appTopic->{$calledMethod}($conn, $topic, $request);
-
-                        break;
-
-                    default:
-                        throw new \InvalidArgumentException('The "'.$calledMethod.'" method is not supported.');
-                }
-
-                $dispatched = true;
-            } catch (\Exception $e) {
+                $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
+            } catch (FirewallRejectionException $e) {
                 if ($this->logger) {
-                    $this->logger->error(
-                        'Websocket error processing topic callback function.',
-                        [
-                            'exception' => $e,
-                            'topic'     => $topic,
-                        ]
-                    );
+                    $this->logger->error($e->getMessage(), ['exception' => $e]);
                 }
 
                 $conn->callError(
                     $topic->getId(),
                     $topic,
-                    $e->getMessage(),
+                    sprintf('You are not authorized to perform this action: %s', $e->getMessage()),
                     [
-                        'code'    => 500,
-                        'topic'   => $topic,
+                        'code' => 401,
+                        'topic' => $topic,
                         'request' => $request,
-                        'event'   => $calledMethod,
+                        'event' => $calledMethod,
                     ]
                 );
 
-                $dispatched = false;
+                $conn->close();
+
+                return false;
             }
         }
 
-        return $dispatched;
+        if ($appTopic instanceof TopicPeriodicTimerInterface) {
+            $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
+
+            if (!$this->topicPeriodicTimer->isRegistered($appTopic) && count($topic) !== 0) {
+                $appTopic->registerPeriodicTimer($topic);
+            }
+        }
+
+        if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
+            $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+        }
+
+        try {
+            switch ($calledMethod) {
+                case self::PUSH:
+                    if (!$appTopic instanceof PushableTopicInterface) {
+                        throw new \RuntimeException(sprintf('The "%s" topic does not support push notifications', $appTopic->getName()));
+                    }
+
+                    $appTopic->onPush($topic, $request, $payload, $provider);
+
+                    break;
+
+                case self::PUBLISH:
+                    $appTopic->onPublish($conn, $topic, $request, $payload, $exclude, $eligible);
+
+                    break;
+
+                case self::SUBSCRIPTION:
+                case self::UNSUBSCRIPTION:
+                    $appTopic->{$calledMethod}($conn, $topic, $request);
+
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException('The "'.$calledMethod.'" method is not supported.');
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error(
+                    'Websocket error processing topic callback function.',
+                    [
+                        'exception' => $e,
+                        'topic'     => $topic,
+                    ]
+                );
+            }
+
+            $conn->callError(
+                $topic->getId(),
+                $topic,
+                $e->getMessage(),
+                [
+                    'code'    => 500,
+                    'topic'   => $topic,
+                    'request' => $request,
+                    'event'   => $calledMethod,
+                ]
+            );
+
+            return false;
+        }
     }
 }
