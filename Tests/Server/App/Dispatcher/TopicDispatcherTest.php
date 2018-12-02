@@ -230,7 +230,7 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $secured = false;
 
-            public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
             {
                 $this->secured = true;
             }
