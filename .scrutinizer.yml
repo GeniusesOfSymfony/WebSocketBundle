@@ -10,7 +10,7 @@ build:
 
 filter:
   excluded_paths:
-    - tests/*
+    - Tests/*
 
 tools:
   external_code_coverage: false
