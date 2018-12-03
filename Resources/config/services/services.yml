@@ -205,7 +205,8 @@ services:
             - '@security.token_storage'
             - '%gos_web_socket.firewall%'
             - '@gos_web_socket.client_storage'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.websocket.client_manipulator:
         class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
