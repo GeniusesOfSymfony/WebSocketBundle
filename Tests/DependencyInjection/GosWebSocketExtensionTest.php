@@ -9,6 +9,7 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -172,23 +173,21 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
 
-        $this->assertCount(
-            1,
-            $serverBuilderDefinition->getMethodCalls(),
+        $this->assertTrue(
+            $serverBuilderDefinition->hasMethodCall('setSessionHandler'),
             'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
         );
 
         $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
         $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
 
-        $this->assertCount(
-            1,
-            $clientStorageMethodCalls,
-            'The session handler should be added to the `gos_web_socket.client_storage` service.'
+        $this->assertTrue(
+            $clientStorageDefinition->hasMethodCall('setStorageDriver'),
+            'The storage driver should be added to the `gos_web_socket.client_storage` service.'
         );
 
         /** @var Reference $reference */
-        $reference = $clientStorageMethodCalls[0][1][0];
+        $reference = $clientStorageMethodCalls[1][1][0];
 
         $this->assertSame(
             'gos_web_socket.server.in_memory.client_storage.driver',
@@ -229,23 +228,21 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
 
-        $this->assertCount(
-            1,
-            $serverBuilderDefinition->getMethodCalls(),
+        $this->assertTrue(
+            $serverBuilderDefinition->hasMethodCall('setSessionHandler'),
             'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
         );
 
         $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
         $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
 
-        $this->assertCount(
-            1,
-            $clientStorageMethodCalls,
-            'The session handler should be added to the `gos_web_socket.client_storage` service.'
+        $this->assertTrue(
+            $clientStorageDefinition->hasMethodCall('setStorageDriver'),
+            'The storage driver should be added to the `gos_web_socket.client_storage` service.'
         );
 
         /** @var Reference $reference */
-        $reference = $clientStorageMethodCalls[0][1][0];
+        $reference = $clientStorageMethodCalls[1][1][0];
 
         $this->assertSame(
             'gos_web_socket.client_storage.symfony.decorator',

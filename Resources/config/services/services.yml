@@ -92,7 +92,8 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         arguments:
             - '%web_socket_server.client_storage.ttl%'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
