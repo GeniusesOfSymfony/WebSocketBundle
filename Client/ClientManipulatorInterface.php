@@ -4,22 +4,29 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface ClientManipulatorInterface
 {
     /**
      * @param ConnectionInterface $connection
      *
-     * @return bool|string|UserInterface
+     * @return TokenInterface
      */
-    public function getClient(ConnectionInterface $connection);
+    public function getClient(ConnectionInterface $connection): TokenInterface;
+
+    /**
+     * @param ConnectionInterface $connection
+     *
+     * @return string|object
+     */
+    public function getUser(ConnectionInterface $connection);
 
     /**
      * @param Topic  $topic
      * @param string $username
      *
-     * @return array|bool
+     * @return TokenInterface[]|bool
      */
     public function findByUsername(Topic $topic, $username);
 
@@ -27,15 +34,15 @@ interface ClientManipulatorInterface
      * @param Topic $topic
      * @param array $roles
      *
-     * @return array|bool
+     * @return TokenInterface[]
      */
-    public function findByRoles(Topic $topic, array $roles);
+    public function findByRoles(Topic $topic, array $roles): array;
 
     /**
      * @param Topic $topic
      * @param bool  $anonymous
      *
-     * @return array|bool
+     * @return TokenInterface[]
      */
-    public function getAll(Topic $topic, $anonymous = false);
+    public function getAll(Topic $topic, $anonymous = false): array;
 }

@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ClientManipulator implements ClientManipulatorInterface
 {
@@ -31,12 +31,7 @@ class ClientManipulator implements ClientManipulatorInterface
         $this->authenticationProvider = $authenticationProvider;
     }
 
-    /**
-     * @param ConnectionInterface $connection
-     *
-     * @return bool|string|UserInterface
-     */
-    public function getClient(ConnectionInterface $connection)
+    public function getClient(ConnectionInterface $connection): TokenInterface
     {
         $storageId = $this->clientStorage->getStorageId($connection);
 
@@ -51,17 +46,23 @@ class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @param Topic  $topic
-     * @param string $username
-     *
-     * @return array|bool
+     * {@inheritdoc}
+     */
+    public function getUser(ConnectionInterface $connection)
+    {
+        return $this->getClient($connection)->getUser();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function findByUsername(Topic $topic, $username)
     {
+        /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken || false === $client || is_string($client)) {
+            if ($client instanceof AnonymousToken) {
                 continue;
             }
 
@@ -74,19 +75,17 @@ class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @param Topic $topic
-     * @param bool  $anonymous
-     *
-     * @return array|bool
+     * {@inheritdoc}
      */
-    public function getAll(Topic $topic, $anonymous = false)
+    public function getAll(Topic $topic, $anonymous = false): array
     {
         $results = [];
 
+        /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if (true !== $anonymous && ($client instanceof AnonymousToken || false === $client || is_string($client))) {
+            if (true !== $anonymous && $client instanceof AnonymousToken) {
                 continue;
             }
 
@@ -96,28 +95,26 @@ class ClientManipulator implements ClientManipulatorInterface
             ];
         }
 
-        return empty($results) ? false : $results;
+        return $results;
     }
 
     /**
-     * @param Topic $topic
-     * @param array $roles
-     *
-     * @return array|bool
+     * {@inheritdoc}
      */
-    public function findByRoles(Topic $topic, array $roles)
+    public function findByRoles(Topic $topic, array $roles): array
     {
         $results = [];
 
+        /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken || false === $client || is_string($client)) {
+            if ($client instanceof AnonymousToken) {
                 continue;
             }
 
             foreach ($client->getRoles() as $role) {
-                if (in_array($role, $roles)) {
+                if (in_array($role->getRole(), $roles)) {
                     $results[] = [
                         'client' => $client,
                         'connection' => $connection,
@@ -128,6 +125,6 @@ class ClientManipulator implements ClientManipulatorInterface
             }
         }
 
-        return empty($results) ? false : $results;
+        return $results;
     }
 }

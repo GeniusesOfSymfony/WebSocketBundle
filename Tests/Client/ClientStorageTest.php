@@ -6,6 +6,8 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ClientStorageTest extends TestCase
 {
@@ -32,14 +34,14 @@ class ClientStorageTest extends TestCase
     public function testTheClientIsRetrieved()
     {
         $clientId = 42;
-        $username = 'user';
+        $token = new AnonymousToken('secret', 'anon');
 
         $this->driver->expects($this->once())
             ->method('fetch')
             ->with($clientId)
-            ->willReturn(serialize($username));
+            ->willReturn(serialize($token));
 
-        $this->assertSame($username, $this->storage->getClient($clientId));
+        $this->assertEquals($token, $this->storage->getClient($clientId));
     }
 
     /**
@@ -87,13 +89,13 @@ class ClientStorageTest extends TestCase
     public function testTheClientIsAddedToStorage()
     {
         $clientId = 42;
-        $username = 'user';
+        $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
             ->method('save')
             ->willReturn(true);
 
-        $this->storage->addClient($clientId, $username);
+        $this->storage->addClient($clientId, $token);
     }
 
     /**
@@ -103,13 +105,13 @@ class ClientStorageTest extends TestCase
     public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenStoringAClient()
     {
         $clientId = 42;
-        $username = 'user';
+        $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
             ->method('save')
             ->willThrowException(new \Exception('Testing'));
 
-        $this->storage->addClient($clientId, $username);
+        $this->storage->addClient($clientId, $token);
     }
 
     /**
@@ -119,13 +121,16 @@ class ClientStorageTest extends TestCase
     public function testAnExceptionIsThrownIfTheClientIsNotAddedToStorage()
     {
         $clientId = 42;
-        $username = 'user';
+        $token = $this->createMock(TokenInterface::class);
+        $token->expects($this->once())
+            ->method('getUsername')
+            ->willReturn('user');
 
         $this->driver->expects($this->once())
             ->method('save')
             ->willReturn(false);
 
-        $this->storage->addClient($clientId, $username);
+        $this->storage->addClient($clientId, $token);
     }
 
     public function testTheStorageCanBeCheckedToDetermineIfAClientExists()

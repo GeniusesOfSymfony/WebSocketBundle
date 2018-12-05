@@ -213,9 +213,8 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         public: false
         arguments:
-            - '@security.token_storage'
-            - '%gos_web_socket.firewall%'
             - '@gos_web_socket.client_storage'
+            - '%gos_web_socket.firewall%'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 

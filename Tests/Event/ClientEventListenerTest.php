@@ -15,7 +15,6 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ClientEventListenerTest extends TestCase
 {
@@ -70,8 +69,8 @@ class ClientEventListenerTest extends TestCase
             'clientStorageId' => 'client_storage'
         ];
 
-        $user = $this->createMock(UserInterface::class);
-        $user->expects($this->once())
+        $token = $this->createMock(TokenInterface::class);
+        $token->expects($this->once())
             ->method('getUsername')
             ->willReturn('username');
 
@@ -83,7 +82,7 @@ class ClientEventListenerTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->with($connection->WAMP->clientStorageId)
-            ->willReturn($user);
+            ->willReturn($token);
 
         $this->clientStorage->expects($this->once())
             ->method('removeClient')
@@ -215,7 +214,7 @@ class ClientEventListenerTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->with($connection->WAMP->clientStorageId)
-            ->willReturn($this->createMock(UserInterface::class));
+            ->willReturn($this->createMock(TokenInterface::class));
 
         $this->clientStorage->expects($this->never())
             ->method('removeClient');

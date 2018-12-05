@@ -8,17 +8,11 @@ use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class WebsocketAuthenticationProviderTest extends TestCase
 {
     private const FIREWALLS = ['main'];
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TokenStorageInterface
-     */
-    private $tokenStorage;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|ClientStorageInterface
@@ -34,12 +28,9 @@ class WebsocketAuthenticationProviderTest extends TestCase
     {
         parent::setUp();
 
-        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->clientStorage = $this->createMock(ClientStorageInterface::class);
 
-        $this->provider = new WebsocketAuthenticationProvider(
-            $this->tokenStorage, self::FIREWALLS, $this->clientStorage
-        );
+        $this->provider = new WebsocketAuthenticationProvider($this->clientStorage, self::FIREWALLS);
     }
 
     public function testAnAnonymousTokenIsCreatedAndAddedToStorageWhenAGuestUserConnects()
@@ -56,13 +47,6 @@ class WebsocketAuthenticationProviderTest extends TestCase
         $connection->WAMP = (object) [
             'sessionId' => 'test',
         ];
-
-        $this->tokenStorage->expects($this->once())
-            ->method('getToken')
-            ->willReturn(null);
-
-        $this->tokenStorage->expects($this->once())
-            ->method('setToken');
 
         $clientIdentifier = 42;
 
@@ -92,13 +76,6 @@ class WebsocketAuthenticationProviderTest extends TestCase
         $connection->WAMP = (object) [
             'sessionId' => 'test',
         ];
-
-        $this->tokenStorage->expects($this->once())
-            ->method('getToken')
-            ->willReturn($token);
-
-        $this->tokenStorage->expects($this->once())
-            ->method('setToken');
 
         $clientIdentifier = 42;
 
