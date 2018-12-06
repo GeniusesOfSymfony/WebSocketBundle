@@ -49,7 +49,7 @@ final class ConfigurationTest extends TestCase
                     'context' => [
                         'tokenSeparator' => '/',
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -60,6 +60,53 @@ final class ConfigurationTest extends TestCase
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
             $config
         );
+    }
+
+    public function testConfigWithPingServices()
+    {
+        $extraConfig = [
+            'ping' => [
+                'services' => [
+                    [
+                        'name' => 'doctrine_service',
+                        'type' => Configuration::PING_SERVICE_TYPE_DOCTRINE,
+                    ],
+                    [
+                        'name' => 'pdo_service',
+                        'type' => Configuration::PING_SERVICE_TYPE_PDO,
+                    ],
+                ],
+            ],
+        ];
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+
+        $this->assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage  Invalid configuration for path "gos_web_socket.ping.services.0.type": "no_support" is not a supported service type
+     */
+    public function testConfigWithUnsupportedPingServiceType()
+    {
+        $extraConfig = [
+            'ping' => [
+                'services' => [
+                    [
+                        'name' => 'no_support_service',
+                        'type' => 'no_support',
+                    ],
+                ],
+            ],
+        ];
+
+        $processor = new Processor();
+        $processor->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
     public function testConfigWithPushers()

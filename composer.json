@@ -33,6 +33,7 @@
     },
     "require-dev": {
         "doctrine/cache": "^1.8",
+        "doctrine/dbal": "^2.9",
         "matthiasnoback/symfony-dependency-injection-test": "^3.0",
         "phpunit/phpunit": "^7.0",
         "symfony/cache": "^3.4|^4.0",
@@ -58,6 +59,7 @@
         "ext-zmq": "*",
         "ext-amqp": "*",
         "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
+        "doctrine/dbal": "^2.8 to use Doctrine ping services",
         "symfony/cache": ">=3.4 to use symfony/cache as a client driver",
         "symfony/options-resolver": ">=3.4 to use the amqp pusher",
         "symfony/serializer": ">=3.4 to use the pushers",

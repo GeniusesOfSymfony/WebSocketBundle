@@ -16,6 +16,8 @@ class Configuration implements ConfigurationInterface
     private const DEFAULT_FIREWALL = 'ws_firewall';
     private const DEFAULT_ORIGIN_CHECKER = false;
     public const DEFAULT_TOKEN_SEPARATOR = '/';
+    public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
+    public const PING_SERVICE_TYPE_PDO = 'pdo';
 
     /**
      * {@inheritdoc}
@@ -83,7 +85,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('router')
                         ->children()
                             ->arrayNode('resources')
-                                ->prototype('scalar')
+                                ->scalarPrototype()
                                     ->example('@GosNotificationBundle/Resources/config/pubsub/websocket/notification.yml')
                                 ->end()
                             ->end()
@@ -100,10 +102,30 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->arrayNode('origins')
-                ->prototype('scalar')
+                ->scalarPrototype()
                 ->validate()
-                    ->ifInArray(array('localhost', '127.0.0.1'))
+                    ->ifInArray(['localhost', '127.0.0.1'])
                         ->thenInvalid('%s is added by default')
+                    ->end()
+                ->end()
+            ->end()
+            ->arrayNode('ping')
+                ->children()
+                    ->arrayNode('services')
+                        ->arrayPrototype()
+                            ->children()
+                                ->scalarNode('name')
+                                    ->info('The name of the service to ping')
+                                ->end()
+                                ->scalarNode('type')
+                                    ->info('The type of the service to be pinged; valid options are "doctrine" and "pdo"')
+                                    ->validate()
+                                        ->ifNotInArray([self::PING_SERVICE_TYPE_DOCTRINE, self::PING_SERVICE_TYPE_PDO])
+                                        ->thenInvalid('%s is not a supported service type')
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()

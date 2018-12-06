@@ -7,6 +7,23 @@
     - `Gos\Bundle\WebSocketBundle\RPC\RpcInterface` (`gos_web_socket.rpc` tag)
     - `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface` (`gos_web_socket.server` tag)
     - `Gos\Bundle\WebSocketBundle\Topic\TopicInterface` (`gos_web_socket.topic` tag)
+- Added new `gos_web_socket.ping.services` configuration node to configure pingable periodic services, presently supporting a Doctrine Connection or PDO
+    - This is an array node where each value requires two keys: `name` (the container service ID) and `type` (the service type, either "doctrine" or "pdo")
+    
+Example configuration of the ping services:
+
+```yaml
+gos_web_socket:
+    ping:
+        services:
+            -
+                name: 'database_connection' # alias for the default database connection created by the DoctrineBundle
+                type: 'doctrine'
+            -
+                name: 'pdo' # a custom service in your application that is a PDO connection
+                type: 'pdo'
+
+```
 
 ## Changes
 
@@ -32,3 +49,5 @@
     - `gos_web_socket.servers`, tag your services with the `gos_web_socket.server` tag
     - `gos_web_socket.topics`, tag your services with the `gos_web_socket.topic` tag
 - The `gos:server` command was removed, use the `gos:websocket:server` command instead
+- Removed the `PingableDriverCompilerPass` which previously configured the PDO ping periodic service
+- Removed the `gos_web_socket.pdo.periodic_ping` service 
