@@ -112,6 +112,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                             $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
                             $definition->addArgument(new Reference($serviceRef));
+                            $definition->addTag('gos_web_socket.periodic');
 
                             $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
 
@@ -122,6 +123,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                             $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
                             $definition->addArgument(new Reference($serviceRef));
+                            $definition->addTag('gos_web_socket.periodic');
 
                             $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
 

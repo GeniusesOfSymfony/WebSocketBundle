@@ -150,8 +150,6 @@ services:
         # arguments are set by the container extension
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: gos_web_socket.periodic }
 
     gos_web_socket.periodic_ping.pdo:
         class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
@@ -160,8 +158,6 @@ services:
         # arguments are set by the container extension
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: gos_web_socket.periodic }
 
     gos_web_socket.memory_usage.periodic:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
