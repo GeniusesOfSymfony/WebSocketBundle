@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface ClientStorageInterface
 {
@@ -17,11 +17,11 @@ interface ClientStorageInterface
     /**
      * @param string $identifier
      *
-     * @return string|UserInterface|false
+     * @return TokenInterface
      *
      * @throws StorageException
      */
-    public function getClient($identifier);
+    public function getClient($identifier): TokenInterface;
 
     /**
      * @param ConnectionInterface $conn
@@ -31,12 +31,12 @@ interface ClientStorageInterface
     public function getStorageId(ConnectionInterface $conn);
 
     /**
-     * @param string               $identifier
-     * @param string|UserInterface $user
+     * @param string         $identifier
+     * @param TokenInterface $token
      *
      * @throws StorageException
      */
-    public function addClient($identifier, $user);
+    public function addClient($identifier, TokenInterface $token);
 
     /**
      * @param string $identifier

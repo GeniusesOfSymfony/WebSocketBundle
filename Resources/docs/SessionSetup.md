@@ -286,6 +286,9 @@ use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {
+    /**
+     * @var ClientManipulatorInterface
+     */
     protected $clientManipulator;
 
     /**
@@ -302,7 +305,7 @@ class AcmeTopic implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $user = $this->clientManipulator->getClient($connection);
+        $user = $this->clientManipulator->getUser($connection);
     }
 }
 ```
@@ -319,7 +322,10 @@ use Ratchet\Wamp\Topic;
 
 class AcmeTopic implements TopicInterface
 {
-    /**    protected $clientManipulator;
+    /**
+     * @var ClientManipulatorInterface
+     */
+    protected $clientManipulator;
 
     /**
      * @param ClientManipulatorInterface $clientManipulator
@@ -335,9 +341,9 @@ class AcmeTopic implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $user1 = $this->clientManipulator->findByUsername($topic, 'user1');
-        if (false !== $user1) {
-            $topic->broadcast('message', array(), array($user1['connection']->WAMP->sessionId));
+        $userConnection = $this->clientManipulator->findByUsername($topic, 'user1');
+        if (false !== $userConnection) {
+            $topic->broadcast('message', array(), array($userConnection['connection']->WAMP->sessionId));
         }
     }
 }

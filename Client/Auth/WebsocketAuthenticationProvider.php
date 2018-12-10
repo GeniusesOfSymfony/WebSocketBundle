@@ -9,17 +9,10 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
 
     /**
      * @var array
@@ -32,18 +25,13 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
     protected $clientStorage;
 
     /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param array $firewalls
      * @param ClientStorageInterface $clientStorage
+     * @param array                  $firewalls
      */
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        $firewalls = [],
-        ClientStorageInterface $clientStorage
-    ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->firewalls = $firewalls;
+    public function __construct(ClientStorageInterface $clientStorage, array $firewalls = [])
+    {
         $this->clientStorage = $clientStorage;
+        $this->firewalls = $firewalls;
     }
 
     /**
@@ -68,10 +56,6 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
 
         if (null === $token) {
             $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
-        }
-
-        if ($this->tokenStorage->getToken() !== $token) {
-            $this->tokenStorage->setToken($token);
         }
 
         return $token;
@@ -104,20 +88,18 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         ];
 
         $token = $this->getToken($conn);
-        $user = $token->getUser();
-        $username = $user instanceof UserInterface ? $user->getUsername() : $user;
 
         $identifier = $this->clientStorage->getStorageId($conn);
 
         $loggerContext['storage_id'] = $identifier;
-        $this->clientStorage->addClient($identifier, $token->getUser());
+        $this->clientStorage->addClient($identifier, $token);
         $conn->WAMP->clientStorageId = $identifier;
 
         if ($this->logger) {
             $this->logger->info(
                 sprintf(
                     '%s connected',
-                    $username
+                    $token->getUsername()
                 ),
                 $loggerContext
             );

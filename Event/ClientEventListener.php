@@ -8,7 +8,6 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -23,7 +22,7 @@ class ClientEventListener implements LoggerAwareInterface
     protected $clientStorage;
 
     /**
-     * @var WebsocketAuthenticationProvider
+     * @var WebsocketAuthenticationProviderInterface
      */
     protected $authenticationProvider;
 
@@ -51,13 +50,11 @@ class ClientEventListener implements LoggerAwareInterface
         ];
 
         try {
-            $user = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
 
             $this->clientStorage->removeClient($conn->resourceId);
 
-            $username = $user instanceof UserInterface
-                ? $user->getUsername()
-                : $user;
+            $username = $token->getUsername();
 
             if ($this->logger) {
                 $this->logger->info(
@@ -107,7 +104,9 @@ class ClientEventListener implements LoggerAwareInterface
         ];
 
         if ($this->clientStorage->hasClient($conn->resourceId)) {
-            $loggerContext['client'] = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+
+            $loggerContext['client'] = $token->getUsername();
         }
 
         $this->logger->error(

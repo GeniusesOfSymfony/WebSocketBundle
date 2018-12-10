@@ -9,7 +9,9 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 class ClientManipulatorTest extends TestCase
 {
@@ -42,7 +44,7 @@ class ClientManipulatorTest extends TestCase
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
-        $client = 'user';
+        $client = $this->createMock(TokenInterface::class);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -61,7 +63,7 @@ class ClientManipulatorTest extends TestCase
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
-        $client = 'user';
+        $client = $this->createMock(TokenInterface::class);
 
         /*
          * $this->at() uses the index of all calls to the mocked object, the indexing is:
@@ -100,7 +102,7 @@ class ClientManipulatorTest extends TestCase
         $storageId = 42;
         $username = 'user';
 
-        $client = $this->createMock(UserInterface::class);
+        $client = $this->createMock(TokenInterface::class);
         $client->expects($this->once())
             ->method('getUsername')
             ->willReturn($username);
@@ -132,6 +134,8 @@ class ClientManipulatorTest extends TestCase
         $storageId = 42;
         $username = 'user';
 
+        $client = $this->createMock(AnonymousToken::class);
+
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
             ->with($connection)
@@ -140,7 +144,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->with($storageId)
-            ->willReturn($username);
+            ->willReturn($client);
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
@@ -158,10 +162,8 @@ class ClientManipulatorTest extends TestCase
         $storageId1 = 42;
         $storageId2 = 84;
 
-        $authenticatedUsername = 'auth';
-        $guestUsername = 'guest';
-
-        $authenticatedClient = $this->createMock(UserInterface::class);
+        $authenticatedClient = $this->createMock(TokenInterface::class);
+        $guestClient = $this->createMock(AnonymousToken::class);
 
         /*
          * $this->at() uses the index of all calls to the mocked object, the indexing is:
@@ -190,7 +192,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(3))
             ->method('getClient')
             ->with($storageId2)
-            ->willReturn($guestUsername);
+            ->willReturn($guestClient);
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
@@ -213,10 +215,8 @@ class ClientManipulatorTest extends TestCase
         $storageId1 = 42;
         $storageId2 = 84;
 
-        $authenticatedUsername = 'auth';
-        $guestUsername = 'guest';
-
-        $authenticatedClient = $this->createMock(UserInterface::class);
+        $authenticatedClient = $this->createMock(TokenInterface::class);
+        $guestClient = $this->createMock(AnonymousToken::class);
 
         /*
          * $this->at() uses the index of all calls to the mocked object, the indexing is:
@@ -245,7 +245,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(3))
             ->method('getClient')
             ->with($storageId2)
-            ->willReturn($guestUsername);
+            ->willReturn($guestClient);
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
@@ -255,7 +255,7 @@ class ClientManipulatorTest extends TestCase
         $this->assertSame(
             [
                 ['client' => $authenticatedClient, 'connection' => $connection1],
-                ['client' => $guestUsername, 'connection' => $connection2],
+                ['client' => $guestClient, 'connection' => $connection2],
             ],
             $this->manipulator->getAll($topic, true)
         );
@@ -271,19 +271,17 @@ class ClientManipulatorTest extends TestCase
         $storageId2 = 84;
         $storageId3 = 126;
 
-        $authenticatedUsername1 = 'auth1';
-        $authenticatedUsername2 = 'auth2';
-        $guestUsername = 'guest';
-
-        $authenticatedClient1 = $this->createMock(UserInterface::class);
+        $authenticatedClient1 = $this->createMock(TokenInterface::class);
         $authenticatedClient1->expects($this->once())
             ->method('getRoles')
-            ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
+            ->willReturn([new Role('ROLE_USER'), new Role('ROLE_STAFF')]);
 
-        $authenticatedClient2 = $this->createMock(UserInterface::class);
+        $authenticatedClient2 = $this->createMock(TokenInterface::class);
         $authenticatedClient2->expects($this->once())
             ->method('getRoles')
-            ->willReturn(['ROLE_USER']);
+            ->willReturn([new Role('ROLE_USER')]);
+
+        $guestClient = $this->createMock(AnonymousToken::class);
 
         /*
          * $this->at() uses the index of all calls to the mocked object, the indexing is:
@@ -324,7 +322,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(5))
             ->method('getClient')
             ->with($storageId3)
-            ->willReturn($guestUsername);
+            ->willReturn($guestClient);
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())

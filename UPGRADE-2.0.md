@@ -13,6 +13,15 @@
 - The `Gos\Bundle\WebSocketBundle\Event\ServerEvent` now requires a third argument, `$profile`, indicating if profiling is enabled (i.e. the `--profile` option from the `gos:websocket:server` command)
 - `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` now includes a `setName()` method
 - `Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry::addPusher()` and `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry::addPushHandler()` no longer have a separate `$name` argument, the name from the injected object is used instead
+- `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` has had several changes:
+    - The `getClient()` method now returns a `Symfony\Component\Security\Core\Authentication\Token\TokenInterface` object and the return is typehinted (`public function getClient(ConnectionInterface $connection): TokenInterface`)
+    - Added a `getUser()` method which is fundamentally similar to the behavior of `getClient()` in 1.x, essentially this is a shortcut for `$manipulator->getClient()->getUser();`
+    - Because of the change to `getClient()`, the return types of `findByUsername()`, `findByRoles()`, and `getAll()` have changed to `TokenInterface` objects
+    - `findByRoles()` and `getAll()` will now return an empty array when no matching objects are found instead of boolean false
+- `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface` has had the following changes:
+    - The `getClient()` method now returns a `Symfony\Component\Security\Core\Authentication\Token\TokenInterface` object and the return is typehinted (`public function getClient(ConnectionInterface $connection): TokenInterface`)
+    - The second argument of `addClient()` is now required to be a `TokenInterface` object
+    - `findByRoles()` and `getAll()` will now return an empty array when no matching objects are found instead of boolean false
 - All bundle services have been explicitly marked public or private
 - Registering periodic timers and push handlers in the default websocket server (`Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer`) has been extracted to event listeners subscribed to the `gos_web_socket.server_launched` event
 

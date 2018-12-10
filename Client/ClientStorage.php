@@ -8,7 +8,7 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -61,7 +61,7 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function getClient($identifier)
+    public function getClient($identifier): TokenInterface
     {
         try {
             $result = $this->getStorageDriver()->fetch($identifier);
@@ -91,18 +91,15 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function addClient($identifier, $user)
+    public function addClient($identifier, TokenInterface $token)
     {
-        $serializedUser = serialize($user);
+        $serializedUser = serialize($token);
 
         if ($this->logger) {
             $context = [
-                'user' => $serializedUser,
+                'token' => $token,
+                'username' => $token->getUsername(),
             ];
-
-            if ($user instanceof UserInterface) {
-                $context['username'] = $user->getUsername();
-            }
 
             $this->logger->debug('INSERT CLIENT '.$identifier, $context);
         }
@@ -114,13 +111,7 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
         }
 
         if (false === $result) {
-            $client = $user;
-
-            if ($user instanceof UserInterface) {
-                $client = $user->getUsername();
-            }
-
-            throw new StorageException(sprintf('Unable to add client "%s" to storage', $client));
+            throw new StorageException(sprintf('Unable to add client "%s" to storage', $token->getUsername()));
         }
     }
 
