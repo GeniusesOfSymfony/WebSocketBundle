@@ -3,9 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\DataCollectorCompilerPass;
-use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\LoopFactoryCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PeriodicCompilerPass;
-use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PingableDriverCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PusherCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RpcCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerCompilerPass;
@@ -28,7 +26,6 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new RpcCompilerPass())
             ->addCompilerPass(new TopicCompilerPass())
             ->addCompilerPass(new PeriodicCompilerPass())
-            ->addCompilerPass(new PingableDriverCompilerPass())
             ->addCompilerPass(new PusherCompilerPass())
             ->addCompilerPass(new DataCollectorCompilerPass())
         ;

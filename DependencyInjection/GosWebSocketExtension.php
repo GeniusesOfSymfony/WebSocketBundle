@@ -8,7 +8,9 @@ use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -98,6 +100,41 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                 $container->getDefinition('gos_web_socket.client_storage')
                     ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
+            }
+        }
+
+        if (isset($configs['ping'])) {
+            if (isset($configs['ping']['services'])) {
+                foreach ($configs['ping']['services'] as $pingService) {
+                    switch ($pingService['type']) {
+                        case Configuration::PING_SERVICE_TYPE_DOCTRINE:
+                            $serviceRef = ltrim($pingService['name'], '@');
+
+                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
+                            $definition->addArgument(new Reference($serviceRef));
+                            $definition->addTag('gos_web_socket.periodic');
+
+                            $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+
+                            break;
+
+                        case Configuration::PING_SERVICE_TYPE_PDO:
+                            $serviceRef = ltrim($pingService['name'], '@');
+
+                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
+                            $definition->addArgument(new Reference($serviceRef));
+                            $definition->addTag('gos_web_socket.periodic');
+
+                            $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+
+                            break;
+
+                        default:
+                            throw new InvalidArgumentException(
+                                sprintf('Unsupported ping service type "%s"', $pingService['type'])
+                            );
+                    }
+                }
             }
         }
     }

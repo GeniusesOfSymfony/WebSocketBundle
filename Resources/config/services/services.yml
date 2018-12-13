@@ -143,12 +143,21 @@ services:
             - '%kernel.debug%'
             - '@?monolog.logger.websocket'
 
-    gos_web_socket.pdo.periodic_ping:
-        class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
+    gos_web_socket.periodic_ping.doctrine:
+        class: Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing
+        abstract: true
         public: false
-        arguments:
-            - '@?pdo'
-            - '@?monolog.logger.websocket'
+        # arguments are set by the container extension
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+
+    gos_web_socket.periodic_ping.pdo:
+        class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
+        abstract: true
+        public: false
+        # arguments are set by the container extension
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.memory_usage.periodic:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage

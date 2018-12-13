@@ -2,14 +2,18 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\DBAL\Connection;
 use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -249,6 +253,46 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             (string) $reference,
             'The storage driver should be the configured driver from the `client.storage.decorator` node.'
         );
+    }
+
+    public function testContainerIsLoadedWithPingServicesConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('kernel.debug', true);
+        $this->container->setParameter('kernel.project_dir', __DIR__);
+
+        $doctrineDatabaseConnectionDefinition = new Definition(Connection::class);
+        $this->container->setDefinition('database_connection', $doctrineDatabaseConnectionDefinition);
+
+        $pdoDefinition = new Definition(\PDO::class);
+        $this->container->setDefinition('pdo', $pdoDefinition);
+
+        $this->load(
+            [
+                'ping' => [
+                    'services' => [
+                        [
+                            'name' => 'database_connection',
+                            'type' => Configuration::PING_SERVICE_TYPE_DOCTRINE,
+                        ],
+                        [
+                            'name' => 'pdo',
+                            'type' => Configuration::PING_SERVICE_TYPE_PDO,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertContainerBuilderHasService('gos_web_socket.periodic_ping.doctrine.database_connection');
+        $this->assertContainerBuilderHasService('gos_web_socket.periodic_ping.pdo.pdo');
     }
 
     protected function getContainerExtensions()

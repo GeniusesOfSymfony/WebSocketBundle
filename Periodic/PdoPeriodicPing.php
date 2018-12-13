@@ -3,36 +3,31 @@
 namespace Gos\Bundle\WebSocketBundle\Periodic;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class PdoPeriodicPing implements PeriodicInterface
+class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var \PDO
      */
     protected $pdo;
 
     /**
-     * @var LoggerInterface|NullLogger
-     */
-    protected $logger;
-
-    /**
      * @var int|float
      */
-    protected $timeout;
+    protected $timeout = 20;
 
     /**
-     * @param PeriodicRegistry $periodicRegistry
-     * @param \PDO             $pdo
-     * @param LoggerInterface  $logger
+     * @param \PDO $pdo
      */
-    public function __construct(\PDO $pdo = null, LoggerInterface $logger = null)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->logger = null === $logger ? new NullLogger() : $logger;
-        $this->timeout = 20;
     }
 
     /**
@@ -45,13 +40,7 @@ class PdoPeriodicPing implements PeriodicInterface
 
     public function tick()
     {
-        if (null === $this->pdo) {
-            $this->logger->warning('Unable to ping sql server, service pdo is unavailable');
-
-            return;
-        }
-
-        //if connection is persistent we don't need to ping
+        // If connection is persistent we don't need to ping
         if (true === $this->pdo->getAttribute(\PDO::ATTR_PERSISTENT)) {
             return;
         }
@@ -60,9 +49,22 @@ class PdoPeriodicPing implements PeriodicInterface
             $startTime = microtime(true);
             $this->pdo->query('SELECT 1');
             $endTime = microtime(true);
-            $this->logger->notice(sprintf('Successfully ping sql server (~%s ms)', round(($endTime - $startTime) * 100000), 2));
+
+            if ($this->logger) {
+                $this->logger->notice(
+                    sprintf('Successfully pinged SQL server (~%s ms)', round(($endTime - $startTime) * 100000), 2)
+                );
+            }
         } catch (\PDOException $e) {
-            $this->logger->emergency('Sql server is gone, and unable to reconnect');
+            if ($this->logger) {
+                $this->logger->emergency(
+                    'SQL server is gone, and unable to reconnect',
+                    [
+                        'exception' => $e,
+                    ]
+                );
+            }
+
             throw $e;
         }
     }
