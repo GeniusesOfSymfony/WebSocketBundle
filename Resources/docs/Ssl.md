@@ -52,6 +52,11 @@ connect = 8888
 php app/console gos:websocket:server -a my.domainname.com -e=prod -n
 ```
 
+Command for Symfony >3.x
+```cmd
+php bin/console gos:websocket:server -a my.domainname.com -e prod -n
+```
+
 
 Save the file and start stunnel : 
 
