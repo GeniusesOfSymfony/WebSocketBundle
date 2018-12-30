@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
-use Predis\Client;
+use Predis\ClientInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -10,23 +10,23 @@ use Predis\Client;
 class PredisDriver implements DriverInterface
 {
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 
     /**
-     * string $prefix.
+     * string $prefix
      */
     protected $prefix;
 
     /**
-     * @param Client $client
-     * @param string $prefix
+     * @param ClientInterface $client
+     * @param string          $prefix
      */
-    public function __construct(Client $client, $prefix = '')
+    public function __construct(ClientInterface $client, $prefix = '')
     {
         $this->client = $client;
-        $this->prefix = ($prefix !== '' ? $prefix . ':' : '');
+        $this->prefix = $prefix !== '' ? $prefix . ':' : '';
     }
 
     /**
@@ -35,6 +35,7 @@ class PredisDriver implements DriverInterface
     public function fetch($id)
     {
         $result = $this->client->get($this->prefix . $id);
+
         if (null === $result) {
             return false;
         }
