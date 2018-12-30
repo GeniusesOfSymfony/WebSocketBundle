@@ -93,7 +93,8 @@ services:
             - '@event_dispatcher'
             - '@gos_web_socket.client_storage'
             - '@gos_web_socket.router.wamp'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.client_storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
