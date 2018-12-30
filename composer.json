@@ -57,6 +57,7 @@
     "suggest": {
         "ext-libevent": ">=0.0.5",
         "ext-libev": "*",
+        "ext-pdo": "* to use PDO ping services",
         "ext-zmq": "*",
         "ext-amqp": "*",
         "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
