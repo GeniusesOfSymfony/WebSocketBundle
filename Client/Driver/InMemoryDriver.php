@@ -10,12 +10,7 @@ class InMemoryDriver implements DriverInterface
     /**
      * @var array
      */
-    protected $elements;
-
-    public function __construct()
-    {
-        $this->elements = array();
-    }
+    protected $elements = [];
 
     /**
      * {@inheritdoc}
