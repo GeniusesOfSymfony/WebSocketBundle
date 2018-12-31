@@ -46,6 +46,8 @@ services:
             - '@gos_web_socket.origins.registry'
             - '@event_dispatcher'
             - '%web_socket_origin_check%'
+            - '%web_socket_keepalive_ping%'
+            - '%web_socket_keepalive_interval%'
 
     gos_web_socket.server.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry

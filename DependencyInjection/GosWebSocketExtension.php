@@ -56,6 +56,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
             }
 
+            if (isset($configs['server']['keepalive_ping'])) {
+                $container->setParameter('web_socket_keepalive_ping', $configs['server']['keepalive_ping']);
+            }
+
+            if (isset($configs['server']['keepalive_interval'])) {
+                $container->setParameter('web_socket_keepalive_interval', $configs['server']['keepalive_interval']);
+            }
+
             $pubsubConfig = $configs['server']['router'] ?? [];
 
             // The router was configured through the prepend pass, we only need to change the router the WampRouter uses

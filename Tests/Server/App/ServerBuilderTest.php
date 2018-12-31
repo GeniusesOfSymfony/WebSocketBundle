@@ -62,7 +62,9 @@ class ServerBuilderTest extends TestCase
             $this->topicManager,
             $this->originRegistry,
             $this->eventDispatcher,
-            false
+            false,
+            false,
+            30
         );
     }
 
@@ -120,7 +122,9 @@ class ServerBuilderTest extends TestCase
             $this->topicManager,
             $this->originRegistry,
             $this->eventDispatcher,
-            true
+            true,
+            false,
+            30
         );
 
         $server = $builder->buildMessageStack();
