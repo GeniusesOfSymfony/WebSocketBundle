@@ -295,6 +295,39 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.periodic_ping.pdo.pdo');
     }
 
+    public function testContainerIsLoadedWithWampPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'wamp' => [
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'ssl' => false,
+                    'origin' => null,
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.client');
+
+        $pusherDef = $this->container->getDefinition('gos_web_socket.wamp.pusher');
+
+        $this->assertCount(
+            1,
+            $pusherDef->getArguments()
+        );
+    }
+
     protected function getContainerExtensions()
     {
         return [

@@ -107,12 +107,12 @@ services:
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
-        # argument are set via compiler pass
+        # arguments are set via compiler pass
 
     gos_web_socket.client_storage.symfony.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
-        # argument are set via compiler pass
+        # arguments are set via compiler pass
 
     gos_web_socket.server.in_memory.client_storage.driver:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
@@ -243,23 +243,6 @@ services:
             - [ setRouter, ['@gos_web_socket.router.wamp'] ]
             - [ setSerializer, ['@gos_web_socket.push_message.serializer'] ]
 
-    gos_web_socket.zmq.pusher:
-        parent: gos_web_socket.abstract.pusher
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
-        tags:
-            - { name: gos_web_socket.pusher, alias: zmq }
-
-    gos_web_socket.zmq.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
-        arguments:
-            - '@gos_web_socket.zmq.pusher'
-            - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
-            - '@event_dispatcher'
-            - '@?monolog.logger.websocket'
-        tags:
-            - { name: gos_web_socket.push_handler, alias: zmq }
-
     gos_web_socket.amqp.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
@@ -269,8 +252,15 @@ services:
     gos_web_socket.wamp.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
+        # arguments are set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
+
+    gos_web_socket.zmq.pusher:
+        parent: gos_web_socket.abstract.pusher
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        tags:
+            - { name: gos_web_socket.pusher, alias: zmq }
 
     gos_web_socket.amqp.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
@@ -282,6 +272,17 @@ services:
             - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
+
+    gos_web_socket.zmq.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
+        arguments:
+            - '@gos_web_socket.zmq.pusher'
+            - '@gos_web_socket.router.wamp'
+            - '@gos_web_socket.push_message.serializer'
+            - '@event_dispatcher'
+            - '@?monolog.logger.websocket'
+        tags:
+            - { name: gos_web_socket.push_handler, alias: zmq }
 
     gos_web_socket.wamp.topic_manager:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicManager

@@ -6,10 +6,12 @@ use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Component\WebSocketClient\Wamp\Client;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
@@ -103,39 +105,72 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        if (isset($configs['ping'])) {
-            if (isset($configs['ping']['services'])) {
-                foreach ($configs['ping']['services'] as $pingService) {
-                    switch ($pingService['type']) {
-                        case Configuration::PING_SERVICE_TYPE_DOCTRINE:
-                            $serviceRef = ltrim($pingService['name'], '@');
+        $this->loadPingServices($configs, $container);
+        $this->loadPushers($configs, $container);
+    }
 
-                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                            $definition->addArgument(new Reference($serviceRef));
-                            $definition->addTag('gos_web_socket.periodic');
+    private function loadPingServices(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['ping'])) {
+            return;
+        }
 
-                            $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+        if (isset($configs['ping']['services'])) {
+            foreach ($configs['ping']['services'] as $pingService) {
+                switch ($pingService['type']) {
+                    case Configuration::PING_SERVICE_TYPE_DOCTRINE:
+                        $serviceRef = ltrim($pingService['name'], '@');
 
-                            break;
+                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
+                        $definition->addArgument(new Reference($serviceRef));
+                        $definition->addTag('gos_web_socket.periodic');
 
-                        case Configuration::PING_SERVICE_TYPE_PDO:
-                            $serviceRef = ltrim($pingService['name'], '@');
+                        $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
 
-                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                            $definition->addArgument(new Reference($serviceRef));
-                            $definition->addTag('gos_web_socket.periodic');
+                        break;
 
-                            $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+                    case Configuration::PING_SERVICE_TYPE_PDO:
+                        $serviceRef = ltrim($pingService['name'], '@');
 
-                            break;
+                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
+                        $definition->addArgument(new Reference($serviceRef));
+                        $definition->addTag('gos_web_socket.periodic');
 
-                        default:
-                            throw new InvalidArgumentException(
-                                sprintf('Unsupported ping service type "%s"', $pingService['type'])
-                            );
-                    }
+                        $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+
+                        break;
+
+                    default:
+                        throw new InvalidArgumentException(
+                            sprintf('Unsupported ping service type "%s"', $pingService['type'])
+                        );
                 }
             }
+        }
+    }
+
+    private function loadPushers(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['pushers'])) {
+            return;
+        }
+
+        if (isset($configs['pushers']['wamp'])) {
+            $clientDef = new Definition(
+                Client::class,
+                [
+                    $configs['pushers']['wamp']['host'],
+                    $configs['pushers']['wamp']['port'],
+                    $configs['pushers']['wamp']['ssl'],
+                    $configs['pushers']['wamp']['origin'],
+                ]
+            );
+            $clientDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.wamp.pusher.client', $clientDef);
+
+            $pusherDef = $container->getDefinition('gos_web_socket.wamp.pusher');
+            $pusherDef->setArgument(0, new Reference('gos_web_socket.wamp.pusher.client'));
         }
     }
 

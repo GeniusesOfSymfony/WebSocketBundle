@@ -7,21 +7,22 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 
 abstract class AbstractPusher implements PusherInterface
 {
-    /** @var  MessageSerializer */
+    /** @var MessageSerializer */
     protected $serializer;
 
-    /** @var  array */
+    /** @var array */
     private $config;
 
-    /** @var  WampRouter */
+    /** @var WampRouter */
     protected $router;
 
-    /** @var  bool */
+    /** @var bool */
     protected $connected = false;
 
+    /** @var object */
     protected $connection;
 
-    /** @var  string */
+    /** @var string */
     protected $name;
 
     /**

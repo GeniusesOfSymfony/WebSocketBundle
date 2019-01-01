@@ -8,15 +8,22 @@ use Gos\Component\WebSocketClient\Wamp\Client;
 class WampPusher extends AbstractPusher
 {
     /**
+     * @var Client
+     */
+    protected $connection;
+
+    public function __construct(Client $client)
+    {
+        $this->connection = $client;
+    }
+
+    /**
      * @param string $data
      * @param array  $context
      */
     protected function doPush($data, array $context)
     {
         if (false === $this->isConnected()) {
-            $config = $this->getConfig();
-
-            $this->connection = new Client($config['host'], $config['port'], $config['ssl'], $config['origin']);
             $this->connection->connect('/');
             $this->setConnected();
         }
