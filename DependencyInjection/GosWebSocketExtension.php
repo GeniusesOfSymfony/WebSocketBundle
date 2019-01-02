@@ -55,14 +55,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             if (isset($configs['server']['origin_check'])) {
                 $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
             }
-
-            $pubsubConfig = $configs['server']['router'] ?? [];
-
-            // The router was configured through the prepend pass, we only need to change the router the WampRouter uses
-            if (!empty($pubsubConfig)) {
-                $container->getDefinition('gos_web_socket.router.wamp')
-                    ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
-            }
         }
 
         if (!empty($configs['origins'])) {
