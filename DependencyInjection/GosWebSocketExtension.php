@@ -158,20 +158,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (isset($config['server'])) {
             $pubsubConfig = $config['server']['router'] ?? [];
 
-            if (!empty($pubsubConfig)) {
-                if (!isset($pubsubConfig['context']['tokenSeparator'])) {
-                    $pubsubConfig['context']['tokenSeparator'] = Configuration::DEFAULT_TOKEN_SEPARATOR;
-                }
-
-                $container->prependExtensionConfig(
-                    'gos_pubsub_router',
-                    [
-                        'routers' => [
-                            'websocket' => $pubsubConfig,
-                        ],
-                    ]
-                );
-            }
+            $container->prependExtensionConfig(
+                'gos_pubsub_router',
+                [
+                    'routers' => [
+                        'websocket' => $pubsubConfig,
+                    ],
+                ]
+            );
         }
 
         // TwigBundle

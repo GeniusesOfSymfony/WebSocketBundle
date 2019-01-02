@@ -15,7 +15,6 @@ class Configuration implements ConfigurationInterface
     private const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
     private const DEFAULT_FIREWALL = 'ws_firewall';
     private const DEFAULT_ORIGIN_CHECKER = false;
-    public const DEFAULT_TOKEN_SEPARATOR = '/';
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
@@ -87,14 +86,6 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('resources')
                                 ->scalarPrototype()
                                     ->example('@GosNotificationBundle/Resources/config/pubsub/websocket/notification.yml')
-                                ->end()
-                            ->end()
-                            ->arrayNode('context')
-                                ->children()
-                                    ->variableNode('tokenSeparator')
-                                        ->example('/')
-                                        ->defaultValue(static::DEFAULT_TOKEN_SEPARATOR)
-                                    ->end()
                                 ->end()
                             ->end()
                         ->end()
