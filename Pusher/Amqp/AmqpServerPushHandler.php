@@ -74,8 +74,6 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
      */
     public function handle(LoopInterface $loop, WampServerInterface $app)
     {
-        $config = $this->pusher->getConfig();
-
         $this->connection->connect();
 
         $this->consumer = new Consumer($this->queue, $loop, 0.1, 10);
