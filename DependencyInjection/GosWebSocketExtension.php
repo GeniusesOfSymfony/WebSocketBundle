@@ -193,6 +193,23 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $pusherDef = $container->getDefinition('gos_web_socket.amqp.pusher');
             $pusherDef->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection'));
             $pusherDef->setArgument(1, new Reference('gos_web_socket.amqp.pusher.exchange'));
+
+            $queueDef = new Definition(
+                \AMQPQueue::class,
+                [
+                    new Reference('gos_web_socket.amqp.pusher.channel')
+                ]
+            );
+            $queueDef->setPrivate(true);
+            $queueDef->addMethodCall('setName', [$configs['pushers']['amqp']['queue_name']]);
+            $queueDef->addMethodCall('setFlags', [AMQP_DURABLE]);
+            $queueDef->addMethodCall('declareQueue');
+
+            $container->setDefinition('gos_web_socket.amqp.pusher.queue', $queueDef);
+
+            $pushHandlerDef = $container->getDefinition('gos_web_socket.amqp.server_push_handler');
+            $pushHandlerDef->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection'));
+            $pushHandlerDef->setArgument(5, new Reference('gos_web_socket.amqp.pusher.queue'));
         }
 
         if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {

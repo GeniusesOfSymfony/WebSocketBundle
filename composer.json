@@ -62,6 +62,7 @@
         "ext-amqp": "*",
         "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
         "doctrine/dbal": "^2.8 to use Doctrine ping services",
+        "gos/react-amqp": "^0.2 to use the amqp server push handler",
         "predis/predis": "^1.1 to use Predis as a client driver",
         "symfony/cache": ">=3.4 to use symfony/cache as a client driver",
         "symfony/options-resolver": ">=3.4 to use the amqp pusher",

@@ -269,6 +269,8 @@ services:
             - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.push_message.serializer'
             - '@event_dispatcher'
+            - ~ #AMQPConnection dependency is set by the container extension
+            - ~ #AMQPQueue dependency is set by the container extension
             - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }

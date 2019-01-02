@@ -365,6 +365,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection');
         $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.exchange');
+        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.queue');
 
         $pusherDef = $this->container->getDefinition('gos_web_socket.amqp.pusher');
 

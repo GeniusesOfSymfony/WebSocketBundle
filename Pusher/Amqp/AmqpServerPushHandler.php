@@ -37,6 +37,12 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
     /** @var  EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var  \AMQPConnection */
+    protected $connection;
+
+    /** @var  \AMQPQueue */
+    protected $queue;
+
     /**
      * @param AmqpPusher               $pusher
      * @param WampRouter               $router
@@ -49,12 +55,16 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
+        \AMQPConnection $connection,
+        \AMQPQueue $queue,
         LoggerInterface $logger = null
     ) {
         $this->pusher = $pusher;
         $this->router = $router;
         $this->serializer = $serializer;
         $this->eventDispatcher = $eventDispatcher;
+        $this->connection = $connection;
+        $this->queue = $queue;
         $this->logger = $logger === null ? new NullLogger() : $logger;
     }
 
@@ -66,14 +76,10 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
     {
         $config = $this->pusher->getConfig();
 
-        $connection = new \AMQPConnection($config);
-        $connection->connect();
+        $this->connection->connect();
 
-        list(, , $queue) = Utils::setupConnection($connection, $config);
-
-        $this->consumer = new Consumer($queue, $loop, 0.1, 10);
-        $this->consumer->on('consume', function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app, $config) {
-
+        $this->consumer = new Consumer($this->queue, $loop, 0.1, 10);
+        $this->consumer->on('consume', function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app) {
             try {
                 /** @var MessageInterface $message */
                 $message = $this->serializer->deserialize($envelop->getBody());
@@ -84,9 +90,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
             } catch (\Exception $e) {
                 $this->logger->error(
                     'AMQP handler failed to ack message', [
-                        'exception_message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
+                        'exception' => $e,
                         'message' => $envelop->getBody(),
                     ]
                 );
@@ -97,8 +101,8 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
 
             $this->logger->info(sprintf(
                 'AMQP transport listening on %s:%s',
-                $config['host'],
-                $config['port']
+                $this->connection->getHost(),
+                $this->connection->getPort()
             ));
         });
     }
