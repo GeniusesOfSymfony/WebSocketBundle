@@ -153,6 +153,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->scalarNode('host')
                     ->example('127.0.0.1')
@@ -187,6 +188,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->booleanNode('default')
                     ->defaultValue(false)
@@ -228,6 +230,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->booleanNode('default')
                     ->defaultValue(false)

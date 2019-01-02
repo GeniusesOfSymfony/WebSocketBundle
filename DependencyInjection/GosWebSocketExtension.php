@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -155,7 +156,46 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             return;
         }
 
-        if (isset($configs['pushers']['wamp'])) {
+        if (isset($configs['pushers']['amqp']) && $configs['pushers']['amqp']['enabled']) {
+            if (!extension_loaded('amqp')) {
+                throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
+            }
+
+            $connectionDef = new Definition(
+                \AMQPConnection::class,
+                [
+                    $configs['pushers']['amqp'],
+                ]
+            );
+            $connectionDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.amqp.pusher.connection', $connectionDef);
+
+            $channelDef = new Definition(\AMQPChannel::class);
+            $channelDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.amqp.pusher.channel', $channelDef);
+
+            $exchangeDef = new Definition(
+                \AMQPExchange::class,
+                [
+                    new Reference('gos_web_socket.amqp.pusher.channel')
+                ]
+            );
+            $exchangeDef->setPrivate(true);
+            $exchangeDef->addMethodCall('setName', [$configs['pushers']['amqp']['exchange_name']]);
+            $exchangeDef->addMethodCall('setType', [AMQP_EX_TYPE_DIRECT]);
+            $exchangeDef->addMethodCall('setFlags', [AMQP_DURABLE]);
+            $exchangeDef->addMethodCall('declareExchange');
+
+            $container->setDefinition('gos_web_socket.amqp.pusher.exchange', $exchangeDef);
+
+            $pusherDef = $container->getDefinition('gos_web_socket.amqp.pusher');
+            $pusherDef->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection'));
+            $pusherDef->setArgument(1, new Reference('gos_web_socket.amqp.pusher.exchange'));
+        }
+
+        if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
             $clientDef = new Definition(
                 Client::class,
                 [

@@ -308,6 +308,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $bundleConfig = [
             'pushers' => [
                 'wamp' => [
+                    'enabled' => true,
                     'host' => '127.0.0.1',
                     'port' => 1337,
                     'ssl' => false,
@@ -324,6 +325,51 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertCount(
             1,
+            $pusherDef->getArguments()
+        );
+    }
+
+    /**
+     * @requires extension amqp
+     */
+    public function testContainerIsLoadedWithAmqpPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'amqp' => [
+                    'enabled' => true,
+                    'default' => false,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'login' => 'username',
+                    'password' => 'password',
+                    'vhost' => '/',
+                    'read_timeout' => 0,
+                    'write_timeout' => 0,
+                    'connect_timeout' => 0,
+                    'queue_name' => 'gos_websocket',
+                    'exchange_name' => 'gos_websocket_exchange',
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection');
+        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.exchange');
+
+        $pusherDef = $this->container->getDefinition('gos_web_socket.amqp.pusher');
+
+        $this->assertCount(
+            2,
             $pusherDef->getArguments()
         );
     }

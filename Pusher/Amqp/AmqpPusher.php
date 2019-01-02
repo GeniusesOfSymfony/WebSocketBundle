@@ -7,11 +7,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AmqpPusher extends AbstractPusher
 {
-    /** @var  \AMQPExchange */
+    /**
+     * @var \AMQPConnection
+     */
+    protected $connection;
+
+    /**
+     * @var \AMQPExchange
+     */
     protected $exchange;
 
-    /** @var  \AMQPQueue */
+    /**
+     * @var \AMQPQueue
+     */
     protected $queue;
+
+    public function __construct(\AMQPConnection $connection, \AMQPExchange $exchange)
+    {
+        $this->connection = $connection;
+        $this->exchange = $exchange;
+    }
 
     /**
      * @param string $data
@@ -19,22 +34,8 @@ class AmqpPusher extends AbstractPusher
      */
     protected function doPush($data, array $context)
     {
-        $config = $this->getConfig();
-
         if (false === $this->connected) {
-            if (!extension_loaded('amqp')) {
-                throw new \RuntimeException(sprintf(
-                    '%s pusher require %s php extension',
-                    get_class($this),
-                    'amqp'
-                ));
-            }
-
-            $this->connection = new \AMQPConnection($config);
             $this->connection->connect();
-
-            list(, $this->exchange) = Utils::setupConnection($this->connection, $config);
-
             $this->setConnected();
         }
 
