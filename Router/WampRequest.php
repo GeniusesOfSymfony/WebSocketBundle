@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Router;
 
-use Gos\Bundle\PubSubRouterBundle\Router\RouteInterface;
+use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class WampRequest
@@ -13,7 +13,7 @@ class WampRequest
     protected $attributes;
 
     /**
-     * @var RouteInterface
+     * @var Route
      */
     protected $route;
 
@@ -26,12 +26,12 @@ class WampRequest
     protected $matched;
 
     /**
-     * @param string         $routeName
-     * @param RouteInterface $route
-     * @param ParameterBag   $attributes
-     * @param string         $matched
+     * @param string       $routeName
+     * @param Route        $route
+     * @param ParameterBag $attributes
+     * @param string       $matched
      */
-    public function __construct($routeName, $route, ParameterBag $attributes, $matched)
+    public function __construct($routeName, Route $route, ParameterBag $attributes, $matched)
     {
         $this->attributes = $attributes;
         $this->route = $route;
@@ -48,7 +48,7 @@ class WampRequest
     }
 
     /**
-     * @return RouteInterface
+     * @return Route
      */
     public function getRoute()
     {
