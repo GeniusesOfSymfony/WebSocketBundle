@@ -41,6 +41,18 @@ gos_web_socket:
     - `findByRoles()` and `getAll()` will now return an empty array when no matching objects are found instead of boolean false
 - All bundle services have been explicitly marked public or private
 - Registering periodic timers and push handlers in the default websocket server (`Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer`) has been extracted to event listeners subscribed to the `gos_web_socket.server_launched` event
+- Connection related dependencies are now injected into pushers and server push handlers
+
+Each pusher configuration node now has an `enabled` option, this must be set to true to enable a pusher; for example:
+
+```yaml
+gos_web_socket:
+    pushers:
+        wamp:
+            enabled: true
+            host: '127.0.0.1'
+            port: 1337
+```
 
 ## Removals
 
@@ -60,3 +72,5 @@ gos_web_socket:
 - The `gos:server` command was removed, use the `gos:websocket:server` command instead
 - Removed the `PingableDriverCompilerPass` which previously configured the PDO ping periodic service
 - Removed the `gos_web_socket.pdo.periodic_ping` service 
+- The `Gos\Bundle\WebSocketBundle\Pusher\Amqp\Utils` class has been removed
+    - This was an internal helper for building `ext/amqp` related dependencies and should not have been used by package users
