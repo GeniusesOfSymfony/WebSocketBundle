@@ -50,6 +50,16 @@ final class ServerBuilder
     private $originCheck = false;
 
     /**
+     * @var bool
+     */
+    private $keepalivePing = false;
+
+    /**
+     * @var int
+     */
+    private $keepaliveInterval = 30;
+
+    /**
      * @var \SessionHandlerInterface|null
      */
     private $sessionHandler;
@@ -60,7 +70,9 @@ final class ServerBuilder
         TopicManager $topicManager,
         OriginRegistry $originRegistry,
         EventDispatcherInterface $eventDispatcher,
-        bool $originCheck
+        bool $originCheck,
+        bool $keepalivePing,
+        int $keepaliveInterval
     ) {
         $this->loop = $loop;
         $this->wampApplication = $wampApplication;
@@ -68,6 +80,8 @@ final class ServerBuilder
         $this->originRegistry = $originRegistry;
         $this->eventDispatcher = $eventDispatcher;
         $this->originCheck = $originCheck;
+        $this->keepalivePing = $keepalivePing;
+        $this->keepaliveInterval = $keepaliveInterval;
     }
 
     public function buildMessageStack(): MessageComponentInterface
@@ -79,6 +93,10 @@ final class ServerBuilder
             )
         );
         $serverComponent->setStrictSubProtocolCheck(false);
+
+        if ($this->keepalivePing) {
+            $serverComponent->enableKeepAlive($this->loop, $this->keepaliveInterval);
+        }
 
         if ($this->sessionHandler) {
             $serverComponent = new SessionProvider(
