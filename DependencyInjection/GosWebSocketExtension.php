@@ -55,6 +55,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             if (isset($configs['server']['origin_check'])) {
                 $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
             }
+
+            if (isset($configs['server']['keepalive_ping'])) {
+                $container->setParameter('web_socket_keepalive_ping', $configs['server']['keepalive_ping']);
+            }
+
+            if (isset($configs['server']['keepalive_interval'])) {
+                $container->setParameter('web_socket_keepalive_interval', $configs['server']['keepalive_interval']);
+            }
         }
 
         if (!empty($configs['origins'])) {
