@@ -17,7 +17,6 @@ class Configuration implements ConfigurationInterface
     private const DEFAULT_ORIGIN_CHECKER = false;
     private const DEFAULT_KEEPALIVE_PING = false;
     private const DEFAULT_KEEPALIVE_INTERVAL = 30;
-    public const DEFAULT_TOKEN_SEPARATOR = '/';
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
@@ -99,14 +98,6 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('resources')
                                 ->scalarPrototype()
                                     ->example('@GosNotificationBundle/Resources/config/pubsub/websocket/notification.yml')
-                                ->end()
-                            ->end()
-                            ->arrayNode('context')
-                                ->children()
-                                    ->variableNode('tokenSeparator')
-                                        ->example('/')
-                                        ->defaultValue(static::DEFAULT_TOKEN_SEPARATOR)
-                                    ->end()
                                 ->end()
                             ->end()
                         ->end()

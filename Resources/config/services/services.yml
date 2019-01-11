@@ -134,15 +134,11 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
-    gos_web_socket.null.pubsub.router:
-        class: Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter
-        public: false
-
     gos_web_socket.router.wamp:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
         public: false
         arguments:
-            - '@gos_web_socket.null.pubsub.router'
+            - '@gos_pubsub_router.router.websocket'
             - '%kernel.debug%'
             - '@?monolog.logger.websocket'
 

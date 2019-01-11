@@ -109,7 +109,7 @@ Send a message to all the connections in this topic.
 
 `$request->getRouteName()` Will give the matched route name
 
-`$request->getRoute()` will give [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/RouteInterface.php) object.
+`$request->getRoute()` will give [Route](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/Route.php) object.
 
 `$request->getAttributes()` will give [ParameterBag](http://api.symfony.com/2.6/Symfony/Component/HttpFoundation/ParameterBag.html)
 

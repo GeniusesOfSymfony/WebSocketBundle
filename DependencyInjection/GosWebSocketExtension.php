@@ -63,14 +63,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             if (isset($configs['server']['keepalive_interval'])) {
                 $container->setParameter('web_socket_keepalive_interval', $configs['server']['keepalive_interval']);
             }
-
-            $pubsubConfig = $configs['server']['router'] ?? [];
-
-            // The router was configured through the prepend pass, we only need to change the router the WampRouter uses
-            if (!empty($pubsubConfig)) {
-                $container->getDefinition('gos_web_socket.router.wamp')
-                    ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
-            }
         }
 
         if (!empty($configs['origins'])) {
@@ -166,20 +158,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (isset($config['server'])) {
             $pubsubConfig = $config['server']['router'] ?? [];
 
-            if (!empty($pubsubConfig)) {
-                if (!isset($pubsubConfig['context']['tokenSeparator'])) {
-                    $pubsubConfig['context']['tokenSeparator'] = Configuration::DEFAULT_TOKEN_SEPARATOR;
-                }
-
-                $container->prependExtensionConfig(
-                    'gos_pubsub_router',
-                    [
-                        'routers' => [
-                            'websocket' => $pubsubConfig,
-                        ],
-                    ]
-                );
-            }
+            $container->prependExtensionConfig(
+                'gos_pubsub_router',
+                [
+                    'routers' => [
+                        'websocket' => $pubsubConfig,
+                    ],
+                ]
+            );
         }
 
         // TwigBundle

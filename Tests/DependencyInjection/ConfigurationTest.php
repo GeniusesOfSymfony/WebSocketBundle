@@ -50,9 +50,6 @@ final class ConfigurationTest extends TestCase
                     'resources' => [
                         'example.yaml',
                     ],
-                    'context' => [
-                        'tokenSeparator' => '/',
-                    ],
                 ],
             ],
         ];

@@ -5,7 +5,6 @@ namespace Gos\Bundle\WebSocketBundle\Router;
 use Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException;
 use Gos\Bundle\PubSubRouterBundle\Router\RouteCollection;
 use Gos\Bundle\PubSubRouterBundle\Router\Router;
-use Gos\Bundle\PubSubRouterBundle\Router\RouterContext;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -40,34 +39,17 @@ class WampRouter
     }
 
     /**
-     * @param RouterContext $context
-     */
-    public function setContext(RouterContext $context)
-    {
-        $this->pubSubRouter->setContext($context);
-    }
-
-    /**
-     * @return RouterContext
-     */
-    public function getContext()
-    {
-        return $this->pubSubRouter->getContext();
-    }
-
-    /**
-     * @param Topic       $topic
-     * @param string|null $tokenSeparator
+     * @param Topic $topic
      *
      * @return WampRequest
      *
      * @throws ResourceNotFoundException
      * @throws \Exception
      */
-    public function match(Topic $topic, $tokenSeparator = null)
+    public function match(Topic $topic)
     {
         try {
-            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId(), $tokenSeparator);
+            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
 
             if ($this->debug) {
                 $this->logger->debug(sprintf(
@@ -88,15 +70,14 @@ class WampRouter
     }
 
     /**
-     * @param string      $routeName
-     * @param array       $parameters
-     * @param null|string $tokenSeparator
+     * @param string $routeName
+     * @param array  $parameters
      *
      * @return string
      */
-    public function generate($routeName, Array $parameters = [], $tokenSeparator = null)
+    public function generate($routeName, array $parameters = [])
     {
-        return $this->pubSubRouter->generate($routeName, $parameters, $tokenSeparator);
+        return $this->pubSubRouter->generate($routeName, $parameters);
     }
 
     /**
