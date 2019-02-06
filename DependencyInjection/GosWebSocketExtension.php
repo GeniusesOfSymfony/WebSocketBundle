@@ -2,12 +2,14 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -98,6 +100,9 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                     $storageDriver = $decoratorRef;
                 }
+
+                // Alias the DriverInterface in use
+                $container->setAlias(DriverInterface::class, new Alias($storageDriver));
 
                 $container->getDefinition('gos_web_socket.client_storage')
                     ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);

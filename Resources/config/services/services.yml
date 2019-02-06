@@ -109,12 +109,12 @@ services:
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
-        # argument are set via compiler pass
+        # arguments are set by the container extension
 
     gos_web_socket.client_storage.symfony.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
-        # argument are set via compiler pass
+        # arguments are set by the container extension
 
     gos_web_socket.server.in_memory.client_storage.driver:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
