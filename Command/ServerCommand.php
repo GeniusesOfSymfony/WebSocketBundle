@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0. Use the %s class instead.', ServerCommand::class, WebsocketServerCommand::class), E_USER_DEPRECATED);
+
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  *

@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -31,6 +32,12 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);
+
+        // Mark services deprecated if the API supports it
+        if (method_exists(Definition::class, 'setDeprecated')) {
+            $container->getDefinition('gos_web_socket.server_command')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Use the "gos_web_socket.websocket_server.command" service instead.');
+        }
 
         // Set the SecurityContext for Symfony <2.6
         // Should go back to simple configuration after drop <2.6 support
