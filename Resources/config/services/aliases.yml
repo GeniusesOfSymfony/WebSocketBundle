@@ -1,0 +1,39 @@
+services:
+    Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface:
+        alias: gos_web_socket.websocket_authentification.provider
+
+    Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface:
+        alias: gos_web_socket.websocket.client_manipulator
+
+    Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface:
+        alias: gos_web_socket.client_storage
+
+    Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry:
+        alias: gos_web_socket.pusher_registry
+
+    Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry:
+        alias: gos_web_socket.server_push_handler.registry
+
+    Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface:
+        alias: gos_web_socket.rpc.dispatcher
+
+    Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface:
+        alias: gos_web_socket.topic.dispatcher
+
+    Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry:
+        alias: gos_web_socket.origins.registry
+
+    Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry:
+        alias: gos_web_socket.periodic.registry
+
+    Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry:
+        alias: gos_web_socket.rpc.registry
+
+    Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry:
+        alias: gos_web_socket.server.registry
+
+    Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry:
+        alias: gos_web_socket.topic.registry
+
+    Gos\Bundle\WebSocketBundle\Topic\TopicManager:
+        alias: gos_web_socket.wamp.topic_manager
