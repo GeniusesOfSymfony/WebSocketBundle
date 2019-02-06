@@ -143,6 +143,135 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
+    /**
+     * @deprecated The `assetic` config node is deprecated
+     */
+    protected function addAsseticNode()
+    {
+        $builder = new TreeBuilder('assetic', 'boolean');
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('assetic', 'boolean');
+        }
+
+        $node
+            ->defaultTrue()
+            ->end();
+
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated();
+        }
+
+        return $node;
+    }
+
+    /**
+     * @deprecated The `rpc` config node is deprecated
+     */
+    protected function addRpcNode()
+    {
+        $builder = new TreeBuilder('rpc');
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('rpc');
+        }
+
+        $node
+            ->prototype('scalar')
+                ->example('@gos.rpc_service')
+            ->end();
+
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated('The child node "%node%" at path "%path%" is deprecated. Add the `gos_web_socket.rpc` tag to your service definitions instead.');
+        }
+
+        return $node;
+    }
+
+    /**
+     * @deprecated The `topics` config node is deprecated
+     */
+    protected function addTopicsNode()
+    {
+        $builder = new TreeBuilder('topics');
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('topics');
+        }
+
+        $node
+            ->prototype('scalar')
+                ->example('@gos.topic_service')
+            ->end();
+
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated('The child node "%node%" at path "%path%" is deprecated. Add the `gos_web_socket.topic` tag to your service definitions instead.');
+        }
+
+        return $node;
+    }
+
+    /**
+     * @deprecated The `periodic` config node is deprecated
+     */
+    protected function addPeriodicNode()
+    {
+        $builder = new TreeBuilder('periodic');
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('periodic');
+        }
+
+        $node
+            ->prototype('scalar')
+                ->example('@gos.periodic_service')
+            ->end();
+
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated('The child node "%node%" at path "%path%" is deprecated. Add the `gos_web_socket.periodic` tag to your service definitions instead.');
+        }
+
+        return $node;
+    }
+
+    /**
+     * @deprecated The `servers` config node is deprecated
+     */
+    protected function addServersNode()
+    {
+        $builder = new TreeBuilder('servers');
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('servers');
+        }
+
+        $node
+            ->prototype('scalar')
+                ->example('@gos.server_service')
+            ->end();
+
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated('The child node "%node%" at path "%path%" is deprecated. Add the `gos_web_socket.server` tag to your service definitions instead.');
+        }
+
+        return $node;
+    }
+
     protected function addWampNode()
     {
         $builder = new TreeBuilder('wamp');
