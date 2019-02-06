@@ -27,6 +27,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         );
 
         $loader->load('services.yml');
+        $loader->load('aliases.yml');
 
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);

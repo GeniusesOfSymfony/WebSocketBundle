@@ -9,7 +9,7 @@ services:
         arguments:
             - '@gos_web_socket.server.registry'
 
-    #deprecated will be removed in v2, use gos_web_socket.websocket_server.command instead
+    # Deprecated and will be removed in 2.0, use the gos_web_socket.websocket_server.command service instead
     gos_web_socket.server_command:
         class: Gos\Bundle\WebSocketBundle\Command\ServerCommand
         arguments:
@@ -167,6 +167,7 @@ services:
 
     gos_web_socket.server.event_loop:
         class: React\EventLoop\Factory
+        # Factory configured by compiler pass
 
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
