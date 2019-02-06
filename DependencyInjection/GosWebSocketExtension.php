@@ -195,6 +195,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        if (!isset($config['server'])) {
+            $config['server'] = array();
+        }
+
         //PubSubRouter
         $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
 
@@ -226,10 +230,19 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 throw new \RuntimeException('Shared configuration required Twig Bundle');
             }
 
-            $twigConfig = array('globals' => array(
-                'gos_web_socket_server_host' => $config['server']['host'],
-                'gos_web_socket_server_port' => $config['server']['port'],
-            ));
+            $twigConfig = array('globals' => array());
+
+            if (isset($config['server']['host'])) {
+                $twigConfig['globals']['gos_web_socket_server_host'] = $config['server']['host'];
+            }
+
+            if (isset($config['server']['port'])) {
+                $twigConfig['globals']['gos_web_socket_server_port'] = $config['server']['port'];
+            }
+
+            if (!empty($twigConfig['globals'])) {
+                $container->prependExtensionConfig('twig', $twigConfig);
+            }
 
             $container->prependExtensionConfig('twig', $twigConfig);
         }
