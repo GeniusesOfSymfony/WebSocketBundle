@@ -2,8 +2,12 @@
 
 namespace Gos\Bundle\WebSocketBundle\Twig;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', GosWebSocketServerExtension::class), E_USER_DEPRECATED);
+
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
+ *
+ * @deprecated to be removed in 2.0
  */
 class GosWebSocketServerExtension extends \Twig_Extension
 {
@@ -27,6 +31,7 @@ class GosWebSocketServerExtension extends \Twig_Extension
                 array(
                     'is_safe' => array('html'),
                     'needs_environment' => true,
+                    'deprecated' => true,
                 )
             ),
         ];

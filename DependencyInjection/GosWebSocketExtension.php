@@ -28,9 +28,19 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         );
 
         $loader->load('services.yml');
+        $loader->load('aliases.yml');
 
         $configuration = new Configuration();
         $configs = $this->processConfiguration($configuration, $configs);
+
+        // Mark services deprecated if the API supports it
+        if (method_exists(Definition::class, 'setDeprecated')) {
+            $container->getDefinition('gos_web_socket.server_command')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Use the "gos_web_socket.websocket_server.command" service instead.');
+
+            $container->getDefinition('gos_web_socket.twig.extension')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for Assetic will be removed.');
+        }
 
         // Set the SecurityContext for Symfony <2.6
         // Should go back to simple configuration after drop <2.6 support
@@ -217,6 +227,10 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        if (!isset($config['server'])) {
+            $config['server'] = array();
+        }
+
         //PubSubRouter
         $pubsubConfig = isset($config['server']['router']) ? $config['server']['router'] : [];
 
@@ -248,10 +262,19 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 throw new \RuntimeException('Shared configuration required Twig Bundle');
             }
 
-            $twigConfig = array('globals' => array(
-                'gos_web_socket_server_host' => $config['server']['host'],
-                'gos_web_socket_server_port' => $config['server']['port'],
-            ));
+            $twigConfig = array('globals' => array());
+
+            if (isset($config['server']['host'])) {
+                $twigConfig['globals']['gos_web_socket_server_host'] = $config['server']['host'];
+            }
+
+            if (isset($config['server']['port'])) {
+                $twigConfig['globals']['gos_web_socket_server_port'] = $config['server']['port'];
+            }
+
+            if (!empty($twigConfig['globals'])) {
+                $container->prependExtensionConfig('twig', $twigConfig);
+            }
 
             $container->prependExtensionConfig('twig', $twigConfig);
         }
