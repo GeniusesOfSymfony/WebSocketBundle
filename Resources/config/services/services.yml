@@ -1,4 +1,5 @@
 services:
+    # Deprecated and will be removed in 2.0, support for Assetic will be removed
     gos_web_socket.twig.extension:
         class: Gos\Bundle\WebSocketBundle\Twig\GosWebSocketServerExtension
         tags:

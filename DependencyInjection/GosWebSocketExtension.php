@@ -37,6 +37,9 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (method_exists(Definition::class, 'setDeprecated')) {
             $container->getDefinition('gos_web_socket.server_command')
                 ->setDeprecated(true, 'The "%service_id%" service is deprecated. Use the "gos_web_socket.websocket_server.command" service instead.');
+
+            $container->getDefinition('gos_web_socket.twig.extension')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for Assetic will be removed.');
         }
 
         // Set the SecurityContext for Symfony <2.6
