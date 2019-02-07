@@ -139,8 +139,8 @@ services:
         public: false
         arguments:
             - '@gos_pubsub_router.router.websocket'
-            - '%kernel.debug%'
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.periodic_ping.doctrine:
         class: Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing
