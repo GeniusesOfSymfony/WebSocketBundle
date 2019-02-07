@@ -23,6 +23,8 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
             ],
         ];
 
@@ -42,12 +44,11 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
                 'router' => [
                     'resources' => [
                         'example.yaml',
-                    ],
-                    'context' => [
-                        'tokenSeparator' => '/',
                     ],
                 ],
             ],

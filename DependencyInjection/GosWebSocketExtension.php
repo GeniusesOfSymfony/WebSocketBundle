@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
@@ -9,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Component\WebSocketClient\Wamp\Client;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -35,6 +37,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         );
 
         $loader->load('services.yml');
+        $loader->load('aliases.yml');
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
@@ -59,12 +62,12 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
             }
 
-            $pubsubConfig = $configs['server']['router'] ?? [];
+            if (isset($configs['server']['keepalive_ping'])) {
+                $container->setParameter('web_socket_keepalive_ping', $configs['server']['keepalive_ping']);
+            }
 
-            // The router was configured through the prepend pass, we only need to change the router the WampRouter uses
-            if (!empty($pubsubConfig)) {
-                $container->getDefinition('gos_web_socket.router.wamp')
-                    ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
+            if (isset($configs['server']['keepalive_interval'])) {
+                $container->setParameter('web_socket_keepalive_interval', $configs['server']['keepalive_interval']);
             }
         }
 
@@ -100,6 +103,9 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
                     $storageDriver = $decoratorRef;
                 }
+
+                // Alias the DriverInterface in use
+                $container->setAlias(DriverInterface::class, new Alias($storageDriver));
 
                 $container->getDefinition('gos_web_socket.client_storage')
                     ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
@@ -250,20 +256,14 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         if (isset($config['server'])) {
             $pubsubConfig = $config['server']['router'] ?? [];
 
-            if (!empty($pubsubConfig)) {
-                if (!isset($pubsubConfig['context']['tokenSeparator'])) {
-                    $pubsubConfig['context']['tokenSeparator'] = Configuration::DEFAULT_TOKEN_SEPARATOR;
-                }
-
-                $container->prependExtensionConfig(
-                    'gos_pubsub_router',
-                    [
-                        'routers' => [
-                            'websocket' => $pubsubConfig,
-                        ],
-                    ]
-                );
-            }
+            $container->prependExtensionConfig(
+                'gos_pubsub_router',
+                [
+                    'routers' => [
+                        'websocket' => $pubsubConfig,
+                    ],
+                ]
+            );
         }
 
         // TwigBundle

@@ -46,6 +46,8 @@ services:
             - '@gos_web_socket.origins.registry'
             - '@event_dispatcher'
             - '%web_socket_origin_check%'
+            - '%web_socket_keepalive_ping%'
+            - '%web_socket_keepalive_interval%'
 
     gos_web_socket.server.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
@@ -107,12 +109,12 @@ services:
     gos_web_socket.client_storage.doctrine.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
-        # arguments are set via compiler pass
+        # arguments are set by the container extension
 
     gos_web_socket.client_storage.symfony.decorator:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
-        # arguments are set via compiler pass
+        # arguments are set by the container extension
 
     gos_web_socket.server.in_memory.client_storage.driver:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
@@ -132,15 +134,11 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
-    gos_web_socket.null.pubsub.router:
-        class: Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter
-        public: false
-
     gos_web_socket.router.wamp:
         class: Gos\Bundle\WebSocketBundle\Router\WampRouter
         public: false
         arguments:
-            - '@gos_web_socket.null.pubsub.router'
+            - '@gos_pubsub_router.router.websocket'
             - '%kernel.debug%'
             - '@?monolog.logger.websocket'
 

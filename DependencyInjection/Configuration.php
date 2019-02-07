@@ -15,7 +15,8 @@ class Configuration implements ConfigurationInterface
     private const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
     private const DEFAULT_FIREWALL = 'ws_firewall';
     private const DEFAULT_ORIGIN_CHECKER = false;
-    public const DEFAULT_TOKEN_SEPARATOR = '/';
+    private const DEFAULT_KEEPALIVE_PING = false;
+    private const DEFAULT_KEEPALIVE_INTERVAL = 30;
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
@@ -82,19 +83,21 @@ class Configuration implements ConfigurationInterface
                         ->defaultValue(static::DEFAULT_ORIGIN_CHECKER)
                         ->example(true)
                     ->end()
+                    ->booleanNode('keepalive_ping')
+                        ->defaultValue(static::DEFAULT_KEEPALIVE_PING)
+                        ->example(true)
+                        ->info('Flag indicating a keepalive ping should be enabled on the server')
+                    ->end()
+                    ->integerNode('keepalive_interval')
+                        ->defaultValue(static::DEFAULT_KEEPALIVE_INTERVAL)
+                        ->example(30)
+                        ->info('The time in seconds between each keepalive ping')
+                    ->end()
                     ->arrayNode('router')
                         ->children()
                             ->arrayNode('resources')
                                 ->scalarPrototype()
                                     ->example('@GosNotificationBundle/Resources/config/pubsub/websocket/notification.yml')
-                                ->end()
-                            ->end()
-                            ->arrayNode('context')
-                                ->children()
-                                    ->variableNode('tokenSeparator')
-                                        ->example('/')
-                                        ->defaultValue(static::DEFAULT_TOKEN_SEPARATOR)
-                                    ->end()
                                 ->end()
                             ->end()
                         ->end()

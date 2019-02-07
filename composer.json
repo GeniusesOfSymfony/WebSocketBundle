@@ -18,7 +18,7 @@
     "require": {
         "php": ">=7.2",
         "cboden/ratchet": "^0.4.1",
-        "gos/pubsub-router-bundle": "^0.3",
+        "gos/pubsub-router-bundle": "^1.0",
         "gos/websocket-client": "^0.1",
         "ocramius/proxy-manager": "~0.4|^1.0|^2.0",
         "psr/log": "^1.0",
