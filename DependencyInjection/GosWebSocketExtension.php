@@ -40,6 +40,12 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             $container->getDefinition('gos_web_socket.twig.extension')
                 ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for Assetic will be removed.');
+
+            $container->getDefinition('gos_web_socket.zmq.pusher')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for ZMQ as a pusher will be removed.');
+
+            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for ZMQ as a server push handler will be removed.');
         }
 
         // Set the SecurityContext for Symfony <2.6
@@ -203,14 +209,6 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                     'Support for the ZMQ pusher is deprecated and will be removed in 2.0.',
                     E_USER_DEPRECATED
                 );
-
-                if (method_exists(Definition::class, 'setDeprecated')) {
-                    $pusherDef = $container->getDefinition('gos_web_socket.zmq.pusher');
-                    $pusherDef->setDeprecated(true);
-
-                    $pushHandlerDef = $container->getDefinition('gos_web_socket.zmq.server_push_handler');
-                    $pushHandlerDef->setDeprecated(true);
-                }
             }
         }
     }
