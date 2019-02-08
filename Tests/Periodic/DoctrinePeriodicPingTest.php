@@ -5,9 +5,8 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
-use Monolog\Handler\TestHandler;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\Test\TestLogger;
 
 class DoctrinePeriodicPingTest extends TestCase
 {
@@ -31,14 +30,7 @@ class DoctrinePeriodicPingTest extends TestCase
 
     public function testAConnectionErrorIsLogged()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
+        $logger = new TestLogger();
 
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
@@ -55,7 +47,7 @@ class DoctrinePeriodicPingTest extends TestCase
         } catch (DBALException $exception) {
             $this->assertSame('Testing', $exception->getMessage());
 
-            $this->assertTrue($logHandler->hasEmergencyThatContains('Could not ping database server'));
+            $this->assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
         }
     }
 }

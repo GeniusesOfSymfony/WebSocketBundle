@@ -3,9 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing;
-use Monolog\Handler\TestHandler;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\Test\TestLogger;
 
 class PdoPeriodicPingTest extends TestCase
 {
@@ -49,14 +48,7 @@ class PdoPeriodicPingTest extends TestCase
      */
     public function testAConnectionErrorIsLogged()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
+        $logger = new TestLogger();
 
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
@@ -78,7 +70,7 @@ class PdoPeriodicPingTest extends TestCase
         } catch (\PDOException $exception) {
             $this->assertSame('Testing', $exception->getMessage());
 
-            $this->assertTrue($logHandler->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
+            $this->assertTrue($logger->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
         }
     }
 }

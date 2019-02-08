@@ -8,9 +8,8 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
-use Monolog\Handler\TestHandler;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -44,6 +43,11 @@ class WampApplicationTest extends TestCase
     private $wampRouter;
 
     /**
+     * @var TestLogger
+     */
+    private $logger;
+
+    /**
      * @var WampApplication
      */
     private $application;
@@ -58,6 +62,8 @@ class WampApplicationTest extends TestCase
         $this->clientStorage = $this->createMock(ClientStorageInterface::class);
         $this->wampRouter = $this->createMock(WampRouter::class);
 
+        $this->logger = new TestLogger();
+
         $this->application = new WampApplication(
             $this->rpcDispatcher,
             $this->topicDispatcher,
@@ -65,21 +71,11 @@ class WampApplicationTest extends TestCase
             $this->clientStorage,
             $this->wampRouter
         );
+        $this->application->setLogger($this->logger);
     }
 
     public function testAMessageIsPublished()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->application->setLogger($logger);
-
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
@@ -115,22 +111,11 @@ class WampApplicationTest extends TestCase
 
         $this->application->onPublish($connection, $topic, $event, $exclude, $eligible);
 
-        $this->assertTrue($logHandler->hasDebugThatContains('User user published to channel/42'));
+        $this->assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
     }
 
     public function testAMessageIsPushed()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->application->setLogger($logger);
-
         $request = $this->createMock(WampRequest::class);
         $request->expects($this->once())
             ->method('getMatched')
@@ -145,7 +130,7 @@ class WampApplicationTest extends TestCase
 
         $this->application->onPush($request, $data, $provider);
 
-        $this->assertTrue($logHandler->hasInfoThatContains('Pusher test has pushed'));
+        $this->assertTrue($this->logger->hasInfoThatContains('Pusher test has pushed'));
     }
 
     public function testARpcCallIsHandled()
@@ -172,17 +157,6 @@ class WampApplicationTest extends TestCase
 
     public function testAClientSubscriptionIsHandled()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->application->setLogger($logger);
-
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
@@ -218,22 +192,11 @@ class WampApplicationTest extends TestCase
 
         $this->application->onSubscribe($connection, $topic);
 
-        $this->assertTrue($logHandler->hasInfoThatContains('User user subscribed to channel/42'));
+        $this->assertTrue($this->logger->hasInfoThatContains('User user subscribed to channel/42'));
     }
 
     public function testAClientUnsubscriptionIsHandled()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->application->setLogger($logger);
-
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
@@ -269,7 +232,7 @@ class WampApplicationTest extends TestCase
 
         $this->application->onUnSubscribe($connection, $topic);
 
-        $this->assertTrue($logHandler->hasInfoThatContains('User user unsubscribed from channel/42'));
+        $this->assertTrue($this->logger->hasInfoThatContains('User user unsubscribed from channel/42'));
     }
 
     public function testAConnectionIsOpened()
