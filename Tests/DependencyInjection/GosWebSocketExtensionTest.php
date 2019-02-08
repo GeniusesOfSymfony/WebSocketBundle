@@ -13,7 +13,6 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -137,12 +136,10 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ]
         );
 
-        $originRegistryDefinition = $this->container->getDefinition('gos_web_socket.origins.registry');
-
-        $this->assertCount(
-            1,
-            $originRegistryDefinition->getMethodCalls(),
-            'The origins should be added to the `gos_web_socket.origins.registry` service.'
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.origins.registry',
+            'addOrigin',
+            ['github.com']
         );
     }
 
@@ -175,28 +172,16 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
-        $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
-
-        $this->assertTrue(
-            $serverBuilderDefinition->hasMethodCall('setSessionHandler'),
-            'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.ws.server_builder',
+            'setSessionHandler',
+            [new Reference('session.handler.pdo')]
         );
 
-        $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
-        $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
-
-        $this->assertTrue(
-            $clientStorageDefinition->hasMethodCall('setStorageDriver'),
-            'The storage driver should be added to the `gos_web_socket.client_storage` service.'
-        );
-
-        /** @var Reference $reference */
-        $reference = $clientStorageMethodCalls[1][1][0];
-
-        $this->assertSame(
-            'gos_web_socket.server.in_memory.client_storage.driver',
-            (string) $reference,
-            'The storage driver should be the configured driver from the `client.storage.driver` node.'
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.client_storage',
+            'setStorageDriver',
+            [new Reference('gos_web_socket.server.in_memory.client_storage.driver')]
         );
     }
 
@@ -230,28 +215,16 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
-        $serverBuilderDefinition = $this->container->getDefinition('gos_web_socket.ws.server_builder');
-
-        $this->assertTrue(
-            $serverBuilderDefinition->hasMethodCall('setSessionHandler'),
-            'The session handler should be added to the `gos_web_socket.ws.server_builder` service.'
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.ws.server_builder',
+            'setSessionHandler',
+            [new Reference('session.handler.pdo')]
         );
 
-        $clientStorageDefinition = $this->container->getDefinition('gos_web_socket.client_storage');
-        $clientStorageMethodCalls = $clientStorageDefinition->getMethodCalls();
-
-        $this->assertTrue(
-            $clientStorageDefinition->hasMethodCall('setStorageDriver'),
-            'The storage driver should be added to the `gos_web_socket.client_storage` service.'
-        );
-
-        /** @var Reference $reference */
-        $reference = $clientStorageMethodCalls[1][1][0];
-
-        $this->assertSame(
-            'gos_web_socket.client_storage.symfony.decorator',
-            (string) $reference,
-            'The storage driver should be the configured driver from the `client.storage.decorator` node.'
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.client_storage',
+            'setStorageDriver',
+            [new Reference('gos_web_socket.client_storage.symfony.decorator')]
         );
     }
 
@@ -268,11 +241,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter('kernel.debug', true);
         $this->container->setParameter('kernel.project_dir', __DIR__);
 
-        $doctrineDatabaseConnectionDefinition = new Definition(Connection::class);
-        $this->container->setDefinition('database_connection', $doctrineDatabaseConnectionDefinition);
-
-        $pdoDefinition = new Definition(\PDO::class);
-        $this->container->setDefinition('pdo', $pdoDefinition);
+        $this->registerService('database_connection', Connection::class);
+        $this->registerService('pdo', \PDO::class);
 
         $this->load(
             [
@@ -291,8 +261,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ]
         );
 
-        $this->assertContainerBuilderHasService('gos_web_socket.periodic_ping.doctrine.database_connection');
-        $this->assertContainerBuilderHasService('gos_web_socket.periodic_ping.pdo.pdo');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.doctrine.database_connection', 'gos_web_socket.periodic');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
     }
 
     protected function getContainerExtensions()

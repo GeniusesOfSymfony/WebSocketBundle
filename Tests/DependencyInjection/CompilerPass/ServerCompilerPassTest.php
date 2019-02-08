@@ -7,23 +7,24 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ServerCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $registryDefinition = $this->registerService('gos_web_socket.server.registry', ServerRegistry::class);
-
-        $rpcService = new Definition(ServerInterface::class);
-        $rpcService->addTag('gos_web_socket.server');
-
-        $this->setDefinition('test.server', $rpcService);
+        $this->registerService('gos_web_socket.server.registry', ServerRegistry::class);
+        $this->registerService('test.server', ServerInterface::class)
+            ->addTag('gos_web_socket.server');
 
         $this->compile();
 
         $this->assertContainerBuilderHasService('test.server', ServerInterface::class);
-        $this->assertCount(1, $registryDefinition->getMethodCalls());
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.server.registry',
+            'addServer',
+            [new Reference('test.server')]
+        );
     }
 
     protected function registerCompilerPass(ContainerBuilder $container)

@@ -7,23 +7,24 @@ use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class RpcCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $registryDefinition = $this->registerService('gos_web_socket.rpc.registry', RpcRegistry::class);
-
-        $rpcService = new Definition(RpcInterface::class);
-        $rpcService->addTag('gos_web_socket.rpc');
-
-        $this->setDefinition('test.rpc', $rpcService);
+        $this->registerService('gos_web_socket.rpc.registry', RpcRegistry::class);
+        $this->registerService('test.rpc', RpcInterface::class)
+            ->addTag('gos_web_socket.rpc');
 
         $this->compile();
 
         $this->assertContainerBuilderHasService('test.rpc', RpcInterface::class);
-        $this->assertCount(1, $registryDefinition->getMethodCalls());
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.rpc.registry',
+            'addRpc',
+            [new Reference('test.rpc')]
+        );
     }
 
     protected function registerCompilerPass(ContainerBuilder $container)

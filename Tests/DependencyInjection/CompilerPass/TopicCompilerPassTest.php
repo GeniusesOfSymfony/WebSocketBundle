@@ -7,23 +7,24 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class TopicCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $registryDefinition = $this->registerService('gos_web_socket.topic.registry', TopicRegistry::class);
-
-        $rpcService = new Definition(TopicInterface::class);
-        $rpcService->addTag('gos_web_socket.topic');
-
-        $this->setDefinition('test.topic', $rpcService);
+        $this->registerService('gos_web_socket.topic.registry', TopicRegistry::class);
+        $this->registerService('test.topic', TopicInterface::class)
+            ->addTag('gos_web_socket.topic');
 
         $this->compile();
 
         $this->assertContainerBuilderHasService('test.topic', TopicInterface::class);
-        $this->assertCount(1, $registryDefinition->getMethodCalls());
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            'gos_web_socket.topic.registry',
+            'addTopic',
+            [new Reference('test.topic')]
+        );
     }
 
     protected function registerCompilerPass(ContainerBuilder $container)

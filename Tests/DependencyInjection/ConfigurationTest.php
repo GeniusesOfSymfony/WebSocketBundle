@@ -10,8 +10,7 @@ final class ConfigurationTest extends TestCase
 {
     public function testDefaultConfig()
     {
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), []);
+        $config = (new Processor())->processConfiguration(new Configuration(), []);
 
         $this->assertEquals(self::getBundleDefaultConfig(), $config);
     }
@@ -28,8 +27,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -54,8 +52,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -80,8 +77,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -106,8 +102,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
     public function testConfigWithPushers()
@@ -144,8 +139,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),

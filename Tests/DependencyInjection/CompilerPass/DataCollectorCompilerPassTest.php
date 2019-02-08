@@ -46,10 +46,11 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $this->compile();
 
         $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.data_collector', PusherDecorator::class);
-
-        $decoratedPusherDefinition = $this->container->getDefinition('gos_web_socket.wamp.pusher.data_collector');
-
-        $this->assertEquals($decoratedPusherDefinition->getArgument(0), new Reference('gos_web_socket.wamp.pusher.data_collector.inner'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.wamp.pusher.data_collector',
+            0,
+            new Reference('gos_web_socket.wamp.pusher.data_collector.inner')
+        );
     }
 
     protected function registerCompilerPass(ContainerBuilder $container)
