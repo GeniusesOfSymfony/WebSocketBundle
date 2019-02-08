@@ -11,12 +11,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     /**
      * @var TimerInterface[]
      */
-    protected $registry;
-
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
+    protected $registry = [];
 
     /**
      * @var ConnectionInterface
@@ -24,14 +19,18 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     protected $connection;
 
     /**
+     * @var LoopInterface
+     */
+    protected $loop;
+
+    /**
      * @param ConnectionInterface $connection
      * @param LoopInterface       $loop
      */
     public function __construct(ConnectionInterface $connection, LoopInterface $loop)
     {
-        $this->loop = $loop;
-        $this->registry = [];
         $this->connection = $connection;
+        $this->loop = $loop;
     }
 
     /**
@@ -41,13 +40,11 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
      */
     public function getPeriodicTimer($name)
     {
-        $tid = $this->getTid($name);
-
         if (!$this->isPeriodicTimerActive($name)) {
             return false;
         }
 
-        return $this->registry[$tid];
+        return $this->registry[$this->getTid($name)];
     }
 
     /**
@@ -77,9 +74,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
      */
     public function isPeriodicTimerActive($name)
     {
-        $tid = $this->getTid($name);
-
-        return isset($this->registry[$tid]);
+        return isset($this->registry[$this->getTid($name)]);
     }
 
     /**
