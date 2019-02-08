@@ -3,24 +3,46 @@
 ```yaml
 gos_web_socket:
     client:
-        session_handler: ~ # Example: @session.handler.pdo
-        firewall: ws_firewall # Example: secured_area, you must replace it by your firewall
+        session_handler:      ~ # Example: @session.handler.pdo
+        firewall:             ws_firewall # Example: secured_area
         storage:
-            driver: @gos_web_socket.server.in_memory.client_storage.driver
-            decorator: ~
-    shared_config: true
+            driver:               '@gos_web_socket.server.in_memory.client_storage.driver' # Example: @gos_web_socket.server.in_memory.client_storage.driver
+            ttl:                  900 # Example: 3600
+            prefix:               '' # Example: client
+            decorator:            ~
+    shared_config:        true
     server:
-        port: ~ # Required, Example 1337
-        host: ~ # Required, Example 127.0.0.1
-        origin_check:         false
+        port:                 ~ # Required, Example: 1337
+        host:                 ~ # Required, Example: 127.0.0.1
+        origin_check:         false # Example: 1
         router:
-            resources:
-                - @AcmeBundle/Resources/config/pubsub/routing.yml
+            resources:            []
             context:
-                tokenSeparator: "/"
-    rpc:                  []
-    topics:               []
-    periodic:             []
-    servers:              []
+                tokenSeparator:       / # Example: /
     origins:              []
+    pushers:
+        zmq:
+            default:              false
+            host:                 ~ # Required, Example: 127.0.0.1
+            port:                 ~ # Required, Example: 1337
+            persistent:           true
+            protocol:             tcp # One of "tcp"; "ipc"; "inproc"; "pgm"; "epgm"
+            linger:               -1
+        amqp:
+            default:              false
+            host:                 ~ # Required, Example: 127.0.0.1
+            port:                 ~ # Required, Example: 1337
+            login:                ~ # Required
+            password:             ~ # Required
+            vhost:                /
+            read_timeout:         0
+            write_timeout:        0
+            connect_timeout:      0
+            queue_name:           gos_websocket
+            exchange_name:        gos_websocket_exchange
+        wamp:
+            host:                 ~ # Required, Example: 127.0.0.1
+            port:                 ~ # Required, Example: 1337
+            ssl:                  false
+            origin:               null
 ```
