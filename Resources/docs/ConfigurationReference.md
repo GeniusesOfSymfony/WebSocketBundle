@@ -15,11 +15,26 @@ gos_web_socket:
         port:                 ~ # Required, Example: 1337
         host:                 ~ # Required, Example: 127.0.0.1
         origin_check:         false # Example: 1
+
+        # Flag indicating a keepalive ping should be enabled on the server
+        keepalive_ping:       false # Example: 1
+
+        # The time in seconds between each keepalive ping
+        keepalive_interval:   30 # Example: 30
         router:
             resources:            []
-            context:
-                tokenSeparator:       / # Example: /
     origins:              []
+    ping:
+        services:
+
+            # Prototype
+            -
+
+                # The name of the service to ping
+                name:                 ~
+
+                # The type of the service to be pinged; valid options are "doctrine" and "pdo"
+                type:                 ~
     pushers:
         zmq:
             default:              false
