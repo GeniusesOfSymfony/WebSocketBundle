@@ -33,6 +33,22 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('web_socket_server.client_storage.prefix');
     }
 
+    /**
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
+     * @expectedExceptionMessage The GosWebSocketBundle requires the GosPubSubRouterBundle.
+     */
+    public function testContainerFailsToLoadWhenPubSubBundleIsMissing()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->load();
+    }
+
     public function testContainerIsLoadedWithTwigBundleIntegration()
     {
         $this->container->setParameter(

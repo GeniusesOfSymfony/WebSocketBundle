@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -155,7 +156,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         $bundles = $container->getParameter('kernel.bundles');
 
         if (!isset($bundles['GosPubSubRouterBundle'])) {
-            throw new \RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
+            throw new RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
         }
 
         $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
