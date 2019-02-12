@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @internal
  */
-final class ServerBuilder
+final class ServerBuilder implements ServerBuilderInterface
 {
     /**
      * @var LoopInterface
