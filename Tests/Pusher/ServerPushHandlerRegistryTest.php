@@ -15,7 +15,7 @@ class ServerPushHandlerRegistryTest extends TestCase
      */
     private $registry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,12 +64,11 @@ class ServerPushHandlerRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasPushHandler($handler->getName()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage A push handler named "main" has not been registered.
-     */
     public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('A push handler named "main" has not been registered.');
+
         $handler = new class implements ServerPushHandlerInterface
         {
             public function handle(LoopInterface $loop, WampServerInterface $app)

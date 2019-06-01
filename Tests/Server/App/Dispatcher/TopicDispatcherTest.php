@@ -16,9 +16,8 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
-use Monolog\Handler\TestHandler;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampConnection;
@@ -27,7 +26,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 final class TopicDispatcherTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicRegistry
+     * @var TopicRegistry
      */
     private $topicRegistry;
 
@@ -47,20 +46,28 @@ final class TopicDispatcherTest extends TestCase
     private $topicManager;
 
     /**
+     * @var TestLogger
+     */
+    private $logger;
+
+    /**
      * @var TopicDispatcher
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->topicRegistry      = $this->createMock(TopicRegistry::class);
+        $this->topicRegistry      = new TopicRegistry();
         $this->wampRouter         = $this->createMock(WampRouter::class);
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
         $this->topicManager       = $this->createMock(TopicManager::class);
 
+        $this->logger = new TestLogger();
+
         $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, $this->topicManager);
+        $this->dispatcher->setLogger($this->logger);
     }
 
     public function testAWebsocketSubscriptionIsDispatchedToItsHandler()
@@ -95,15 +102,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -159,15 +158,7 @@ final class TopicDispatcherTest extends TestCase
             ->with('topic.handler')
             ->willReturn($this->createMock(Topic::class));
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -178,12 +169,11 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    /**
-     * @expectedException \Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException
-     * @expectedExceptionMessage The "topic.handler" topic does not support push notifications
-     */
     public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface()
     {
+        $this->expectException(PushUnsupportedException::class);
+        $this->expectExceptionMessage('The "topic.handler" topic does not support push notifications');
+
         $handler = new class implements TopicInterface
         {
             private $called = false;
@@ -219,15 +209,7 @@ final class TopicDispatcherTest extends TestCase
             ->with('topic.handler')
             ->willReturn($this->createMock(Topic::class));
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -268,15 +250,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -322,15 +296,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -387,15 +353,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -455,15 +413,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -519,15 +469,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -551,17 +493,6 @@ final class TopicDispatcherTest extends TestCase
 
     public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->dispatcher->setLogger($logger);
-
         $handler = new class implements TopicInterface
         {
             private $called = false;
@@ -592,11 +523,6 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(false);
-
         $route = new Route('hello/world', 'topic.handler');
 
         $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
@@ -608,22 +534,11 @@ final class TopicDispatcherTest extends TestCase
 
         $this->assertFalse($handler->wasCalled());
 
-        $this->assertTrue($logHandler->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
+        $this->assertTrue($this->logger->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
     }
 
     public function testTheConnectionIsClosedIfATopicCannotBeSecured()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->dispatcher->setLogger($logger);
-
         $handler = new class implements TopicInterface, SecuredTopicInterface
         {
             private $called = false;
@@ -665,15 +580,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -696,22 +603,11 @@ final class TopicDispatcherTest extends TestCase
         $this->assertFalse($handler->wasCalled());
         $this->assertFalse($handler->wasSecured());
 
-        $this->assertTrue($logHandler->hasErrorThatContains('Access denied'));
+        $this->assertTrue($this->logger->hasErrorThatContains('Access denied'));
     }
 
     public function testAnExceptionFromAHandlerIsCaughtAndProcessed()
     {
-        $logHandler = new TestHandler();
-
-        $logger = new Logger(
-            'websocket',
-            [
-                $logHandler
-            ]
-        );
-
-        $this->dispatcher->setLogger($logger);
-
         $handler = new class implements TopicInterface
         {
             private $called = false;
@@ -744,15 +640,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -771,6 +659,6 @@ final class TopicDispatcherTest extends TestCase
 
         $this->assertTrue($handler->wasCalled());
 
-        $this->assertTrue($logHandler->hasErrorThatContains('Websocket error processing topic callback function.'));
+        $this->assertTrue($this->logger->hasErrorThatContains('Websocket error processing topic callback function.'));
     }
 }

@@ -16,7 +16,7 @@ class TopicRegistryTest extends TestCase
      */
     private $registry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -54,12 +54,11 @@ class TopicRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasTopic($handler->getName()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage A topic named "main" has not been registered.
-     */
     public function testRetrievingATopicFailsIfTheNamedHandlerDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('A topic named "main" has not been registered.');
+
         $handler = new class implements TopicInterface
         {
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)

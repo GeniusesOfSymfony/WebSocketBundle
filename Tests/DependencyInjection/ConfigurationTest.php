@@ -4,14 +4,14 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
 final class ConfigurationTest extends TestCase
 {
     public function testDefaultConfig()
     {
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), []);
+        $config = (new Processor())->processConfiguration(new Configuration(), []);
 
         $this->assertEquals(self::getBundleDefaultConfig(), $config);
     }
@@ -28,8 +28,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -54,8 +53,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -80,8 +78,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -89,12 +86,11 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage  Invalid configuration for path "gos_web_socket.ping.services.0.type": "no_support" is not a supported service type
-     */
     public function testConfigWithUnsupportedPingServiceType()
     {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.ping.services.0.type": "no_support" is not a supported service type');
+
         $extraConfig = [
             'ping' => [
                 'services' => [
@@ -106,8 +102,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
     public function testConfigWithPushers()
@@ -147,8 +142,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
         $this->assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),

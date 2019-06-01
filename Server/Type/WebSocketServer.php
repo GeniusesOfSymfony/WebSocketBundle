@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\Type;
 
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
-use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
+use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\Server\IoServer;
@@ -20,7 +20,7 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var ServerBuilder
+     * @var ServerBuilderInterface
      */
     protected $serverBuilder;
 
@@ -35,12 +35,12 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
     protected $eventDispatcher;
 
     /**
-     * @param ServerBuilder $serverBuilder
+     * @param ServerBuilderInterface $serverBuilder
      * @param LoopInterface $loop
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        ServerBuilder $serverBuilder,
+        ServerBuilderInterface $serverBuilder,
         LoopInterface $loop,
         EventDispatcherInterface $eventDispatcher
     ) {

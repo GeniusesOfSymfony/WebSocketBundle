@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class PeriodicRegistry
+final class PeriodicRegistry
 {
     /**
      * @var PeriodicInterface[]

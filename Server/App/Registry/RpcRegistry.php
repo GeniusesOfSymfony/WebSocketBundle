@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class RpcRegistry
+final class RpcRegistry
 {
     /**
      * @var RpcInterface[]

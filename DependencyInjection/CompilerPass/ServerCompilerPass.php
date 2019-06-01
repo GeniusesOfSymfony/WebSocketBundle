@@ -16,6 +16,10 @@ class ServerCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        if (!$container->hasDefinition('gos_web_socket.server.registry')) {
+            return;
+        }
+
         $definition = $container->getDefinition('gos_web_socket.server.registry');
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.server');
 

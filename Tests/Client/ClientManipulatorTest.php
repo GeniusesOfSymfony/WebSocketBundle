@@ -30,7 +30,7 @@ class ClientManipulatorTest extends TestCase
      */
     private $manipulator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

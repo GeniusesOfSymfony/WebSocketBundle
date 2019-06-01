@@ -13,7 +13,7 @@ use React\EventLoop\LoopInterface;
 class RegisterPushHandlersListenerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ServerPushHandlerRegistry
+     * @var ServerPushHandlerRegistry
      */
     private $pushHandlerRegistry;
 
@@ -27,11 +27,11 @@ class RegisterPushHandlersListenerTest extends TestCase
      */
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->pushHandlerRegistry = $this->createMock(ServerPushHandlerRegistry::class);
+        $this->pushHandlerRegistry = new ServerPushHandlerRegistry();
         $this->wampApplication = $this->createMock(WampApplication::class);
 
         $this->listener = new RegisterPushHandlersListener($this->pushHandlerRegistry, $this->wampApplication);
@@ -43,12 +43,14 @@ class RegisterPushHandlersListenerTest extends TestCase
 
         $handler = $this->createMock(ServerPushHandlerInterface::class);
         $handler->expects($this->once())
+            ->method('getName')
+            ->willReturn('test');
+
+        $handler->expects($this->once())
             ->method('handle')
             ->with($loop, $this->wampApplication);
 
-        $this->pushHandlerRegistry->expects($this->once())
-            ->method('getPushers')
-            ->willReturn(['test' => $handler]);
+        $this->pushHandlerRegistry->addPushHandler($handler);
 
         $event = $this->createMock(ServerEvent::class);
         $event->expects($this->once())

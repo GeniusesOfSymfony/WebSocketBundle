@@ -13,7 +13,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -46,13 +46,14 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $this->compile();
 
         $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.data_collector', PusherDecorator::class);
-
-        $decoratedPusherDefinition = $this->container->getDefinition('gos_web_socket.wamp.pusher.data_collector');
-
-        $this->assertEquals($decoratedPusherDefinition->getArgument(0), new Reference('gos_web_socket.wamp.pusher.data_collector.inner'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.wamp.pusher.data_collector',
+            0,
+            new Reference('gos_web_socket.wamp.pusher.data_collector.inner')
+        );
     }
 
-    protected function registerCompilerPass(ContainerBuilder $container)
+    protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new DataCollectorCompilerPass());
     }

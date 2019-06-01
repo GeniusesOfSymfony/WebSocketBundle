@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class RpcDispatcherTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|RpcRegistry
+     * @var RpcRegistry
      */
     private $rpcRegistry;
 
@@ -25,11 +25,11 @@ class RpcDispatcherTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->rpcRegistry = $this->createMock(RpcRegistry::class);
+        $this->rpcRegistry = new RpcRegistry();
 
         $this->dispatcher = new RpcDispatcher($this->rpcRegistry);
     }
@@ -58,15 +58,7 @@ class RpcDispatcherTest extends TestCase
             }
         };
 
-        $this->rpcRegistry->expects($this->once())
-            ->method('hasRpc')
-            ->with('@rpc.handler')
-            ->willReturn(true);
-
-        $this->rpcRegistry->expects($this->once())
-            ->method('getRpc')
-            ->with('@rpc.handler')
-            ->willReturn($handler);
+        $this->rpcRegistry->addRpc($handler);
 
         $route = new Route('hello/world', '@rpc.handler');
 
@@ -110,14 +102,6 @@ class RpcDispatcherTest extends TestCase
             }
         };
 
-        $this->rpcRegistry->expects($this->once())
-            ->method('hasRpc')
-            ->with('@rpc.handler')
-            ->willReturn(false);
-
-        $this->rpcRegistry->expects($this->never())
-            ->method('getRpc');
-
         $route = new Route('hello/world', '@rpc.handler');
 
         $attribs = new ParameterBag();
@@ -160,15 +144,7 @@ class RpcDispatcherTest extends TestCase
             }
         };
 
-        $this->rpcRegistry->expects($this->once())
-            ->method('hasRpc')
-            ->with('@rpc.handler')
-            ->willReturn(true);
-
-        $this->rpcRegistry->expects($this->once())
-            ->method('getRpc')
-            ->with('@rpc.handler')
-            ->willReturn($handler);
+        $this->rpcRegistry->addRpc($handler);
 
         $route = new Route('hello/world', '@rpc.handler');
 
@@ -203,15 +179,7 @@ class RpcDispatcherTest extends TestCase
             }
         };
 
-        $this->rpcRegistry->expects($this->once())
-            ->method('hasRpc')
-            ->with('@rpc.handler')
-            ->willReturn(true);
-
-        $this->rpcRegistry->expects($this->once())
-            ->method('getRpc')
-            ->with('@rpc.handler')
-            ->willReturn($handler);
+        $this->rpcRegistry->addRpc($handler);
 
         $route = new Route('hello/world', '@rpc.handler');
 
@@ -244,15 +212,7 @@ class RpcDispatcherTest extends TestCase
             }
         };
 
-        $this->rpcRegistry->expects($this->once())
-            ->method('hasRpc')
-            ->with('@rpc.handler')
-            ->willReturn(true);
-
-        $this->rpcRegistry->expects($this->once())
-            ->method('getRpc')
-            ->with('@rpc.handler')
-            ->willReturn($handler);
+        $this->rpcRegistry->addRpc($handler);
 
         $route = new Route('hello/world', '@rpc.handler');
 

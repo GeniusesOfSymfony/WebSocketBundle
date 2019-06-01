@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class TopicRegistry
+final class TopicRegistry
 {
     /**
      * @var TopicInterface[]

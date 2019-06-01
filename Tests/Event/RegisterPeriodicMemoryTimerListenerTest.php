@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|PeriodicRegistry
+     * @var PeriodicRegistry
      */
     private $periodicRegistry;
 
@@ -19,38 +19,36 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
      */
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->periodicRegistry = $this->createMock(PeriodicRegistry::class);
+        $this->periodicRegistry = new PeriodicRegistry();
 
         $this->listener = new RegisterPeriodicMemoryTimerListener($this->periodicRegistry);
     }
 
     public function testThePeriodicMemoryTimerIsRegisteredWhenTheServerHasProfilingEnabled()
     {
-        $this->periodicRegistry->expects($this->once())
-            ->method('addPeriodic');
-
         $event = $this->createMock(ServerEvent::class);
         $event->expects($this->once())
             ->method('isProfiling')
             ->willReturn(true);
 
         $this->listener->registerPeriodicHandler($event);
+
+        $this->assertNotEmpty($this->periodicRegistry->getPeriodics());
     }
 
     public function testThePeriodicMemoryTimerIsNotRegisteredWhenTheServerHasProfilingDisabled()
     {
-        $this->periodicRegistry->expects($this->never())
-            ->method('addPeriodic');
-
         $event = $this->createMock(ServerEvent::class);
         $event->expects($this->once())
             ->method('isProfiling')
             ->willReturn(false);
 
         $this->listener->registerPeriodicHandler($event);
+
+        $this->assertEmpty($this->periodicRegistry->getPeriodics());
     }
 }

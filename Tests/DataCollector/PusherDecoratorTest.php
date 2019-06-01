@@ -31,7 +31,7 @@ class PusherDecoratorTest extends TestCase
      */
     private $decorator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
