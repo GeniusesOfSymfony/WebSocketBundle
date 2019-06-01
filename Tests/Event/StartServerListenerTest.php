@@ -13,12 +13,12 @@ use React\Socket\ServerInterface;
 class StartServerListenerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|PeriodicRegistry
+     * @var PeriodicRegistry
      */
     private $periodicRegistry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ServerPushHandlerRegistry
+     * @var ServerPushHandlerRegistry
      */
     private $serverPushHandlerRegistry;
 
@@ -31,8 +31,8 @@ class StartServerListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->periodicRegistry = $this->createMock(PeriodicRegistry::class);
-        $this->serverPushHandlerRegistry = $this->createMock(ServerPushHandlerRegistry::class);
+        $this->periodicRegistry = new PeriodicRegistry();
+        $this->serverPushHandlerRegistry = new ServerPushHandlerRegistry();
 
         $this->listener = new StartServerListener($this->periodicRegistry, $this->serverPushHandlerRegistry);
     }

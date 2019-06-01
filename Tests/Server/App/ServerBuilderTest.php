@@ -32,7 +32,7 @@ class ServerBuilderTest extends TestCase
     private $topicManager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|OriginRegistry
+     * @var OriginRegistry
      */
     private $originRegistry;
 
@@ -53,7 +53,7 @@ class ServerBuilderTest extends TestCase
         $this->loop = $this->createMock(LoopInterface::class);
         $this->wampApplication = $this->createMock(WampApplication::class);
         $this->topicManager = $this->createMock(TopicManager::class);
-        $this->originRegistry = $this->createMock(OriginRegistry::class);
+        $this->originRegistry = new OriginRegistry();
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->builder = new ServerBuilder(
@@ -112,10 +112,6 @@ class ServerBuilderTest extends TestCase
 
     public function testTheMessageStackIsBuiltWithTheOriginCheckDecorator()
     {
-        $this->originRegistry->expects($this->once())
-            ->method('getOrigins')
-            ->willReturn([]);
-
         $builder = new ServerBuilder(
             $this->loop,
             $this->wampApplication,

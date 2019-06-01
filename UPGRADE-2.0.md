@@ -46,6 +46,7 @@ gos_web_socket:
     - `findByRoles()` and `getAll()` will now return an empty array when no matching objects are found instead of boolean false
 - All bundle services have been explicitly marked public or private
 - Registering periodic timers and push handlers in the default websocket server (`Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer`) has been extracted to event listeners subscribed to the `gos_web_socket.server_launched` event
+- All registry classes are now final
 
 ## Removals
 

@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Registry;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class OriginRegistry
+final class OriginRegistry
 {
     /**
      * @var array

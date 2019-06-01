@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ServerRegistry
+final class ServerRegistry
 {
     /**
      * @var ServerInterface[]

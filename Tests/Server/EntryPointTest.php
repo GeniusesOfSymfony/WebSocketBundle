@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class EntryPointTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ServerRegistry
+     * @var ServerRegistry
      */
     private $serverRegistry;
 
@@ -23,7 +23,7 @@ class EntryPointTest extends TestCase
     {
         parent::setUp();
 
-        $this->serverRegistry = $this->createMock(ServerRegistry::class);
+        $this->serverRegistry = new ServerRegistry();
 
         $this->entryPoint = new EntryPoint($this->serverRegistry);
     }
@@ -37,12 +37,14 @@ class EntryPointTest extends TestCase
 
         $server = $this->createMock(ServerInterface::class);
         $server->expects($this->once())
+            ->method('getName')
+            ->willReturn($serverName);
+
+        $server->expects($this->once())
             ->method('launch')
             ->with($host, $port, $profile);
 
-        $this->serverRegistry->expects($this->once())
-            ->method('getServers')
-            ->willReturn([$serverName => $server]);
+        $this->serverRegistry->addServer($server);
 
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
@@ -56,18 +58,14 @@ class EntryPointTest extends TestCase
 
         $server = $this->createMock(ServerInterface::class);
         $server->expects($this->once())
+            ->method('getName')
+            ->willReturn($serverName);
+
+        $server->expects($this->once())
             ->method('launch')
             ->with($host, $port, $profile);
 
-        $this->serverRegistry->expects($this->once())
-            ->method('hasServer')
-            ->with($serverName)
-            ->willReturn(true);
-
-        $this->serverRegistry->expects($this->once())
-            ->method('getServer')
-            ->with($serverName)
-            ->willReturn($server);
+        $this->serverRegistry->addServer($server);
 
         $this->entryPoint->launch($serverName, $host, $port, $profile);
     }
@@ -82,10 +80,6 @@ class EntryPointTest extends TestCase
         $port = 8080;
         $profile = false;
 
-        $this->serverRegistry->expects($this->once())
-            ->method('getServers')
-            ->willReturn([]);
-
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
 
@@ -98,17 +92,12 @@ class EntryPointTest extends TestCase
         $port = 8080;
         $profile = false;
 
-        $this->serverRegistry->expects($this->once())
-            ->method('hasServer')
-            ->with('test')
-            ->willReturn(false);
+        $server = $this->createMock(ServerInterface::class);
+        $server->expects($this->once())
+            ->method('getName')
+            ->willReturn('default');
 
-        $this->serverRegistry->expects($this->once())
-            ->method('getServers')
-            ->willReturn(['default' => $this->createMock(ServerInterface::class)]);
-
-        $this->serverRegistry->expects($this->never())
-            ->method('getServer');
+        $this->serverRegistry->addServer($server);
 
         $this->entryPoint->launch('test', $host, $port, $profile);
     }

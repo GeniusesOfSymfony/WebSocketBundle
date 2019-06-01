@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
-class PusherRegistry
+final class PusherRegistry
 {
     /**
      * @var PusherInterface[]

@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 final class TopicDispatcherTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicRegistry
+     * @var TopicRegistry
      */
     private $topicRegistry;
 
@@ -59,7 +59,7 @@ final class TopicDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->topicRegistry      = $this->createMock(TopicRegistry::class);
+        $this->topicRegistry      = new TopicRegistry();
         $this->wampRouter         = $this->createMock(WampRouter::class);
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
         $this->topicManager       = $this->createMock(TopicManager::class);
@@ -102,15 +102,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -166,15 +158,7 @@ final class TopicDispatcherTest extends TestCase
             ->with('topic.handler')
             ->willReturn($this->createMock(Topic::class));
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -225,15 +209,7 @@ final class TopicDispatcherTest extends TestCase
             ->with('topic.handler')
             ->willReturn($this->createMock(Topic::class));
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -274,15 +250,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -328,15 +296,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -393,15 +353,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -461,15 +413,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -525,15 +469,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -586,11 +522,6 @@ final class TopicDispatcherTest extends TestCase
                 return $this->called;
             }
         };
-
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(false);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -649,15 +580,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 
@@ -717,15 +640,7 @@ final class TopicDispatcherTest extends TestCase
             }
         };
 
-        $this->topicRegistry->expects($this->once())
-            ->method('hasTopic')
-            ->with('topic.handler')
-            ->willReturn(true);
-
-        $this->topicRegistry->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($handler);
+        $this->topicRegistry->addTopic($handler);
 
         $route = new Route('hello/world', 'topic.handler');
 

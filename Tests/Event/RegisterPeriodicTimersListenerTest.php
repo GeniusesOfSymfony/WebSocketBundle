@@ -12,7 +12,7 @@ use React\EventLoop\LoopInterface;
 class RegisterPeriodicTimersListenerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|PeriodicRegistry
+     * @var PeriodicRegistry
      */
     private $periodicRegistry;
 
@@ -25,7 +25,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->periodicRegistry = $this->createMock(PeriodicRegistry::class);
+        $this->periodicRegistry = new PeriodicRegistry();
 
         $this->listener = new RegisterPeriodicTimersListener($this->periodicRegistry);
     }
@@ -37,9 +37,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
             ->method('getTimeout')
             ->willReturn(10);
 
-        $this->periodicRegistry->expects($this->once())
-            ->method('getPeriodics')
-            ->willReturn([$handler]);
+        $this->periodicRegistry->addPeriodic($handler);
 
         $loop = $this->createMock(LoopInterface::class);
         $loop->expects($this->once())
