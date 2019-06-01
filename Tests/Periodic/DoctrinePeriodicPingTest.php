@@ -19,12 +19,11 @@ class DoctrinePeriodicPingTest extends TestCase
         (new DoctrinePeriodicPing($connection))->tick();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The connection must be a subclass of Doctrine\DBAL\Connection or implement Doctrine\DBAL\Driver\PingableConnection, stdClass does not fulfill these requirements.
-     */
     public function testAValidObjectIsRequired()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The connection must be a subclass of Doctrine\DBAL\Connection or implement Doctrine\DBAL\Driver\PingableConnection, stdClass does not fulfill these requirements.');
+
         new DoctrinePeriodicPing(new \stdClass());
     }
 

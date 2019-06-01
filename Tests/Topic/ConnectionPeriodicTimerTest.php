@@ -25,7 +25,7 @@ class ConnectionPeriodicTimerTest extends TestCase
      */
     private $connectionPeriodicTimer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

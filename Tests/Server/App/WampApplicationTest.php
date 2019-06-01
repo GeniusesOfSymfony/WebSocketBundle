@@ -52,7 +52,7 @@ class WampApplicationTest extends TestCase
      */
     private $application;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

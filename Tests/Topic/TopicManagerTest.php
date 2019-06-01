@@ -26,7 +26,7 @@ class TopicManagerTest extends TestCase
      */
     private $conn;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->conn = $this->createMock(ConnectionInterface::class);
         $this->mock = $this->createMock(WampServerInterface::class);
@@ -237,7 +237,7 @@ class TopicManagerTest extends TestCase
 
     public function testGetSubProtocolsReturnsArray()
     {
-        $this->assertInternalType('array', $this->mngr->getSubProtocols());
+        $this->assertSame([], $this->mngr->getSubProtocols());
     }
 
     public function testGetSubProtocolsBubbles()

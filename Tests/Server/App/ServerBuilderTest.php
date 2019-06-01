@@ -46,7 +46,7 @@ class ServerBuilderTest extends TestCase
      */
     private $builder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

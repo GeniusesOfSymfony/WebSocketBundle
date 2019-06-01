@@ -19,7 +19,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
      */
     private $driver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!interface_exists(ItemInterface::class)) {
             $this->markTestSkipped('Test is skipped with symfony/cache <= 4.1');

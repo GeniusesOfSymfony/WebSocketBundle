@@ -33,7 +33,7 @@ class WampServerTest extends TestCase
      */
     private $conn;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->app = $this->createMock(WampServerInterface::class);
         $this->topicManager = $this->createMock(TopicManager::class);
@@ -109,8 +109,7 @@ class WampServerTest extends TestCase
 
     public function testGetSubProtocols()
     {
-        // todo: could expand on this
-        $this->assertInternalType('array', $this->serv->getSubProtocols());
+        $this->assertSame(['wamp'], $this->serv->getSubProtocols());
     }
 
     public function testConnectionClosesOnInvalidJson()

@@ -37,7 +37,7 @@ class ClientEventListenerTest extends TestCase
      */
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

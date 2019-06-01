@@ -2,7 +2,7 @@
 
 <phpunit colors="true" bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="WebSocketBundle for the Symfony Framework">
+        <testsuite name="GosWebSocketBundle Test Suite">
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>

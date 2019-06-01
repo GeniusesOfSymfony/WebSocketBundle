@@ -8,6 +8,7 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
@@ -54,7 +55,7 @@ final class TopicDispatcherTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -184,12 +185,11 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    /**
-     * @expectedException \Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException
-     * @expectedExceptionMessage The "topic.handler" topic does not support push notifications
-     */
     public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface()
     {
+        $this->expectException(PushUnsupportedException::class);
+        $this->expectExceptionMessage('The "topic.handler" topic does not support push notifications');
+
         $handler = new class implements TopicInterface
         {
             private $called = false;

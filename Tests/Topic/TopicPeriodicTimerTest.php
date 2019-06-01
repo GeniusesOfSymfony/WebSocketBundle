@@ -20,7 +20,7 @@ class TopicPeriodicTimerTest extends TestCase
      */
     private $topicPeriodicTimer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

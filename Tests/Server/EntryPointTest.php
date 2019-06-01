@@ -19,7 +19,7 @@ class EntryPointTest extends TestCase
      */
     private $entryPoint;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -72,12 +72,11 @@ class EntryPointTest extends TestCase
         $this->entryPoint->launch($serverName, $host, $port, $profile);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage There are no servers registered to launch.
-     */
     public function testAServerIsNotLaunchedWhenTheRegistryIsEmpty()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('There are no servers registered to launch.');
+
         $serverName = 'default';
         $host = 'localhost';
         $port = 8080;
@@ -90,12 +89,11 @@ class EntryPointTest extends TestCase
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unknown server test, available servers are [ default ]
-     */
     public function testAServerIsNotLaunchedWhenTheNamedServerIsNotFound()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unknown server test, available servers are [ default ]');
+
         $host = 'localhost';
         $port = 8080;
         $profile = false;

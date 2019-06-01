@@ -18,7 +18,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
      */
     private $driver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

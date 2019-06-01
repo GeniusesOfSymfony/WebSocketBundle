@@ -13,7 +13,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         );
     }
 
-    protected function registerCompilerPass(ContainerBuilder $container)
+    protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new DataCollectorCompilerPass());
     }

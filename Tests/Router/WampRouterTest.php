@@ -29,7 +29,7 @@ class WampRouterTest extends TestCase
      */
     private $router;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -59,11 +59,10 @@ class WampRouterTest extends TestCase
         $this->assertInstanceOf(WampRequest::class, $this->router->match($topic));
     }
 
-    /**
-     * @expectedException \Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException
-     */
     public function testAnExceptionIsThrownWhenATopicCannotBeRouted()
     {
+        $this->expectException(ResourceNotFoundException::class);
+
         $routeName = 'test';
         $route = $this->createMock(Route::class);
         $attributes = [];

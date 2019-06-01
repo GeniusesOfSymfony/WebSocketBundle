@@ -34,8 +34,8 @@
     "require-dev": {
         "doctrine/cache": "^1.8",
         "doctrine/dbal": "^2.9",
-        "matthiasnoback/symfony-dependency-injection-test": "^3.0",
-        "phpunit/phpunit": "^7.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.0",
+        "phpunit/phpunit": "^8.0",
         "predis/predis": "^1.1",
         "symfony/cache": "^3.4|^4.0",
         "symfony/monolog-bundle": "^3.0",

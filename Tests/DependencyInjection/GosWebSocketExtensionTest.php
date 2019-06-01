@@ -13,6 +13,7 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -33,12 +34,11 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('web_socket_server.client_storage.prefix');
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
-     * @expectedExceptionMessage The GosWebSocketBundle requires the GosPubSubRouterBundle.
-     */
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
+
         $this->container->setParameter(
             'kernel.bundles',
             [
@@ -281,7 +281,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
     }
 
-    protected function getContainerExtensions()
+    protected function getContainerExtensions(): array
     {
         return [
             new GosWebSocketExtension(),

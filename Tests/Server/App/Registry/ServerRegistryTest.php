@@ -14,7 +14,7 @@ class ServerRegistryTest extends TestCase
      */
     private $registry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -43,12 +43,11 @@ class ServerRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasServer($server->getName()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage A server named "main" has not been registered.
-     */
     public function testRetrievingAServerFailsIfTheNamedServerDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('A server named "main" has not been registered.');
+
         $server = new class implements ServerInterface
         {
             public function launch($host, $port, $profile)
