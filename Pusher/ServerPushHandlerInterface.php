@@ -19,16 +19,6 @@ interface ServerPushHandlerInterface
     public function setName($name);
 
     /**
-     * @param array $config
-     */
-    public function setConfig(array $config);
-
-    /**
-     * @return array
-     */
-    public function getConfig();
-
-    /**
      * @return string
      */
     public function getName();

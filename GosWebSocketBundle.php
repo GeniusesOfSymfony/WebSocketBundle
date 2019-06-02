@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PeriodicCompiler
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PusherCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RpcCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerCompilerPass;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerPushHandlerCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\TopicCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -27,6 +28,7 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new TopicCompilerPass())
             ->addCompilerPass(new PeriodicCompilerPass())
             ->addCompilerPass(new PusherCompilerPass())
+            ->addCompilerPass(new ServerPushHandlerCompilerPass())
             ->addCompilerPass(new DataCollectorCompilerPass())
         ;
     }

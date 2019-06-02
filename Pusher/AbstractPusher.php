@@ -10,9 +10,6 @@ abstract class AbstractPusher implements PusherInterface
     /** @var MessageSerializer */
     protected $serializer;
 
-    /** @var array */
-    private $config;
-
     /** @var WampRouter */
     protected $router;
 
@@ -47,22 +44,6 @@ abstract class AbstractPusher implements PusherInterface
     public function setRouter(WampRouter $router)
     {
         $this->router = $router;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
     }
 
     /**

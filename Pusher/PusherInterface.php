@@ -12,16 +12,6 @@ interface PusherInterface
      */
     public function push($data, $routeName, array $routeParameters = [], array $context = []);
 
-    /**
-     * @return array
-     */
-    public function getConfig();
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config);
-
     public function close();
 
     public function setName(string $name): void;

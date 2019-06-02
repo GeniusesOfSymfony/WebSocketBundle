@@ -58,22 +58,6 @@ class PusherDecorator implements PusherInterface
         $this->dataCollector->collectData($this->stopwatch->getEvent($eventName), $this->getName());
     }
 
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->pusher->getConfig();
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config)
-    {
-        $this->pusher->setConfig($config);
-    }
-
     public function close()
     {
         $this->pusher->close();
