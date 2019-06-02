@@ -271,7 +271,8 @@ services:
             - '@event_dispatcher'
             - ~ #AMQPConnection dependency is set by the container extension
             - ~ #AMQPQueue dependency is set by the container extension
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
@@ -283,7 +284,8 @@ services:
             - '@gos_web_socket.push_message.serializer'
             - '@event_dispatcher'
             - ~ #ZmqConnectionFactory dependency is set by the container extension
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
             - { name: gos_web_socket.push_handler, alias: zmq }
 

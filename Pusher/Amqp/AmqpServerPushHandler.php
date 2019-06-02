@@ -10,37 +10,50 @@ use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Component\ReactAMQP\Consumer;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpKernel\Log\NullLogger;
 
-class AmqpServerPushHandler extends AbstractServerPushHandler
+class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
-    /** @var PusherInterface  */
+    use LoggerAwareTrait;
+
+    /**
+     * @var PusherInterface
+     */
     protected $pusher;
 
-    /** @var  LoggerInterface */
-    protected $logger;
-
-    /** @var  WampRouter */
+    /**
+     * @var WampRouter
+     */
     protected $router;
 
-    /** @var  MessageSerializer */
+    /**
+     * @var MessageSerializer
+     */
     protected $serializer;
 
-    /** @var  Consumer */
+    /**
+     * @var Consumer
+     */
     protected $consumer;
 
-    /** @var  EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
-    /** @var  \AMQPConnection */
+    /**
+     * @var \AMQPConnection
+     */
     protected $connection;
 
-    /** @var  \AMQPQueue */
+    /**
+     * @var \AMQPQueue
+     */
     protected $queue;
 
     /**
@@ -48,7 +61,8 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
-     * @param LoggerInterface|null     $logger
+     * @param \AMQPConnection          $connection
+     * @param \AMQPQueue               $queue
      */
     public function __construct(
         PusherInterface $pusher,
@@ -56,8 +70,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
         \AMQPConnection $connection,
-        \AMQPQueue $queue,
-        LoggerInterface $logger = null
+        \AMQPQueue $queue
     ) {
         $this->pusher = $pusher;
         $this->router = $router;
@@ -65,7 +78,6 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
         $this->eventDispatcher = $eventDispatcher;
         $this->connection = $connection;
         $this->queue = $queue;
-        $this->logger = $logger === null ? new NullLogger() : $logger;
     }
 
     /**
@@ -77,32 +89,45 @@ class AmqpServerPushHandler extends AbstractServerPushHandler
         $this->connection->connect();
 
         $this->consumer = new Consumer($this->queue, $loop, 0.1, 10);
-        $this->consumer->on('consume', function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app) {
-            try {
-                /** @var MessageInterface $message */
-                $message = $this->serializer->deserialize($envelop->getBody());
-                $request = $this->router->match(new Topic($message->getTopic()));
-                $app->onPush($request, $message->getData(), $this->getName());
-                $queue->ack($envelop->getDeliveryTag());
-                $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($message, $this));
-            } catch (\Exception $e) {
-                $this->logger->error(
-                    'AMQP handler failed to ack message', [
-                        'exception' => $e,
-                        'message' => $envelop->getBody(),
-                    ]
-                );
+        $this->consumer->on(
+            'consume',
+            function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app) {
+                try {
+                    /** @var MessageInterface $message */
+                    $message = $this->serializer->deserialize($envelop->getBody());
+                    $request = $this->router->match(new Topic($message->getTopic()));
+                    $app->onPush($request, $message->getData(), $this->getName());
+                    $queue->ack($envelop->getDeliveryTag());
+                    $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($message, $this));
+                } catch (\Exception $e) {
+                    if ($this->logger) {
+                        $this->logger->error(
+                            'AMQP handler failed to ack message',
+                            [
+                                'exception' => $e,
+                                'message' => $envelop->getBody(),
+                            ]
+                        );
+                    }
 
-                $queue->reject($envelop->getDeliveryTag());
-                $this->eventDispatcher->dispatch(Events::PUSHER_FAIL, new PushHandlerEvent($envelop->getBody(), $this));
+                    $queue->reject($envelop->getDeliveryTag());
+                    $this->eventDispatcher->dispatch(
+                        Events::PUSHER_FAIL,
+                        new PushHandlerEvent($envelop->getBody(), $this)
+                    );
+                }
+
+                if ($this->logger) {
+                    $this->logger->info(
+                        sprintf(
+                            'AMQP transport listening on %s:%s',
+                            $this->connection->getHost(),
+                            $this->connection->getPort()
+                        )
+                    );
+                }
             }
-
-            $this->logger->info(sprintf(
-                'AMQP transport listening on %s:%s',
-                $this->connection->getHost(),
-                $this->connection->getPort()
-            ));
-        });
+        );
     }
 
     public function close()
