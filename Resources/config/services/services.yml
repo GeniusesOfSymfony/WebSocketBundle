@@ -161,8 +161,8 @@ services:
     gos_web_socket.memory_usage.periodic:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
         public: false
-        arguments:
-            - '@?monolog.logger.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.pnctl_event.listener:
         class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
