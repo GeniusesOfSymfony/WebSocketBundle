@@ -7,26 +7,29 @@ use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 class ZmqPusher extends AbstractPusher
 {
     /**
+     * @var \ZMQSocket
+     */
+    protected $connection;
+
+    /**
+     * @var ZmqConnectionFactory
+     */
+    protected $connectionFactory;
+
+    public function __construct(ZmqConnectionFactory $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
+
+    /**
      * @param string $data
      * @param array  $context
      */
     protected function doPush($data, array $context)
     {
         if (false === $this->isConnected()) {
-            if (!extension_loaded('zmq')) {
-                throw new \RuntimeException(sprintf(
-                    '%s pusher require %s php extension',
-                    get_class($this),
-                    $this->getName()
-                ));
-            }
-
-            $config = $this->getConfig();
-
-            $context = new \ZMQContext(1, $config['persistent']);
-            $this->connection = new \ZMQSocket($context, \ZMQ::SOCKET_PUSH);
-            $this->connection->setSockOpt(\ZMQ::SOCKOPT_LINGER, $config['linger']);
-            $this->connection->connect($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
+            $this->connection = $this->connectionFactory->createConnection();
+            $this->connection->connect($this->connectionFactory->buildConnectionDsn());
             $this->setConnected();
         }
 
@@ -39,8 +42,6 @@ class ZmqPusher extends AbstractPusher
             return;
         }
 
-        $config = $this->getConfig();
-
-        $this->connection->disconnect($config['host'] . ':' . $config['port']);
+        $this->connection->disconnect($this->connectionFactory->buildConnectionDsn());
     }
 }

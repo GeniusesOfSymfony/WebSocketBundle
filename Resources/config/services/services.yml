@@ -244,6 +244,7 @@ services:
     gos_web_socket.amqp.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
+        # arguments are set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: amqp }
 
@@ -257,6 +258,7 @@ services:
     gos_web_socket.zmq.pusher:
         parent: gos_web_socket.abstract.pusher
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        # arguments are set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: zmq }
 
@@ -280,6 +282,7 @@ services:
             - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.push_message.serializer'
             - '@event_dispatcher'
+            - ~ #ZmqConnectionFactory dependency is set by the container extension
             - '@?monolog.logger.websocket'
         tags:
             - { name: gos_web_socket.push_handler, alias: zmq }

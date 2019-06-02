@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
-use React\ZMQ\Context;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
@@ -23,26 +22,30 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
     /** @var PusherInterface  */
     protected $pusher;
 
-    /** @var  LoggerInterface */
+    /** @var LoggerInterface */
     protected $logger;
 
-    /** @var  WampRouter */
+    /** @var WampRouter */
     protected $router;
 
-    /** @var  MessageSerializer */
+    /** @var MessageSerializer */
     protected $serializer;
 
-    /** @var  Context */
+    /** @var SocketWrapper */
     protected $consumer;
 
-    /** @var  EventDispatcherInterface */
+    /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var ZmqConnectionFactory */
+    protected $connectionFactory;
+
     /**
-     * @param PusherInterface                $pusher
+     * @param PusherInterface          $pusher
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
+     * @param ZmqConnectionFactory     $connectionFactory
      * @param LoggerInterface|null     $logger
      */
     public function __construct(
@@ -50,12 +53,14 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
+        ZmqConnectionFactory $connectionFactory,
         LoggerInterface $logger = null
     ) {
         $this->pusher = $pusher;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
+        $this->connectionFactory = $connectionFactory;
         $this->logger = $logger === null ? new NullLogger() : $logger;
     }
 
@@ -65,23 +70,16 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
      */
     public function handle(LoopInterface $loop, WampServerInterface $app)
     {
-        $config = $this->getConfig();
-
-        $context = new Context($loop);
-
-        /* @var SocketWrapper $pull */
-        $this->consumer = $context->getSocket(\ZMQ::SOCKET_PULL);
+        $this->consumer = $this->connectionFactory->createWrappedConnection($loop, \ZMQ::SOCKET_PULL);
 
         $this->logger->info(sprintf(
-            'ZMQ transport listening on %s:%s',
-            $config['host'],
-            $config['port']
+            'ZMQ transport listening on %s',
+            $this->connectionFactory->buildConnectionDsn()
         ));
 
-        $this->consumer->bind($config['protocol'] . '://' . $config['host'] . ':' . $config['port']);
+        $this->consumer->bind($this->connectionFactory->buildConnectionDsn());
 
-        $this->consumer->on('message', function ($data) use ($app, $config) {
-
+        $this->consumer->on('message', function ($data) use ($app) {
             try {
                 /** @var MessageInterface $message */
                 $message = $this->serializer->deserialize($data);
@@ -91,17 +89,14 @@ class ZmqServerPushHandler extends AbstractServerPushHandler
                 $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($data, $this));
             } catch (\Exception $e) {
                 $this->logger->error(
-                    'zmq handler failed to ack message', [
-                        'exception_message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
+                    'ZMQ handler failed to ack message', [
+                        'exception' => $e,
                         'message' => $data,
                     ]
                 );
 
                 $this->eventDispatcher->dispatch(Events::PUSHER_FAIL, new PushHandlerEvent($data, $this));
             }
-
         });
     }
 

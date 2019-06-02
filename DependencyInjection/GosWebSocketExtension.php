@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
@@ -216,6 +217,28 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             $pushHandlerDef = $container->getDefinition('gos_web_socket.amqp.server_push_handler');
             $pushHandlerDef->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection'));
             $pushHandlerDef->setArgument(5, new Reference('gos_web_socket.amqp.pusher.queue'));
+        }
+
+        if (isset($configs['pushers']['zmq']) && $configs['pushers']['zmq']['enabled']) {
+            if (!extension_loaded('zmq')) {
+                throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
+            }
+
+            $connectionFactoryDef = new Definition(
+                ZmqConnectionFactory::class,
+                [
+                    $configs['pushers']['zmq'],
+                ]
+            );
+            $connectionFactoryDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.zmq.pusher.connection_factory', $connectionFactoryDef);
+
+            $pusherDef = $container->getDefinition('gos_web_socket.zmq.pusher');
+            $pusherDef->setArgument(0, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+
+            $pushHandlerDef = $container->getDefinition('gos_web_socket.zmq.server_push_handler');
+            $pushHandlerDef->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
         }
 
         if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
