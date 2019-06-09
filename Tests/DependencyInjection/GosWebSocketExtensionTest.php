@@ -345,6 +345,36 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection_factory');
     }
 
+    /**
+     * @requires extension zmq
+     */
+    public function testContainerIsLoadedWithZmqPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'zmq' => [
+                    'persistent' => true,
+                    'host' => 'localhost',
+                    'port' => 1337,
+                    'protocol' => 'tcp',
+                    'linger' => -1,
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.zmq.pusher.connection_factory');
+    }
+
     protected function getContainerExtensions(): array
     {
         return [
