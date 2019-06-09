@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WebsocketServerCommand extends Command
+final class WebsocketServerCommand extends Command
 {
     protected static $defaultName = 'gos:websocket:server';
 
