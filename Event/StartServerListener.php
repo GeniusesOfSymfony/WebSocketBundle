@@ -8,19 +8,19 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use React\EventLoop\TimerInterface;
 
-class StartServerListener implements LoggerAwareInterface
+final class StartServerListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var PeriodicRegistry
      */
-    protected $periodicRegistry;
+    private $periodicRegistry;
 
     /**
      * @var ServerPushHandlerRegistry
      */
-    protected $serverPushHandlerRegistry;
+    private $serverPushHandlerRegistry;
 
     public function __construct(
         PeriodicRegistry $periodicRegistry,

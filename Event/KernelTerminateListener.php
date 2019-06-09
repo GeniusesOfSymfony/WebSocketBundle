@@ -5,12 +5,12 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
-class KernelTerminateListener
+final class KernelTerminateListener
 {
     /**
      * @var PusherRegistry
      */
-    protected $pusherRegistry;
+    private $pusherRegistry;
 
     public function __construct(PusherRegistry $pusherRegistry)
     {

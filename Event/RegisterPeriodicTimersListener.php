@@ -7,7 +7,7 @@ use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class RegisterPeriodicTimersListener implements LoggerAwareInterface
+final class RegisterPeriodicTimersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 

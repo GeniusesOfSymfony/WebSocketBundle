@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
+final class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 

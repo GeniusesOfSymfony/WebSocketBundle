@@ -7,7 +7,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class RegisterPushHandlersListener implements LoggerAwareInterface
+final class RegisterPushHandlersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 

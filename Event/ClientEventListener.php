@@ -12,19 +12,19 @@ use Psr\Log\LoggerAwareTrait;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientEventListener implements LoggerAwareInterface
+final class ClientEventListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @param ClientStorageInterface
      */
-    protected $clientStorage;
+    private $clientStorage;
 
     /**
      * @var WebsocketAuthenticationProviderInterface
      */
-    protected $authenticationProvider;
+    private $authenticationProvider;
 
     public function __construct(
         ClientStorageInterface $clientStorage,
