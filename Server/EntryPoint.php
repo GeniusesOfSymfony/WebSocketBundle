@@ -7,12 +7,12 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class EntryPoint
+final class EntryPoint implements ServerLauncherInterface
 {
     /**
      * @var ServerRegistry
      */
-    protected $serverRegistry;
+    private $serverRegistry;
 
     public function __construct(ServerRegistry $serverRegistry)
     {

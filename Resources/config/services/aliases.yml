@@ -35,6 +35,9 @@ services:
     Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry:
         alias: gos_web_socket.topic.registry
 
+    Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface:
+        alias: gos_web_socket.entry_point
+
     Gos\Bundle\WebSocketBundle\Topic\TopicManager:
         alias: gos_web_socket.wamp.topic_manager
 

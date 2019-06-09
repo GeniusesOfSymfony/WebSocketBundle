@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Command;
 
 use Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand;
-use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
+use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -11,7 +11,7 @@ class WebsocketServerCommandTest extends TestCase
 {
     public function testCommandLaunchesWebSocketServer()
     {
-        $entryPoint = $this->createMock(EntryPoint::class);
+        $entryPoint = $this->createMock(ServerLauncherInterface::class);
         $entryPoint->expects($this->once())
             ->method('launch')
             ->with(null, 'localhost', 1337, false);
@@ -24,7 +24,7 @@ class WebsocketServerCommandTest extends TestCase
 
     public function testCommandLaunchesWebSocketServerWithConsoleArgumentsAndOptions()
     {
-        $entryPoint = $this->createMock(EntryPoint::class);
+        $entryPoint = $this->createMock(ServerLauncherInterface::class);
         $entryPoint->expects($this->once())
             ->method('launch')
             ->with('websocket', 'web.socket', 8443, true);

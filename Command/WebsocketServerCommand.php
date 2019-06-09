@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
+use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,25 +15,25 @@ final class WebsocketServerCommand extends Command
     protected static $defaultName = 'gos:websocket:server';
 
     /**
-     * @var EntryPoint
+     * @var ServerLauncherInterface
      */
-    protected $entryPoint;
+    private $serverLauncher;
 
     /**
      * @var string
      */
-    protected $host;
+    private $host;
 
     /**
      * @var int
      */
-    protected $port;
+    private $port;
 
-    public function __construct(EntryPoint $entryPoint, string $host, int $port)
+    public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port)
     {
         parent::__construct();
 
-        $this->entryPoint = $entryPoint;
+        $this->serverLauncher = $entryPoint;
         $this->port = $port;
         $this->host = $host;
     }
@@ -49,7 +50,7 @@ final class WebsocketServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $this->entryPoint->launch(
+        $this->serverLauncher->launch(
             $input->getArgument('name'),
             $input->getOption('host') === null ? $this->host : $input->getOption('host'),
             $input->getOption('port') === null ? $this->port : $input->getOption('port'),
