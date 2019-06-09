@@ -265,7 +265,6 @@ services:
     gos_web_socket.amqp.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
         arguments:
-            - '@gos_web_socket.amqp.pusher'
             - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.push_message.serializer'
             - '@event_dispatcher'
@@ -279,7 +278,6 @@ services:
     gos_web_socket.zmq.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:
-            - '@gos_web_socket.zmq.pusher'
             - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.push_message.serializer'
             - '@event_dispatcher'

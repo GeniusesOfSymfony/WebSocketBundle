@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Component\ReactAMQP\Consumer;
@@ -20,11 +19,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @var PusherInterface
-     */
-    protected $pusher;
 
     /**
      * @var WampRouter
@@ -57,7 +51,6 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
     protected $queue;
 
     /**
-     * @param AmqpPusher               $pusher
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
@@ -65,14 +58,12 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
      * @param \AMQPQueue               $queue
      */
     public function __construct(
-        PusherInterface $pusher,
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
         \AMQPConnection $connection,
         \AMQPQueue $queue
     ) {
-        $this->pusher = $pusher;
         $this->router = $router;
         $this->serializer = $serializer;
         $this->eventDispatcher = $eventDispatcher;

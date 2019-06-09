@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Psr\Log\LoggerAwareInterface;
@@ -20,11 +19,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @var PusherInterface
-     */
-    protected $pusher;
 
     /**
      * @var WampRouter
@@ -52,20 +46,17 @@ class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAw
     protected $connectionFactory;
 
     /**
-     * @param PusherInterface          $pusher
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
      * @param ZmqConnectionFactory     $connectionFactory
      */
     public function __construct(
-        PusherInterface $pusher,
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
         ZmqConnectionFactory $connectionFactory
     ) {
-        $this->pusher = $pusher;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
