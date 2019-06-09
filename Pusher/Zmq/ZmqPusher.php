@@ -22,10 +22,9 @@ class ZmqPusher extends AbstractPusher
     }
 
     /**
-     * @param string $data
-     * @param array  $context
+     * @param string|array $data
      */
-    protected function doPush($data, array $context)
+    protected function doPush($data, array $context): void
     {
         if (false === $this->isConnected()) {
             $this->connection = $this->connectionFactory->createConnection();

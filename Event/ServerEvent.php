@@ -30,18 +30,12 @@ class ServerEvent extends Event
         $this->profile = $profile;
     }
 
-    /**
-     * @return LoopInterface
-     */
-    public function getEventLoop()
+    public function getEventLoop(): LoopInterface
     {
         return $this->loop;
     }
 
-    /**
-     * @return ServerInterface
-     */
-    public function getServer()
+    public function getServer(): ServerInterface
     {
         return $this->server;
     }

@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\RPC\RpcResponse;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -17,22 +18,12 @@ class RpcDispatcher implements RpcDispatcherInterface
      */
     protected $rpcRegistry;
 
-    /**
-     * @param RpcRegistry $rpcRegistry
-     */
     public function __construct(RpcRegistry $rpcRegistry)
     {
         $this->rpcRegistry = $rpcRegistry;
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     * @param string              $id
-     * @param string              $topic
-     * @param WampRequest         $request
-     * @param array               $params
-     */
-    public function dispatch(ConnectionInterface $conn, $id, $topic, WampRequest $request, array $params)
+    public function dispatch(ConnectionInterface $conn, string $id, Topic $topic, WampRequest $request, array $params): void
     {
         $callback = $request->getRoute()->getCallback();
 

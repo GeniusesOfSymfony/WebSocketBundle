@@ -24,7 +24,7 @@ class RpcRegistryTest extends TestCase
     {
         $handler = new class implements RpcInterface
         {
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }
@@ -43,7 +43,7 @@ class RpcRegistryTest extends TestCase
 
         $handler = new class implements RpcInterface
         {
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }

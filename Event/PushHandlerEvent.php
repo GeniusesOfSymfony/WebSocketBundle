@@ -17,28 +17,18 @@ class PushHandlerEvent extends Event
      */
     protected $pushHandler;
 
-    /**
-     * @param string                     $message
-     * @param ServerPushHandlerInterface $pushHandler
-     */
-    public function __construct($message, ServerPushHandlerInterface $pushHandler)
+    public function __construct(string $message, ServerPushHandlerInterface $pushHandler)
     {
         $this->message = $message;
         $this->pushHandler = $pushHandler;
     }
 
-    /**
-     * @return string
-     */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * @return ServerPushHandlerInterface
-     */
-    public function getPushHandler()
+    public function getPushHandler(): ServerPushHandlerInterface
     {
         return $this->pushHandler;
     }

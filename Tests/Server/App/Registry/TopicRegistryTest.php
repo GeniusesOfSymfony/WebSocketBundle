@@ -42,7 +42,7 @@ class TopicRegistryTest extends TestCase
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }
@@ -76,7 +76,7 @@ class TopicRegistryTest extends TestCase
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }

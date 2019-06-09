@@ -30,40 +30,43 @@ class StartServerListener implements LoggerAwareInterface
         $this->serverPushHandlerRegistry = $serverPushHandlerRegistry;
     }
 
-    public function bindPnctlEvent(ServerEvent $event)
+    public function bindPnctlEvent(ServerEvent $event): void
     {
         if (defined('SIGINT')) {
             $loop = $event->getEventLoop();
             $server = $event->getServer();
 
-            $loop->addSignal(SIGINT, function () use ($server, $loop) {
-                if ($this->logger) {
-                    $this->logger->notice('Stopping server ...');
-                }
+            $loop->addSignal(
+                SIGINT,
+                function () use ($server, $loop): void {
+                    if ($this->logger) {
+                        $this->logger->notice('Stopping server ...');
+                    }
 
-                foreach ($this->serverPushHandlerRegistry->getPushers() as $handler) {
-                    $handler->close();
+                    foreach ($this->serverPushHandlerRegistry->getPushers() as $handler) {
+                        $handler->close();
+
+                        if ($this->logger) {
+                            $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
+                        }
+                    }
+
+                    $server->emit('end');
+                    $server->close();
+
+                    foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
+                        if ($periodic instanceof TimerInterface) {
+                            $loop->cancelTimer($periodic);
+                        }
+                    }
+
+                    $loop->stop();
 
                     if ($this->logger) {
-                        $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
+                        $this->logger->notice('Server stopped!');
                     }
                 }
-
-                $server->emit('end');
-                $server->close();
-
-                foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-                    if ($periodic instanceof TimerInterface) {
-                        $loop->cancelTimer($periodic);
-                    }
-                }
-
-                $loop->stop();
-
-                if ($this->logger) {
-                    $this->logger->notice('Server stopped!');
-                }
-            });
+            );
         }
     }
 }

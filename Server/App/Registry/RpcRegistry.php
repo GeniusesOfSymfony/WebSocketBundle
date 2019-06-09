@@ -14,22 +14,15 @@ final class RpcRegistry
      */
     protected $rpcHandlers = [];
 
-    /**
-     * @param RpcInterface $rpcHandler
-     */
-    public function addRpc(RpcInterface $rpcHandler)
+    public function addRpc(RpcInterface $rpcHandler): void
     {
         $this->rpcHandlers[$rpcHandler->getName()] = $rpcHandler;
     }
 
     /**
-     * @param string $name
-     *
-     * @return RpcInterface
-     *
      * @throws \InvalidArgumentException
      */
-    public function getRpc($name)
+    public function getRpc(string $name): RpcInterface
     {
         if (!$this->hasRpc($name)) {
             throw new \InvalidArgumentException(sprintf('A RPC handler named "%s" has not been registered.', $name));

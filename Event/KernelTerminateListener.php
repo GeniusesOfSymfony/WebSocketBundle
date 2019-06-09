@@ -17,10 +17,7 @@ class KernelTerminateListener
         $this->pusherRegistry = $pusherRegistry;
     }
 
-    /**
-     * @param PostResponseEvent $event
-     */
-    public function closeConnection(PostResponseEvent $event)
+    public function closeConnection(PostResponseEvent $event): void
     {
         foreach ($this->pusherRegistry->getPushers() as $pusher) {
             $pusher->close();

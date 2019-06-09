@@ -10,10 +10,10 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ClientEvent extends Event
 {
-    const CONNECTED = 1;
-    const DISCONNECTED = 2;
-    const ERROR = 3;
-    const REJECTED = 4;
+    public const CONNECTED = 1;
+    public const DISCONNECTED = 2;
+    public const ERROR = 3;
+    public const REJECTED = 4;
 
     /**
      * @var ConnectionInterface
@@ -25,28 +25,18 @@ class ClientEvent extends Event
      */
     protected $type;
 
-    /**
-     * @param ConnectionInterface $connection
-     * @param int                 $type
-     */
-    public function __construct(ConnectionInterface $connection, $type)
+    public function __construct(ConnectionInterface $connection, int $type)
     {
         $this->connection = $connection;
         $this->type = $type;
     }
 
-    /**
-     * @return ConnectionInterface
-     */
-    public function getConnection()
+    public function getConnection(): ConnectionInterface
     {
         return $this->connection;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }

@@ -9,10 +9,7 @@ trait TopicPeriodicTimerTrait
      */
     protected $periodicTimer;
 
-    /**
-     * @param TopicPeriodicTimer $periodicTimer
-     */
-    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer)
+    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer): void
     {
         $this->periodicTimer = $periodicTimer;
     }

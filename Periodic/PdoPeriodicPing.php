@@ -18,27 +18,16 @@ class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
     protected $pdo;
 
     /**
-     * @var int|float
+     * @var int
      */
     protected $timeout = 20;
 
-    /**
-     * @param \PDO $pdo
-     */
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    /**
-     * @param int|float $timeout
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-    }
-
-    public function tick()
+    public function tick(): void
     {
         // If connection is persistent we don't need to ping
         if (true === $this->pdo->getAttribute(\PDO::ATTR_PERSISTENT)) {
@@ -69,11 +58,13 @@ class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getTimeout()
+    public function getTimeout(): int
     {
         return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        $this->timeout = $timeout;
     }
 }

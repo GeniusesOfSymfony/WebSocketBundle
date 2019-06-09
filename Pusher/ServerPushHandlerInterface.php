@@ -7,21 +7,11 @@ use React\EventLoop\LoopInterface;
 
 interface ServerPushHandlerInterface
 {
-    /**
-     * @param LoopInterface       $loop
-     * @param WampServerInterface $app
-     */
-    public function handle(LoopInterface $loop, WampServerInterface $app);
+    public function handle(LoopInterface $loop, WampServerInterface $app): void;
 
-    /**
-     * @param string $name
-     */
-    public function setName($name);
+    public function close(): void;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setName(string $name): void;
 
-    public function close();
+    public function getName(): string;
 }

@@ -49,12 +49,6 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
      */
     protected $topicManager;
 
-    /**
-     * @param TopicRegistry        $topicRegistry
-     * @param WampRouter           $router
-     * @param TopicPeriodicTimer   $topicPeriodicTimer
-     * @param TopicManager         $topicManager
-     */
     public function __construct(
         TopicRegistry $topicRegistry,
         WampRouter $router,
@@ -67,63 +61,53 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
         $this->topicManager = $topicManager;
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     */
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
         $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
     }
 
-    /**
-     * @param WampRequest  $request
-     * @param array|string $data
-     * @param string       $provider
-     */
-    public function onPush(WampRequest $request, $data, $provider)
+    public function onPush(WampRequest $request, $data, string $provider)
     {
         $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     */
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
     {
         $this->dispatch(self::UNSUBSCRIPTION, $conn, $topic, $request);
     }
 
     /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param string              $event
-     * @param array               $exclude
-     * @param array               $eligible
+     * @param string|array $event
      */
-    public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
-    {
+    public function onPublish(
+        ConnectionInterface $conn,
+        Topic $topic,
+        WampRequest $request,
+        $event,
+        array $exclude,
+        array $eligible
+    ) {
         if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
             $topic->broadcast($event);
         }
     }
 
     /**
-     * @param string                   $calledMethod
-     * @param null|ConnectionInterface $conn
-     * @param Topic                    $topic
-     * @param WampRequest              $request
-     * @param null                     $payload
-     * @param null                     $exclude
-     * @param null                     $eligible
-     * @param null                     $provider
+     * @param string|array $payload
      *
-     * @return bool
      * @throws \Exception
      */
-    public function dispatch($calledMethod, ?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function dispatch(
+        $calledMethod,
+        ?ConnectionInterface $conn,
+        Topic $topic,
+        WampRequest $request,
+        $payload = null,
+        ?array $exclude = null,
+        ?array $eligible = null,
+        ?string $provider = null
+    ): bool
     {
         $callback = $request->getRoute()->getCallback();
 

@@ -16,26 +16,19 @@ class WampRouter implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
     protected $pubSubRouter;
 
-    /**
-     * @param Router $router
-     */
     public function __construct(RouterInterface $router)
     {
         $this->pubSubRouter = $router;
     }
 
     /**
-     * @param Topic $topic
-     *
-     * @return WampRequest
-     *
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException if the Topic cannot be routed
      */
-    public function match(Topic $topic)
+    public function match(Topic $topic): WampRequest
     {
         try {
             list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
@@ -65,21 +58,12 @@ class WampRouter implements LoggerAwareInterface
         }
     }
 
-    /**
-     * @param string $routeName
-     * @param array  $parameters
-     *
-     * @return string
-     */
-    public function generate($routeName, array $parameters = [])
+    public function generate(string $routeName, array $parameters = []): string
     {
         return $this->pubSubRouter->generate($routeName, $parameters);
     }
 
-    /**
-     * @return RouteCollection
-     */
-    public function getCollection()
+    public function getCollection(): RouteCollection
     {
         return $this->pubSubRouter->getCollection();
     }

@@ -25,12 +25,12 @@ class ServerRegistryTest extends TestCase
     {
         $server = new class implements ServerInterface
         {
-            public function launch($host, $port, $profile)
+            public function launch(string $host, int $port, bool $profile)
             {
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }
@@ -50,12 +50,12 @@ class ServerRegistryTest extends TestCase
 
         $server = new class implements ServerInterface
         {
-            public function launch($host, $port, $profile)
+            public function launch(string $host, int $port, bool $profile)
             {
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }

@@ -24,7 +24,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
      */
     protected $topicLookup = [];
 
-    public function setWampApplication(WampServerInterface $app)
+    public function setWampApplication(WampServerInterface $app): void
     {
         $this->app = $app;
     }
@@ -118,12 +118,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
         return [];
     }
 
-    /**
-     * @param string
-     *
-     * @return Topic
-     */
-    public function getTopic($topic)
+    public function getTopic(string $topic): Topic
     {
         if (!array_key_exists($topic, $this->topicLookup)) {
             $this->topicLookup[$topic] = new Topic($topic);
@@ -132,7 +127,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
         return $this->topicLookup[$topic];
     }
 
-    protected function cleanTopic(Topic $topic, ConnectionInterface $conn)
+    protected function cleanTopic(Topic $topic, ConnectionInterface $conn): void
     {
         if ($conn->WAMP->subscriptions->contains($topic)) {
             $conn->WAMP->subscriptions->detach($topic);

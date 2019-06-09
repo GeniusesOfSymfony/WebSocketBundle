@@ -45,12 +45,6 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
      */
     protected $connectionFactory;
 
-    /**
-     * @param WampRouter               $router
-     * @param MessageSerializer        $serializer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param AmqpConnectionFactory    $connectionFactory
-     */
     public function __construct(
         WampRouter $router,
         MessageSerializer $serializer,
@@ -63,11 +57,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
         $this->connectionFactory = $connectionFactory;
     }
 
-    /**
-     * @param LoopInterface       $loop
-     * @param WampServerInterface $app
-     */
-    public function handle(LoopInterface $loop, WampServerInterface $app)
+    public function handle(LoopInterface $loop, WampServerInterface $app): void
     {
         $connection = $this->connectionFactory->createConnection();
 
@@ -115,7 +105,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
         );
     }
 
-    public function close()
+    public function close(): void
     {
         if (null !== $this->consumer) {
             $this->consumer->emit('close_amqp_consumer');

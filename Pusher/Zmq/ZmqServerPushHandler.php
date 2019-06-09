@@ -45,12 +45,6 @@ class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAw
      */
     protected $connectionFactory;
 
-    /**
-     * @param WampRouter               $router
-     * @param MessageSerializer        $serializer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param ZmqConnectionFactory     $connectionFactory
-     */
     public function __construct(
         WampRouter $router,
         MessageSerializer $serializer,
@@ -63,11 +57,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAw
         $this->connectionFactory = $connectionFactory;
     }
 
-    /**
-     * @param LoopInterface       $loop
-     * @param WampServerInterface $app
-     */
-    public function handle(LoopInterface $loop, WampServerInterface $app)
+    public function handle(LoopInterface $loop, WampServerInterface $app): void
     {
         $this->consumer = $this->connectionFactory->createWrappedConnection($loop, \ZMQ::SOCKET_PULL);
 
@@ -109,7 +99,7 @@ class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAw
         );
     }
 
-    public function close()
+    public function close(): void
     {
         $this->consumer->close();
     }

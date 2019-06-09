@@ -13,9 +13,9 @@ class InMemoryDriver implements DriverInterface
     protected $elements = [];
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function fetch($id)
+    public function fetch(string $id)
     {
         if (!$this->contains($id)) {
             return false;
@@ -24,28 +24,22 @@ class InMemoryDriver implements DriverInterface
         return $this->elements[$id];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($id)
+    public function contains(string $id): bool
     {
         return isset($this->elements[$id]);
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed $data
      */
-    public function save($id, $data, $lifeTime = 0)
+    public function save(string $id, $data, int $lifeTime = 0): bool
     {
-        $this->elements[$id] = $data;         //Lifetime is not supported
+        $this->elements[$id] = $data;
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($id)
+    public function delete(string $id): bool
     {
         unset($this->elements[$id]);
 

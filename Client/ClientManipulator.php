@@ -21,12 +21,10 @@ class ClientManipulator implements ClientManipulatorInterface
      */
     protected $authenticationProvider;
 
-    /**
-     * @param ClientStorageInterface                   $clientStorage
-     * @param WebsocketAuthenticationProviderInterface $authenticationProvider
-     */
-    public function __construct(ClientStorageInterface $clientStorage, WebsocketAuthenticationProviderInterface $authenticationProvider)
-    {
+    public function __construct(
+        ClientStorageInterface $clientStorage,
+        WebsocketAuthenticationProviderInterface $authenticationProvider
+    ) {
         $this->clientStorage = $clientStorage;
         $this->authenticationProvider = $authenticationProvider;
     }
@@ -56,7 +54,7 @@ class ClientManipulator implements ClientManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function findByUsername(Topic $topic, $username)
+    public function findByUsername(Topic $topic, string $username)
     {
         /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
@@ -77,7 +75,7 @@ class ClientManipulator implements ClientManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getAll(Topic $topic, $anonymous = false): array
+    public function getAll(Topic $topic, bool $anonymous = false): array
     {
         $results = [];
 

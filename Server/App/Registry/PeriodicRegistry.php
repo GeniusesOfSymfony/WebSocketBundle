@@ -14,10 +14,7 @@ final class PeriodicRegistry
      */
     protected $periodics = [];
 
-    /**
-     * @param PeriodicInterface $periodic
-     */
-    public function addPeriodic(PeriodicInterface $periodic)
+    public function addPeriodic(PeriodicInterface $periodic): void
     {
         $this->periodics[] = $periodic;
     }
@@ -25,7 +22,7 @@ final class PeriodicRegistry
     /**
      * @return PeriodicInterface[]
      */
-    public function getPeriodics()
+    public function getPeriodics(): array
     {
         return $this->periodics;
     }

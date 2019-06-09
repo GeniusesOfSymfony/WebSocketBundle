@@ -52,7 +52,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
-            ->willReturn($clientIdentifier);
+            ->willReturn((string) $clientIdentifier);
 
         $this->clientStorage->expects($this->once())
             ->method('addClient');
@@ -81,7 +81,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
-            ->willReturn($clientIdentifier);
+            ->willReturn((string) $clientIdentifier);
 
         $this->clientStorage->expects($this->once())
             ->method('addClient');

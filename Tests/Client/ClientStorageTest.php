@@ -78,7 +78,7 @@ class ClientStorageTest extends TestCase
 
     public function testTheStorageIdentifierOfAConnectionIsRetrieved()
     {
-        $clientId = 42;
+        $clientId = '42';
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = $clientId;

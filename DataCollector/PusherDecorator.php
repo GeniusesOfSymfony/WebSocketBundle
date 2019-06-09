@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\DataCollector;
 
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
-use Gos\Bundle\PubSubRouterBundle\Request\PubSubRequest;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -15,13 +14,6 @@ class PusherDecorator implements PusherInterface
      * @var PusherInterface
      */
     protected $pusher;
-
-    /**
-     * Class name of the Pusher which was decorated
-     *
-     * @var string
-     */
-    protected $decoratedClass;
 
     /**
      * @var Stopwatch
@@ -37,17 +29,13 @@ class PusherDecorator implements PusherInterface
     {
         $this->pusher = $pusher;
         $this->stopwatch = $stopwatch;
-        $this->decoratedClass = get_class($pusher);
         $this->dataCollector = $dataCollector;
     }
 
     /**
      * @param string|array $data
-     * @param string       $routeName
-     * @param array        $routeParameters
-     * @param array        $context
      */
-    public function push($data, $routeName, array $routeParameters = [], array $context = [])
+    public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
     {
         $eventName = 'push.'.$this->getName();
 
@@ -58,7 +46,7 @@ class PusherDecorator implements PusherInterface
         $this->dataCollector->collectData($this->stopwatch->getEvent($eventName), $this->getName());
     }
 
-    public function close()
+    public function close(): void
     {
         $this->pusher->close();
     }
@@ -68,10 +56,7 @@ class PusherDecorator implements PusherInterface
         $this->pusher->setName($name);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->pusher->getName();
     }

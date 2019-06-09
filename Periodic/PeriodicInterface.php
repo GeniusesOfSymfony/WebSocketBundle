@@ -4,13 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Periodic;
 
 interface PeriodicInterface
 {
-    /**
-     * Function excecuted n timeout.
-     */
-    public function tick();
+    public function tick(): void;
 
-    /**
-     * @return int (in second)
-     */
-    public function getTimeout();
+    public function getTimeout(): int;
 }

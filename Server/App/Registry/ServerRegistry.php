@@ -14,15 +14,15 @@ final class ServerRegistry
      */
     protected $servers = [];
 
-    public function addServer(ServerInterface $server)
+    public function addServer(ServerInterface $server): void
     {
         $this->servers[$server->getName()] = $server;
     }
 
     /**
-     * @return ServerInterface
+     * @throws \InvalidArgumentException
      */
-    public function getServer($serverName)
+    public function getServer(string $serverName): ServerInterface
     {
         if (!$this->hasServer($serverName)) {
             throw new \InvalidArgumentException(sprintf('A server named "%s" has not been registered.', $serverName));
@@ -34,7 +34,7 @@ final class ServerRegistry
     /**
      * @return ServerInterface[]
      */
-    public function getServers()
+    public function getServers(): array
     {
         return $this->servers;
     }

@@ -40,7 +40,7 @@ class RpcDispatcherTest extends TestCase
         {
             private $called = false;
 
-            public function getName()
+            public function getName(): string
             {
                 return '@rpc.handler';
             }
@@ -84,7 +84,7 @@ class RpcDispatcherTest extends TestCase
         {
             private $called = false;
 
-            public function getName()
+            public function getName(): string
             {
                 return '@rpc.handler';
             }
@@ -126,7 +126,7 @@ class RpcDispatcherTest extends TestCase
         {
             private $called = false;
 
-            public function getName()
+            public function getName(): string
             {
                 return '@rpc.handler';
             }
@@ -168,7 +168,7 @@ class RpcDispatcherTest extends TestCase
     {
         $handler = new class implements RpcInterface
         {
-            public function getName()
+            public function getName(): string
             {
                 return '@rpc.handler';
             }
@@ -201,7 +201,7 @@ class RpcDispatcherTest extends TestCase
     {
         $handler = new class implements RpcInterface
         {
-            public function getName()
+            public function getName(): string
             {
                 return '@rpc.handler';
             }

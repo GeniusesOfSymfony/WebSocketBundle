@@ -6,18 +6,12 @@ interface PusherInterface
 {
     /**
      * @param string|array $data
-     * @param string       $routeName
-     * @param array        $routeParameters
-     * @param array        $context
      */
-    public function push($data, $routeName, array $routeParameters = [], array $context = []);
+    public function push($data, string $routeName, array $routeParameters = [], array $context = []): void;
 
-    public function close();
+    public function close(): void;
 
     public function setName(string $name): void;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 }

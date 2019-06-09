@@ -24,9 +24,6 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
      */
     protected $loop;
 
-    /**
-     * @param MessageComponentInterface $component
-     */
     public function __construct(MessageComponentInterface $component, LoopInterface $loop)
     {
         $this->decorated = $component;
@@ -34,8 +31,6 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     }
 
     /**
-     * @param ConnectionInterface $connection
-     *
      * @return mixed
      */
     public function onOpen(ConnectionInterface $connection)
@@ -46,8 +41,6 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     }
 
     /**
-     * @param ConnectionInterface $connection
-     *
      * @return mixed
      */
     public function onClose(ConnectionInterface $connection)
@@ -61,9 +54,6 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     }
 
     /**
-     * @param ConnectionInterface $connection
-     * @param \Exception          $e
-     *
      * @return mixed
      */
     public function onError(ConnectionInterface $connection, \Exception $e)
@@ -72,8 +62,7 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     }
 
     /**
-     * @param ConnectionInterface $connection
-     * @param string              $msg
+     * @param string $msg
      *
      * @return mixed
      */

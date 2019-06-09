@@ -9,20 +9,15 @@ final class ServerPushHandlerRegistry
      */
     protected $pushHandlers = [];
 
-    /**
-     * @param ServerPushHandlerInterface $handler
-     */
-    public function addPushHandler(ServerPushHandlerInterface $handler)
+    public function addPushHandler(ServerPushHandlerInterface $handler): void
     {
         $this->pushHandlers[$handler->getName()] = $handler;
     }
 
     /**
-     * @param $name
-     *
-     * @return ServerPushHandlerInterface
+     * @throws \InvalidArgumentException
      */
-    public function getPushHandler($name)
+    public function getPushHandler(string $name): ServerPushHandlerInterface
     {
         if (!$this->hasPushHandler($name)) {
             throw new \InvalidArgumentException(sprintf('A push handler named "%s" has not been registered.', $name));
@@ -34,7 +29,7 @@ final class ServerPushHandlerRegistry
     /**
      * @return ServerPushHandlerInterface[]
      */
-    public function getPushers()
+    public function getPushers(): array
     {
         return $this->pushHandlers;
     }

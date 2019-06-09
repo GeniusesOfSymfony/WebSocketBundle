@@ -8,49 +8,38 @@ use Ratchet\Wamp\Topic;
 
 interface TopicDispatcherInterface
 {
-    /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param WampRequest         $request
-     */
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request);
 
-    /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param WampRequest         $request
-     */
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request);
 
     /**
-     * @param ConnectionInterface $conn
-     * @param Topic               $topic
-     * @param WampRequest         $request
-     * @param string              $event
-     * @param array               $exclude
-     * @param array               $eligible
+     * @param string|array $event
      */
-    public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible);
+    public function onPublish(
+        ConnectionInterface $conn,
+        Topic $topic,
+        WampRequest $request,
+        $event,
+        array $exclude,
+        array $eligible
+    );
 
     /**
-     * @param WampRequest  $request
-     * @param array|string $data
-     * @param string       $provider
+     * @param string|array $data
      */
-    public function onPush(WampRequest $request, $data, $provider);
+    public function onPush(WampRequest $request, $data, string $provider);
 
     /**
-     * @param string                   $calledMethod
-     * @param null|ConnectionInterface $conn
-     * @param Topic                    $topic
-     * @param WampRequest              $request
-     * @param null                     $payload
-     * @param null                     $exclude
-     * @param null                     $eligible
-     * @param null                     $provider
-     *
-     * @return bool
-     * @throws \Exception
+     * @param string|array $payload
      */
-    public function dispatch($calledMethod, ?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null);
+    public function dispatch(
+        string $calledMethod,
+        ?ConnectionInterface $conn,
+        Topic $topic,
+        WampRequest $request,
+        $payload = null,
+        ?array $exclude = null,
+        ?array $eligible = null,
+        ?string $provider = null
+    ): bool;
 }

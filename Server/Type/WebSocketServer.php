@@ -34,11 +34,6 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
      */
     protected $eventDispatcher;
 
-    /**
-     * @param ServerBuilderInterface $serverBuilder
-     * @param LoopInterface $loop
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(
         ServerBuilderInterface $serverBuilder,
         LoopInterface $loop,
@@ -49,12 +44,7 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param bool $profile
-     *
-     * @throws \React\Socket\ConnectionException
-     */
-    public function launch($host, $port, $profile)
+    public function launch(string $host, int $port, bool $profile): void
     {
         if ($this->logger) {
             $this->logger->info('Starting web socket');
@@ -86,10 +76,7 @@ class WebSocketServer implements ServerInterface, LoggerAwareInterface
         $app->run();
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'Ratchet';
     }

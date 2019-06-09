@@ -15,18 +15,17 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
     use LoggerAwareTrait;
 
     /**
-     * @var array
-     */
-    protected $firewalls;
-
-    /**
      * @var ClientStorageInterface
      */
     protected $clientStorage;
 
     /**
-     * @param ClientStorageInterface $clientStorage
-     * @param array                  $firewalls
+     * @var string[]
+     */
+    protected $firewalls = [];
+
+    /**
+     * @param string[] $firewalls
      */
     public function __construct(ClientStorageInterface $clientStorage, array $firewalls = [])
     {
@@ -34,42 +33,7 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         $this->firewalls = $firewalls;
     }
 
-    /**
-     * @param ConnectionInterface $connection
-     *
-     * @return TokenInterface
-     */
-    protected function getToken(ConnectionInterface $connection)
-    {
-        $token = null;
-
-        if (isset($connection->Session) && $connection->Session) {
-            foreach ($this->firewalls as $firewall) {
-                if (false !== $serializedToken = $connection->Session->get('_security_'.$firewall, false)) {
-                    /** @var TokenInterface $token */
-                    $token = unserialize($serializedToken);
-
-                    break;
-                }
-            }
-        }
-
-        if (null === $token) {
-            $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
-        }
-
-        return $token;
-    }
-
-    /**
-     * @param ConnectionInterface $conn
-     *
-     * @return TokenInterface
-     *
-     * @throws StorageException
-     * @throws \Exception
-     */
-    public function authenticate(ConnectionInterface $conn)
+    public function authenticate(ConnectionInterface $conn): TokenInterface
     {
         if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
             if ($this->logger) {
@@ -103,6 +67,28 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
                 ),
                 $loggerContext
             );
+        }
+
+        return $token;
+    }
+
+    protected function getToken(ConnectionInterface $connection): TokenInterface
+    {
+        $token = null;
+
+        if (isset($connection->Session) && $connection->Session) {
+            foreach ($this->firewalls as $firewall) {
+                if (false !== $serializedToken = $connection->Session->get('_security_'.$firewall, false)) {
+                    /** @var TokenInterface $token */
+                    $token = unserialize($serializedToken);
+
+                    break;
+                }
+            }
+        }
+
+        if (null === $token) {
+            $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
         }
 
         return $token;

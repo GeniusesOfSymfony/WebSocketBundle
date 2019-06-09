@@ -9,15 +9,12 @@ class ClientErrorEvent extends ClientEvent
      */
     protected $e;
 
-    public function setException(\Exception $e)
+    public function setException(\Exception $e): void
     {
         $this->e = $e;
     }
 
-    /**
-     * @return \Exception
-     */
-    public function getException()
+    public function getException(): \Exception
     {
         return $this->e;
     }

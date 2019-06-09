@@ -23,10 +23,6 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
      */
     protected $loop;
 
-    /**
-     * @param ConnectionInterface $connection
-     * @param LoopInterface       $loop
-     */
     public function __construct(ConnectionInterface $connection, LoopInterface $loop)
     {
         $this->connection = $connection;
@@ -34,11 +30,9 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param $name
-     *
      * @return TimerInterface|bool
      */
-    public function getPeriodicTimer($name)
+    public function getPeriodicTimer(string $name)
     {
         if (!$this->isPeriodicTimerActive($name)) {
             return false;
@@ -47,40 +41,26 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         return $this->registry[$this->getTid($name)];
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function getTid($name)
+    protected function getTid(string $name): string
     {
         return sha1($this->connection->resourceId . $this->connection->WAMP->sessionId . $name);
     }
 
     /**
-     * @param string    $name
      * @param int|float $timeout
      * @param mixed     $callback
      */
-    public function addPeriodicTimer($name, $timeout, $callback)
+    public function addPeriodicTimer(string $name, $timeout, $callback): void
     {
         $this->registry[$this->getTid($name)] = $this->loop->addPeriodicTimer($timeout, $callback);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function isPeriodicTimerActive($name)
+    public function isPeriodicTimerActive(string $name): bool
     {
         return isset($this->registry[$this->getTid($name)]);
     }
 
-    /**
-     * @param string $name
-     */
-    public function cancelPeriodicTimer($tidOrname)
+    public function cancelPeriodicTimer(string $tidOrname): void
     {
         if (!isset($this->registry[$tidOrname])) {
             $tid = $this->getTid($tidOrname);

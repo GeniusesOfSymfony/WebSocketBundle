@@ -24,22 +24,12 @@ class PusherRegistryTest extends TestCase
     {
         $pusher = new class implements PusherInterface
         {
-            public function push($data, $routeName, array $routeParameters = [], array $context = [])
+            public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
             {
                 // no-op
             }
 
-            public function getConfig()
-            {
-                // no-op
-            }
-
-            public function setConfig($config)
-            {
-                // no-op
-            }
-
-            public function close()
+            public function close(): void
             {
                 // no-op
             }
@@ -49,7 +39,7 @@ class PusherRegistryTest extends TestCase
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }
@@ -69,22 +59,12 @@ class PusherRegistryTest extends TestCase
 
         $pusher = new class implements PusherInterface
         {
-            public function push($data, $routeName, array $routeParameters = [], array $context = [])
+            public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
             {
                 // no-op
             }
 
-            public function getConfig()
-            {
-                // no-op
-            }
-
-            public function setConfig($config)
-            {
-                // no-op
-            }
-
-            public function close()
+            public function close(): void
             {
                 // no-op
             }
@@ -94,7 +74,7 @@ class PusherRegistryTest extends TestCase
                 // no-op
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
             }

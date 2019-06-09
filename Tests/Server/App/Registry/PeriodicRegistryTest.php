@@ -24,12 +24,12 @@ class PeriodicRegistryTest extends TestCase
     {
         $periodic = new class implements PeriodicInterface
         {
-            public function tick()
+            public function tick(): void
             {
                 // no-op
             }
 
-            public function getTimeout()
+            public function getTimeout(): int
             {
                 return 10;
             }

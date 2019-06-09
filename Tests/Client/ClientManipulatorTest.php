@@ -49,7 +49,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
             ->with($connection)
-            ->willReturn($storageId);
+            ->willReturn((string) $storageId);
 
         $this->clientStorage->expects($this->once())
             ->method('getClient')
@@ -77,7 +77,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->exactly(2))
             ->method('getStorageId')
             ->with($connection)
-            ->willReturn($storageId);
+            ->willReturn((string) $storageId);
 
         $this->clientStorage->expects($this->at(1))
             ->method('getClient')
@@ -110,7 +110,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
             ->with($connection)
-            ->willReturn($storageId);
+            ->willReturn((string) $storageId);
 
         $this->clientStorage->expects($this->once())
             ->method('getClient')
@@ -139,7 +139,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
             ->with($connection)
-            ->willReturn($storageId);
+            ->willReturn((string) $storageId);
 
         $this->clientStorage->expects($this->once())
             ->method('getClient')
@@ -177,7 +177,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(0))
             ->method('getStorageId')
             ->with($connection1)
-            ->willReturn($storageId1);
+            ->willReturn((string) $storageId1);
 
         $this->clientStorage->expects($this->at(1))
             ->method('getClient')
@@ -187,7 +187,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(2))
             ->method('getStorageId')
             ->with($connection2)
-            ->willReturn($storageId2);
+            ->willReturn((string) $storageId2);
 
         $this->clientStorage->expects($this->at(3))
             ->method('getClient')
@@ -230,7 +230,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(0))
             ->method('getStorageId')
             ->with($connection1)
-            ->willReturn($storageId1);
+            ->willReturn((string) $storageId1);
 
         $this->clientStorage->expects($this->at(1))
             ->method('getClient')
@@ -240,7 +240,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(2))
             ->method('getStorageId')
             ->with($connection2)
-            ->willReturn($storageId2);
+            ->willReturn((string) $storageId2);
 
         $this->clientStorage->expects($this->at(3))
             ->method('getClient')
@@ -297,7 +297,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(0))
             ->method('getStorageId')
             ->with($connection1)
-            ->willReturn($storageId1);
+            ->willReturn((string) $storageId1);
 
         $this->clientStorage->expects($this->at(1))
             ->method('getClient')
@@ -307,7 +307,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(2))
             ->method('getStorageId')
             ->with($connection2)
-            ->willReturn($storageId2);
+            ->willReturn((string) $storageId2);
 
         $this->clientStorage->expects($this->at(3))
             ->method('getClient')
@@ -317,7 +317,7 @@ class ClientManipulatorTest extends TestCase
         $this->clientStorage->expects($this->at(4))
             ->method('getStorageId')
             ->with($connection3)
-            ->willReturn($storageId3);
+            ->willReturn((string) $storageId3);
 
         $this->clientStorage->expects($this->at(5))
             ->method('getClient')

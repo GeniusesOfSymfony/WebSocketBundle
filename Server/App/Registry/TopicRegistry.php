@@ -14,22 +14,15 @@ final class TopicRegistry
      */
     protected $topics = [];
 
-    /**
-     * @param TopicInterface $topic
-     */
-    public function addTopic(TopicInterface $topic)
+    public function addTopic(TopicInterface $topic): void
     {
         $this->topics[$topic->getName()] = $topic;
     }
 
     /**
-     * @param string $topicName
-     *
-     * @return TopicInterface
-     *
      * @throws \InvalidArgumentException
      */
-    public function getTopic($topicName)
+    public function getTopic(string $topicName): TopicInterface
     {
         if (!$this->hasTopic($topicName)) {
             throw new \InvalidArgumentException(sprintf('A topic named "%s" has not been registered.', $topicName));

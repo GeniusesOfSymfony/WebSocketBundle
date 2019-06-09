@@ -20,10 +20,7 @@ class Configuration implements ConfigurationInterface
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('gos_web_socket');
 

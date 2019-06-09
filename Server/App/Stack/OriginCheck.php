@@ -24,9 +24,7 @@ class OriginCheck extends BaseOriginCheck
     protected $eventDispatcher;
 
     /**
-     * @param EventDispatcherInterface  $eventDispatcher
-     * @param MessageComponentInterface $component
-     * @param string[]                  $allowed
+     * @param string[] $allowed
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

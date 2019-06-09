@@ -4,13 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 interface MessageInterface extends \JsonSerializable
 {
-    /**
-     * @return string
-     */
-    public function getTopic();
+    public function getTopic(): string;
 
-    /**
-     * @return array
-     */
-    public function getData();
+    public function getData(): array;
 }

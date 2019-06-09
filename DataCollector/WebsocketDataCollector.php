@@ -14,15 +14,12 @@ class WebsocketDataCollector extends DataCollector
      */
     protected $rawData = [];
 
-    /**
-     * Collects data for the given Request and Response.
-     */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
         $pusherCount = [];
         $totalPush = 0;
         $pusherDuration = [];
-        $durationTotal = 0;
+        $durationTotal = 0.0;
 
         foreach ($this->rawData as $pusherName => $durations) {
             if (!isset($pusherCount[$pusherName])) {
@@ -47,15 +44,12 @@ class WebsocketDataCollector extends DataCollector
     /**
      * @return int[]
      */
-    public function getPusherCounts()
+    public function getPusherCounts(): array
     {
         return $this->data['pusher_counts'];
     }
 
-    /**
-     * @return float
-     */
-    public function getTotalDuration()
+    public function getTotalDuration(): float
     {
         return $this->data['duration_total'];
     }
@@ -63,24 +57,17 @@ class WebsocketDataCollector extends DataCollector
     /**
      * @return float[]
      */
-    public function getDurations()
+    public function getDurations(): array
     {
         return $this->data['durations'];
     }
 
-    /**
-     * @return int
-     */
-    public function getPushTotal()
+    public function getPushTotal(): int
     {
         return $this->data['push_total'];
     }
 
-    /**
-     * @param StopwatchEvent $event
-     * @param string         $pusherName
-     */
-    public function collectData(StopwatchEvent $event, $pusherName)
+    public function collectData(StopwatchEvent $event, string $pusherName): void
     {
         if (!isset($this->rawData[$pusherName])) {
             $this->rawData[$pusherName] = [];
@@ -89,10 +76,7 @@ class WebsocketDataCollector extends DataCollector
         $this->rawData[$pusherName][] = $event->getDuration();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function reset()
+    public function reset(): void
     {
         $this->rawData = [];
 
@@ -104,10 +88,7 @@ class WebsocketDataCollector extends DataCollector
         ];
     }
 
-    /**
-     * Returns the name of the collector.
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'websocket';
     }

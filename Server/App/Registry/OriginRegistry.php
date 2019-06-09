@@ -8,7 +8,7 @@ namespace Gos\Bundle\WebSocketBundle\Server\App\Registry;
 final class OriginRegistry
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $origins;
 
@@ -17,18 +17,15 @@ final class OriginRegistry
         $this->origins = [];
     }
 
-    /**
-     * @param $origin
-     */
-    public function addOrigin($origin)
+    public function addOrigin(string $origin): void
     {
         $this->origins[] = $origin;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getOrigins()
+    public function getOrigins(): array
     {
         return $this->origins;
     }

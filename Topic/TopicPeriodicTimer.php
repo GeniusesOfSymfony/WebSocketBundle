@@ -17,21 +17,15 @@ class TopicPeriodicTimer implements \IteratorAggregate
      */
     protected $loop;
 
-    /**
-     * @param LoopInterface $loop
-     */
     public function __construct(LoopInterface $loop)
     {
         $this->loop = $loop;
     }
 
     /**
-     * @param TopicInterface $topic
-     * @param string         $name
-     *
      * @return TimerInterface|bool
      */
-    public function getAllPeriodicTimers(TopicInterface $topic, $name)
+    public function getAllPeriodicTimers(TopicInterface $topic, string $name)
     {
         if (!$this->isPeriodicTimerActive($topic, $name)) {
             return false;
@@ -43,11 +37,9 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @param TopicInterface $topic
-     *
      * @return TimerInterface[]
      */
-    public function getPeriodicTimers(TopicInterface $topic)
+    public function getPeriodicTimers(TopicInterface $topic): array
     {
         $namespace = $this->getTopicNamespace($topic);
 
@@ -55,12 +47,9 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @param TopicInterface $topic
-     * @param string         $name
-     * @param int|float      $timeout
-     * @param callable       $callback
+     * @param int|float $timeout
      */
-    public function addPeriodicTimer(TopicInterface $topic, $name, $timeout, $callback)
+    public function addPeriodicTimer(TopicInterface $topic, string $name, $timeout, callable $callback): void
     {
         $namespace = $this->getTopicNamespace($topic);
 
@@ -71,36 +60,21 @@ class TopicPeriodicTimer implements \IteratorAggregate
         $this->registry[$namespace][$name] = $this->loop->addPeriodicTimer($timeout, $callback);
     }
 
-    /**
-     * @param TopicInterface $topic
-     *
-     * @return bool
-     */
-    public function isRegistered(TopicInterface $topic)
+    public function isRegistered(TopicInterface $topic): bool
     {
         $namespace = $this->getTopicNamespace($topic);
 
         return isset($this->registry[$namespace]);
     }
 
-    /**
-     * @param TopicInterface $topic
-     * @param string         $name
-     *
-     * @return bool
-     */
-    public function isPeriodicTimerActive(TopicInterface $topic, $name)
+    public function isPeriodicTimerActive(TopicInterface $topic, string $name): bool
     {
         $namespace = $this->getTopicNamespace($topic);
 
         return isset($this->registry[$namespace][$name]);
     }
 
-    /**
-     * @param TopicInterface $topic
-     * @param string         $name
-     */
-    public function cancelPeriodicTimer(TopicInterface $topic, $name)
+    public function cancelPeriodicTimer(TopicInterface $topic, string $name): void
     {
         $namespace = $this->getTopicNamespace($topic);
 
@@ -113,10 +87,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
         unset($this->registry[$namespace][$name]);
     }
 
-    /**
-     * @param TopicInterface $topic
-     */
-    public function clearPeriodicTimer(TopicInterface $topic)
+    public function clearPeriodicTimer(TopicInterface $topic): void
     {
         $namespace = $this->getTopicNamespace($topic);
         unset($this->registry[$namespace]);

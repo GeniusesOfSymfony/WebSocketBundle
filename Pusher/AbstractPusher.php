@@ -7,57 +7,58 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 
 abstract class AbstractPusher implements PusherInterface
 {
-    /** @var MessageSerializer */
+    /**
+     * @var MessageSerializer
+     */
     protected $serializer;
 
-    /** @var WampRouter */
+    /**
+     * @var WampRouter
+     */
     protected $router;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $connected = false;
 
-    /** @var object */
-    protected $connection;
-
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $name;
 
     /**
-     * @param string $data
-     * @param array  $context
-     *
-     * @return string
+     * @param array|string $data
      */
-    abstract protected function doPush($data, array $context);
+    public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
+    {
+        $channel = $this->router->generate($routeName, $routeParameters);
+        $message = new Message($channel, $data);
+
+        $this->doPush($this->serializer->serialize($message), $context);
+    }
 
     /**
-     * @param MessageSerializer $serializer
+     * @param string|array $data
      */
-    public function setSerializer(MessageSerializer $serializer)
+    abstract protected function doPush($data, array $context): void;
+
+    public function setSerializer(MessageSerializer $serializer): void
     {
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param WampRouter $router
-     */
-    public function setRouter(WampRouter $router)
+    public function setRouter(WampRouter $router): void
     {
         $this->router = $router;
     }
 
-    /**
-     * @param bool|true $bool
-     */
-    public function setConnected($bool = true)
+    public function setConnected($bool = true): void
     {
         $this->connected = $bool;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -67,27 +68,8 @@ abstract class AbstractPusher implements PusherInterface
         $this->name = $name;
     }
 
-    /**
-     * @return bool
-     */
-    public function isConnected()
+    public function isConnected(): bool
     {
         return $this->connected;
-    }
-
-    /**
-     * @param array|string $data
-     * @param string       $routeName
-     * @param array[]      $routeParameters
-     * @param array        $context
-     *
-     * @return string|\Symfony\Component\Serializer\Encoder\scalar
-     */
-    public function push($data, $routeName, array $routeParameters = array(), array $context = [])
-    {
-        $channel = $this->router->generate($routeName, $routeParameters);
-        $message = new Message($channel, $data);
-
-        return $this->doPush($this->serializer->serialize($message), $context);
     }
 }

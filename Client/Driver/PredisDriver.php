@@ -15,24 +15,20 @@ class PredisDriver implements DriverInterface
     protected $client;
 
     /**
-     * string $prefix
+     * @var string
      */
     protected $prefix;
 
-    /**
-     * @param ClientInterface $client
-     * @param string          $prefix
-     */
-    public function __construct(ClientInterface $client, $prefix = '')
+    public function __construct(ClientInterface $client, string $prefix = '')
     {
         $this->client = $client;
         $this->prefix = $prefix !== '' ? $prefix . ':' : '';
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function fetch($id)
+    public function fetch(string $id)
     {
         $result = $this->client->get($this->prefix . $id);
 
@@ -43,18 +39,15 @@ class PredisDriver implements DriverInterface
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($id)
+    public function contains(string $id): bool
     {
         return $this->client->exists($this->prefix . $id);
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed $data
      */
-    public function save($id, $data, $lifeTime = 0)
+    public function save(string $id, $data, int $lifeTime = 0): bool
     {
         if ($lifeTime > 0) {
             $response = $this->client->setex($this->prefix . $id, $lifeTime, $data);
@@ -62,13 +55,10 @@ class PredisDriver implements DriverInterface
             $response = $this->client->set($this->prefix . $id, $data);
         }
 
-        return $response === true || $response == 'OK';
+        return $response === true || $response === 'OK';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($id)
+    public function delete(string $id): bool
     {
         return $this->client->del($this->prefix . $id) > 0;
     }

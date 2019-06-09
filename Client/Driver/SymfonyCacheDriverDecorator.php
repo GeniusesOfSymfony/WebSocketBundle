@@ -11,20 +11,15 @@ class SymfonyCacheDriverDecorator implements DriverInterface
      */
     protected $cache;
 
-    /**
-     * @param AdapterInterface $cache
-     */
     public function __construct(AdapterInterface $cache)
     {
         $this->cache = $cache;
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      */
-    public function fetch($id)
+    public function fetch(string $id)
     {
         $item = $this->cache->getItem((string) $id);
 
@@ -35,24 +30,12 @@ class SymfonyCacheDriverDecorator implements DriverInterface
         return $item->get();
     }
 
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function contains($id)
+    public function contains(string $id): bool
     {
         return $this->cache->hasItem((string) $id);
     }
 
-    /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return mixed
-     */
-    public function save($id, $data, $lifeTime = 0)
+    public function save(string $id, $data, int $lifeTime = 0): bool
     {
         $item = $this->cache->getItem((string) $id);
         $item->set($data);
@@ -64,14 +47,7 @@ class SymfonyCacheDriverDecorator implements DriverInterface
         return $this->cache->save($item);
     }
 
-    /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
-     */
-    public function delete($id)
+    public function delete(string $id): bool
     {
         return $this->cache->deleteItem((string) $id);
     }

@@ -91,7 +91,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -137,12 +137,12 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPush(Topic $topic, WampRequest $request, $data, $provider)
+            public function onPush(Topic $topic, WampRequest $request, $data, $provider): void
             {
                 $this->called = true;
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -193,7 +193,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -239,7 +239,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -285,7 +285,7 @@ final class TopicDispatcherTest extends TestCase
                 $this->called = true;
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -317,7 +317,7 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $secured = false;
 
-            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, ?string $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
             {
                 $this->secured = true;
             }
@@ -337,7 +337,7 @@ final class TopicDispatcherTest extends TestCase
                 $this->called = true;
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -392,12 +392,12 @@ final class TopicDispatcherTest extends TestCase
                 $this->called = true;
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
 
-            public function registerPeriodicTimer(Topic $topic)
+            public function registerPeriodicTimer(Topic $topic): void
             {
                 $this->registered = true;
             }
@@ -458,7 +458,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -512,7 +512,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -544,7 +544,7 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $secured = false;
 
-            public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, ?string $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
             {
                 throw new FirewallRejectionException('Access denied');
             }
@@ -564,7 +564,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }
@@ -629,7 +629,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \Exception('Testing.');
             }
 
-            public function getName()
+            public function getName(): string
             {
                 return 'topic.handler';
             }

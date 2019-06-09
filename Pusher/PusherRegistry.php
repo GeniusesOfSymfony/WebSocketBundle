@@ -9,20 +9,15 @@ final class PusherRegistry
      */
     protected $pushers = [];
 
-    /**
-     * @param PusherInterface $pusher
-     */
-    public function addPusher(PusherInterface $pusher)
+    public function addPusher(PusherInterface $pusher): void
     {
         $this->pushers[$pusher->getName()] = $pusher;
     }
 
     /**
-     * @param $name
-     *
-     * @return PusherInterface
+     * @throws \InvalidArgumentException
      */
-    public function getPusher($name)
+    public function getPusher(string $name): PusherInterface
     {
         if (!$this->hasPusher($name)) {
             throw new \InvalidArgumentException(sprintf('A pusher named "%s" has not been registered.', $name));
@@ -31,10 +26,7 @@ final class PusherRegistry
         return $this->pushers[$name];
     }
 
-    /**
-     * @return PusherInterface[]
-     */
-    public function getPushers()
+    public function getPushers(): array
     {
         return $this->pushers;
     }

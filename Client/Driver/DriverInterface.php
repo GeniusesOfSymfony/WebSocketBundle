@@ -5,34 +5,16 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 interface DriverInterface
 {
     /**
-     * @param string $id
-     *
      * @return mixed
      */
-    public function fetch($id);
+    public function fetch(string $id);
+
+    public function contains(string $id): bool;
 
     /**
-     * @param $id
-     *
-     * @return bool
+     * @param mixed $data
      */
-    public function contains($id);
+    public function save(string $id, $data, int $lifeTime = 0): bool;
 
-    /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return bool True if saved, false otherwise
-     */
-    public function save($id, $data, $lifeTime = 0);
-
-    /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
-     */
-    public function delete($id);
+    public function delete(string $id): bool;
 }

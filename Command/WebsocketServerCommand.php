@@ -37,7 +37,7 @@ class WebsocketServerCommand extends Command
         $this->host = $host;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Starts the websocket server')
@@ -47,7 +47,7 @@ class WebsocketServerCommand extends Command
             ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'The port of the websocket server');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->entryPoint->launch(
             $input->getArgument('name'),

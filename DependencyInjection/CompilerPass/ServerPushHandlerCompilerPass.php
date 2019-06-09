@@ -14,7 +14,7 @@ class ServerPushHandlerCompilerPass implements CompilerPassInterface
     /**
      * @param ContainerBuilder $container
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if ($container->hasDefinition('gos_web_socket.server_push_handler.registry')) {
             $registryDefinition = $container->getDefinition('gos_web_socket.server_push_handler.registry');

@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -17,15 +16,11 @@ class ClientRejectedEvent extends Event
     protected $origin;
 
     /**
-     * @var Request
+     * @var RequestInterface|null
      */
     protected $request;
 
-    /**
-     * @param string           $origin
-     * @param RequestInterface $request
-     */
-    public function __construct($origin, RequestInterface $request = null)
+    public function __construct(string $origin, ?RequestInterface $request = null)
     {
         $this->origin = $origin;
         $this->request = $request;
@@ -34,23 +29,17 @@ class ClientRejectedEvent extends Event
     /**
      * @return string
      */
-    public function getOrigin()
+    public function getOrigin(): string
     {
         return $this->origin;
     }
 
-    /**
-     * @return RequestInterface
-     */
-    public function getRequest()
+    public function getRequest(): ?RequestInterface
     {
         return $this->request;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasRequest()
+    public function hasRequest(): bool
     {
         return null !== $this->request;
     }

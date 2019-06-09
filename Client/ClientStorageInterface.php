@@ -9,46 +9,21 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface ClientStorageInterface
 {
-    /**
-     * @param DriverInterface $driver
-     */
-    public function setStorageDriver(DriverInterface $driver);
+    public function setStorageDriver(DriverInterface $driver): void;
 
     /**
-     * @param string $identifier
-     *
-     * @return TokenInterface
-     *
      * @throws StorageException
      */
-    public function getClient($identifier): TokenInterface;
+    public function getClient(string $identifier): TokenInterface;
+
+    public function getStorageId(ConnectionInterface $conn): string;
 
     /**
-     * @param ConnectionInterface $conn
-     *
-     * @return string
-     */
-    public function getStorageId(ConnectionInterface $conn);
-
-    /**
-     * @param string         $identifier
-     * @param TokenInterface $token
-     *
      * @throws StorageException
      */
-    public function addClient($identifier, TokenInterface $token);
+    public function addClient(string $identifier, TokenInterface $token): void;
 
-    /**
-     * @param string $identifier
-     *
-     * @return bool
-     */
-    public function hasClient($identifier);
+    public function hasClient(string $identifier): bool;
 
-    /**
-     * @param string $identifier
-     *
-     * @return bool
-     */
-    public function removeClient($identifier);
+    public function removeClient(string $identifier): bool;
 }

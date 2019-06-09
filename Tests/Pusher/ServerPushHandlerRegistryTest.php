@@ -26,34 +26,24 @@ class ServerPushHandlerRegistryTest extends TestCase
     {
         $handler = new class implements ServerPushHandlerInterface
         {
-            public function handle(LoopInterface $loop, WampServerInterface $app)
+            public function handle(LoopInterface $loop, WampServerInterface $app): void
             {
                 // no-op
             }
 
-            public function setName($name)
+            public function close(): void
             {
                 // no-op
             }
 
-            public function setConfig($config)
+            public function setName(string $name): void
             {
                 // no-op
             }
 
-            public function getConfig()
-            {
-                // no-op
-            }
-
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
-            }
-
-            public function close()
-            {
-                // no-op
             }
         };
 
@@ -71,34 +61,24 @@ class ServerPushHandlerRegistryTest extends TestCase
 
         $handler = new class implements ServerPushHandlerInterface
         {
-            public function handle(LoopInterface $loop, WampServerInterface $app)
+            public function handle(LoopInterface $loop, WampServerInterface $app): void
             {
                 // no-op
             }
 
-            public function setName($name)
+            public function close(): void
             {
                 // no-op
             }
 
-            public function setConfig($config)
+            public function setName(string $name): void
             {
                 // no-op
             }
 
-            public function getConfig()
-            {
-                // no-op
-            }
-
-            public function getName()
+            public function getName(): string
             {
                 return 'test';
-            }
-
-            public function close()
-            {
-                // no-op
             }
         };
 

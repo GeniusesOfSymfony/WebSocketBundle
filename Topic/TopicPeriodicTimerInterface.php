@@ -6,15 +6,7 @@ use Ratchet\Wamp\Topic;
 
 interface TopicPeriodicTimerInterface
 {
-    /**
-     * @param Topic $topic
-     *
-     * @return mixed
-     */
-    public function registerPeriodicTimer(Topic $topic);
+    public function registerPeriodicTimer(Topic $topic): void;
 
-    /**
-     * @param TopicPeriodicTimer $periodicTimer
-     */
-    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer);
+    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer): void;
 }

@@ -20,12 +20,9 @@ class EntryPoint
     }
 
     /**
-     * @param string $serverName
-     * @param string $host
-     * @param int    $port
-     * @param bool   $profile
+     * @throws \RuntimeException
      */
-    public function launch($serverName, $host, $port, $profile)
+    public function launch(?string $serverName, string $host, int $port, bool $profile): void
     {
         if (null === $serverName) {
             $servers = $this->serverRegistry->getServers();

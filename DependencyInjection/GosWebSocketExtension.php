@@ -32,7 +32,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader(
             $container,
@@ -252,11 +252,9 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
     }
 
     /**
-     * @param ContainerBuilder $container
-     *
-     * @throws \Exception
+     * @throws RuntimeException
      */
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 

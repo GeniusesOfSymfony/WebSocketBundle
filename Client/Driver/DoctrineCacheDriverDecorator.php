@@ -14,54 +14,33 @@ class DoctrineCacheDriverDecorator implements DriverInterface
      */
     protected $cacheProvider;
 
-    /**
-     * @param Cache $cacheProvider
-     */
     public function __construct(Cache $cacheProvider)
     {
         $this->cacheProvider = $cacheProvider;
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      */
-    public function fetch($id)
+    public function fetch(string $id)
     {
         return $this->cacheProvider->fetch($id);
     }
 
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function contains($id)
+    public function contains(string $id): bool
     {
         return $this->cacheProvider->contains($id);
     }
 
     /**
-     * @param string $id
-     * @param mixed  $data
-     * @param int    $lifeTime
-     *
-     * @return mixed
+     * @param mixed $data
      */
-    public function save($id, $data, $lifeTime = 0)
+    public function save(string $id, $data, int $lifeTime = 0): bool
     {
         return $this->cacheProvider->save($id, $data, $lifeTime);
     }
 
-    /**
-     * Deletes a cache entry.
-     *
-     * @param string $id The cache id.
-     *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
-     */
-    public function delete($id)
+    public function delete(string $id): bool
     {
         return $this->cacheProvider->delete($id);
     }

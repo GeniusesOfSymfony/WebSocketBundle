@@ -49,13 +49,6 @@ class WampApplication implements WampServerInterface, LoggerAwareInterface
      */
     protected $wampRouter;
 
-    /**
-     * @param RpcDispatcherInterface   $rpcDispatcher
-     * @param TopicDispatcherInterface $topicDispatcher
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param ClientStorageInterface   $clientStorage
-     * @param WampRouter               $wampRouter
-     */
     public function __construct(
         RpcDispatcherInterface $rpcDispatcher,
         TopicDispatcherInterface $topicDispatcher,

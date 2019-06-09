@@ -18,7 +18,7 @@ class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterface
     protected $connection;
 
     /**
-     * @var int|float
+     * @var int
      */
     protected $timeout = 20;
 
@@ -41,15 +41,7 @@ class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterface
         $this->connection = $connection;
     }
 
-    /**
-     * @param int|float $timeout
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-    }
-
-    public function tick()
+    public function tick(): void
     {
         try {
             $startTime = microtime(true);
@@ -75,11 +67,13 @@ class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterface
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getTimeout()
+    public function getTimeout(): int
     {
         return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        $this->timeout = $timeout;
     }
 }

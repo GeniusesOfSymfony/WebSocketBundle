@@ -14,7 +14,7 @@ class PeriodicCompilerPass implements CompilerPassInterface
     /**
      * @param ContainerBuilder $container
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('gos_web_socket.periodic.registry')) {
             return;

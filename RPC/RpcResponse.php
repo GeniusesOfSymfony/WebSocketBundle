@@ -13,37 +13,30 @@ class RpcResponse
     protected $data;
 
     /**
-     * @param mixed  $data
-     * @param string $prefix
+     * @param mixed $data
      */
-    public function __construct($data, $prefix = 'result')
+    public function __construct($data, string $prefix = 'result')
     {
         $this->data[$prefix] = $data;
     }
 
     /**
-     * @param string $key
-     * @param mixed  $data
-     * @param string $prefix
+     * @param mixed $data
      */
-    public function setData($key, $data, $prefix = 'result')
+    public function setData(string $key, $data, string $prefix = 'result'): void
     {
         $this->data[$prefix][$key] = $data;
     }
 
     /**
      * @param mixed  $data
-     * @param string $prefix
      */
-    public function addData($data, $prefix = 'result')
+    public function addData($data, string $prefix = 'result'): void
     {
         $this->data[$prefix] = array_combine($this->data[$prefix], $data);
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

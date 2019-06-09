@@ -27,10 +27,7 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
      */
     protected $ttl;
 
-    /**
-     * @param int $ttl
-     */
-    public function __construct($ttl)
+    public function __construct(int $ttl)
     {
         $this->ttl = $ttl;
     }
@@ -50,18 +47,12 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
         return $this->driver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStorageDriver(DriverInterface $driver)
+    public function setStorageDriver(DriverInterface $driver): void
     {
         $this->driver = $driver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getClient($identifier): TokenInterface
+    public function getClient(string $identifier): TokenInterface
     {
         try {
             $result = $this->getStorageDriver()->fetch($identifier);
@@ -80,18 +71,12 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
         return unserialize($result);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStorageId(ConnectionInterface $conn)
+    public function getStorageId(ConnectionInterface $conn): string
     {
         return $conn->resourceId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addClient($identifier, TokenInterface $token)
+    public function addClient(string $identifier, TokenInterface $token): void
     {
         $serializedUser = serialize($token);
 
@@ -115,10 +100,7 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hasClient($identifier)
+    public function hasClient(string $identifier): bool
     {
         try {
             return $this->getStorageDriver()->contains($identifier);
@@ -127,10 +109,7 @@ class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function removeClient($identifier)
+    public function removeClient(string $identifier): bool
     {
         if ($this->logger) {
             $this->logger->debug('REMOVE CLIENT '.$identifier);
