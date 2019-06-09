@@ -22,7 +22,7 @@ class PusherDecoratorTest extends TestCase
     private $stopwatch;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WebsocketDataCollector
+     * @var WebsocketDataCollector
      */
     private $collector;
 
@@ -37,7 +37,7 @@ class PusherDecoratorTest extends TestCase
 
         $this->pusher = $this->createMock(PusherInterface::class);
         $this->stopwatch = $this->createMock(Stopwatch::class);
-        $this->collector = $this->createMock(WebsocketDataCollector::class);
+        $this->collector = new WebsocketDataCollector();
 
         $this->decorator = new PusherDecorator($this->pusher, $this->stopwatch, $this->collector);
     }
@@ -71,10 +71,6 @@ class PusherDecoratorTest extends TestCase
             ->method('getEvent')
             ->with('push.test')
             ->willReturn($stopwatchEvent);
-
-        $this->collector->expects($this->once())
-            ->method('collectData')
-            ->with($stopwatchEvent, 'test');
 
         $this->decorator->push($data, $routeName, $routeParameters, $context);
     }

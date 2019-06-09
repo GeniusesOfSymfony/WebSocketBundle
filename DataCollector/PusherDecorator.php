@@ -8,22 +8,22 @@ use Symfony\Component\Stopwatch\Stopwatch;
 /**
  * Pusher decorating another Pusher to collect data
  */
-class PusherDecorator implements PusherInterface
+final class PusherDecorator implements PusherInterface
 {
     /**
      * @var PusherInterface
      */
-    protected $pusher;
+    private $pusher;
 
     /**
      * @var Stopwatch
      */
-    protected $stopwatch;
+    private $stopwatch;
 
     /**
      * @var WebsocketDataCollector
      */
-    protected $dataCollector;
+    private $dataCollector;
 
     public function __construct(PusherInterface $pusher, Stopwatch $stopwatch, WebsocketDataCollector $dataCollector)
     {

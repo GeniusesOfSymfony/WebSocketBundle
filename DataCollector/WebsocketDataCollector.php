@@ -7,12 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\Stopwatch\StopwatchEvent;
 
-class WebsocketDataCollector extends DataCollector
+final class WebsocketDataCollector extends DataCollector
 {
     /**
      * @var array
      */
-    protected $rawData = [];
+    private $rawData = [];
 
     public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
