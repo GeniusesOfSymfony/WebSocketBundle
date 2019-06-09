@@ -25,9 +25,9 @@ final class AmqpConnectionFactory
         return new \AMQPConnection($this->config);
     }
 
-    public function createExchange(): \AMQPExchange
+    public function createExchange(\AMQPConnection $connection): \AMQPExchange
     {
-        $exchange = new \AMQPExchange(new \AMQPChannel());
+        $exchange = new \AMQPExchange(new \AMQPChannel($connection));
         $exchange->setName($this->config['exchange_name']);
         $exchange->setType(AMQP_EX_TYPE_DIRECT);
         $exchange->setFlags(AMQP_DURABLE);
@@ -36,9 +36,9 @@ final class AmqpConnectionFactory
         return $exchange;
     }
 
-    public function createQueue(): \AMQPQueue
+    public function createQueue(\AMQPConnection $connection): \AMQPQueue
     {
-        $queue = new \AMQPQueue(new \AMQPChannel());
+        $queue = new \AMQPQueue(new \AMQPChannel($connection));
         $queue->setName($this->config['queue_name']);
         $queue->setFlags(AMQP_DURABLE);
         $queue->declareQueue();

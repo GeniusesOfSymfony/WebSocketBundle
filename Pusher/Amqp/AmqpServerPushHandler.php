@@ -73,7 +73,7 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
 
         $connection->connect();
 
-        $this->consumer = new Consumer($this->connectionFactory->createQueue(), $loop, 0.1, 10);
+        $this->consumer = new Consumer($this->connectionFactory->createQueue($connection), $loop, 0.1, 10);
         $this->consumer->on(
             'consume',
             function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app, $connection) {

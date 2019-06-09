@@ -35,18 +35,21 @@ class AmqpPusher extends AbstractPusher
     {
         if (false === $this->connected) {
             $this->connection = $this->connectionFactory->createConnection();
-            $this->exchange   = $this->connectionFactory->createExchange();
+            $this->exchange = $this->connectionFactory->createExchange($this->connection);
+
             $this->connection->connect();
             $this->setConnected();
         }
 
         $resolver = new OptionsResolver();
 
-        $resolver->setDefaults([
-            'routing_key' => null,
-            'publish_flags' => AMQP_NOPARAM,
-            'attributes' => array(),
-        ]);
+        $resolver->setDefaults(
+            [
+                'routing_key' => null,
+                'publish_flags' => AMQP_NOPARAM,
+                'attributes' => [],
+            ]
+        );
 
         $context = $resolver->resolve($context);
 
