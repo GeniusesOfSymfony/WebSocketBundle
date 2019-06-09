@@ -47,7 +47,7 @@ gos_web_socket:
 - All bundle services have been explicitly marked public or private
 - Registering periodic timers and push handlers in the default websocket server (`Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer`) has been extracted to event listeners subscribed to the `gos_web_socket.server_launched` event
 - All registry classes are now final
-- Connection related dependencies are now injected into pushers and server push handlers
+- Connection related dependencies are now managed by connection factories for the pushers and server push handlers
 - The `getConfig()` and `setConfig()` methods of `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` and `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` have been removed, as well as the logic in the compiler passes for injecting the configuration from the bundle's services
 
 Each pusher configuration node now has an `enabled` option, this must be set to true to enable a pusher; for example:
