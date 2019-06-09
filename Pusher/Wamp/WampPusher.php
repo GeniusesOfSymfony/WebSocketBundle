@@ -19,7 +19,7 @@ class WampPusher extends AbstractPusher
 
     public function __construct(WampConnectionFactory $connectionFactory)
     {
-        $this->connection = $client;
+        $this->connection = $connectionFactory;
     }
 
     /**
