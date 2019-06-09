@@ -41,34 +41,26 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
     protected $eventDispatcher;
 
     /**
-     * @var \AMQPConnection
+     * @var AmqpConnectionFactory
      */
-    protected $connection;
-
-    /**
-     * @var \AMQPQueue
-     */
-    protected $queue;
+    protected $connectionFactory;
 
     /**
      * @param WampRouter               $router
      * @param MessageSerializer        $serializer
      * @param EventDispatcherInterface $eventDispatcher
-     * @param \AMQPConnection          $connection
-     * @param \AMQPQueue               $queue
+     * @param AmqpConnectionFactory    $connectionFactory
      */
     public function __construct(
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
-        \AMQPConnection $connection,
-        \AMQPQueue $queue
+        AmqpConnectionFactory $connectionFactory
     ) {
         $this->router = $router;
         $this->serializer = $serializer;
         $this->eventDispatcher = $eventDispatcher;
-        $this->connection = $connection;
-        $this->queue = $queue;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -77,12 +69,14 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
      */
     public function handle(LoopInterface $loop, WampServerInterface $app)
     {
-        $this->connection->connect();
+        $connection = $this->connectionFactory->createConnection();
 
-        $this->consumer = new Consumer($this->queue, $loop, 0.1, 10);
+        $connection->connect();
+
+        $this->consumer = new Consumer($this->connectionFactory->createQueue(), $loop, 0.1, 10);
         $this->consumer->on(
             'consume',
-            function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app) {
+            function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app, $connection) {
                 try {
                     /** @var MessageInterface $message */
                     $message = $this->serializer->deserialize($envelop->getBody());
@@ -112,8 +106,8 @@ class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerA
                     $this->logger->info(
                         sprintf(
                             'AMQP transport listening on %s:%s',
-                            $this->connection->getHost(),
-                            $this->connection->getPort()
+                            $connection->getHost(),
+                            $connection->getPort()
                         )
                     );
                 }

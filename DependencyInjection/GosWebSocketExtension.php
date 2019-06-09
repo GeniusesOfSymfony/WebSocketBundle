@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
@@ -179,55 +180,21 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
             }
 
-            $connectionDef = new Definition(
-                \AMQPConnection::class,
+            $connectionFactoryDef = new Definition(
+                AmqpConnectionFactory::class,
                 [
                     $configs['pushers']['amqp'],
                 ]
             );
-            $connectionDef->setPrivate(true);
+            $connectionFactoryDef->setPrivate(true);
 
-            $container->setDefinition('gos_web_socket.amqp.pusher.connection', $connectionDef);
+            $container->setDefinition('gos_web_socket.amqp.pusher.connection_factory', $connectionFactoryDef);
 
-            $channelDef = new Definition(\AMQPChannel::class);
-            $channelDef->setPrivate(true);
+            $container->getDefinition('gos_web_socket.amqp.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
 
-            $container->setDefinition('gos_web_socket.amqp.pusher.channel', $channelDef);
-
-            $exchangeDef = new Definition(
-                \AMQPExchange::class,
-                [
-                    new Reference('gos_web_socket.amqp.pusher.channel')
-                ]
-            );
-            $exchangeDef->setPrivate(true);
-            $exchangeDef->addMethodCall('setName', [$configs['pushers']['amqp']['exchange_name']]);
-            $exchangeDef->addMethodCall('setType', [AMQP_EX_TYPE_DIRECT]);
-            $exchangeDef->addMethodCall('setFlags', [AMQP_DURABLE]);
-            $exchangeDef->addMethodCall('declareExchange');
-
-            $container->setDefinition('gos_web_socket.amqp.pusher.exchange', $exchangeDef);
-
-            $pusherDef = $container->getDefinition('gos_web_socket.amqp.pusher');
-            $pusherDef->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection'));
-            $pusherDef->setArgument(1, new Reference('gos_web_socket.amqp.pusher.exchange'));
-
-            $queueDef = new Definition(
-                \AMQPQueue::class,
-                [
-                    new Reference('gos_web_socket.amqp.pusher.channel')
-                ]
-            );
-            $queueDef->setPrivate(true);
-            $queueDef->addMethodCall('setName', [$configs['pushers']['amqp']['queue_name']]);
-            $queueDef->addMethodCall('setFlags', [AMQP_DURABLE]);
-            $queueDef->addMethodCall('declareQueue');
-
-            $container->setDefinition('gos_web_socket.amqp.pusher.queue', $queueDef);
-
-            $pushHandlerDef = $container->getDefinition('gos_web_socket.amqp.server_push_handler');
-            $pushHandlerDef->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection'));
-            $pushHandlerDef->setArgument(5, new Reference('gos_web_socket.amqp.pusher.queue'));
+            $container->getDefinition('gos_web_socket.amqp.server_push_handler')
+                ->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
         } else {
             $container->getDefinition('gos_web_socket.amqp.pusher')
                 ->clearTag('gos_web_socket.pusher');
@@ -251,11 +218,11 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             $container->setDefinition('gos_web_socket.zmq.pusher.connection_factory', $connectionFactoryDef);
 
-            $pusherDef = $container->getDefinition('gos_web_socket.zmq.pusher');
-            $pusherDef->setArgument(0, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.zmq.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
 
-            $pushHandlerDef = $container->getDefinition('gos_web_socket.zmq.server_push_handler');
-            $pushHandlerDef->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+                ->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
         } else {
             $container->getDefinition('gos_web_socket.zmq.pusher')
                 ->clearTag('gos_web_socket.pusher');

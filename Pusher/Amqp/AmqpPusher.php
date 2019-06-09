@@ -18,14 +18,13 @@ class AmqpPusher extends AbstractPusher
     protected $exchange;
 
     /**
-     * @var \AMQPQueue
+     * @var AmqpConnectionFactory
      */
-    protected $queue;
+    protected $connectionFactory;
 
-    public function __construct(\AMQPConnection $connection, \AMQPExchange $exchange)
+    public function __construct(AmqpConnectionFactory $connectionFactory)
     {
-        $this->connection = $connection;
-        $this->exchange = $exchange;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -35,6 +34,8 @@ class AmqpPusher extends AbstractPusher
     protected function doPush($data, array $context)
     {
         if (false === $this->connected) {
+            $this->connection = $this->connectionFactory->createConnection();
+            $this->exchange   = $this->connectionFactory->createExchange();
             $this->connection->connect();
             $this->setConnected();
         }
