@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
+use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher;
@@ -16,6 +17,7 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
@@ -31,17 +33,17 @@ final class TopicDispatcherTest extends TestCase
     private $topicRegistry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampRouter
+     * @var MockObject|WampRouter
      */
     private $wampRouter;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicPeriodicTimer
+     * @var MockObject|TopicPeriodicTimer
      */
     private $topicPeriodicTimer;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicManager
+     * @var MockObject|TopicManager
      */
     private $topicManager;
 
@@ -60,7 +62,7 @@ final class TopicDispatcherTest extends TestCase
         parent::setUp();
 
         $this->topicRegistry      = new TopicRegistry();
-        $this->wampRouter         = $this->createMock(WampRouter::class);
+        $this->wampRouter         = new WampRouter($this->createMock(RouterInterface::class));
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
         $this->topicManager       = $this->createMock(TopicManager::class);
 

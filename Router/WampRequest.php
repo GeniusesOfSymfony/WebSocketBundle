@@ -5,27 +5,27 @@ namespace Gos\Bundle\WebSocketBundle\Router;
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class WampRequest
+final class WampRequest
 {
     /**
      * @var ParameterBag
      */
-    protected $attributes;
+    private $attributes;
 
     /**
      * @var Route
      */
-    protected $route;
+    private $route;
 
     /**
      * @var string
      */
-    protected $routeName;
+    private $routeName;
 
     /**
      * @var string
      */
-    protected $matched;
+    private $matched;
 
     public function __construct(string $routeName, Route $route, ParameterBag $attributes, string $matched)
     {

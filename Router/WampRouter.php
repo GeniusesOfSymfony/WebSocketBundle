@@ -11,14 +11,14 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class WampRouter implements LoggerAwareInterface
+final class WampRouter implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var RouterInterface
      */
-    protected $pubSubRouter;
+    private $pubSubRouter;
 
     public function __construct(RouterInterface $router)
     {

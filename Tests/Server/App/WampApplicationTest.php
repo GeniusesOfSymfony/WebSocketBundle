@@ -2,45 +2,54 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App;
 
+use Gos\Bundle\PubSubRouterBundle\Router\Route;
+use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class WampApplicationTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|RpcDispatcherInterface
+     * @var MockObject|RpcDispatcherInterface
      */
     private $rpcDispatcher;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicDispatcherInterface
+     * @var MockObject|TopicDispatcherInterface
      */
     private $topicDispatcher;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     * @var MockObject|EventDispatcherInterface
      */
     private $eventDispatcher;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ClientStorageInterface
+     * @var MockObject|ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampRouter
+     * @var MockObject|WampRouter
      */
     private $wampRouter;
+
+    /**
+     * @var MockObject|RouterInterface
+     */
+    private $decoratedRouter;
 
     /**
      * @var TestLogger
@@ -56,11 +65,12 @@ class WampApplicationTest extends TestCase
     {
         parent::setUp();
 
+        $this->decoratedRouter = $this->createMock(RouterInterface::class);
         $this->rpcDispatcher = $this->createMock(RpcDispatcherInterface::class);
         $this->topicDispatcher = $this->createMock(TopicDispatcherInterface::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->clientStorage = $this->createMock(ClientStorageInterface::class);
-        $this->wampRouter = $this->createMock(WampRouter::class);
+        $this->wampRouter = new WampRouter($this->decoratedRouter);
 
         $this->logger = new TestLogger();
 
@@ -86,16 +96,14 @@ class WampApplicationTest extends TestCase
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $request = $this->createMock(WampRequest::class);
-
-        $this->wampRouter->expects($this->once())
+        $this->decoratedRouter->expects($this->once())
             ->method('match')
-            ->with($topic)
-            ->willReturn($request);
+            ->with('channel/42')
+            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->WAMP = new \stdClass();
@@ -106,8 +114,7 @@ class WampApplicationTest extends TestCase
         $eligible = [];
 
         $this->topicDispatcher->expects($this->once())
-            ->method('onPublish')
-            ->with($connection, $topic, $request, $event, $exclude, $eligible);
+            ->method('onPublish');
 
         $this->application->onPublish($connection, $topic, $event, $exclude, $eligible);
 
@@ -116,17 +123,18 @@ class WampApplicationTest extends TestCase
 
     public function testAMessageIsPushed()
     {
-        $request = $this->createMock(WampRequest::class);
-        $request->expects($this->once())
-            ->method('getMatched')
-            ->willReturn('channel/42');
+        $request = new WampRequest(
+            'channel_name',
+            $this->createMock(Route::class),
+            $this->createMock(ParameterBag::class),
+            'channel/42'
+        );
 
         $data = 'foo';
         $provider = 'test';
 
         $this->topicDispatcher->expects($this->once())
-            ->method('onPush')
-            ->with($request, $data, $provider);
+            ->method('onPush');
 
         $this->application->onPush($request, $data, $provider);
 
@@ -136,21 +144,21 @@ class WampApplicationTest extends TestCase
     public function testARpcCallIsHandled()
     {
         $topic = $this->createMock(Topic::class);
+        $topic->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('channel/42');
 
-        $request = $this->createMock(WampRequest::class);
-
-        $this->wampRouter->expects($this->once())
+        $this->decoratedRouter->expects($this->once())
             ->method('match')
-            ->with($topic)
-            ->willReturn($request);
+            ->with('channel/42')
+            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
         $id = 42;
         $params = [];
 
         $this->rpcDispatcher->expects($this->once())
-            ->method('dispatch')
-            ->with($connection, $id, $topic, $request, $params);
+            ->method('dispatch');
 
         $this->application->onCall($connection, $id, $topic, $params);
     }
@@ -167,16 +175,14 @@ class WampApplicationTest extends TestCase
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $request = $this->createMock(WampRequest::class);
-
-        $this->wampRouter->expects($this->once())
+        $this->decoratedRouter->expects($this->once())
             ->method('match')
-            ->with($topic)
-            ->willReturn($request);
+            ->with('channel/42')
+            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->WAMP = new \stdClass();
@@ -187,8 +193,7 @@ class WampApplicationTest extends TestCase
         $eligible = [];
 
         $this->topicDispatcher->expects($this->once())
-            ->method('onSubscribe')
-            ->with($connection, $topic, $request);
+            ->method('onSubscribe');
 
         $this->application->onSubscribe($connection, $topic);
 
@@ -207,16 +212,14 @@ class WampApplicationTest extends TestCase
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $request = $this->createMock(WampRequest::class);
-
-        $this->wampRouter->expects($this->once())
+        $this->decoratedRouter->expects($this->once())
             ->method('match')
-            ->with($topic)
-            ->willReturn($request);
+            ->with('channel/42')
+            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->WAMP = new \stdClass();
@@ -227,8 +230,7 @@ class WampApplicationTest extends TestCase
         $eligible = [];
 
         $this->topicDispatcher->expects($this->once())
-            ->method('onUnSubscribe')
-            ->with($connection, $topic, $request);
+            ->method('onUnSubscribe');
 
         $this->application->onUnSubscribe($connection, $topic);
 
