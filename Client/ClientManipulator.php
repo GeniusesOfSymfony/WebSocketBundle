@@ -9,17 +9,17 @@ use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ClientManipulator implements ClientManipulatorInterface
+final class ClientManipulator implements ClientManipulatorInterface
 {
     /**
      * @var ClientStorageInterface
      */
-    protected $clientStorage;
+    private $clientStorage;
 
     /**
      * @var WebsocketAuthenticationProviderInterface
      */
-    protected $authenticationProvider;
+    private $authenticationProvider;
 
     public function __construct(
         ClientStorageInterface $clientStorage,
@@ -29,75 +29,8 @@ class ClientManipulator implements ClientManipulatorInterface
         $this->authenticationProvider = $authenticationProvider;
     }
 
-    public function getClient(ConnectionInterface $connection): TokenInterface
-    {
-        $storageId = $this->clientStorage->getStorageId($connection);
-
-        try {
-            return $this->clientStorage->getClient($storageId);
-        } catch (ClientNotFoundException $e) {
-            // User is gone due to ttl
-            $this->authenticationProvider->authenticate($connection);
-
-            return $this->getClient($connection);
-        }
-    }
-
     /**
-     * {@inheritdoc}
-     */
-    public function getUser(ConnectionInterface $connection)
-    {
-        return $this->getClient($connection)->getUser();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findByUsername(Topic $topic, string $username)
-    {
-        /** @var ConnectionInterface $connection */
-        foreach ($topic as $connection) {
-            $client = $this->getClient($connection);
-
-            if ($client instanceof AnonymousToken) {
-                continue;
-            }
-
-            if ($client->getUsername() === $username) {
-                return ['client' => $client, 'connection' => $connection];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAll(Topic $topic, bool $anonymous = false): array
-    {
-        $results = [];
-
-        /** @var ConnectionInterface $connection */
-        foreach ($topic as $connection) {
-            $client = $this->getClient($connection);
-
-            if (true !== $anonymous && $client instanceof AnonymousToken) {
-                continue;
-            }
-
-            $results[] = [
-                'client' => $client,
-                'connection' => $connection,
-            ];
-        }
-
-        return $results;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @return TokenInterface[]
      */
     public function findByRoles(Topic $topic, array $roles): array
     {
@@ -124,5 +57,72 @@ class ClientManipulator implements ClientManipulatorInterface
         }
 
         return $results;
+    }
+
+    /**
+     * @return TokenInterface[]|bool
+     */
+    public function findByUsername(Topic $topic, string $username)
+    {
+        /** @var ConnectionInterface $connection */
+        foreach ($topic as $connection) {
+            $client = $this->getClient($connection);
+
+            if ($client instanceof AnonymousToken) {
+                continue;
+            }
+
+            if ($client->getUsername() === $username) {
+                return ['client' => $client, 'connection' => $connection];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return TokenInterface[]
+     */
+    public function getAll(Topic $topic, bool $anonymous = false): array
+    {
+        $results = [];
+
+        /** @var ConnectionInterface $connection */
+        foreach ($topic as $connection) {
+            $client = $this->getClient($connection);
+
+            if (true !== $anonymous && $client instanceof AnonymousToken) {
+                continue;
+            }
+
+            $results[] = [
+                'client' => $client,
+                'connection' => $connection,
+            ];
+        }
+
+        return $results;
+    }
+
+    public function getClient(ConnectionInterface $connection): TokenInterface
+    {
+        $storageId = $this->clientStorage->getStorageId($connection);
+
+        try {
+            return $this->clientStorage->getClient($storageId);
+        } catch (ClientNotFoundException $e) {
+            // User is gone due to ttl
+            $this->authenticationProvider->authenticate($connection);
+
+            return $this->getClient($connection);
+        }
+    }
+
+    /**
+     * @return string|object
+     */
+    public function getUser(ConnectionInterface $connection)
+    {
+        return $this->getClient($connection)->getUser();
     }
 }

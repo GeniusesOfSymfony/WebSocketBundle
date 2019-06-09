@@ -5,12 +5,12 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class InMemoryDriver implements DriverInterface
+final class InMemoryDriver implements DriverInterface
 {
     /**
      * @var array
      */
-    protected $elements = [];
+    private $elements = [];
 
     /**
      * @return mixed

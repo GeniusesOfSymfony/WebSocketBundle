@@ -8,12 +8,10 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface ClientManipulatorInterface
 {
-    public function getClient(ConnectionInterface $connection): TokenInterface;
-
     /**
-     * @return string|object
+     * @return TokenInterface[]
      */
-    public function getUser(ConnectionInterface $connection);
+    public function findByRoles(Topic $topic, array $roles): array;
 
     /**
      * @return TokenInterface[]|bool
@@ -23,10 +21,12 @@ interface ClientManipulatorInterface
     /**
      * @return TokenInterface[]
      */
-    public function findByRoles(Topic $topic, array $roles): array;
+    public function getAll(Topic $topic, bool $anonymous = false): array;
+
+    public function getClient(ConnectionInterface $connection): TokenInterface;
 
     /**
-     * @return TokenInterface[]
+     * @return string|object
      */
-    public function getAll(Topic $topic, bool $anonymous = false): array;
+    public function getUser(ConnectionInterface $connection);
 }

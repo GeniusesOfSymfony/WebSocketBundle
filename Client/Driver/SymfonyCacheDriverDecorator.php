@@ -4,12 +4,12 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-class SymfonyCacheDriverDecorator implements DriverInterface
+final class SymfonyCacheDriverDecorator implements DriverInterface
 {
     /**
      * @var AdapterInterface
      */
-    protected $cache;
+    private $cache;
 
     public function __construct(AdapterInterface $cache)
     {

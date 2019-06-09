@@ -10,19 +10,19 @@ use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface, LoggerAwareInterface
+final class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var ClientStorageInterface
      */
-    protected $clientStorage;
+    private $clientStorage;
 
     /**
      * @var string[]
      */
-    protected $firewalls = [];
+    private $firewalls = [];
 
     /**
      * @param string[] $firewalls
@@ -72,7 +72,7 @@ class WebsocketAuthenticationProvider implements WebsocketAuthenticationProvider
         return $token;
     }
 
-    protected function getToken(ConnectionInterface $connection): TokenInterface
+    private function getToken(ConnectionInterface $connection): TokenInterface
     {
         $token = null;
 

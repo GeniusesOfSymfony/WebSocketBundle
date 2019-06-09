@@ -7,17 +7,17 @@ use Predis\ClientInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class PredisDriver implements DriverInterface
+final class PredisDriver implements DriverInterface
 {
     /**
      * @var ClientInterface
      */
-    protected $client;
+    private $client;
 
     /**
      * @var string
      */
-    protected $prefix;
+    private $prefix;
 
     public function __construct(ClientInterface $client, string $prefix = '')
     {

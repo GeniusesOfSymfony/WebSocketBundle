@@ -28,6 +28,7 @@ gos_web_socket:
 ## Changes
 
 - Added typehints and return types to most classes
+- All `Gos\Bundle\WebSocketBundle\Client` classes are now final
 - The `Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand` class is now final
 - All `Gos\Bundle\WebSocketBundle\DependencyInjection` classes are now final
 - All event listener classes are now final

@@ -7,12 +7,12 @@ use Doctrine\Common\Cache\Cache;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class DoctrineCacheDriverDecorator implements DriverInterface
+final class DoctrineCacheDriverDecorator implements DriverInterface
 {
     /**
      * @var Cache
      */
-    protected $cacheProvider;
+    private $cacheProvider;
 
     public function __construct(Cache $cacheProvider)
     {

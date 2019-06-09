@@ -13,19 +13,19 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
+final class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var DriverInterface
      */
-    protected $driver;
+    private $driver;
 
     /**
      * @var int
      */
-    protected $ttl;
+    private $ttl;
 
     public function __construct(int $ttl)
     {
