@@ -16,34 +16,34 @@ use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
+final class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var WampRouter
      */
-    protected $router;
+    private $router;
 
     /**
      * @var MessageSerializer
      */
-    protected $serializer;
+    private $serializer;
 
     /**
      * @var Consumer
      */
-    protected $consumer;
+    private $consumer;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var AmqpConnectionFactory
      */
-    protected $connectionFactory;
+    private $connectionFactory;
 
     public function __construct(
         WampRouter $router,

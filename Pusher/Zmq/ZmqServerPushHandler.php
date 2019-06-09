@@ -16,34 +16,34 @@ use React\EventLoop\LoopInterface;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
+final class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var WampRouter
      */
-    protected $router;
+    private $router;
 
     /**
      * @var MessageSerializer
      */
-    protected $serializer;
+    private $serializer;
 
     /**
      * @var SocketWrapper
      */
-    protected $consumer;
+    private $consumer;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var ZmqConnectionFactory
      */
-    protected $connectionFactory;
+    private $connectionFactory;
 
     public function __construct(
         WampRouter $router,

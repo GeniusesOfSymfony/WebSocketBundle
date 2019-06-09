@@ -9,25 +9,27 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
-class MessageSerializer
+final class MessageSerializer
 {
     /**
      * @var Serializer
      */
-    protected $serializer;
+    private $serializer;
 
     /**
      * @var NormalizerInterface[]
      */
-    protected $normalizers;
+    private $normalizers;
 
-    /** @var  string */
-    protected $class;
+    /**
+     * @var string
+     */
+    private $class;
 
     /**
      * @var EncoderInterface[]
      */
-    protected $encoders;
+    private $encoders;
 
     public function __construct()
     {
@@ -43,9 +45,7 @@ class MessageSerializer
     }
 
     /**
-     * @param MessageInterface $message
-     *
-     * @return string|\Symfony\Component\Serializer\Encoder\scalar
+     * @return string
      */
     public function serialize(MessageInterface $message)
     {

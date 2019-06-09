@@ -5,22 +5,22 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AmqpPusher extends AbstractPusher
+final class AmqpPusher extends AbstractPusher
 {
     /**
      * @var \AMQPConnection
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \AMQPExchange
      */
-    protected $exchange;
+    private $exchange;
 
     /**
      * @var AmqpConnectionFactory
      */
-    protected $connectionFactory;
+    private $connectionFactory;
 
     public function __construct(AmqpConnectionFactory $connectionFactory)
     {

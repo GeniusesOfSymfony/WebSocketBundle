@@ -4,17 +4,17 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 
-class ZmqPusher extends AbstractPusher
+final class ZmqPusher extends AbstractPusher
 {
     /**
      * @var \ZMQSocket
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var ZmqConnectionFactory
      */
-    protected $connectionFactory;
+    private $connectionFactory;
 
     public function __construct(ZmqConnectionFactory $connectionFactory)
     {

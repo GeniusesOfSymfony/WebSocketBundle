@@ -5,17 +5,17 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Gos\Component\WebSocketClient\Wamp\Client;
 
-class WampPusher extends AbstractPusher
+final class WampPusher extends AbstractPusher
 {
     /**
      * @var Client
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var WampConnectionFactory
      */
-    protected $connectionFactory;
+    private $connectionFactory;
 
     public function __construct(WampConnectionFactory $connectionFactory)
     {
