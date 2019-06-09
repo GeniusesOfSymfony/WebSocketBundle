@@ -110,12 +110,14 @@ final class ConfigurationTest extends TestCase
         $extraConfig = [
             'pushers' => [
                 'wamp' => [
+                    'enabled' => false,
                     'host' => '127.0.0.1',
                     'port' => 1337,
                     'ssl' => false,
                     'origin' => null,
                 ],
                 'zmq' => [
+                    'enabled' => false,
                     'default' => false,
                     'host' => '127.0.0.1',
                     'port' => 1337,
@@ -124,6 +126,7 @@ final class ConfigurationTest extends TestCase
                     'linger' => -1,
                 ],
                 'amqp' => [
+                    'enabled' => false,
                     'default' => false,
                     'host' => '127.0.0.1',
                     'port' => 1337,

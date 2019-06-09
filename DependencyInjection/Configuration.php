@@ -156,13 +156,14 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->scalarNode('host')
                     ->example('127.0.0.1')
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('port')
+                ->integerNode('port')
                     ->example(1337)
                     ->isRequired()
                 ->end()
@@ -190,6 +191,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->booleanNode('default')
                     ->defaultValue(false)
@@ -199,7 +201,7 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('port')
+                ->integerNode('port')
                     ->example(1337)
                     ->isRequired()
                 ->end()
@@ -231,6 +233,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
+            ->canBeEnabled()
             ->children()
                 ->booleanNode('default')
                     ->defaultValue(false)
@@ -240,7 +243,7 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('port')
+                ->integerNode('port')
                     ->example(1337)
                     ->isRequired()
                 ->end()

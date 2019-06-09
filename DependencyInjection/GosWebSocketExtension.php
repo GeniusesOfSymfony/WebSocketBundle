@@ -4,14 +4,19 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
+use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
+use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Component\WebSocketClient\Wamp\Client;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -110,39 +115,139 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        if (isset($configs['ping'])) {
-            if (isset($configs['ping']['services'])) {
-                foreach ($configs['ping']['services'] as $pingService) {
-                    switch ($pingService['type']) {
-                        case Configuration::PING_SERVICE_TYPE_DOCTRINE:
-                            $serviceRef = ltrim($pingService['name'], '@');
+        $this->loadPingServices($configs, $container);
+        $this->loadPushers($configs, $container);
+    }
 
-                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                            $definition->addArgument(new Reference($serviceRef));
-                            $definition->addTag('gos_web_socket.periodic');
+    private function loadPingServices(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['ping'])) {
+            return;
+        }
 
-                            $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+        if (isset($configs['ping']['services'])) {
+            foreach ($configs['ping']['services'] as $pingService) {
+                switch ($pingService['type']) {
+                    case Configuration::PING_SERVICE_TYPE_DOCTRINE:
+                        $serviceRef = ltrim($pingService['name'], '@');
 
-                            break;
+                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
+                        $definition->addArgument(new Reference($serviceRef));
+                        $definition->addTag('gos_web_socket.periodic');
 
-                        case Configuration::PING_SERVICE_TYPE_PDO:
-                            $serviceRef = ltrim($pingService['name'], '@');
+                        $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
 
-                            $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                            $definition->addArgument(new Reference($serviceRef));
-                            $definition->addTag('gos_web_socket.periodic');
+                        break;
 
-                            $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+                    case Configuration::PING_SERVICE_TYPE_PDO:
+                        $serviceRef = ltrim($pingService['name'], '@');
 
-                            break;
+                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
+                        $definition->addArgument(new Reference($serviceRef));
+                        $definition->addTag('gos_web_socket.periodic');
 
-                        default:
-                            throw new InvalidArgumentException(
-                                sprintf('Unsupported ping service type "%s"', $pingService['type'])
-                            );
-                    }
+                        $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+
+                        break;
+
+                    default:
+                        throw new InvalidArgumentException(
+                            sprintf('Unsupported ping service type "%s"', $pingService['type'])
+                        );
                 }
             }
+        }
+    }
+
+    private function loadPushers(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['pushers'])) {
+            // Untag all of the pushers
+            foreach (['gos_web_socket.amqp.pusher', 'gos_web_socket.wamp.pusher', 'gos_web_socket.zmq.pusher'] as $pusher) {
+                $container->getDefinition($pusher)
+                    ->clearTag('gos_web_socket.pusher');
+            }
+
+            foreach (['gos_web_socket.amqp.server_push_handler', 'gos_web_socket.zmq.server_push_handler'] as $pusher) {
+                $container->getDefinition($pusher)
+                    ->clearTag('gos_web_socket.push_handler');
+            }
+
+            return;
+        }
+
+        if (isset($configs['pushers']['amqp']) && $configs['pushers']['amqp']['enabled']) {
+            if (!extension_loaded('amqp')) {
+                throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
+            }
+
+            $connectionFactoryDef = new Definition(
+                AmqpConnectionFactory::class,
+                [
+                    $configs['pushers']['amqp'],
+                ]
+            );
+            $connectionFactoryDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.amqp.pusher.connection_factory', $connectionFactoryDef);
+
+            $container->getDefinition('gos_web_socket.amqp.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+
+            $container->getDefinition('gos_web_socket.amqp.server_push_handler')
+                ->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+        } else {
+            $container->getDefinition('gos_web_socket.amqp.pusher')
+                ->clearTag('gos_web_socket.pusher');
+
+            $container->getDefinition('gos_web_socket.amqp.server_push_handler')
+                ->clearTag('gos_web_socket.push_handler');
+        }
+
+        if (isset($configs['pushers']['zmq']) && $configs['pushers']['zmq']['enabled']) {
+            if (!extension_loaded('zmq')) {
+                throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
+            }
+
+            $connectionFactoryDef = new Definition(
+                ZmqConnectionFactory::class,
+                [
+                    $configs['pushers']['zmq'],
+                ]
+            );
+            $connectionFactoryDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.zmq.pusher.connection_factory', $connectionFactoryDef);
+
+            $container->getDefinition('gos_web_socket.zmq.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+
+            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+                ->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+        } else {
+            $container->getDefinition('gos_web_socket.zmq.pusher')
+                ->clearTag('gos_web_socket.pusher');
+
+            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+                ->clearTag('gos_web_socket.push_handler');
+        }
+
+        if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
+            $connectionFactoryDef = new Definition(
+                WampConnectionFactory::class,
+                [
+                    $configs['pushers']['wamp'],
+                ]
+            );
+            $connectionFactoryDef->setPrivate(true);
+
+            $container->setDefinition('gos_web_socket.wamp.pusher.connection_factory', $connectionFactoryDef);
+
+            $container->getDefinition('gos_web_socket.wamp.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.wamp.pusher.connection_factory'));
+        } else {
+            $container->getDefinition('gos_web_socket.wamp.pusher')
+                ->clearTag('gos_web_socket.pusher');
         }
     }
 

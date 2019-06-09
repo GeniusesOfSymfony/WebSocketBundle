@@ -7,11 +7,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AmqpPusher extends AbstractPusher
 {
-    /** @var  \AMQPExchange */
+    /**
+     * @var \AMQPConnection
+     */
+    protected $connection;
+
+    /**
+     * @var \AMQPExchange
+     */
     protected $exchange;
 
-    /** @var  \AMQPQueue */
-    protected $queue;
+    /**
+     * @var AmqpConnectionFactory
+     */
+    protected $connectionFactory;
+
+    public function __construct(AmqpConnectionFactory $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
 
     /**
      * @param string $data
@@ -19,32 +33,23 @@ class AmqpPusher extends AbstractPusher
      */
     protected function doPush($data, array $context)
     {
-        $config = $this->getConfig();
-
         if (false === $this->connected) {
-            if (!extension_loaded('amqp')) {
-                throw new \RuntimeException(sprintf(
-                    '%s pusher require %s php extension',
-                    get_class($this),
-                    'amqp'
-                ));
-            }
+            $this->connection = $this->connectionFactory->createConnection();
+            $this->exchange = $this->connectionFactory->createExchange($this->connection);
 
-            $this->connection = new \AMQPConnection($config);
             $this->connection->connect();
-
-            list(, $this->exchange) = Utils::setupConnection($this->connection, $config);
-
             $this->setConnected();
         }
 
         $resolver = new OptionsResolver();
 
-        $resolver->setDefaults([
-            'routing_key' => null,
-            'publish_flags' => AMQP_NOPARAM,
-            'attributes' => array(),
-        ]);
+        $resolver->setDefaults(
+            [
+                'routing_key' => null,
+                'publish_flags' => AMQP_NOPARAM,
+                'attributes' => [],
+            ]
+        );
 
         $context = $resolver->resolve($context);
 

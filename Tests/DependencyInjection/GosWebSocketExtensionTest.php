@@ -281,6 +281,100 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
     }
 
+    public function testContainerIsLoadedWithWampPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'wamp' => [
+                    'enabled' => true,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'ssl' => false,
+                    'origin' => null,
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.connection_factory');
+    }
+
+    /**
+     * @requires extension amqp
+     */
+    public function testContainerIsLoadedWithAmqpPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'amqp' => [
+                    'enabled' => true,
+                    'default' => false,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'login' => 'username',
+                    'password' => 'password',
+                    'vhost' => '/',
+                    'read_timeout' => 0,
+                    'write_timeout' => 0,
+                    'connect_timeout' => 0,
+                    'queue_name' => 'gos_websocket',
+                    'exchange_name' => 'gos_websocket_exchange',
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection_factory');
+    }
+
+    /**
+     * @requires extension zmq
+     */
+    public function testContainerIsLoadedWithZmqPusherConfigured()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'zmq' => [
+                    'persistent' => true,
+                    'host' => 'localhost',
+                    'port' => 1337,
+                    'protocol' => 'tcp',
+                    'linger' => -1,
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.zmq.pusher.connection_factory');
+    }
+
     protected function getContainerExtensions(): array
     {
         return [

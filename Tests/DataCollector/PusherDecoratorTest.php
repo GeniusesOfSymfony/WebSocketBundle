@@ -79,28 +79,6 @@ class PusherDecoratorTest extends TestCase
         $this->decorator->push($data, $routeName, $routeParameters, $context);
     }
 
-    public function testTheConfigComesFromTheDecoratedPusher()
-    {
-        $config = [];
-
-        $this->pusher->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($config);
-
-        $this->assertSame($config, $this->decorator->getConfig());
-    }
-
-    public function testTheConfigIsStoredInTheDecoratedPusher()
-    {
-        $config = [];
-
-        $this->pusher->expects($this->once())
-            ->method('setConfig')
-            ->with($config);
-
-        $this->decorator->setConfig($config);
-    }
-
     public function testClosingThePusherIsPropagatedToTheDecoratedPusher()
     {
         $this->pusher->expects($this->once())
