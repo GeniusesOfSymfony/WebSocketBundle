@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
+use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
@@ -232,21 +233,18 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
         }
 
         if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
-            $clientDef = new Definition(
-                Client::class,
+            $connectionFactoryDef = new Definition(
+                WampConnectionFactory::class,
                 [
-                    $configs['pushers']['wamp']['host'],
-                    $configs['pushers']['wamp']['port'],
-                    $configs['pushers']['wamp']['ssl'],
-                    $configs['pushers']['wamp']['origin'],
+                    $configs['pushers']['wamp'],
                 ]
             );
-            $clientDef->setPrivate(true);
+            $connectionFactoryDef->setPrivate(true);
 
-            $container->setDefinition('gos_web_socket.wamp.pusher.client', $clientDef);
+            $container->setDefinition('gos_web_socket.wamp.pusher.connection_factory', $connectionFactoryDef);
 
-            $pusherDef = $container->getDefinition('gos_web_socket.wamp.pusher');
-            $pusherDef->setArgument(0, new Reference('gos_web_socket.wamp.pusher.client'));
+            $container->getDefinition('gos_web_socket.wamp.pusher')
+                ->setArgument(0, new Reference('gos_web_socket.wamp.pusher.connection_factory'));
         } else {
             $container->getDefinition('gos_web_socket.wamp.pusher')
                 ->clearTag('gos_web_socket.pusher');

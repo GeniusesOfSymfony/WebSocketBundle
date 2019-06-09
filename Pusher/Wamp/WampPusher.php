@@ -12,7 +12,12 @@ class WampPusher extends AbstractPusher
      */
     protected $connection;
 
-    public function __construct(Client $client)
+    /**
+     * @var WampConnectionFactory
+     */
+    protected $connectionFactory;
+
+    public function __construct(WampConnectionFactory $connectionFactory)
     {
         $this->connection = $client;
     }
@@ -24,7 +29,8 @@ class WampPusher extends AbstractPusher
     protected function doPush($data, array $context)
     {
         if (false === $this->isConnected()) {
-            $this->connection->connect('/');
+            $this->connection = $this->connectionFactory->createConnection();
+            $this->connection->connect();
             $this->setConnected();
         }
 

@@ -305,14 +305,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.client');
-
-        $pusherDef = $this->container->getDefinition('gos_web_socket.wamp.pusher');
-
-        $this->assertCount(
-            1,
-            $pusherDef->getArguments()
-        );
+        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.connection_factory');
     }
 
     /**
@@ -349,16 +342,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection');
-        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.exchange');
-        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.queue');
-
-        $pusherDef = $this->container->getDefinition('gos_web_socket.amqp.pusher');
-
-        $this->assertCount(
-            2,
-            $pusherDef->getArguments()
-        );
+        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection_factory');
     }
 
     protected function getContainerExtensions(): array

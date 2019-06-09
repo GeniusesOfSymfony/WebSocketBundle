@@ -2,8 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
-use React\ZMQ\Context;
-use React\ZMQ\SocketWrapper;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class AmqpConnectionFactory
