@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\RPC;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class RpcResponse
+final class RpcResponse
 {
     /**
      * @var array
@@ -29,7 +29,7 @@ class RpcResponse
     }
 
     /**
-     * @param mixed  $data
+     * @param mixed $data
      */
     public function addData($data, string $prefix = 'result'): void
     {
