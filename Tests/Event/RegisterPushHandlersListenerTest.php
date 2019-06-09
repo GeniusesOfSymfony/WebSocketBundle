@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 
@@ -18,7 +19,7 @@ class RegisterPushHandlersListenerTest extends TestCase
     private $pushHandlerRegistry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampApplication
+     * @var MockObject|WampApplication
      */
     private $wampApplication;
 

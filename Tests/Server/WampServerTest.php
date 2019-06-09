@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server;
 use Gos\Bundle\WebSocketBundle\Server\WampServer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -14,12 +15,12 @@ use Ratchet\Wamp\WampServerInterface;
 class WampServerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampServerInterface
+     * @var MockObject|WampServerInterface
      */
     private $app;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicManager
+     * @var MockObject|TopicManager
      */
     private $topicManager;
 
@@ -29,7 +30,7 @@ class WampServerTest extends TestCase
     private $serv;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ConnectionInterface
+     * @var MockObject|ConnectionInterface
      */
     private $conn;
 

@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ClientStorageTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|DriverInterface
+     * @var MockObject|DriverInterface
      */
     private $driver;
 

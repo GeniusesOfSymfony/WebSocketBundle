@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\Http\HttpServer;
 use Ratchet\Session\SessionProvider;
@@ -17,17 +18,17 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class ServerBuilderTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|LoopInterface
+     * @var MockObject|LoopInterface
      */
     private $loop;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampApplication
+     * @var MockObject|WampApplication
      */
     private $wampApplication;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TopicManager
+     * @var MockObject|TopicManager
      */
     private $topicManager;
 
@@ -37,7 +38,7 @@ class ServerBuilderTest extends TestCase
     private $originRegistry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     * @var MockObject|EventDispatcherInterface
      */
     private $eventDispatcher;
 

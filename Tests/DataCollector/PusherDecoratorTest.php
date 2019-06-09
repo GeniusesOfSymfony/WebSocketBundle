@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DataCollector;
 use Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator;
 use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Stopwatch\StopwatchEvent;
@@ -12,12 +13,12 @@ use Symfony\Component\Stopwatch\StopwatchEvent;
 class PusherDecoratorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|PusherInterface
+     * @var MockObject|PusherInterface
      */
     private $pusher;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Stopwatch
+     * @var MockObject|Stopwatch
      */
     private $stopwatch;
 

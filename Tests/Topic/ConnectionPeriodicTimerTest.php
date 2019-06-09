@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Topic;
 
 use Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use React\EventLoop\LoopInterface;
@@ -11,12 +12,12 @@ use React\EventLoop\TimerInterface;
 class ConnectionPeriodicTimerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ConnectionInterface
+     * @var MockObject|ConnectionInterface
      */
     private $connection;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|LoopInterface
+     * @var MockObject|LoopInterface
      */
     private $loop;
 

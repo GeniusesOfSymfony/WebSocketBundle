@@ -10,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEventListener;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
@@ -18,12 +19,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ClientEventListenerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ClientStorageInterface
+     * @var MockObject|ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WebsocketAuthenticationProviderInterface
+     * @var MockObject|WebsocketAuthenticationProviderInterface
      */
     private $authenticationProvider;
 

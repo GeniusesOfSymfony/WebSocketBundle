@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\Type;
 
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\MessageComponentInterface;
 use React\EventLoop\LoopInterface;
@@ -12,17 +13,17 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class WebSocketServerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ServerBuilderInterface
+     * @var MockObject|ServerBuilderInterface
      */
     private $serverBuilder;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|LoopInterface
+     * @var MockObject|LoopInterface
      */
     private $loop;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     * @var MockObject|EventDispatcherInterface
      */
     private $eventDispatcher;
 

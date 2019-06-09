@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterf
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulator;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -16,12 +17,12 @@ use Symfony\Component\Security\Core\Role\Role;
 class ClientManipulatorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ClientStorageInterface
+     * @var MockObject|ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WebsocketAuthenticationProviderInterface
+     * @var MockObject|WebsocketAuthenticationProviderInterface
      */
     private $authenticationProvider;
 

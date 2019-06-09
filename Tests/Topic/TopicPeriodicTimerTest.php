@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Topic;
 
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
@@ -11,7 +12,7 @@ use React\EventLoop\TimerInterface;
 class TopicPeriodicTimerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|LoopInterface
+     * @var MockObject|LoopInterface
      */
     private $loop;
 

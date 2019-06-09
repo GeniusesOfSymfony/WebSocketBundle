@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Client\Driver;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -10,7 +11,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 class SymfonyCacheDriverDecoratorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|AdapterInterface
+     * @var MockObject|AdapterInterface
      */
     private $cache;
 

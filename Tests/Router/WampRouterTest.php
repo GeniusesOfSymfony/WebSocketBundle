@@ -8,6 +8,7 @@ use Gos\Bundle\PubSubRouterBundle\Router\RouteCollection;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\Wamp\Topic;
@@ -15,7 +16,7 @@ use Ratchet\Wamp\Topic;
 class WampRouterTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|RouterInterface
+     * @var MockObject|RouterInterface
      */
     private $pubSubRouter;
 

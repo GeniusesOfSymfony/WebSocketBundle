@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Topic;
 
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -12,7 +13,7 @@ use Ratchet\WebSocket\WsServerInterface;
 class TopicManagerTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WampServerInterface
+     * @var MockObject|WampServerInterface
      */
     private $mock;
 
@@ -22,7 +23,7 @@ class TopicManagerTest extends TestCase
     private $mngr;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ConnectionInterface
+     * @var MockObject|ConnectionInterface
      */
     private $conn;
 

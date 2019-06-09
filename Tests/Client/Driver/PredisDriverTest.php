@@ -3,13 +3,14 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Client\Driver;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Predis\ClientInterface;
 
 class PredisDriverTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
+     * @var MockObject|ClientInterface
      */
     private $predis;
 

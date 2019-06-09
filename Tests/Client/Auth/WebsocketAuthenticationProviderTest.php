@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Client\Auth;
 
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -15,7 +16,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
     private const FIREWALLS = ['main'];
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ClientStorageInterface
+     * @var MockObject|ClientStorageInterface
      */
     private $clientStorage;
 

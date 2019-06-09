@@ -4,12 +4,13 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Client\Driver;
 
 use Doctrine\Common\Cache\Cache;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineCacheDriverDecoratorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Cache
+     * @var MockObject|Cache
      */
     private $cache;
 
