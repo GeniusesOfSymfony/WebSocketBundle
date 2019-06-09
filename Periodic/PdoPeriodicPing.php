@@ -8,19 +8,19 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
+final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var \PDO
      */
-    protected $pdo;
+    private $pdo;
 
     /**
      * @var int
      */
-    protected $timeout = 20;
+    private $timeout = 20;
 
     public function __construct(\PDO $pdo)
     {

@@ -32,6 +32,7 @@ gos_web_socket:
 - The `Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand` class is now final
 - All `Gos\Bundle\WebSocketBundle\DataCollector` classes are now final
 - All `Gos\Bundle\WebSocketBundle\DependencyInjection` classes are now final
+- All `Gos\Bundle\WebSocketBundle\Periodic` classes are now final
 - All event listener classes are now final
 - All registry classes are now final
 - The dependency to `gos/pubsub-router-bundle` has been raised to `^1.0`, this will require updates to your router resources

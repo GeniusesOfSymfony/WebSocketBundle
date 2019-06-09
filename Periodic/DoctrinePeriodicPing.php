@@ -8,19 +8,19 @@ use Doctrine\DBAL\Driver\PingableConnection;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterface
+final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var Connection|PingableConnection
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var int
      */
-    protected $timeout = 20;
+    private $timeout = 20;
 
     /**
      * @param Connection|PingableConnection $connection

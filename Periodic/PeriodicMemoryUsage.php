@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Periodic;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class PeriodicMemoryUsage implements PeriodicInterface, LoggerAwareInterface
+final class PeriodicMemoryUsage implements PeriodicInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
