@@ -11,12 +11,12 @@ use Ratchet\Wamp\Topic;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class RpcDispatcher implements RpcDispatcherInterface
+final class RpcDispatcher implements RpcDispatcherInterface
 {
     /**
      * @var RpcRegistry
      */
-    protected $rpcRegistry;
+    private $rpcRegistry;
 
     public function __construct(RpcRegistry $rpcRegistry)
     {

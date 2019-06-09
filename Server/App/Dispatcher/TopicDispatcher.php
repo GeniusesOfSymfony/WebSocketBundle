@@ -20,7 +20,7 @@ use Ratchet\Wamp\Topic;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
+final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -32,22 +32,22 @@ class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInterface
     /**
      * @var TopicRegistry
      */
-    protected $topicRegistry;
+    private $topicRegistry;
 
     /**
      * @var WampRouter
      */
-    protected $router;
+    private $router;
 
     /**
      * @var TopicPeriodicTimer
      */
-    protected $topicPeriodicTimer;
+    private $topicPeriodicTimer;
 
     /**
      * @var TopicManager
      */
-    protected $topicManager;
+    private $topicManager;
 
     public function __construct(
         TopicRegistry $topicRegistry,

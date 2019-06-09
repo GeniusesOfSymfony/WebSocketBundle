@@ -12,7 +12,7 @@ final class TopicRegistry
     /**
      * @var TopicInterface[]
      */
-    protected $topics = [];
+    private $topics = [];
 
     public function addTopic(TopicInterface $topic): void
     {

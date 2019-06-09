@@ -12,7 +12,7 @@ final class RpcRegistry
     /**
      * @var RpcInterface[]
      */
-    protected $rpcHandlers = [];
+    private $rpcHandlers = [];
 
     public function addRpc(RpcInterface $rpcHandler): void
     {

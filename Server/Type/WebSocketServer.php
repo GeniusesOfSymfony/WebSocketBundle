@@ -15,24 +15,24 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class WebSocketServer implements ServerInterface, LoggerAwareInterface
+final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
      * @var ServerBuilderInterface
      */
-    protected $serverBuilder;
+    private $serverBuilder;
 
     /**
      * @var LoopInterface
      */
-    protected $loop;
+    private $loop;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     public function __construct(
         ServerBuilderInterface $serverBuilder,
