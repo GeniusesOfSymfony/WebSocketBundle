@@ -63,10 +63,10 @@
         "gos/react-amqp": "^0.2 to use the amqp server push handler",
         "predis/predis": "^1.1 to use Predis as a client driver",
         "react/zmq": "^0.4 to use zmq server push handler",
-        "symfony/cache": "3.4|^4.0 to use symfony/cache as a client driver",
-        "symfony/options-resolver": "3.4|^4.0 to use the pushers",
-        "symfony/serializer": "3.4|^4.0 to use the pushers",
-        "symfony/stopwatch": "3.4|^4.0 to use the data collectors"
+        "symfony/cache": "^3.4|^4.0 to use symfony/cache as a client driver",
+        "symfony/options-resolver": "^3.4|^4.0 to use the pushers",
+        "symfony/serializer": "^3.4|^4.0 to use the pushers",
+        "symfony/stopwatch": "^3.4|^4.0 to use the data collectors"
     },
     "extra": {
         "branch-alias": {
