@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class RpcCompilerPass implements CompilerPassInterface
+final class RpcCompilerPass implements CompilerPassInterface
 {
     /**
      * @param ContainerBuilder $container

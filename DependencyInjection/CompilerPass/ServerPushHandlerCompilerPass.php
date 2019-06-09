@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ServerPushHandlerCompilerPass implements CompilerPassInterface
+final class ServerPushHandlerCompilerPass implements CompilerPassInterface
 {
     /**
      * @param ContainerBuilder $container

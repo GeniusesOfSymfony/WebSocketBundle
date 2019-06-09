@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class GosWebSocketExtension extends Extension implements PrependExtensionInterface
+final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}

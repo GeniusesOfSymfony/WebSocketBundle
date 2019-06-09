@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     private const DEFAULT_TTL = 900;
     private const DEFAULT_PREFIX = '';
@@ -140,7 +140,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    protected function addWampNode()
+    private function addWampNode()
     {
         $builder = new TreeBuilder('wamp');
 
@@ -175,7 +175,7 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    protected function addZmqNode()
+    private function addZmqNode()
     {
         $builder = new TreeBuilder('zmq');
 
@@ -217,7 +217,7 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    protected function addAmqpNode()
+    private function addAmqpNode()
     {
         $builder = new TreeBuilder('amqp');
 

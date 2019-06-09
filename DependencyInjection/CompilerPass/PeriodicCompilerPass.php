@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class PeriodicCompilerPass implements CompilerPassInterface
+final class PeriodicCompilerPass implements CompilerPassInterface
 {
     /**
      * @param ContainerBuilder $container
