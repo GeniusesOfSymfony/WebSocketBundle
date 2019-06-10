@@ -11,15 +11,15 @@ class AmqpConnectionFactoryTest extends TestCase
 {
     public function dataInvalidConfiguration(): \Generator
     {
-        yield 'port as a string' => [
+        yield 'host as a number' => [
             [
-                'host' => 'localhost',
-                'port' => '1337',
+                'host' => 42,
+                'port' => 1337,
                 'login' => 'foo',
                 'password' => 'foo',
             ],
             InvalidOptionsException::class,
-            'The option "port" with value "1337" is expected to be of type "integer", but is of type "string".',
+            'The option "host" with value 42 is expected to be of type "string", but is of type "integer".',
         ];
 
         yield 'host missing' => [

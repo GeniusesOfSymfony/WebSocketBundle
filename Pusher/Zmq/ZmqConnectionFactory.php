@@ -81,7 +81,7 @@ final class ZmqConnectionFactory
 
         $resolver->setAllowedTypes('persistent', 'boolean');
         $resolver->setAllowedTypes('host', 'string');
-        $resolver->setAllowedTypes('port', 'integer');
+        $resolver->setAllowedTypes('port', ['string', 'integer']);
         $resolver->setAllowedTypes('protocol', 'string');
         $resolver->setAllowedTypes('linger', 'integer');
 

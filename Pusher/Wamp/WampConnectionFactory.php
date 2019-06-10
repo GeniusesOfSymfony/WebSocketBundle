@@ -47,7 +47,7 @@ final class WampConnectionFactory
         );
 
         $resolver->setAllowedTypes('host', 'string');
-        $resolver->setAllowedTypes('port', 'integer');
+        $resolver->setAllowedTypes('port', ['string', 'integer']);
         $resolver->setAllowedTypes('ssl', 'boolean');
         $resolver->setAllowedTypes('origin', ['string', 'null']);
 

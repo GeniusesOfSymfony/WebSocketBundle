@@ -72,7 +72,7 @@ final class AmqpConnectionFactory
         );
 
         $resolver->setAllowedTypes('host', 'string');
-        $resolver->setAllowedTypes('port', 'integer');
+        $resolver->setAllowedTypes('port', ['string', 'integer']);
         $resolver->setAllowedTypes('login', 'string');
         $resolver->setAllowedTypes('password', 'string');
         $resolver->setAllowedTypes('vhost', 'string');
