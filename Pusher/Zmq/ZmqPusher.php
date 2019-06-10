@@ -35,7 +35,7 @@ final class ZmqPusher extends AbstractPusher
         $this->connection->send($data);
     }
 
-    public function close()
+    public function close(): void
     {
         if (false === $this->isConnected()) {
             return;

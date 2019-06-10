@@ -38,7 +38,7 @@ final class WampPusher extends AbstractPusher
         $this->connection->publish($message->getTopic(), json_encode($message->getData()));
     }
 
-    public function close()
+    public function close(): void
     {
         if (false === $this->isConnected()) {
             return;

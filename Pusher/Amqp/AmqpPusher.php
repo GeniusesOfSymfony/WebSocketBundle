@@ -60,7 +60,7 @@ final class AmqpPusher extends AbstractPusher
         );
     }
 
-    public function close()
+    public function close(): void
     {
         if (false === $this->isConnected()) {
             return;
