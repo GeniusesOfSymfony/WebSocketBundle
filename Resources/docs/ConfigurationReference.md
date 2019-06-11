@@ -14,10 +14,10 @@ gos_web_socket:
     server:
         port:                 ~ # Required, Example: 1337
         host:                 ~ # Required, Example: 127.0.0.1
-        origin_check:         false # Example: 1
+        origin_check:         false # Example: true
 
         # Flag indicating a keepalive ping should be enabled on the server
-        keepalive_ping:       false # Example: 1
+        keepalive_ping:       false # Example: true
 
         # The time in seconds between each keepalive ping
         keepalive_interval:   30 # Example: 30
@@ -31,10 +31,10 @@ gos_web_socket:
             -
 
                 # The name of the service to ping
-                name:                 ~
+                name:                 ~ # Required
 
                 # The type of the service to be pinged; valid options are "doctrine" and "pdo"
-                type:                 ~
+                type:                 ~ # One of "doctrine"; "pdo", Required
     pushers:
         zmq:
             enabled:              false

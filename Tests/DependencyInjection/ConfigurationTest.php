@@ -89,7 +89,7 @@ final class ConfigurationTest extends TestCase
     public function testConfigWithUnsupportedPingServiceType()
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.ping.services.0.type": "no_support" is not a supported service type');
+        $this->expectExceptionMessage('The value "no_support" is not allowed for path "gos_web_socket.ping.services.0.type". Permissible values: "doctrine", "pdo"');
 
         $extraConfig = [
             'ping' => [
