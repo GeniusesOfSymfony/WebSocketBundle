@@ -181,10 +181,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
             }
 
+            // Pull the 'enabled' field out of the pusher's config
+            $factoryConfig = $configs['pushers']['amqp'];
+            unset($factoryConfig['enabled']);
+
             $connectionFactoryDef = new Definition(
                 AmqpConnectionFactory::class,
                 [
-                    $configs['pushers']['amqp'],
+                    $factoryConfig,
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
@@ -209,10 +213,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
             }
 
+            // Pull the 'enabled' field out of the pusher's config
+            $factoryConfig = $configs['pushers']['zmq'];
+            unset($factoryConfig['enabled']);
+
             $connectionFactoryDef = new Definition(
                 ZmqConnectionFactory::class,
                 [
-                    $configs['pushers']['zmq'],
+                    $factoryConfig,
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
@@ -233,10 +241,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
+            // Pull the 'enabled' field out of the pusher's config
+            $factoryConfig = $configs['pushers']['wamp'];
+            unset($factoryConfig['enabled']);
+
             $connectionFactoryDef = new Definition(
                 WampConnectionFactory::class,
                 [
-                    $configs['pushers']['wamp'],
+                    $factoryConfig,
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
