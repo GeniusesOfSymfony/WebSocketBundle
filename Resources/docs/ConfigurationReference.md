@@ -37,6 +37,7 @@ gos_web_socket:
                 type:                 ~
     pushers:
         zmq:
+            enabled:              false
             default:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337
@@ -44,6 +45,7 @@ gos_web_socket:
             protocol:             tcp # One of "tcp"; "ipc"; "inproc"; "pgm"; "epgm"
             linger:               -1
         amqp:
+            enabled:              false
             default:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337
@@ -56,6 +58,7 @@ gos_web_socket:
             queue_name:           gos_websocket
             exchange_name:        gos_websocket_exchange
         wamp:
+            enabled:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337
             ssl:                  false
