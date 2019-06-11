@@ -319,7 +319,7 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $secured = false;
 
-            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, ?string $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
+            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
             {
                 $this->secured = true;
             }
@@ -546,7 +546,7 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $secured = false;
 
-            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, ?string $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
+            public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, ?array $exclude = null, ?array $eligible = null, ?string $provider = null): void
             {
                 throw new FirewallRejectionException('Access denied');
             }
