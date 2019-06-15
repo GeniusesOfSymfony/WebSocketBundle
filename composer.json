@@ -40,6 +40,7 @@
         "symfony/cache": "^3.4|^4.0",
         "symfony/monolog-bundle": "^3.0",
         "symfony/options-resolver": "^3.4|^4.0",
+        "symfony/polyfill-php73": "^1.11",
         "symfony/serializer": "^3.4|^4.0",
         "symfony/stopwatch": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0",
@@ -65,6 +66,7 @@
         "react/zmq": "^0.4 to use zmq server push handler",
         "symfony/cache": "^3.4|^4.0 to use symfony/cache as a client driver",
         "symfony/options-resolver": "^3.4|^4.0 to use the pushers",
+        "symfony/polyfill-php73": "^1.11 if using PHP 7.2",
         "symfony/serializer": "^3.4|^4.0 to use the pushers",
         "symfony/stopwatch": "^3.4|^4.0 to use the data collectors"
     },

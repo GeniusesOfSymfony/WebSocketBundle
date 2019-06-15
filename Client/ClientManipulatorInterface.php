@@ -11,10 +11,17 @@ interface ClientManipulatorInterface
     /**
      * @return TokenInterface[]
      */
+    public function findAllByUsername(Topic $topic, string $username): array;
+
+    /**
+     * @return TokenInterface[]
+     */
     public function findByRoles(Topic $topic, array $roles): array;
 
     /**
      * @return TokenInterface[]|bool
+     *
+     * @deprecated to be removed in 3.0. Use findAllByUsername() instead.
      */
     public function findByUsername(Topic $topic, string $username);
 

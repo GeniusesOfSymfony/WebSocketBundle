@@ -7,6 +7,8 @@
     - `Gos\Bundle\WebSocketBundle\RPC\RpcInterface` (`gos_web_socket.rpc` tag)
     - `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface` (`gos_web_socket.server` tag)
     - `Gos\Bundle\WebSocketBundle\Topic\TopicInterface` (`gos_web_socket.topic` tag)
+- Added `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::findAllByUsername()`
+    - Unlike `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::findByUsername()` which only returns the first match, the new method returns all matching connections for a username
 - Added new `gos_web_socket.ping.services` configuration node to configure pingable periodic services, presently supporting a Doctrine Connection or PDO
     - This is an array node where each value requires two keys: `name` (the container service ID) and `type` (the service type, either "doctrine" or "pdo")
     
@@ -50,6 +52,7 @@ gos_web_socket:
 - Registering periodic timers and push handlers in the default websocket server (`Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer`) has been extracted to event listeners subscribed to the `gos_web_socket.server_launched` event
 - Connection related dependencies are now managed by connection factories for the pushers and server push handlers
 - The `getConfig()` and `setConfig()` methods of `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` and `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` have been removed, as well as the logic in the compiler passes for injecting the configuration from the bundle's services
+- The `findByUsername()` method of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` is deprecated and will be removed in 3.0, the `findAllByUsername()` method should be used instead.
 
 Each pusher configuration node now has an `enabled` option, this must be set to true to enable a pusher; for example:
 

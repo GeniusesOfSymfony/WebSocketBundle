@@ -97,6 +97,84 @@ class ClientManipulatorTest extends TestCase
         $this->assertSame($client, $this->manipulator->getClient($connection));
     }
 
+    public function testAllConnectionsForAUserCanBeFoundByUsername()
+    {
+        $connection1 = $this->createMock(ConnectionInterface::class);
+        $connection2 = $this->createMock(ConnectionInterface::class);
+        $connection3 = $this->createMock(ConnectionInterface::class);
+
+        $storageId1 = 42;
+        $storageId2 = 43;
+        $storageId3 = 44;
+
+        $username1 = 'user';
+        $username2 = 'guest';
+
+        $client1 = $this->createMock(TokenInterface::class);
+        $client1->expects($this->once())
+            ->method('getUsername')
+            ->willReturn($username1);
+
+        $client2 = $this->createMock(TokenInterface::class);
+        $client2->expects($this->once())
+            ->method('getUsername')
+            ->willReturn($username1);
+
+        $client3 = $this->createMock(TokenInterface::class);
+        $client3->expects($this->once())
+            ->method('getUsername')
+            ->willReturn($username2);
+
+        $this->clientStorage->expects($this->at(0))
+            ->method('getStorageId')
+            ->with($connection1)
+            ->willReturn((string) $storageId1);
+
+        $this->clientStorage->expects($this->at(1))
+            ->method('getClient')
+            ->with($storageId1)
+            ->willReturn($client1);
+
+        $this->clientStorage->expects($this->at(2))
+            ->method('getStorageId')
+            ->with($connection2)
+            ->willReturn((string) $storageId2);
+
+        $this->clientStorage->expects($this->at(3))
+            ->method('getClient')
+            ->with($storageId2)
+            ->willReturn($client2);
+
+        $this->clientStorage->expects($this->at(4))
+            ->method('getStorageId')
+            ->with($connection3)
+            ->willReturn((string) $storageId3);
+
+        $this->clientStorage->expects($this->at(5))
+            ->method('getClient')
+            ->with($storageId3)
+            ->willReturn($client3);
+
+        $topic = $this->createMock(Topic::class);
+        $topic->expects($this->once())
+            ->method('getIterator')
+            ->willReturn(new \ArrayIterator([$connection1, $connection2, $connection3]));
+
+        $this->assertSame(
+            [
+                [
+                    'client' => $client1,
+                    'connection' => $connection1,
+                ],
+                [
+                    'client' => $client2,
+                    'connection' => $connection2,
+                ],
+            ],
+            $this->manipulator->findAllByUsername($topic, $username1)
+        );
+    }
+
     public function testAUserCanBeFoundByUsernameIfConnected()
     {
         $connection = $this->createMock(ConnectionInterface::class);

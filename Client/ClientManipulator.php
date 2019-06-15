@@ -32,6 +32,29 @@ final class ClientManipulator implements ClientManipulatorInterface
     /**
      * @return TokenInterface[]
      */
+    public function findAllByUsername(Topic $topic, string $username): array
+    {
+        $result = [];
+
+        /** @var ConnectionInterface $connection */
+        foreach ($topic as $connection) {
+            $client = $this->getClient($connection);
+
+            if ($client instanceof AnonymousToken) {
+                continue;
+            }
+
+            if ($client->getUsername() === $username) {
+                $result[] = ['client' => $client, 'connection' => $connection];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return TokenInterface[]
+     */
     public function findByRoles(Topic $topic, array $roles): array
     {
         $results = [];
@@ -75,23 +98,27 @@ final class ClientManipulator implements ClientManipulatorInterface
 
     /**
      * @return TokenInterface[]|bool
+     *
+     * @deprecated to be removed in 3.0. Use findAllByUsername() instead.
      */
     public function findByUsername(Topic $topic, string $username)
     {
-        /** @var ConnectionInterface $connection */
-        foreach ($topic as $connection) {
-            $client = $this->getClient($connection);
+        @trigger_error(
+            sprintf(
+                'The %s() method is deprecated will be removed in 3.0. Use %s::findAllByUsername() instead.',
+                __METHOD__,
+                ClientManipulatorInterface::class
+            ),
+            E_USER_DEPRECATED
+        );
 
-            if ($client instanceof AnonymousToken) {
-                continue;
-            }
+        $connections = $this->findAllByUsername($topic, $username);
 
-            if ($client->getUsername() === $username) {
-                return ['client' => $client, 'connection' => $connection];
-            }
+        if (empty($connections)) {
+            return false;
         }
 
-        return false;
+        return $connections[array_key_first($connections)];
     }
 
     /**
