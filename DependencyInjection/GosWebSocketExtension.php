@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
@@ -10,7 +10,6 @@ use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Gos\Component\WebSocketClient\Wamp\Client;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -36,7 +35,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         $loader = new Loader\YamlFileLoader(
             $container,
-            new FileLocator(__DIR__ . '/../Resources/config/services')
+            new FileLocator(__DIR__.'/../Resources/config/services')
         );
 
         $loader->load('services.yml');
@@ -177,7 +176,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['pushers']['amqp']) && $configs['pushers']['amqp']['enabled']) {
-            if (!extension_loaded('amqp')) {
+            if (!\extension_loaded('amqp')) {
                 throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
             }
 
@@ -209,7 +208,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['pushers']['zmq']) && $configs['pushers']['zmq']['enabled']) {
-            if (!extension_loaded('zmq')) {
+            if (!\extension_loaded('zmq')) {
                 throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
             }
 

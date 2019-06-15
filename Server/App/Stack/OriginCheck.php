@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Stack;
 
@@ -44,7 +44,7 @@ class OriginCheck extends BaseOriginCheck
         $header = (string) $request->getHeaderLine('Origin');
         $origin = parse_url($header, PHP_URL_HOST) ?: $header;
 
-        if (!in_array($origin, $this->allowedOrigins)) {
+        if (!\in_array($origin, $this->allowedOrigins)) {
             $this->eventDispatcher->dispatch(
                 Events::CLIENT_REJECTED,
                 new ClientRejectedEvent($origin, $request)

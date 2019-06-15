@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
@@ -43,7 +43,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
 
     protected function getTid(string $name): string
     {
-        return sha1($this->connection->resourceId . $this->connection->WAMP->sessionId . $name);
+        return sha1($this->connection->resourceId.$this->connection->WAMP->sessionId.$name);
     }
 
     /**
@@ -82,10 +82,10 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * return int
+     * @return int
      */
     public function count()
     {
-        return count($this->registry);
+        return \count($this->registry);
     }
 }

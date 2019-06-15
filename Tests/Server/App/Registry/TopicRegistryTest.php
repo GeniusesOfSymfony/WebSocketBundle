@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Registry;
 
@@ -25,8 +25,7 @@ class TopicRegistryTest extends TestCase
 
     public function testTopicsAreAddedToTheRegistry()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
             {
                 // no-op
@@ -59,8 +58,7 @@ class TopicRegistryTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A topic named "main" has not been registered.');
 
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
             {
                 // no-op

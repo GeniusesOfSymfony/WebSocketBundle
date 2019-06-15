@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection\CompilerPass;
 
@@ -7,7 +7,6 @@ use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 class PeriodicCompilerPassTest extends AbstractCompilerPassTestCase

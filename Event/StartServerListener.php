@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
@@ -32,7 +32,7 @@ final class StartServerListener implements LoggerAwareInterface
 
     public function bindPnctlEvent(ServerEvent $event): void
     {
-        if (defined('SIGINT')) {
+        if (\defined('SIGINT')) {
             $loop = $event->getEventLoop();
             $server = $event->getServer();
 

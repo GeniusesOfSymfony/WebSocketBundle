@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Registry;
 
@@ -22,8 +22,7 @@ class PeriodicRegistryTest extends TestCase
 
     public function testPeriodicsAreAddedToTheRegistry()
     {
-        $periodic = new class implements PeriodicInterface
-        {
+        $periodic = new class() implements PeriodicInterface {
             public function tick(): void
             {
                 // no-op

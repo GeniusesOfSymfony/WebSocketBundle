@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\DataCollector;
 
@@ -27,7 +27,7 @@ final class WebsocketDataCollector extends DataCollector
             }
 
             $pusherDurationTotal = array_sum($durations);
-            $pusherCount[$pusherName] += $count = count($durations);
+            $pusherCount[$pusherName] += $count = \count($durations);
             $totalPush += $count;
             $pusherDuration[$pusherName] = $pusherDurationTotal;
             $durationTotal += $pusherDurationTotal;

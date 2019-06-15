@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
@@ -8,7 +8,7 @@ use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
 /**
- * Class TopicManager
+ * Class TopicManager.
  *
  * @author Edu Salguero <edusalguero@gmail.com>
  */
@@ -34,7 +34,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
      */
     public function onOpen(ConnectionInterface $conn)
     {
-        $conn->WAMP->subscriptions = new \SplObjectStorage;
+        $conn->WAMP->subscriptions = new \SplObjectStorage();
         $this->app->onOpen($conn);
     }
 
@@ -120,7 +120,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
 
     public function getTopic(string $topic): Topic
     {
-        if (!array_key_exists($topic, $this->topicLookup)) {
+        if (!\array_key_exists($topic, $this->topicLookup)) {
             $this->topicLookup[$topic] = new Topic($topic);
         }
 

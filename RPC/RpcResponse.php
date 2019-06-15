@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\RPC;
 
@@ -10,7 +10,7 @@ final class RpcResponse
     /**
      * @var array
      */
-    protected $data;
+    private $data;
 
     /**
      * @param mixed $data

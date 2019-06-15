@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Event;
 
@@ -74,7 +74,7 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage'
+            'clientStorageId' => 'client_storage',
         ];
 
         $token = $this->createMock(TokenInterface::class);
@@ -106,7 +106,7 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage'
+            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientEvent::class);
@@ -133,7 +133,7 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage'
+            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientEvent::class);
@@ -169,7 +169,7 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage'
+            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientErrorEvent::class);

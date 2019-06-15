@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Registry;
 
-use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use PHPUnit\Framework\TestCase;
@@ -23,8 +22,7 @@ class ServerRegistryTest extends TestCase
 
     public function testServersAreAddedToTheRegistry()
     {
-        $server = new class implements ServerInterface
-        {
+        $server = new class() implements ServerInterface {
             public function launch(string $host, int $port, bool $profile)
             {
                 // no-op
@@ -48,8 +46,7 @@ class ServerRegistryTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A server named "main" has not been registered.');
 
-        $server = new class implements ServerInterface
-        {
+        $server = new class() implements ServerInterface {
             public function launch(string $host, int $port, bool $profile)
             {
                 // no-op

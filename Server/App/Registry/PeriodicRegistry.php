@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Registry;
 
@@ -29,6 +29,6 @@ final class PeriodicRegistry
 
     public function hasPeriodic(PeriodicInterface $periodic): bool
     {
-        return in_array($periodic, $this->periodics);
+        return \in_array($periodic, $this->periodics);
     }
 }

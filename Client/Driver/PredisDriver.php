@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
@@ -22,7 +22,7 @@ final class PredisDriver implements DriverInterface
     public function __construct(ClientInterface $client, string $prefix = '')
     {
         $this->client = $client;
-        $this->prefix = $prefix !== '' ? $prefix . ':' : '';
+        $this->prefix = '' !== $prefix ? $prefix.':' : '';
     }
 
     /**
@@ -30,7 +30,7 @@ final class PredisDriver implements DriverInterface
      */
     public function fetch(string $id)
     {
-        $result = $this->client->get($this->prefix . $id);
+        $result = $this->client->get($this->prefix.$id);
 
         if (null === $result) {
             return false;
@@ -41,7 +41,7 @@ final class PredisDriver implements DriverInterface
 
     public function contains(string $id): bool
     {
-        return $this->client->exists($this->prefix . $id);
+        return $this->client->exists($this->prefix.$id);
     }
 
     /**
@@ -50,16 +50,16 @@ final class PredisDriver implements DriverInterface
     public function save(string $id, $data, int $lifeTime = 0): bool
     {
         if ($lifeTime > 0) {
-            $response = $this->client->setex($this->prefix . $id, $lifeTime, $data);
+            $response = $this->client->setex($this->prefix.$id, $lifeTime, $data);
         } else {
-            $response = $this->client->set($this->prefix . $id, $data);
+            $response = $this->client->set($this->prefix.$id, $data);
         }
 
-        return $response === true || $response === 'OK';
+        return true === $response || 'OK' === $response;
     }
 
     public function delete(string $id): bool
     {
-        return $this->client->del($this->prefix . $id) > 0;
+        return $this->client->del($this->prefix.$id) > 0;
     }
 }

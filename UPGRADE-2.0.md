@@ -29,6 +29,7 @@ gos_web_socket:
 
 ## Changes
 
+- Enabled `declare(strict_types=1);` in all bundle files
 - Added typehints and return types to most classes and interfaces
 - Most classes are now final, use decorators or direct implement interfaces to implement custom behaviors
 - The dependency to `gos/pubsub-router-bundle` has been raised to `^1.0`, this will require updates to your router resources

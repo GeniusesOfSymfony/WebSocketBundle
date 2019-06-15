@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Client;
 
@@ -36,7 +36,7 @@ class ClientStorageTest extends TestCase
 
     public function testTheClientIsRetrieved()
     {
-        $clientId = 42;
+        $clientId = '42';
         $token = new AnonymousToken('secret', 'anon');
 
         $this->driver->expects($this->once())
@@ -52,7 +52,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('fetch')
@@ -67,7 +67,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(ClientNotFoundException::class);
         $this->expectExceptionMessage('Client 42 not found');
 
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('fetch')
@@ -89,7 +89,7 @@ class ClientStorageTest extends TestCase
 
     public function testTheClientIsAddedToStorage()
     {
-        $clientId = 42;
+        $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
@@ -104,7 +104,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
-        $clientId = 42;
+        $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
@@ -119,7 +119,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Unable to add client "user" to storage');
 
-        $clientId = 42;
+        $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
@@ -134,7 +134,7 @@ class ClientStorageTest extends TestCase
 
     public function testTheStorageCanBeCheckedToDetermineIfAClientExists()
     {
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('contains')
@@ -148,7 +148,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('contains')
@@ -159,7 +159,7 @@ class ClientStorageTest extends TestCase
 
     public function testAClientCanBeRemovedFromStorage()
     {
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('delete')
@@ -173,7 +173,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
-        $clientId = 42;
+        $clientId = '42';
 
         $this->driver->expects($this->once())
             ->method('delete')

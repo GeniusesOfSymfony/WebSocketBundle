@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Topic;
 
@@ -35,7 +35,7 @@ class TopicManagerTest extends TestCase
         $this->mngr = new TopicManager();
         $this->mngr->setWampApplication($this->mock);
 
-        $this->conn->WAMP = new \stdClass;
+        $this->conn->WAMP = new \stdClass();
         $this->mngr->onOpen($this->conn);
     }
 
@@ -223,7 +223,7 @@ class TopicManagerTest extends TestCase
         list($topic, $attribute) = $this->topicProvider($topicName);
 
         $this->mngr->onSubscribe($this->conn, $topicName);
-        call_user_func_array([$this->mngr, $methodCall], [$this->conn, $topicName]);
+        \call_user_func_array([$this->mngr, $methodCall], [$this->conn, $topicName]);
 
         $this->assertCount($expectation, $attribute->getValue($this->mngr));
     }
@@ -255,4 +255,6 @@ class TopicManagerTest extends TestCase
     }
 }
 
-interface WsWampServerInterface extends WampServerInterface, WsServerInterface {}
+interface WsWampServerInterface extends WampServerInterface, WsServerInterface
+{
+}

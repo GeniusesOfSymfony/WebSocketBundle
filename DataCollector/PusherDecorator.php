@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\DataCollector;
 
@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
- * Pusher decorating another Pusher to collect data
+ * Pusher decorating another Pusher to collect data.
  */
 final class PusherDecorator implements PusherInterface
 {

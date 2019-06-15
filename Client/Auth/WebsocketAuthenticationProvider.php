@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Client\Auth;
 
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
@@ -35,7 +34,7 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
 
     public function authenticate(ConnectionInterface $conn): TokenInterface
     {
-        if (1 === count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
+        if (1 === \count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
             if ($this->logger) {
                 $this->logger->warning(
                     sprintf(

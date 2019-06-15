@@ -1,13 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 final class ServerPushHandlerRegistry
 {
     /**
-     * @var array ServerPushHandlerInterface[]
+     * @var ServerPushHandlerInterface[]
      */
-    protected $pushHandlers = [];
+    private $pushHandlers = [];
 
     public function addPushHandler(ServerPushHandlerInterface $handler): void
     {

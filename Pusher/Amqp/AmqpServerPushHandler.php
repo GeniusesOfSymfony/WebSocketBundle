@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
@@ -73,7 +73,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
                     $queue->ack($envelop->getDeliveryTag());
-                    $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($message, $this));
+                    $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($envelop->getBody(), $this));
                 } catch (\Exception $e) {
                     if ($this->logger) {
                         $this->logger->error(

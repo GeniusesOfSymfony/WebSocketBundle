@@ -1,12 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Periodic;
 
-use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {

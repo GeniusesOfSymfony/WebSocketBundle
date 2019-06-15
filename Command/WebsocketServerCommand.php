@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Command;
 
-use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -52,8 +51,8 @@ final class WebsocketServerCommand extends Command
     {
         $this->serverLauncher->launch(
             $input->getArgument('name'),
-            $input->getOption('host') === null ? $this->host : $input->getOption('host'),
-            $input->getOption('port') === null ? $this->port : $input->getOption('port'),
+            null === $input->getOption('host') ? $this->host : $input->getOption('host'),
+            null === $input->getOption('port') ? $this->port : $input->getOption('port'),
             $input->getOption('profile')
         );
     }

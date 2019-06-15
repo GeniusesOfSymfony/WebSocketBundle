@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
@@ -18,7 +18,7 @@ final class AmqpConnectionFactory
 
     public function createConnection(): \AMQPConnection
     {
-        if (!extension_loaded('amqp')) {
+        if (!\extension_loaded('amqp')) {
             throw new \RuntimeException('The AMQP pusher requires the PHP amqp extension.');
         }
 
@@ -67,7 +67,6 @@ final class AmqpConnectionFactory
                 'connect_timeout' => 0,
                 'queue_name' => 'gos_websocket',
                 'exchange_name' => 'gos_websocket_exchange',
-
             ]
         );
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Registry;
 
@@ -22,8 +22,7 @@ class RpcRegistryTest extends TestCase
 
     public function testRpcHandlersAreAddedToTheRegistry()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             public function getName(): string
             {
                 return 'test';
@@ -41,8 +40,7 @@ class RpcRegistryTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A RPC handler named "main" has not been registered.');
 
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             public function getName(): string
             {
                 return 'test';

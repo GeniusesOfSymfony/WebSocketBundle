@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 
@@ -61,10 +61,10 @@ final class TopicDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->topicRegistry      = new TopicRegistry();
-        $this->wampRouter         = new WampRouter($this->createMock(RouterInterface::class));
+        $this->topicRegistry = new TopicRegistry();
+        $this->wampRouter = new WampRouter($this->createMock(RouterInterface::class));
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
-        $this->topicManager       = $this->createMock(TopicManager::class);
+        $this->topicManager = $this->createMock(TopicManager::class);
 
         $this->logger = new TestLogger();
 
@@ -74,8 +74,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testAWebsocketSubscriptionIsDispatchedToItsHandler()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -120,8 +119,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testAWebsocketPushIsDispatchedToItsHandler()
     {
-        $handler = new class implements TopicInterface, PushableTopicInterface
-        {
+        $handler = new class() implements TopicInterface, PushableTopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -176,8 +174,7 @@ final class TopicDispatcherTest extends TestCase
         $this->expectException(PushUnsupportedException::class);
         $this->expectExceptionMessage('The "topic.handler" topic does not support push notifications');
 
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -222,8 +219,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -268,8 +264,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testAWebsocketPublishIsDispatchedToItsHandler()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -314,8 +309,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testADispatchToASecuredTopicHandlerIsCompleted()
     {
-        $handler = new class implements TopicInterface, SecuredTopicInterface
-        {
+        $handler = new class() implements TopicInterface, SecuredTopicInterface {
             private $called = false;
             private $secured = false;
 
@@ -372,8 +366,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testADispatchToAnUnregisteredPeriodicTopicTimerIsCompleted()
     {
-        $handler = new class implements TopicInterface, TopicPeriodicTimerInterface
-        {
+        $handler = new class() implements TopicInterface, TopicPeriodicTimerInterface {
             use TopicPeriodicTimerTrait;
 
             private $called = false;
@@ -441,8 +434,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testPeriodicTimersAreClearedWhenAnEmptyTopicIsUnsubscribed()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -495,8 +487,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
@@ -541,8 +532,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testTheConnectionIsClosedIfATopicCannotBeSecured()
     {
-        $handler = new class implements TopicInterface, SecuredTopicInterface
-        {
+        $handler = new class() implements TopicInterface, SecuredTopicInterface {
             private $called = false;
             private $secured = false;
 
@@ -610,8 +600,7 @@ final class TopicDispatcherTest extends TestCase
 
     public function testAnExceptionFromAHandlerIsCaughtAndProcessed()
     {
-        $handler = new class implements TopicInterface
-        {
+        $handler = new class() implements TopicInterface {
             private $called = false;
 
             public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)

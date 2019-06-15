@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
@@ -21,12 +21,12 @@ final class ZmqConnectionFactory
 
     public function buildConnectionDsn(): string
     {
-        return $this->config['protocol'] . '://' . $this->config['host'] . ':' . $this->config['port'];
+        return $this->config['protocol'].'://'.$this->config['host'].':'.$this->config['port'];
     }
 
     public function createConnection(): \ZMQSocket
     {
-        if (!extension_loaded('zmq')) {
+        if (!\extension_loaded('zmq')) {
             throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
@@ -40,7 +40,7 @@ final class ZmqConnectionFactory
 
     public function createWrappedConnection(LoopInterface $loop, int $socketType = 7 /*\ZMQ::SOCKET_PULL*/): SocketWrapper
     {
-        if (!extension_loaded('zmq')) {
+        if (!\extension_loaded('zmq')) {
             throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
@@ -75,7 +75,6 @@ final class ZmqConnectionFactory
                 'persistent' => true,
                 'protocol' => 'tcp',
                 'linger' => -1,
-
             ]
         );
 

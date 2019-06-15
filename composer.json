@@ -34,6 +34,7 @@
     "require-dev": {
         "doctrine/cache": "^1.8",
         "doctrine/dbal": "^2.9",
+        "friendsofphp/php-cs-fixer": "^2.15.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "phpunit/phpunit": "^8.1",
         "predis/predis": "^1.1",

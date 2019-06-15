@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
@@ -32,7 +32,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
                 $this->logger->info(
                     sprintf(
                         'Registered periodic callback %s, executed every %s seconds',
-                        $periodic instanceof ProxyInterface ? get_parent_class($periodic) : get_class($periodic),
+                        $periodic instanceof ProxyInterface ? get_parent_class($periodic) : \get_class($periodic),
                         $periodic->getTimeout()
                     )
                 );

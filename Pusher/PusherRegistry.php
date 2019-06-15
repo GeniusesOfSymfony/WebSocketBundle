@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
@@ -7,7 +7,7 @@ final class PusherRegistry
     /**
      * @var PusherInterface[]
      */
-    protected $pushers = [];
+    private $pushers = [];
 
     public function addPusher(PusherInterface $pusher): void
     {

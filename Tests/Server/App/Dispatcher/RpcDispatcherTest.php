@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 
@@ -36,8 +36,7 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallIsDispatchedToItsHandler()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             private $called = false;
 
             public function getName(): string
@@ -65,7 +64,7 @@ class RpcDispatcherTest extends TestCase
         $attribs = new ParameterBag();
         $attribs->set('method', 'handleCallback');
 
-        $request = new WampRequest('hello.world', $route, $attribs, true);
+        $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
@@ -80,8 +79,7 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             private $called = false;
 
             public function getName(): string
@@ -107,7 +105,7 @@ class RpcDispatcherTest extends TestCase
         $attribs = new ParameterBag();
         $attribs->set('method', 'handleCallback');
 
-        $request = new WampRequest('hello.world', $route, $attribs, true);
+        $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
@@ -122,8 +120,7 @@ class RpcDispatcherTest extends TestCase
 
     public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             private $called = false;
 
             public function getName(): string
@@ -151,7 +148,7 @@ class RpcDispatcherTest extends TestCase
         $attribs = new ParameterBag();
         $attribs->set('method', 'handledCallback');
 
-        $request = new WampRequest('hello.world', $route, $attribs, true);
+        $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
@@ -166,8 +163,7 @@ class RpcDispatcherTest extends TestCase
 
     public function testAThrowableFromAHandlerIsCaughtAndProcessed()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             public function getName(): string
             {
                 return '@rpc.handler';
@@ -186,7 +182,7 @@ class RpcDispatcherTest extends TestCase
         $attribs = new ParameterBag();
         $attribs->set('method', 'handleCallback');
 
-        $request = new WampRequest('hello.world', $route, $attribs, true);
+        $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
@@ -199,8 +195,7 @@ class RpcDispatcherTest extends TestCase
 
     public function testANullReturnFromAHandlerIsProcessed()
     {
-        $handler = new class implements RpcInterface
-        {
+        $handler = new class() implements RpcInterface {
             public function getName(): string
             {
                 return '@rpc.handler';
@@ -219,7 +214,7 @@ class RpcDispatcherTest extends TestCase
         $attribs = new ParameterBag();
         $attribs->set('method', 'handleCallback');
 
-        $request = new WampRequest('hello.world', $route, $attribs, true);
+        $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())

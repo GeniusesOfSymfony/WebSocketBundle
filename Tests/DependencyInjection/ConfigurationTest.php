@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
@@ -158,7 +158,7 @@ final class ConfigurationTest extends TestCase
                 'storage' => [
                     'driver' => '@gos_web_socket.server.in_memory.client_storage.driver',
                     'ttl' => 900,
-                    'prefix' => ''
+                    'prefix' => '',
                 ],
             ],
             'shared_config' => true,

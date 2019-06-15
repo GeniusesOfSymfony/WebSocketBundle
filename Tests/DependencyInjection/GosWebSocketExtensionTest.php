@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\DBAL\Connection;
 use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;

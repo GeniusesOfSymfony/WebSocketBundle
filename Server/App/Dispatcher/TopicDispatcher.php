@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
@@ -7,8 +7,8 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
-use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
@@ -107,8 +107,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ?array $exclude = null,
         ?array $eligible = null,
         ?string $provider = null
-    ): bool
-    {
+    ): bool {
         $callback = $request->getRoute()->getCallback();
 
         if (!$this->topicRegistry->hasTopic($callback)) {
@@ -154,7 +153,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         if ($appTopic instanceof TopicPeriodicTimerInterface) {
             $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
 
-            if (!$this->topicPeriodicTimer->isRegistered($appTopic) && count($topic) !== 0) {
+            if (!$this->topicPeriodicTimer->isRegistered($appTopic) && 0 !== \count($topic)) {
                 $appTopic->registerPeriodicTimer($topic);
             }
         }
@@ -181,7 +180,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::UNSUBSCRIPTION:
-                    if (0 === count($topic)) {
+                    if (0 === \count($topic)) {
                         $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
                     }
 
@@ -211,7 +210,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     'Websocket error processing topic callback function.',
                     [
                         'exception' => $e,
-                        'topic'     => $topic,
+                        'topic' => $topic,
                     ]
                 );
             }
@@ -222,10 +221,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     $topic,
                     $e->getMessage(),
                     [
-                        'code'    => 500,
-                        'topic'   => $topic,
+                        'code' => 500,
+                        'topic' => $topic,
                         'request' => $request,
-                        'event'   => $calledMethod,
+                        'event' => $calledMethod,
                     ]
                 );
             }

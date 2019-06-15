@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Serializer;
 
@@ -49,7 +49,7 @@ final class MessageSerializer
      */
     public function serialize(MessageInterface $message)
     {
-        $this->class = get_class($message);
+        $this->class = \get_class($message);
 
         return $this->serializer->serialize($message, 'json');
     }

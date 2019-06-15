@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Server;
 
@@ -10,7 +10,7 @@ use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
 /**
- * Class WampServer
+ * Class WampServer.
  *
  * @author Edu Salguero <edusalguero@gmail.com>
  */
@@ -24,7 +24,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     /**
      * This class just makes it 1 step easier to use Topic objects in WAMP
      * If you're looking at the source code, look in the __construct of this
-     * class and use that to make your application instead of using this
+     * class and use that to make your application instead of using this.
      */
     public function __construct(WampServerInterface $app, TopicManager $topicManager)
     {

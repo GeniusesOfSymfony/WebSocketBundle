@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
@@ -64,7 +64,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
         }
 
         try {
-            $result = call_user_func([$procedure, $method], $conn, $request, $params);
+            $result = \call_user_func([$procedure, $method], $conn, $request, $params);
         } catch (\Exception $e) {
             $conn->callError(
                 $id,
@@ -81,7 +81,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
             return;
         }
 
-        if ($result === null || $result === false) {
+        if (null === $result || false === $result) {
             $conn->callError(
                 $id,
                 $topic,
@@ -99,7 +99,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
 
         if ($result instanceof RpcResponse) {
             $result = $result->getData();
-        } elseif (!is_array($result)) {
+        } elseif (!\is_array($result)) {
             $result = [$result];
         }
 

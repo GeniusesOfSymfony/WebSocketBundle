@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App;
 
@@ -154,7 +154,7 @@ class WampApplicationTest extends TestCase
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
-        $id = 42;
+        $id = '42';
         $params = [];
 
         $this->rpcDispatcher->expects($this->once())

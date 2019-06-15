@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
@@ -70,7 +70,7 @@ final class ClientManipulator implements ClientManipulatorInterface
             // In Symfony 4.3 and newer, use `getRoleNames`, otherwise use the deprecated `getRoles`
             if (method_exists($client, 'getRoleNames')) {
                 foreach ($client->getRoleNames() as $role) {
-                    if (in_array($role, $roles)) {
+                    if (\in_array($role, $roles)) {
                         $results[] = [
                             'client' => $client,
                             'connection' => $connection,
@@ -81,7 +81,7 @@ final class ClientManipulator implements ClientManipulatorInterface
                 }
             } else {
                 foreach ($client->getRoles() as $role) {
-                    if (in_array($role->getRole(), $roles)) {
+                    if (\in_array($role->getRole(), $roles)) {
                         $results[] = [
                             'client' => $client,
                             'connection' => $connection,

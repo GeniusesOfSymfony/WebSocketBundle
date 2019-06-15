@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
@@ -42,7 +42,6 @@ final class WampConnectionFactory
             [
                 'ssl' => false,
                 'origin' => null,
-
             ]
         );
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Periodic;
 
@@ -33,7 +33,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
                     'The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.',
                     Connection::class,
                     PingableConnection::class,
-                    get_class($connection)
+                    \get_class($connection)
                 )
             );
         }

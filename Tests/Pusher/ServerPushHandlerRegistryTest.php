@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Pusher;
 
@@ -24,8 +24,7 @@ class ServerPushHandlerRegistryTest extends TestCase
 
     public function testPushHandlersAreAddedToTheRegistry()
     {
-        $handler = new class implements ServerPushHandlerInterface
-        {
+        $handler = new class() implements ServerPushHandlerInterface {
             public function handle(LoopInterface $loop, WampServerInterface $app): void
             {
                 // no-op
@@ -59,8 +58,7 @@ class ServerPushHandlerRegistryTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A push handler named "main" has not been registered.');
 
-        $handler = new class implements ServerPushHandlerInterface
-        {
+        $handler = new class() implements ServerPushHandlerInterface {
             public function handle(LoopInterface $loop, WampServerInterface $app): void
             {
                 // no-op

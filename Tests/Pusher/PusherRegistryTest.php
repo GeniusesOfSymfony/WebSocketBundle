@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Pusher;
 
@@ -22,8 +22,7 @@ class PusherRegistryTest extends TestCase
 
     public function testPushersAreAddedToTheRegistry()
     {
-        $pusher = new class implements PusherInterface
-        {
+        $pusher = new class() implements PusherInterface {
             public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
             {
                 // no-op
@@ -57,8 +56,7 @@ class PusherRegistryTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A pusher named "main" has not been registered.');
 
-        $pusher = new class implements PusherInterface
-        {
+        $pusher = new class() implements PusherInterface {
             public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
             {
                 // no-op
