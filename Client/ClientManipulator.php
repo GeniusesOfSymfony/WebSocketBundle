@@ -115,14 +115,26 @@ class ClientManipulator implements ClientManipulatorInterface
                 continue;
             }
 
-            foreach ($client->getRoles() as $role) {
-                if (in_array($role, $roles)) {
-                    $results[] = [
-                        'client' => $client,
-                        'connection' => $connection,
-                    ];
-
-                    continue 1;
+            // In Symfony 4.3 and newer, use `getRoleNames`, otherwise use the deprecated `getRoles`
+            if (method_exists($client, 'getRoleNames')) {
+                foreach ($client->getRoleNames() as $role) {
+                    if (in_array($role, $roles)) {
+                        $results[] = [
+                            'client' => $client,
+                            'connection' => $connection,
+                        ];
+                        continue 1;
+                    }
+                }
+            } else {
+                foreach ($client->getRoles() as $role) {
+                    if (in_array($role->getRole(), $roles)) {
+                        $results[] = [
+                            'client' => $client,
+                            'connection' => $connection,
+                        ];
+                        continue 1;
+                    }
                 }
             }
         }
