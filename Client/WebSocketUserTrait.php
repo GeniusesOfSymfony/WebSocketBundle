@@ -4,8 +4,13 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Ratchet\ConnectionInterface;
 
+@trigger_error(
+    sprintf('The %s trait is deprecated will be removed in 2.0. Inject a %s instance into your class instead.', WebSocketUserTrait::class, ClientManipulatorInterface::class),
+    E_USER_DEPRECATED
+);
+
 /**
- * @deprecated Use ClientManipulator instead will be removed in 2.0
+ * @deprecated to be removed in 2.0. Inject a ClientManipulatorInterface instance into your class instead.
  */
 trait WebSocketUserTrait
 {
@@ -18,11 +23,11 @@ trait WebSocketUserTrait
      * @param ConnectionInterface $connection
      *
      * @return false|string|\Symfony\Component\Security\Core\User\UserInterface
+     *
+     * @deprecated to be removed in 2.0. Inject a ClientManipulatorInterface instance into your class instead.
      */
     public function getCurrentUser(ConnectionInterface $connection)
     {
-        @trigger_error('User ClientManipulator service instead, will be remove in 2.0', E_USER_DEPRECATED);
-
         return $this->clientStorage->getClient($this->clientStorage->getStorageId($connection));
     }
 }
