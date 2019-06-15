@@ -26,6 +26,7 @@ class WampRouter
 
     /**
      * @var bool
+     * @deprecated to be removed in 2.0.
      */
     protected $debug;
 
@@ -41,23 +42,37 @@ class WampRouter
 
     /**
      * @param RouterContext $context
+     *
+     * @deprecated to be removed in 2.0.
      */
     public function setContext(RouterContext $context)
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         $this->pubSubRouter->setContext($context);
     }
 
     /**
      * @return RouterContext
+     *
+     * @deprecated to be removed in 2.0.
      */
     public function getContext()
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         return $this->pubSubRouter->getContext();
     }
 
     /**
      * @param Topic       $topic
-     * @param string|null $tokenSeparator
+     * @param string|null $tokenSeparator {@deprecated}
      *
      * @return WampRequest
      *
@@ -66,6 +81,13 @@ class WampRouter
      */
     public function match(Topic $topic, $tokenSeparator = null)
     {
+        if ($tokenSeparator !== null) {
+            @trigger_error(
+                sprintf('The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__),
+                E_USER_DEPRECATED
+            );
+        }
+
         try {
             list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId(), $tokenSeparator);
 
@@ -90,12 +112,19 @@ class WampRouter
     /**
      * @param string      $routeName
      * @param array       $parameters
-     * @param null|string $tokenSeparator
+     * @param null|string $tokenSeparator {@deprecated}
      *
      * @return string
      */
-    public function generate($routeName, Array $parameters = [], $tokenSeparator = null)
+    public function generate($routeName, array $parameters = [], $tokenSeparator = null)
     {
+        if ($tokenSeparator !== null) {
+            @trigger_error(
+                sprintf('The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__),
+                E_USER_DEPRECATED
+            );
+        }
+
         return $this->pubSubRouter->generate($routeName, $parameters, $tokenSeparator);
     }
 

@@ -2,6 +2,14 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
+@trigger_error(
+    sprintf('The %s class is deprecated will be removed in 2.0.', Utils::class),
+    E_USER_DEPRECATED
+);
+
+/**
+ * @deprecated to be removed in 2.0.
+ */
 class Utils
 {
     public static function setupConnection(\AMQPConnection $connection, $config)
