@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Router;
 
 use Gos\Bundle\PubSubRouterBundle\Exception\ResourceNotFoundException;
 use Gos\Bundle\PubSubRouterBundle\Router\RouteCollection;
-use Gos\Bundle\PubSubRouterBundle\Router\Router;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
