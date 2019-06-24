@@ -91,6 +91,18 @@ class WampApplicationTest extends TestCase
             ->method('getUsername')
             ->willReturn('user');
 
+        $connection = $this->createMock(ConnectionInterface::class);
+        $connection->resourceId = 'resource';
+
+        $this->clientStorage->expects($this->exactly(2))
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->willReturn(true);
+
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->willReturn($token);
@@ -104,10 +116,6 @@ class WampApplicationTest extends TestCase
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
-
-        $connection = $this->createMock(ConnectionInterface::class);
-        $connection->WAMP = new \stdClass();
-        $connection->WAMP->clientStorageId = 'client';
 
         $event = 'foo';
         $exclude = [];
@@ -170,6 +178,18 @@ class WampApplicationTest extends TestCase
             ->method('getUsername')
             ->willReturn('user');
 
+        $connection = $this->createMock(ConnectionInterface::class);
+        $connection->resourceId = 'resource';
+
+        $this->clientStorage->expects($this->exactly(2))
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->willReturn(true);
+
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->willReturn($token);
@@ -183,14 +203,6 @@ class WampApplicationTest extends TestCase
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
-
-        $connection = $this->createMock(ConnectionInterface::class);
-        $connection->WAMP = new \stdClass();
-        $connection->WAMP->clientStorageId = 'client';
-
-        $event = 'foo';
-        $exclude = [];
-        $eligible = [];
 
         $this->topicDispatcher->expects($this->once())
             ->method('onSubscribe');
@@ -207,6 +219,18 @@ class WampApplicationTest extends TestCase
             ->method('getUsername')
             ->willReturn('user');
 
+        $connection = $this->createMock(ConnectionInterface::class);
+        $connection->resourceId = 'resource';
+
+        $this->clientStorage->expects($this->exactly(2))
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->willReturn(true);
+
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->willReturn($token);
@@ -220,14 +244,6 @@ class WampApplicationTest extends TestCase
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
-
-        $connection = $this->createMock(ConnectionInterface::class);
-        $connection->WAMP = new \stdClass();
-        $connection->WAMP->clientStorageId = 'client';
-
-        $event = 'foo';
-        $exclude = [];
-        $eligible = [];
 
         $this->topicDispatcher->expects($this->once())
             ->method('onUnSubscribe');

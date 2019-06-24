@@ -73,16 +73,18 @@ class WampApplication implements WampServerInterface, LoggerAwareInterface
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
         if ($this->logger) {
-            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $token->getUsername();
+            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
+                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+                $username = $token->getUsername();
 
-            $this->logger->debug(
-                sprintf(
-                    'User %s published to %s',
-                    $username,
-                    $topic->getId()
-                )
-            );
+                $this->logger->debug(
+                    sprintf(
+                        'User %s published to %s',
+                        $username,
+                        $topic->getId()
+                    )
+                );
+            }
         }
 
         $request = $this->wampRouter->match($topic);
@@ -129,16 +131,18 @@ class WampApplication implements WampServerInterface, LoggerAwareInterface
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
         if ($this->logger) {
-            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $token->getUsername();
+            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
+                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+                $username = $token->getUsername();
 
-            $this->logger->info(
-                sprintf(
-                    'User %s subscribed to %s',
-                    $username,
-                    $topic->getId()
-                )
-            );
+                $this->logger->info(
+                    sprintf(
+                        'User %s subscribed to %s',
+                        $username,
+                        $topic->getId()
+                    )
+                );
+            }
         }
 
         $wampRequest = $this->wampRouter->match($topic);
@@ -153,16 +157,18 @@ class WampApplication implements WampServerInterface, LoggerAwareInterface
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
         if ($this->logger) {
-            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
-            $username = $token->getUsername();
+            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
+                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+                $username = $token->getUsername();
 
-            $this->logger->info(
-                sprintf(
-                    'User %s unsubscribed from %s',
-                    $username,
-                    $topic->getId()
-                )
-            );
+                $this->logger->info(
+                    sprintf(
+                        'User %s unsubscribed from %s',
+                        $username,
+                        $topic->getId()
+                    )
+                );
+            }
         }
 
         $wampRequest = $this->wampRouter->match($topic);

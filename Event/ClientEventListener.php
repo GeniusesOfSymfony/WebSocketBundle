@@ -42,28 +42,31 @@ final class ClientEventListener implements LoggerAwareInterface
     public function onClientDisconnect(ClientEvent $event): void
     {
         $conn = $event->getConnection();
+        $storageId = $this->clientStorage->getStorageId($conn);
 
         $loggerContext = [
             'connection_id' => $conn->resourceId,
             'session_id' => $conn->WAMP->sessionId,
-            'storage_id' => $conn->WAMP->clientStorageId,
+            'storage_id' => $storageId,
         ];
 
         try {
-            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+            if ($this->clientStorage->hasClient($storageId)) {
+                $token = $this->clientStorage->getClient($storageId);
 
-            $this->clientStorage->removeClient($conn->resourceId);
+                $this->clientStorage->removeClient($storageId);
 
-            $username = $token->getUsername();
+                $username = $token->getUsername();
 
-            if ($this->logger) {
-                $this->logger->info(
-                    sprintf('%s disconnected', $username),
-                    array_merge(
-                        $loggerContext,
-                        ['username' => $username]
-                    )
-                );
+                if ($this->logger) {
+                    $this->logger->info(
+                        sprintf('%s disconnected', $username),
+                        array_merge(
+                            $loggerContext,
+                            ['username' => $username]
+                        )
+                    );
+                }
             }
         } catch (ClientNotFoundException $e) {
             if ($this->logger) {
@@ -103,8 +106,10 @@ final class ClientEventListener implements LoggerAwareInterface
             'exception' => $e,
         ];
 
-        if ($this->clientStorage->hasClient($conn->resourceId)) {
-            $token = $this->clientStorage->getClient($conn->WAMP->clientStorageId);
+        $storageId = $this->clientStorage->getStorageId($conn);
+
+        if ($this->clientStorage->hasClient($storageId)) {
+            $token = $this->clientStorage->getClient($storageId);
 
             $loggerContext['client'] = $token->getUsername();
         }

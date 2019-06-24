@@ -74,7 +74,6 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage',
         ];
 
         $token = $this->createMock(TokenInterface::class);
@@ -88,8 +87,18 @@ class ClientEventListenerTest extends TestCase
             ->willReturn($connection);
 
         $this->clientStorage->expects($this->once())
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->with($connection->resourceId)
+            ->willReturn(true);
+
+        $this->clientStorage->expects($this->once())
             ->method('getClient')
-            ->with($connection->WAMP->clientStorageId)
+            ->with($connection->resourceId)
             ->willReturn($token);
 
         $this->clientStorage->expects($this->once())
@@ -100,13 +109,15 @@ class ClientEventListenerTest extends TestCase
         $this->listener->onClientDisconnect($event);
     }
 
+    /**
+     * @testdox A `ClientNotFoundException` is handled when attempting to remove the user from storage, this simulates a failure if the client is removed between the `hasClient` and `getClient` calls
+     */
     public function testTheClientNotFoundExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage()
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientEvent::class);
@@ -115,8 +126,18 @@ class ClientEventListenerTest extends TestCase
             ->willReturn($connection);
 
         $this->clientStorage->expects($this->once())
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->with($connection->resourceId)
+            ->willReturn(true);
+
+        $this->clientStorage->expects($this->once())
             ->method('getClient')
-            ->with($connection->WAMP->clientStorageId)
+            ->with($connection->resourceId)
             ->willThrowException(new ClientNotFoundException('Client not found'));
 
         $this->clientStorage->expects($this->never())
@@ -133,7 +154,6 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientEvent::class);
@@ -142,8 +162,13 @@ class ClientEventListenerTest extends TestCase
             ->willReturn($connection);
 
         $this->clientStorage->expects($this->once())
-            ->method('getClient')
-            ->with($connection->WAMP->clientStorageId)
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
+            ->method('hasClient')
+            ->with($connection->resourceId)
             ->willThrowException(new StorageException('Driver failure'));
 
         $this->clientStorage->expects($this->never())
@@ -169,7 +194,6 @@ class ClientEventListenerTest extends TestCase
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
-            'clientStorageId' => 'client_storage',
         ];
 
         $event = $this->createMock(ClientErrorEvent::class);
@@ -182,13 +206,18 @@ class ClientEventListenerTest extends TestCase
             ->willReturn(new \Exception('Testing'));
 
         $this->clientStorage->expects($this->once())
+            ->method('getStorageId')
+            ->with($connection)
+            ->willReturn($connection->resourceId);
+
+        $this->clientStorage->expects($this->once())
             ->method('hasClient')
             ->with($connection->resourceId)
             ->willReturn(true);
 
         $this->clientStorage->expects($this->once())
             ->method('getClient')
-            ->with($connection->WAMP->clientStorageId)
+            ->with($connection->resourceId)
             ->willReturn($this->createMock(TokenInterface::class));
 
         $this->clientStorage->expects($this->never())

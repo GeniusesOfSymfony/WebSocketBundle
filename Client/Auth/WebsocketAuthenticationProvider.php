@@ -56,7 +56,6 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
 
         $loggerContext['storage_id'] = $identifier;
         $this->clientStorage->addClient($identifier, $token);
-        $conn->WAMP->clientStorageId = $identifier;
 
         if ($this->logger) {
             $this->logger->info(
