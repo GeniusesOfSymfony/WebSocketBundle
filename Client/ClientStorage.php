@@ -73,7 +73,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
 
     public function getStorageId(ConnectionInterface $conn): string
     {
-        return $conn->resourceId;
+        return (string) $conn->resourceId;
     }
 
     public function addClient(string $identifier, TokenInterface $token): void
