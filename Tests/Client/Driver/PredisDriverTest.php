@@ -49,12 +49,12 @@ class PredisDriverTest extends TestCase
         $this->predis->expects($this->at(0))
             ->method('__call')
             ->with('exists', ['abc'])
-            ->willReturn(true);
+            ->willReturn(1);
 
         $this->predis->expects($this->at(1))
             ->method('__call')
             ->with('exists', ['def'])
-            ->willReturn(false);
+            ->willReturn(0);
 
         $this->assertTrue($this->driver->contains('abc'));
         $this->assertFalse($this->driver->contains('def'));

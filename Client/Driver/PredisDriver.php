@@ -41,7 +41,7 @@ final class PredisDriver implements DriverInterface
 
     public function contains(string $id): bool
     {
-        return $this->client->exists($this->prefix.$id);
+        return (bool) $this->client->exists($this->prefix.$id);
     }
 
     /**
