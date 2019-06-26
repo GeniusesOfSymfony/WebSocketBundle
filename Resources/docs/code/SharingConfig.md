@@ -30,16 +30,16 @@ Alternatively, if you don't like polluting your global scope, you can render it 
 
 In service YAML :
 ```yaml
-    %web_socket_server.host% #host
-    %web_socket_server.port% #port
+    %gos_web_socket.server.host% #host
+    %gos_web_socket.server.port% #port
 ```
 
 In php : 
 ```php
 //Host
-$container->getParameter('web_socket_server.host');
+$container->getParameter('gos_web_socket.server.host');
 
 //Port
-$container->getParameter('web_socket_server.port');
+$container->getParameter('gos_web_socket.server.port');
 ```
 

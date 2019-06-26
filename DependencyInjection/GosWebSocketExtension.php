@@ -48,28 +48,28 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $container->setParameter('web_socket_server.client_storage.ttl', $configs['client']['storage']['ttl']);
-        $container->setParameter('web_socket_server.client_storage.prefix', $configs['client']['storage']['prefix']);
+        $container->setParameter('gos_web_socket.client.storage.ttl', $configs['client']['storage']['ttl']);
+        $container->setParameter('gos_web_socket.client.storage.prefix', $configs['client']['storage']['prefix']);
 
         if (isset($configs['server'])) {
             if (isset($configs['server']['port'])) {
-                $container->setParameter('web_socket_server.port', $configs['server']['port']);
+                $container->setParameter('gos_web_socket.server.port', $configs['server']['port']);
             }
 
             if (isset($configs['server']['host'])) {
-                $container->setParameter('web_socket_server.host', $configs['server']['host']);
+                $container->setParameter('gos_web_socket.server.host', $configs['server']['host']);
             }
 
             if (isset($configs['server']['origin_check'])) {
-                $container->setParameter('web_socket_origin_check', $configs['server']['origin_check']);
+                $container->setParameter('gos_web_socket.server.origin_check', $configs['server']['origin_check']);
             }
 
             if (isset($configs['server']['keepalive_ping'])) {
-                $container->setParameter('web_socket_keepalive_ping', $configs['server']['keepalive_ping']);
+                $container->setParameter('gos_web_socket.server.keepalive_ping', $configs['server']['keepalive_ping']);
             }
 
             if (isset($configs['server']['keepalive_interval'])) {
-                $container->setParameter('web_socket_keepalive_interval', $configs['server']['keepalive_interval']);
+                $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
             }
         }
 

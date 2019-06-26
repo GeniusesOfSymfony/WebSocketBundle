@@ -10,8 +10,8 @@ services:
         public: false
         arguments:
             - '@gos_web_socket.entry_point'
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
+            - '%gos_web_socket.server.host%'
+            - '%gos_web_socket.server.port%'
         tags:
             - { name: console.command, command: gos:websocket:server }
 
@@ -19,8 +19,8 @@ services:
         class: Gos\Component\WebSocketClient\Wamp\Client
         public: true
         arguments:
-            - '%web_socket_server.host%'
-            - '%web_socket_server.port%'
+            - '%gos_web_socket.server.host%'
+            - '%gos_web_socket.server.port%'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
@@ -45,9 +45,9 @@ services:
             - '@gos_web_socket.wamp.topic_manager'
             - '@gos_web_socket.origins.registry'
             - '@event_dispatcher'
-            - '%web_socket_origin_check%'
-            - '%web_socket_keepalive_ping%'
-            - '%web_socket_keepalive_interval%'
+            - '%gos_web_socket.server.origin_check%'
+            - '%gos_web_socket.server.keepalive_ping%'
+            - '%gos_web_socket.server.keepalive_interval%'
 
     gos_web_socket.server.registry:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
@@ -102,7 +102,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         public: false
         arguments:
-            - '%web_socket_server.client_storage.ttl%'
+            - '%gos_web_socket.client.storage.ttl%'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 

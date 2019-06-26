@@ -263,7 +263,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
         arguments:
             - @snc_redis.cache
-            - %web_socket_server.client_storage.prefix% #(optionally)if you use prefix
+            - %gos_web_socket.client.storage.prefix% #(optionally)if you use prefix
 ```
 
 **NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.

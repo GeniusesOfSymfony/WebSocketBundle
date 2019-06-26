@@ -31,8 +31,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
-        $this->assertContainerBuilderHasParameter('web_socket_server.client_storage.ttl');
-        $this->assertContainerBuilderHasParameter('web_socket_server.client_storage.prefix');
+        $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
+        $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.prefix');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing()
@@ -75,8 +75,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         // Also load the bundle config so it is passed to the extension load method
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasParameter('web_socket_server.port');
-        $this->assertContainerBuilderHasParameter('web_socket_server.host');
+        $this->assertContainerBuilderHasParameter('gos_web_socket.server.port');
+        $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
 
         $this->assertSame(
             [
