@@ -180,9 +180,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
             }
 
-            // Pull the 'enabled' field out of the pusher's config
+            // Pull the 'enabled' and 'default' fields out of the pusher's config
             $factoryConfig = $configs['pushers']['amqp'];
             unset($factoryConfig['enabled']);
+            unset($factoryConfig['default']);
 
             $connectionFactoryDef = new Definition(
                 AmqpConnectionFactory::class,
@@ -212,9 +213,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
             }
 
-            // Pull the 'enabled' field out of the pusher's config
+            // Pull the 'enabled' and 'default' fields out of the pusher's config
             $factoryConfig = $configs['pushers']['zmq'];
             unset($factoryConfig['enabled']);
+            unset($factoryConfig['default']);
 
             $connectionFactoryDef = new Definition(
                 ZmqConnectionFactory::class,
