@@ -38,7 +38,6 @@ gos_web_socket:
     pushers:
         zmq:
             enabled:              false
-            default:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337
             persistent:           true
@@ -46,7 +45,6 @@ gos_web_socket:
             linger:               -1
         amqp:
             enabled:              false
-            default:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337
             login:                ~ # Required

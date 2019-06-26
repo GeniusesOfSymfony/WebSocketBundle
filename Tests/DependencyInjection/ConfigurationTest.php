@@ -118,7 +118,6 @@ final class ConfigurationTest extends TestCase
                 ],
                 'zmq' => [
                     'enabled' => false,
-                    'default' => false,
                     'host' => '127.0.0.1',
                     'port' => 1337,
                     'persistent' => true,
@@ -127,7 +126,6 @@ final class ConfigurationTest extends TestCase
                 ],
                 'amqp' => [
                     'enabled' => false,
-                    'default' => false,
                     'host' => '127.0.0.1',
                     'port' => 1337,
                     'login' => 'username',

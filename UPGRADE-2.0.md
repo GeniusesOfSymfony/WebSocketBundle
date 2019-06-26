@@ -89,6 +89,7 @@ gos_web_socket:
     - `gos_web_socket.rpc`, tag your services with the `gos_web_socket.rpc` tag
     - `gos_web_socket.servers`, tag your services with the `gos_web_socket.server` tag
     - `gos_web_socket.topics`, tag your services with the `gos_web_socket.topic` tag
+- Removed the `gos_web_socket.pushers.amqp.default` and `gos_web_socket.pushers.zmq.default` configuration nodes, they were unused
 - The `gos:server` command was removed, use the `gos:websocket:server` command instead
 - Removed the `PingableDriverCompilerPass` which previously configured the PDO ping periodic service
 - Removed the `gos_web_socket.pdo.periodic_ping` service 
