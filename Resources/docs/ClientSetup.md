@@ -1,11 +1,11 @@
 # Client Setup
 
-### Step 1: Include JavaScript
+## Step 1: Include JavaScript
 To include the relevant JavaScript libraries necessary for GosWebSocketBundle, add these to your root layout file just before the closing body tag.
 
 ```twig
 <script src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
-<script src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
+<script src="{{ asset('bundles/goswebsocket/js/websocket.min.js') }}"></script>
 ```
 
 _Note: This requires Twig and the FrameworkBundle to be installed and the `assets:install` command to be run_
@@ -18,12 +18,12 @@ If you are NOT using Twig as a templating engine, you will need to include the f
 
 ```javascript
 GosWebSocketBundle/Resources/public/js/vendor/autobahn.min.js
-GosWebSocketBundle/Resources/public/js/gos_web_socket_client.js
+GosWebSocketBundle/Resources/public/js/websocket.min.js
 ```
 
-### Step 2: gos_web_socket_client.js
+## Step 2: websocket.js
 
-Once the JavaScript is included, you can start using gos_web_socket_client.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
+Once the JavaScript is included, you can start using websocket.js to interact with the web socket server. If you want to avoid hardcoding the connection URI here, see the code tip on [sharing the config](code/SharingConfig.md)
 
 A `WS` object is made available in the global scope of the page. This can be used to connect to the server as follows:
 
@@ -33,7 +33,7 @@ var websocket = WS.connect("ws://127.0.0.1:8080");
 
 The following commands are available to a GosSocket object returned by WS.connect.
 
-#### GosSocket.on(event, callback)
+### GosSocket.on(event, callback)
 
 This allows you to listen for events called by GosSocket. The only events fired currently are "socket/connect" and "socket/disconnect".
 

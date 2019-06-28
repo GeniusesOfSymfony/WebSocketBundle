@@ -1,0 +1,29 @@
+{
+  "name": "gos-web-socket",
+  "version": "2.0.0",
+  "description": "JavaScript client for the GosWebSocketBundle",
+  "keywords": [
+    "websocket",
+    "symfony"
+  ],
+  "license": "MIT",
+  "files": [
+    "public/js/websocket.js",
+    "public/js/websocket.min.js"
+  ],
+  "main": "public/js/websocket.js",
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
+    "babel-register": "^6.11.6",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.2",
+    "gulp-wrap": "^0.15.0"
+  },
+  "scripts": {
+    "build": "gulp"
+  }
+}

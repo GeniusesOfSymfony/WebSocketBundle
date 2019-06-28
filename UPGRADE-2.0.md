@@ -29,6 +29,7 @@ gos_web_socket:
 
 ## Changes
 
+- Renamed the `gos_web_socket_client.js` file to `websocket.js`, in addition the bundle now provides a minified version of this file and a ES2015+ source file
 - Enabled `declare(strict_types=1);` in all bundle files
 - Added typehints and return types to most classes and interfaces
 - Most classes are now final, use decorators or direct implement interfaces to implement custom behaviors
