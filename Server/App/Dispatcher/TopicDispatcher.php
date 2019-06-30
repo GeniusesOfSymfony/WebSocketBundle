@@ -99,7 +99,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
      * @throws \Exception
      */
     public function dispatch(
-        $calledMethod,
+        string $calledMethod,
         ?ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,

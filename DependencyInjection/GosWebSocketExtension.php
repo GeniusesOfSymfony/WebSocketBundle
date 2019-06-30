@@ -198,7 +198,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
 
             $container->getDefinition('gos_web_socket.amqp.server_push_handler')
-                ->setArgument(4, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+                ->setArgument(3, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
         } else {
             $container->getDefinition('gos_web_socket.amqp.pusher')
                 ->clearTag('gos_web_socket.pusher');
