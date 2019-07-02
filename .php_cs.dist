@@ -5,7 +5,6 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHPUnit75Migration:risky' => true,
-        'php_unit_no_expectation_annotation' => false, // part of `PHPUnitXYMigration:risky` ruleset, to be enabled when PHPUnit 4.x support will be dropped, as we don't want to rewrite exceptions handling twice
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => false,
         'declare_strict_types' => true,
