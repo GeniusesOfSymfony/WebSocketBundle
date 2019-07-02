@@ -14,9 +14,6 @@ use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @internal
- */
 final class ServerBuilder implements ServerBuilderInterface
 {
     /**
