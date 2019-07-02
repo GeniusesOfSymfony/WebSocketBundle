@@ -44,6 +44,8 @@ before_install:
   - travis_retry composer self-update
 
 before_script:
+  - composer remove --no-update symfony/*
+  - composer remove --dev --no-update symfony/*
   - composer require --no-update symfony/symfony:${SYMFONY_VERSION}
   - composer update $COMPOSER_FLAGS
 
