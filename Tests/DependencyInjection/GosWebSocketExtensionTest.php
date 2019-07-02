@@ -14,6 +14,7 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Twig\Environment;
 
@@ -83,7 +84,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             'addGlobal',
             [
                 'gos_web_socket_server_host',
-                '127.0.0.1',
+                new Parameter('gos_web_socket.server.host'),
             ]
         );
 
@@ -92,9 +93,36 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             'addGlobal',
             [
                 'gos_web_socket_server_port',
-                8080,
+                new Parameter('gos_web_socket.server.port'),
             ]
         );
+    }
+
+    public function testContainerIsLoadedWithEnvVars()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('env(GOS_WEB_SOCKET_SERVER_HOST)', '127.0.0.1');
+        $this->container->setParameter('env(GOS_WEB_SOCKET_SERVER_PORT)', 8080);
+
+        $bundleConfig = [
+            'server' => [
+                'host' => '%env(GOS_WEB_SOCKET_SERVER_HOST)%',
+                'port' => '%env(int:GOS_WEB_SOCKET_SERVER_PORT)%',
+                'origin_check' => false,
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasParameter('gos_web_socket.server.port');
+        $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
     }
 
     public function testContainerIsLoadedWithMonologBundleIntegration()
@@ -297,12 +325,15 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ]
         );
 
+        $this->container->setParameter('env(GOS_WEB_SOCKET_WAMP_PUSHER_HOST)', '127.0.0.1');
+        $this->container->setParameter('env(GOS_WEB_SOCKET_WAMP_PUSHER_PORT)', 1337);
+
         $bundleConfig = [
             'pushers' => [
                 'wamp' => [
                     'enabled' => true,
-                    'host' => '127.0.0.1',
-                    'port' => 1337,
+                    'host' => '%env(GOS_WEB_SOCKET_WAMP_PUSHER_HOST)%',
+                    'port' => '%env(int:GOS_WEB_SOCKET_WAMP_PUSHER_PORT)%',
                     'ssl' => false,
                     'origin' => null,
                 ],

@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -53,11 +54,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         if (isset($configs['server'])) {
             if (isset($configs['server']['port'])) {
-                $container->setParameter('gos_web_socket.server.port', $configs['server']['port']);
+                $container->setParameter('gos_web_socket.server.port', $container->resolveEnvPlaceholders($configs['server']['port']));
             }
 
             if (isset($configs['server']['host'])) {
-                $container->setParameter('gos_web_socket.server.host', $configs['server']['host']);
+                $container->setParameter('gos_web_socket.server.host', $container->resolveEnvPlaceholders($configs['server']['host']));
             }
 
             if (isset($configs['server']['origin_check'])) {
@@ -76,22 +77,22 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             if ($configs['shared_config'] && $container->hasDefinition('twig')) {
                 $twigDef = $container->getDefinition('twig');
 
-                if (isset($configs['server']['host'])) {
+                if ($container->hasParameter('gos_web_socket.server.host')) {
                     $twigDef->addMethodCall(
                         'addGlobal',
                         [
                             'gos_web_socket_server_host',
-                            $container->resolveEnvPlaceholders($configs['server']['host']),
+                            new Parameter('gos_web_socket.server.host'),
                         ]
                     );
                 }
 
-                if (isset($configs['server']['port'])) {
+                if ($container->hasParameter('gos_web_socket.server.port')) {
                     $twigDef->addMethodCall(
                         'addGlobal',
                         [
                             'gos_web_socket_server_port',
-                            $container->resolveEnvPlaceholders($configs['server']['port']),
+                            new Parameter('gos_web_socket.server.port'),
                         ]
                     );
                 }
@@ -209,6 +210,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $factoryConfig = $configs['pushers']['amqp'];
             unset($factoryConfig['enabled']);
 
+            // Resolve placeholders for host and port
+            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
+            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
+
             $connectionFactoryDef = new Definition(
                 AmqpConnectionFactory::class,
                 [
@@ -241,6 +246,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $factoryConfig = $configs['pushers']['zmq'];
             unset($factoryConfig['enabled']);
 
+            // Resolve placeholders for host and port
+            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
+            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
+
             $connectionFactoryDef = new Definition(
                 ZmqConnectionFactory::class,
                 [
@@ -268,6 +277,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['wamp'];
             unset($factoryConfig['enabled']);
+
+            // Resolve placeholders for host and port
+            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
+            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
 
             $connectionFactoryDef = new Definition(
                 WampConnectionFactory::class,
