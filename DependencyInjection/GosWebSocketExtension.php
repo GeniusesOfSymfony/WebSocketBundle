@@ -71,6 +71,31 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             if (isset($configs['server']['keepalive_interval'])) {
                 $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
             }
+
+            // Register Twig globals if Twig is available and shared_config is set
+            if ($configs['shared_config'] && $container->hasDefinition('twig')) {
+                $twigDef = $container->getDefinition('twig');
+
+                if (isset($configs['server']['host'])) {
+                    $twigDef->addMethodCall(
+                        'addGlobal',
+                        [
+                            'gos_web_socket_server_host',
+                            $container->resolveEnvPlaceholders($configs['server']['host']),
+                        ]
+                    );
+                }
+
+                if (isset($configs['server']['port'])) {
+                    $twigDef->addMethodCall(
+                        'addGlobal',
+                        [
+                            'gos_web_socket_server_port',
+                            $container->resolveEnvPlaceholders($configs['server']['port']),
+                        ]
+                    );
+                }
+            }
         }
 
         if (!empty($configs['origins'])) {
@@ -287,25 +312,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     ],
                 ]
             );
-        }
-
-        // TwigBundle
-        if (isset($bundles['TwigBundle'])) {
-            if (isset($config['shared_config'], $config['server']) && $config['shared_config']) {
-                $twigConfig = ['globals' => []];
-
-                if (isset($config['server']['host'])) {
-                    $twigConfig['globals']['gos_web_socket_server_host'] = $config['server']['host'];
-                }
-
-                if (isset($config['server']['port'])) {
-                    $twigConfig['globals']['gos_web_socket_server_port'] = $config['server']['port'];
-                }
-
-                if (!empty($twigConfig['globals'])) {
-                    $container->prependExtensionConfig('twig', $twigConfig);
-                }
-            }
         }
 
         // MonologBundle
