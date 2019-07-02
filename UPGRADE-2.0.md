@@ -11,6 +11,7 @@
     - Unlike `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::findByUsername()` which only returns the first match, the new method returns all matching connections for a username
 - Added new `gos_web_socket.ping.services` configuration node to configure pingable periodic services, presently supporting a Doctrine Connection or PDO
     - This is an array node where each value requires two keys: `name` (the container service ID) and `type` (the service type, either "doctrine" or "pdo")
+- Added support for env vars on all "host" and "port" config nodes
     
 Example configuration of the ping services:
 
