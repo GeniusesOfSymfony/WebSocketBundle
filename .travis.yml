@@ -48,7 +48,7 @@ before_script:
   - composer remove --dev --no-update symfony/*
   - composer require --no-update symfony/symfony:${SYMFONY_VERSION}
   # Restore dev packages not part of the full stack framework
-  - composer require --dev symfony/polyfill-php73:^1.11 symfony/monolog-bundle:^3.0
+  - composer require --dev --no-update symfony/polyfill-php73:^1.11 symfony/monolog-bundle:^3.0
   - composer update $COMPOSER_FLAGS
 
 script:
