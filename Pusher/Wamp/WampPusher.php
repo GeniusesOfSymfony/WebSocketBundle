@@ -13,11 +13,11 @@ final class WampPusher extends AbstractPusher
     private $connection;
 
     /**
-     * @var WampConnectionFactory
+     * @var WampConnectionFactoryInterface
      */
     private $connectionFactory;
 
-    public function __construct(WampConnectionFactory $connectionFactory)
+    public function __construct(WampConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
     }

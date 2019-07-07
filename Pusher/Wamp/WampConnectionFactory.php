@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 use Gos\Component\WebSocketClient\Wamp\Client;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class WampConnectionFactory
+final class WampConnectionFactory implements WampConnectionFactoryInterface
 {
     /**
      * @var array
