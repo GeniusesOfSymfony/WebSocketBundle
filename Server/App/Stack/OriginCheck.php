@@ -41,16 +41,18 @@ class OriginCheck extends BaseOriginCheck
      */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
-        $header = (string) $request->getHeaderLine('Origin');
-        $origin = parse_url($header, PHP_URL_HOST) ?: $header;
+        if ($request) {
+            $header = (string) $request->getHeaderLine('Origin');
+            $origin = parse_url($header, PHP_URL_HOST) ?: $header;
 
-        if (!\in_array($origin, $this->allowedOrigins)) {
-            $this->eventDispatcher->dispatch(
-                Events::CLIENT_REJECTED,
-                new ClientRejectedEvent($origin, $request)
-            );
+            if (!\in_array($origin, $this->allowedOrigins)) {
+                $this->eventDispatcher->dispatch(
+                    Events::CLIENT_REJECTED,
+                    new ClientRejectedEvent($origin, $request)
+                );
 
-            return $this->close($conn, 403);
+                return $this->close($conn, 403);
+            }
         }
 
         return $this->_component->onOpen($conn, $request);
