@@ -51,9 +51,7 @@ class AmqpPusherTest extends TestCase
 
         $this->connectionFactory = $this->createMock(AmqpConnectionFactoryInterface::class);
 
-        $this->pusher = new AmqpPusher($this->connectionFactory);
-        $this->pusher->setRouter($this->router);
-        $this->pusher->setSerializer($this->serializer);
+        $this->pusher = new AmqpPusher($this->router, $this->serializer, $this->connectionFactory);
     }
 
     public function testAMessageIsPushedAndTheConnectionClosed()

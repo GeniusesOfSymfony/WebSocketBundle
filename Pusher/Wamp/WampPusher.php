@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Component\WebSocketClient\Wamp\Client;
 
 final class WampPusher extends AbstractPusher
@@ -17,8 +19,13 @@ final class WampPusher extends AbstractPusher
      */
     private $connectionFactory;
 
-    public function __construct(WampConnectionFactoryInterface $connectionFactory)
-    {
+    public function __construct(
+        WampRouter $router,
+        MessageSerializer $serializer,
+        WampConnectionFactoryInterface $connectionFactory
+    ) {
+        parent::__construct($router, $serializer);
+
         $this->connectionFactory = $connectionFactory;
     }
 

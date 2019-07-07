@@ -221,7 +221,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setDefinition('gos_web_socket.amqp.pusher.connection_factory', $connectionFactoryDef);
 
             $container->getDefinition('gos_web_socket.amqp.pusher')
-                ->setArgument(0, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+                ->setArgument(2, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
 
             $container->getDefinition('gos_web_socket.amqp.server_push_handler')
                 ->setArgument(3, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
@@ -253,7 +253,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setDefinition('gos_web_socket.zmq.pusher.connection_factory', $connectionFactoryDef);
 
             $container->getDefinition('gos_web_socket.zmq.pusher')
-                ->setArgument(0, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+                ->setArgument(2, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
 
             $container->getDefinition('gos_web_socket.zmq.server_push_handler')
                 ->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
@@ -285,7 +285,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setDefinition('gos_web_socket.wamp.pusher.connection_factory', $connectionFactoryDef);
 
             $container->getDefinition('gos_web_socket.wamp.pusher')
-                ->setArgument(0, new Reference('gos_web_socket.wamp.pusher.connection_factory'));
+                ->setArgument(2, new Reference('gos_web_socket.wamp.pusher.connection_factory'));
         } else {
             $container->getDefinition('gos_web_socket.wamp.pusher')
                 ->clearTag('gos_web_socket.pusher');

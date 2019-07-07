@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 
 final class ZmqPusher extends AbstractPusher
 {
@@ -16,8 +18,13 @@ final class ZmqPusher extends AbstractPusher
      */
     private $connectionFactory;
 
-    public function __construct(ZmqConnectionFactoryInterface $connectionFactory)
-    {
+    public function __construct(
+        WampRouter $router,
+        MessageSerializer $serializer,
+        ZmqConnectionFactoryInterface $connectionFactory
+    ) {
+        parent::__construct($router, $serializer);
+
         $this->connectionFactory = $connectionFactory;
     }
 

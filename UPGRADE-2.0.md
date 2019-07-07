@@ -57,6 +57,7 @@ gos_web_socket:
 - The `getConfig()` and `setConfig()` methods of `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` and `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` have been removed, as well as the logic in the compiler passes for injecting the configuration from the bundle's services
 - The `findByUsername()` method of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` is deprecated and will be removed in 3.0, the `findAllByUsername()` method should be used instead.
 - The `clientStorageId` property of a connection is no longer set (i.e. `$connection->WAMP->clientStorageId`), if you need this you should get it from the `ClientStorageInterface` (i.e. `$clientStorage->getStorageId($connection)`)
+- The router and serializer dependencies of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher` and its subclasses are now injected through the constructors
 - The container parameters set by the bundle have been renamed for consistency and to use the bundle's prefix:
     - `web_socket_server.client_storage.ttl` is now `gos_web_socket.client.storage.ttl`
     - `web_socket_server.client_storage.prefix` is now `gos_web_socket.client.storage.prefix`

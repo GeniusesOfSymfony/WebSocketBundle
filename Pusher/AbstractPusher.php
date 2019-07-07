@@ -27,29 +27,17 @@ abstract class AbstractPusher implements PusherInterface
      */
     protected $name;
 
+    public function __construct(WampRouter $router, MessageSerializer $serializer)
+    {
+        $this->router = $router;
+        $this->serializer = $serializer;
+    }
+
     /**
      * @param array|string $data
      */
     public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
     {
-        if (!$this->router) {
-            throw new \RuntimeException(
-                \sprintf(
-                    'The router has not been set in %s, ensure you have called the `setRouter()` method before pushing a message.',
-                    static::class
-                )
-            );
-        }
-
-        if (!$this->serializer) {
-            throw new \RuntimeException(
-                \sprintf(
-                    'The serializer has not been set in %s, ensure you have called the `setSerializer()` method before pushing a message.',
-                    static::class
-                )
-            );
-        }
-
         $channel = $this->router->generate($routeName, $routeParameters);
         $message = new Message($channel, $data);
 
@@ -60,16 +48,6 @@ abstract class AbstractPusher implements PusherInterface
      * @param string|array $data
      */
     abstract protected function doPush($data, array $context): void;
-
-    public function setSerializer(MessageSerializer $serializer): void
-    {
-        $this->serializer = $serializer;
-    }
-
-    public function setRouter(WampRouter $router): void
-    {
-        $this->router = $router;
-    }
 
     public function setConnected($bool = true): void
     {

@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class AmqpPusher extends AbstractPusher
@@ -22,8 +24,13 @@ final class AmqpPusher extends AbstractPusher
      */
     private $connectionFactory;
 
-    public function __construct(AmqpConnectionFactoryInterface $connectionFactory)
-    {
+    public function __construct(
+        WampRouter $router,
+        MessageSerializer $serializer,
+        AmqpConnectionFactoryInterface $connectionFactory
+    ) {
+        parent::__construct($router, $serializer);
+
         $this->connectionFactory = $connectionFactory;
     }
 

@@ -49,9 +49,7 @@ class WampPusherTest extends TestCase
 
         $this->connectionFactory = $this->createMock(WampConnectionFactoryInterface::class);
 
-        $this->pusher = new WampPusher($this->connectionFactory);
-        $this->pusher->setRouter($this->router);
-        $this->pusher->setSerializer($this->serializer);
+        $this->pusher = new WampPusher($this->router, $this->serializer, $this->connectionFactory);
     }
 
     public function testAMessageIsPushedAndTheConnectionClosed()
