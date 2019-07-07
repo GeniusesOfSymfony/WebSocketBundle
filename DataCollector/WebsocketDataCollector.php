@@ -5,9 +5,10 @@ namespace Gos\Bundle\WebSocketBundle\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 use Symfony\Component\Stopwatch\StopwatchEvent;
 
-final class WebsocketDataCollector extends DataCollector
+final class WebsocketDataCollector extends DataCollector implements LateDataCollectorInterface
 {
     /**
      * @var array
@@ -15,6 +16,10 @@ final class WebsocketDataCollector extends DataCollector
     private $rawData = [];
 
     public function collect(Request $request, Response $response, \Exception $exception = null): void
+    {
+    }
+
+    public function lateCollect()
     {
         $pusherCount = [];
         $totalPush = 0;
