@@ -68,7 +68,7 @@ The `GosSocket` object is a wrapper around the AutobahnJS API and provides helpe
 
 ### Public Methods
 
-### GosSocket.on(event, listener)
+#### GosSocket.on(event, listener)
 
 The `GosSocket.on()` function lets you add a callback for an event.
 
@@ -76,7 +76,7 @@ The `event` parameter is the name of the event to subscribe to. Currently, the b
 
 The `listener` parameter is a callback function to be triggered when the event is fired off. When executed, `this` is scoped to the `GosSocket` instance firing the event. Callbacks receive one parameter, a `data` parameter of any type. Please see the examples below for more details.
 
-### GosSocket.off(event, listener)
+#### GosSocket.off(event, listener)
 
 The `GosSocket.off()` function lets you remove a callback for an event.
 
@@ -84,17 +84,59 @@ The `event` parameter is the name of the event to subscribe to. Currently, the b
 
 The `listener` parameter is a callback function to be removed from the event
 
-The following commands are available to a GosSocket object returned by WS.connect.
+#### GosSocket.isConnected()
+
+The `GosSocket.isConnected()` function is a helper function to determine if the client is currently connected to the websocket server.
+
+#### GosSocket.publishToTopic(uri, data)
+
+The `GosSocket.publishToTopic()` function lets you publish a message to a requested websocket channel.
+
+The `uri` parameter is the URI for the websocket topic to publish to, as defined in your route configuration.
+
+The `data` parameter is the data to be passed to the websocket topic, generally an object.
+
+If not connected to the websocket server, this function will throw an error.
+
+#### GosSocket.subscribeToChannel(uri, callback)
+
+The `GosSocket.subscribeToChannel()` function lets you add a subscriber for a websocket channel.
+
+The `uri` parameter is the URI for the websocket topic to subscribe to, as defined in your route configuration.
+
+The `callback` parameter is the subscriber to be added.
+
+If not connected to the websocket server, this function will throw an error.
+
+#### GosSocket.unsubscribeToChannel(uri, callback)
+
+The `GosSocket.unsubscribeToChannel()` function lets you remove a subscriber from a websocket channel.
+
+The `uri` parameter is the URI for the websocket topic to unsubscribe from, as defined in your route configuration.
+
+The `callback` parameter is the subscriber to be removed.
+
+If not connected to the websocket server, this function will throw an error.
+
+### Public Getters
+
+#### GosSocket.ab
+
+The `GosSocket.ab` getter lets you retrieve the AutobahnJS API object.
+
+#### GosSocket.session
+
+The `GosSocket.session` getter lets you retrieve the active AutobahnJS session object.
 
 ### Private Methods
 
 Although JavaScript does not natively support the notion of public or private functions, the below functions are considered private to the `GosSocket` object and not intended for public use.
 
-### GosSocket._connect(uri, sessionConfig = null)
+#### GosSocket._connect(uri, sessionConfig = null)
 
 The `GosSocket._connect()` function is a wrapper around AutobahnJS' `ab.connect()` function and handles firing the `socket/connect` and `socket/disconnect` events.
 
-### GosSocket._fire(event, data = null)
+#### GosSocket._fire(event, data = null)
 
 The `GosSocket._fire()` function handles calling all listeners for an event.
 
