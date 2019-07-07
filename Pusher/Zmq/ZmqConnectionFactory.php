@@ -26,7 +26,7 @@ final class ZmqConnectionFactory
 
     public function createConnection(): \ZMQSocket
     {
-        if (!\extension_loaded('zmq')) {
+        if (!$this->isSupported()) {
             throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
@@ -40,7 +40,7 @@ final class ZmqConnectionFactory
 
     public function createWrappedConnection(LoopInterface $loop, int $socketType = 7 /*\ZMQ::SOCKET_PULL*/): SocketWrapper
     {
-        if (!\extension_loaded('zmq')) {
+        if (!$this->isSupported()) {
             throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
@@ -54,6 +54,11 @@ final class ZmqConnectionFactory
         $connection->setSockOpt(\ZMQ::SOCKOPT_LINGER, $this->config['linger']);
 
         return $connection;
+    }
+
+    public function isSupported(): bool
+    {
+        return \extension_loaded('zmq');
     }
 
     private function resolveConfig(array $config): array

@@ -18,7 +18,7 @@ final class AmqpConnectionFactory
 
     public function createConnection(): \AMQPConnection
     {
-        if (!\extension_loaded('amqp')) {
+        if (!$this->isSupported()) {
             throw new \RuntimeException('The AMQP pusher requires the PHP amqp extension.');
         }
 
@@ -44,6 +44,11 @@ final class AmqpConnectionFactory
         $queue->declareQueue();
 
         return $queue;
+    }
+
+    public function isSupported(): bool
+    {
+        return \extension_loaded('amqp');
     }
 
     private function resolveConfig(array $config): array

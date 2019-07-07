@@ -202,10 +202,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['pushers']['amqp']) && $configs['pushers']['amqp']['enabled']) {
-            if (!\extension_loaded('amqp')) {
-                throw new RuntimeException('The AMQP pusher requires the PHP amqp extension.');
-            }
-
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['amqp'];
             unset($factoryConfig['enabled']);
@@ -238,10 +234,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['pushers']['zmq']) && $configs['pushers']['zmq']['enabled']) {
-            if (!\extension_loaded('zmq')) {
-                throw new RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
-            }
-
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['zmq'];
             unset($factoryConfig['enabled']);

@@ -347,9 +347,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.wamp.pusher.connection_factory'));
     }
 
-    /**
-     * @requires extension amqp
-     */
     public function testContainerIsLoadedWithAmqpPusherConfigured()
     {
         $this->container->setParameter(
@@ -385,9 +382,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.amqp.pusher.connection_factory'));
     }
 
-    /**
-     * @requires extension zmq
-     */
     public function testContainerIsLoadedWithZmqPusherConfigured()
     {
         $this->container->setParameter(
