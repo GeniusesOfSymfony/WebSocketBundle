@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,10 +35,7 @@ final class AmqpPusher extends AbstractPusher
         $this->connectionFactory = $connectionFactory;
     }
 
-    /**
-     * @param string|array $data
-     */
-    protected function doPush($data, array $context): void
+    protected function doPush(Message $message, array $context): void
     {
         if (false === $this->connected) {
             $this->connection = $this->connectionFactory->createConnection();
@@ -60,7 +58,7 @@ final class AmqpPusher extends AbstractPusher
         $context = $resolver->resolve($context);
 
         $this->exchange->publish(
-            $data,
+            $this->serializer->serialize($message),
             $context['routing_key'],
             $context['publish_flags'],
             $context['attributes']

@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 
@@ -28,10 +29,7 @@ final class ZmqPusher extends AbstractPusher
         $this->connectionFactory = $connectionFactory;
     }
 
-    /**
-     * @param string|array $data
-     */
-    protected function doPush($data, array $context): void
+    protected function doPush(Message $message, array $context): void
     {
         if (false === $this->isConnected()) {
             $this->connection = $this->connectionFactory->createConnection();
@@ -39,7 +37,7 @@ final class ZmqPusher extends AbstractPusher
             $this->setConnected();
         }
 
-        $this->connection->send($data);
+        $this->connection->send($this->serializer->serialize($message));
     }
 
     public function close(): void

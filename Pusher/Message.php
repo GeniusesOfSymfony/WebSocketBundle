@@ -2,17 +2,20 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
-class Message implements MessageInterface
+/**
+ * @internal
+ */
+final class Message
 {
     /**
      * @var string
      */
-    protected $topic;
+    private $topic;
 
     /**
      * @var array
      */
-    protected $data;
+    private $data;
 
     public function __construct(string $topic, array $data)
     {
@@ -28,13 +31,5 @@ class Message implements MessageInterface
     public function getData(): array
     {
         return $this->data;
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'topic' => $this->topic,
-            'data' => $this->data,
-        ];
     }
 }

@@ -58,6 +58,7 @@ gos_web_socket:
 - The `findByUsername()` method of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` is deprecated and will be removed in 3.0, the `findAllByUsername()` method should be used instead.
 - The `clientStorageId` property of a connection is no longer set (i.e. `$connection->WAMP->clientStorageId`), if you need this you should get it from the `ClientStorageInterface` (i.e. `$clientStorage->getStorageId($connection)`)
 - The router and serializer dependencies of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher` and its subclasses are now injected through the constructors
+- The first argument of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher::doPush()` is now a `Gos\Bundle\WebSocketBundle\Pusher\Message` object instead of a serialized message, subclasses should handle serialization on their own if needed
 - The container parameters set by the bundle have been renamed for consistency and to use the bundle's prefix:
     - `web_socket_server.client_storage.ttl` is now `gos_web_socket.client.storage.ttl`
     - `web_socket_server.client_storage.prefix` is now `gos_web_socket.client.storage.prefix`
@@ -97,5 +98,6 @@ gos_web_socket:
 - Removed the `PingableDriverCompilerPass` which previously configured the PDO ping periodic service
 - Removed the `gos_web_socket.pdo.periodic_ping` service 
 - Removed the `Gos\Bundle\WebSocketBundle\Router\NullPubSubRouter` class and `gos_web_socket.null.pubsub.router` service
+- Removed `Gos\Bundle\WebSocketBundle\Pusher\MessageInterface`, the `Gos\Bundle\WebSocketBundle\Pusher\Message` object should be used instead (this is an internal object for building a message for server pushers)
 - The `Gos\Bundle\WebSocketBundle\Pusher\Amqp\Utils` class has been removed
     - This was an internal helper for building `ext/amqp` related dependencies and should not have been used by package users
