@@ -125,6 +125,49 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
     }
 
+    public function testContainerIsLoadedWithPubSubBundleIntegration()
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'MonologBundle' => MonologBundle::class,
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $this->container->setParameter('kernel.debug', true);
+
+        $bundleConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+                'router' => [],
+            ],
+        ];
+
+        // Prepend config now to allow the prepend pass to work
+        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
+
+        // Also load the bundle config so it is passed to the extension load method
+        $this->load($bundleConfig);
+
+        $this->assertSame(
+            [
+                [
+                    'routers' => [
+                        'websocket' => [
+                            'resources' => [],
+                        ],
+                    ],
+                ],
+            ],
+            $this->container->getExtensionConfig('gos_pubsub_router'),
+            'The GosPubSubRouterBundle should be configured when able.'
+        );
+    }
+
     public function testContainerIsLoadedWithMonologBundleIntegration()
     {
         $this->container->setParameter(
