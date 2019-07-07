@@ -29,7 +29,8 @@
         "symfony/event-dispatcher": "^3.4|^4.0",
         "symfony/http-foundation": "^3.4|^4.0",
         "symfony/http-kernel": "^3.4|^4.0",
-        "symfony/security-core": "^3.4|^4.0"
+        "symfony/security-core": "^3.4|^4.0",
+        "symfony/serializer": "^3.4|^4.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.8",
@@ -42,7 +43,6 @@
         "symfony/monolog-bundle": "^3.0",
         "symfony/options-resolver": "^3.4|^4.0",
         "symfony/polyfill-php73": "^1.11",
-        "symfony/serializer": "^3.4|^4.0",
         "symfony/stopwatch": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0",
         "symfony/web-profiler-bundle": "^3.4|^4.0"

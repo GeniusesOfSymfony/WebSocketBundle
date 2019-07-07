@@ -9,6 +9,7 @@ use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @requires extension amqp
@@ -26,7 +27,7 @@ class AmqpPusherTest extends TestCase
     private $router;
 
     /**
-     * @var MessageSerializer
+     * @var MockObject|SerializerInterface
      */
     private $serializer;
 
@@ -47,7 +48,7 @@ class AmqpPusherTest extends TestCase
         $this->pubSubRouter = $this->createMock(RouterInterface::class);
         $this->router = new WampRouter($this->pubSubRouter);
 
-        $this->serializer = new MessageSerializer();
+        $this->serializer = $this->createMock(SerializerInterface::class);
 
         $this->connectionFactory = $this->createMock(AmqpConnectionFactoryInterface::class);
 
@@ -78,6 +79,10 @@ class AmqpPusherTest extends TestCase
         $this->connectionFactory->expects($this->once())
             ->method('createExchange')
             ->willReturn($exchange);
+
+        $this->serializer->expects($this->once())
+            ->method('serialize')
+            ->willReturn('{}');
 
         $this->pusher->push(['hello' => 'world'], 'test_channel');
         $this->pusher->close();

@@ -4,9 +4,9 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Component\WebSocketClient\Wamp\Client;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class WampPusher extends AbstractPusher
 {
@@ -22,7 +22,7 @@ final class WampPusher extends AbstractPusher
 
     public function __construct(
         WampRouter $router,
-        MessageSerializer $serializer,
+        SerializerInterface $serializer,
         WampConnectionFactoryInterface $connectionFactory
     ) {
         parent::__construct($router, $serializer);
@@ -38,7 +38,7 @@ final class WampPusher extends AbstractPusher
             $this->setConnected();
         }
 
-        $this->connection->publish($message->getTopic(), json_encode($message->getData()));
+        $this->connection->publish($message->getTopic(), $this->serializer->serialize($message->getData(), 'json'));
     }
 
     public function close(): void

@@ -4,8 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class ZmqPusher extends AbstractPusher
 {
@@ -21,7 +21,7 @@ final class ZmqPusher extends AbstractPusher
 
     public function __construct(
         WampRouter $router,
-        MessageSerializer $serializer,
+        SerializerInterface $serializer,
         ZmqConnectionFactoryInterface $connectionFactory
     ) {
         parent::__construct($router, $serializer);
@@ -37,7 +37,7 @@ final class ZmqPusher extends AbstractPusher
             $this->setConnected();
         }
 
-        $this->connection->send($this->serializer->serialize($message));
+        $this->connection->send($this->serializer->serialize($message, 'json'));
     }
 
     public function close(): void

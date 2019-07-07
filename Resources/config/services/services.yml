@@ -238,7 +238,7 @@ services:
         public: true
         arguments:
             - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
+            - '@serializer'
             - ~ # connection factory argument is set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: amqp }
@@ -248,7 +248,7 @@ services:
         public: true
         arguments:
             - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
+            - '@serializer'
             - ~ # connection factory argument is set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
@@ -258,7 +258,7 @@ services:
         public: true
         arguments:
             - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
+            - '@serializer'
             - ~ # connection factory argument is set by the container extension
         tags:
             - { name: gos_web_socket.pusher, alias: zmq }
@@ -267,7 +267,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
         arguments:
             - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
+            - '@serializer'
             - '@event_dispatcher'
             - ~ # AmqpConnectionFactory dependency is set by the container extension
         calls:
@@ -279,7 +279,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:
             - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.push_message.serializer'
+            - '@serializer'
             - '@event_dispatcher'
             - ~ # ZmqConnectionFactory dependency is set by the container extension
         calls:
@@ -298,10 +298,6 @@ services:
         public: false
         arguments:
             - '@gos_web_socket.pusher_registry'
-
-    gos_web_socket.push_message.serializer:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer
-        public: false
 
     gos_web_socket.pusher_registry:
         class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry

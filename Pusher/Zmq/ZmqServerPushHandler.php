@@ -5,8 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
-use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -15,6 +14,7 @@ use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class ZmqServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
@@ -26,7 +26,7 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
     private $router;
 
     /**
-     * @var MessageSerializer
+     * @var SerializerInterface
      */
     private $serializer;
 
@@ -47,13 +47,13 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
 
     public function __construct(
         WampRouter $router,
-        MessageSerializer $serializer,
+        SerializerInterface $serializer,
         EventDispatcherInterface $eventDispatcher,
         ZmqConnectionFactoryInterface $connectionFactory
     ) {
         $this->router = $router;
-        $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
+        $this->eventDispatcher = $eventDispatcher;
         $this->connectionFactory = $connectionFactory;
     }
 
@@ -76,8 +76,8 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
             'message',
             function ($data) use ($app) {
                 try {
-                    /** @var MessageInterface $message */
-                    $message = $this->serializer->deserialize($data);
+                    /** @var Message $message */
+                    $message = $this->serializer->deserialize($data, Message::class, 'json');
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
 

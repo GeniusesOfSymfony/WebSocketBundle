@@ -5,8 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 use Gos\Bundle\WebSocketBundle\Event\Events;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
-use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Component\ReactAMQP\Consumer;
 use Psr\Log\LoggerAwareInterface;
@@ -15,6 +14,7 @@ use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
@@ -26,7 +26,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
     private $router;
 
     /**
-     * @var MessageSerializer
+     * @var SerializerInterface
      */
     private $serializer;
 
@@ -47,7 +47,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
 
     public function __construct(
         WampRouter $router,
-        MessageSerializer $serializer,
+        SerializerInterface $serializer,
         EventDispatcherInterface $eventDispatcher,
         AmqpConnectionFactoryInterface $connectionFactory
     ) {
@@ -68,8 +68,8 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
             'consume',
             function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app, $connection) {
                 try {
-                    /** @var MessageInterface $message */
-                    $message = $this->serializer->deserialize($envelop->getBody());
+                    /** @var Message $message */
+                    $message = $this->serializer->deserialize($envelop->getBody(), Message::class, 'json');
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
                     $queue->ack($envelop->getDeliveryTag());

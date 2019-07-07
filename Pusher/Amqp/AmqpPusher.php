@@ -4,9 +4,9 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class AmqpPusher extends AbstractPusher
 {
@@ -27,7 +27,7 @@ final class AmqpPusher extends AbstractPusher
 
     public function __construct(
         WampRouter $router,
-        MessageSerializer $serializer,
+        SerializerInterface $serializer,
         AmqpConnectionFactoryInterface $connectionFactory
     ) {
         parent::__construct($router, $serializer);
@@ -58,7 +58,7 @@ final class AmqpPusher extends AbstractPusher
         $context = $resolver->resolve($context);
 
         $this->exchange->publish(
-            $this->serializer->serialize($message),
+            $this->serializer->serialize($message, 'json'),
             $context['routing_key'],
             $context['publish_flags'],
             $context['attributes']

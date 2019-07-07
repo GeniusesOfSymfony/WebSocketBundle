@@ -2,13 +2,13 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractPusher implements PusherInterface
 {
     /**
-     * @var MessageSerializer
+     * @var SerializerInterface
      */
     protected $serializer;
 
@@ -27,7 +27,7 @@ abstract class AbstractPusher implements PusherInterface
      */
     protected $name;
 
-    public function __construct(WampRouter $router, MessageSerializer $serializer)
+    public function __construct(WampRouter $router, SerializerInterface $serializer)
     {
         $this->router = $router;
         $this->serializer = $serializer;
@@ -45,6 +45,11 @@ abstract class AbstractPusher implements PusherInterface
 
     abstract protected function doPush(Message $message, array $context): void;
 
+    public function isConnected(): bool
+    {
+        return $this->connected;
+    }
+
     public function setConnected($bool = true): void
     {
         $this->connected = $bool;
@@ -58,10 +63,5 @@ abstract class AbstractPusher implements PusherInterface
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    public function isConnected(): bool
-    {
-        return $this->connected;
     }
 }
