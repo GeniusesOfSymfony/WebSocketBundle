@@ -4,8 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DataCollector;
 
 use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class WebsocketDataCollectorTest extends TestCase
