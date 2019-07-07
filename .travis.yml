@@ -1,5 +1,10 @@
-dist: xenial
 language: php
+
+dist: xenial
+
+addons:
+  apt_packages:
+    - rabbitmq-server
 
 env:
   global:
@@ -39,9 +44,15 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+services:
+  - rabbitmq
+
 before_install:
   - phpenv config-rm xdebug.ini || true
   - travis_retry composer self-update
+  - sudo apt update
+  - sudo apt install -y librabbitmq-dev
+  - pecl install amqp
 
 before_script:
   - composer remove --no-update symfony/*
