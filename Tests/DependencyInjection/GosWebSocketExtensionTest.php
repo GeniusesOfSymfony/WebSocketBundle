@@ -405,7 +405,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                 'amqp' => [
                     'enabled' => true,
                     'host' => '127.0.0.1',
-                    'port' => 1337,
+                    'port' => 5672,
                     'login' => 'username',
                     'password' => 'password',
                     'vhost' => '/',

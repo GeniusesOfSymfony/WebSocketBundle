@@ -236,7 +236,7 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                 ->end()
                 ->scalarNode('port')
-                    ->example(1337)
+                    ->example(5672)
                     ->isRequired()
                 ->end()
                 ->scalarNode('login')

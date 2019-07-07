@@ -46,7 +46,7 @@ gos_web_socket:
         amqp:
             enabled:              false
             host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 1337
+            port:                 ~ # Required, Example: 5672
             login:                ~ # Required
             password:             ~ # Required
             vhost:                /

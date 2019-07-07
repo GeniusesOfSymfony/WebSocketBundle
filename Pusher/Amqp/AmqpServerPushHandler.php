@@ -41,7 +41,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
     private $eventDispatcher;
 
     /**
-     * @var AmqpConnectionFactory
+     * @var AmqpConnectionFactoryInterface
      */
     private $connectionFactory;
 
@@ -49,7 +49,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
-        AmqpConnectionFactory $connectionFactory
+        AmqpConnectionFactoryInterface $connectionFactory
     ) {
         $this->router = $router;
         $this->serializer = $serializer;

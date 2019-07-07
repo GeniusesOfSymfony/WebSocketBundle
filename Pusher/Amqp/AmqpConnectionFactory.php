@@ -2,9 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
+use Gos\Bundle\WebSocketBundle\Pusher\Exception\PusherUnsupportedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class AmqpConnectionFactory
+final class AmqpConnectionFactory implements AmqpConnectionFactoryInterface
 {
     /**
      * @var array
@@ -19,7 +20,7 @@ final class AmqpConnectionFactory
     public function createConnection(): \AMQPConnection
     {
         if (!$this->isSupported()) {
-            throw new \RuntimeException('The AMQP pusher requires the PHP amqp extension.');
+            throw new PusherUnsupportedException('The AMQP pusher requires the PHP amqp extension.');
         }
 
         return new \AMQPConnection($this->config);

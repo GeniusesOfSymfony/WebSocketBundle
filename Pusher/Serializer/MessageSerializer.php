@@ -2,11 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Serializer;
 
+use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Pusher\MessageInterface;
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
 final class MessageSerializer
@@ -17,31 +16,21 @@ final class MessageSerializer
     private $serializer;
 
     /**
-     * @var NormalizerInterface[]
-     */
-    private $normalizers;
-
-    /**
      * @var string
      */
     private $class;
 
-    /**
-     * @var EncoderInterface[]
-     */
-    private $encoders;
-
     public function __construct()
     {
-        $this->normalizers = [
+        $normalizers = [
             new GetSetMethodNormalizer(),
         ];
 
-        $this->encoders = [
+        $encoders = [
             new JsonEncoder(),
         ];
 
-        $this->serializer = new Serializer($this->normalizers, $this->encoders);
+        $this->serializer = new Serializer($normalizers, $encoders);
     }
 
     /**
@@ -56,7 +45,7 @@ final class MessageSerializer
 
     public function deserialize($data)
     {
-        $class = null === $this->class ? 'Gos\Bundle\WebSocketBundle\Pusher\Message' : $this->class;
+        $class = null === $this->class ? Message::class : $this->class;
 
         return $this->serializer->deserialize($data, $class, 'json');
     }

@@ -127,7 +127,7 @@ final class ConfigurationTest extends TestCase
                 'amqp' => [
                     'enabled' => false,
                     'host' => '127.0.0.1',
-                    'port' => 1337,
+                    'port' => 5672,
                     'login' => 'username',
                     'password' => 'password',
                     'vhost' => '/',

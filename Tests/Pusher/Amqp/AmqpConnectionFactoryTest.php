@@ -14,7 +14,7 @@ class AmqpConnectionFactoryTest extends TestCase
         yield 'host as a number' => [
             [
                 'host' => 42,
-                'port' => 1337,
+                'port' => 5672,
                 'login' => 'foo',
                 'password' => 'foo',
             ],
@@ -24,7 +24,7 @@ class AmqpConnectionFactoryTest extends TestCase
 
         yield 'host missing' => [
             [
-                'port' => 1337,
+                'port' => 5672,
                 'login' => 'foo',
                 'password' => 'foo',
             ],
@@ -38,7 +38,7 @@ class AmqpConnectionFactoryTest extends TestCase
         yield 'filling in missing required parameters' => [
             [
                 'host' => 'localhost',
-                'port' => 1337,
+                'port' => 5672,
                 'login' => 'foo',
                 'password' => 'foo',
             ],
@@ -47,7 +47,7 @@ class AmqpConnectionFactoryTest extends TestCase
         yield 'configuring all parameters' => [
             [
                 'host' => 'localhost',
-                'port' => 1337,
+                'port' => 5672,
                 'login' => 'foo',
                 'password' => 'foo',
                 'vhost' => '/',
@@ -89,7 +89,7 @@ class AmqpConnectionFactoryTest extends TestCase
     {
         $config = [
             'host' => 'localhost',
-            'port' => 1337,
+            'port' => 5672,
             'login' => 'foo',
             'password' => 'foo',
         ];

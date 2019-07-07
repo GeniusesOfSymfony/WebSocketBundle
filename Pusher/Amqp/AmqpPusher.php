@@ -18,11 +18,11 @@ final class AmqpPusher extends AbstractPusher
     private $exchange;
 
     /**
-     * @var AmqpConnectionFactory
+     * @var AmqpConnectionFactoryInterface
      */
     private $connectionFactory;
 
-    public function __construct(AmqpConnectionFactory $connectionFactory)
+    public function __construct(AmqpConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
     }

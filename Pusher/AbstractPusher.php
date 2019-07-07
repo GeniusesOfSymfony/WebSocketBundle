@@ -32,6 +32,24 @@ abstract class AbstractPusher implements PusherInterface
      */
     public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
     {
+        if (!$this->router) {
+            throw new \RuntimeException(
+                \sprintf(
+                    'The router has not been set in %s, ensure you have called the `setRouter()` method before pushing a message.',
+                    static::class
+                )
+            );
+        }
+
+        if (!$this->serializer) {
+            throw new \RuntimeException(
+                \sprintf(
+                    'The serializer has not been set in %s, ensure you have called the `setSerializer()` method before pushing a message.',
+                    static::class
+                )
+            );
+        }
+
         $channel = $this->router->generate($routeName, $routeParameters);
         $message = new Message($channel, $data);
 
