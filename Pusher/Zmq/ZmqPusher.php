@@ -12,11 +12,11 @@ final class ZmqPusher extends AbstractPusher
     private $connection;
 
     /**
-     * @var ZmqConnectionFactory
+     * @var ZmqConnectionFactoryInterface
      */
     private $connectionFactory;
 
-    public function __construct(ZmqConnectionFactory $connectionFactory)
+    public function __construct(ZmqConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
     }

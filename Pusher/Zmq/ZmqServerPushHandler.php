@@ -41,7 +41,7 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
     private $eventDispatcher;
 
     /**
-     * @var ZmqConnectionFactory
+     * @var ZmqConnectionFactoryInterface
      */
     private $connectionFactory;
 
@@ -49,7 +49,7 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
         WampRouter $router,
         MessageSerializer $serializer,
         EventDispatcherInterface $eventDispatcher,
-        ZmqConnectionFactory $connectionFactory
+        ZmqConnectionFactoryInterface $connectionFactory
     ) {
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;

@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
+use Gos\Bundle\WebSocketBundle\Pusher\Exception\PusherUnsupportedException;
 use React\EventLoop\LoopInterface;
 use React\ZMQ\Context;
 use React\ZMQ\SocketWrapper;
@@ -27,7 +28,7 @@ final class ZmqConnectionFactory
     public function createConnection(): \ZMQSocket
     {
         if (!$this->isSupported()) {
-            throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
+            throw new PusherUnsupportedException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
         $context = new \ZMQContext(1, $this->config['persistent']);
@@ -41,11 +42,11 @@ final class ZmqConnectionFactory
     public function createWrappedConnection(LoopInterface $loop, int $socketType = 7 /*\ZMQ::SOCKET_PULL*/): SocketWrapper
     {
         if (!$this->isSupported()) {
-            throw new \RuntimeException('The ZMQ pusher requires the PHP zmq extension.');
+            throw new PusherUnsupportedException('The ZMQ pusher requires the PHP zmq extension.');
         }
 
         if (!class_exists(Context::class)) {
-            throw new \RuntimeException('The ZMQ pusher requires the react/zmq package to create a wrapped connection.');
+            throw new PusherUnsupportedException('The ZMQ pusher requires the react/zmq package to create a wrapped connection.');
         }
 
         $context = new Context($loop, new \ZMQContext(1, $this->config['persistent']));
