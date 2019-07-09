@@ -1,50 +1,49 @@
-Gos Web Socket Bundle
-=====================
+GosWebSocketBundle
+==================
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GeniusesOfSymfony/WebSocketBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v/stable)](https://packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads)](https://packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license)](https://packagist.org/packages/gos/web-socket-bundle) [![Build Status](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/?branch=master)
 ![Websocket](ws_logo.jpeg)
 
 About
 ------
-Gos Web Socket is a Symfony Bundle designed to bring together WebSocket functionality in a easy to use application architecture.
+GosWebSocketBundle is a Symfony bundle designed to bring together websocket functionality in a easy to use application architecture.
 
-Much like Socket.IO it provides both server side and client side code ensuring you have to write as little as possible to get your app up and running.
+Much like Socket.IO, it provides both a server and client implementation ensuring you have to write as little as possible to get your application up and running.
 
 Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js), with [Symfony](http://symfony.com/)
 
 **[Demo project](https://github.com/GeniusesOfSymfony/WebsocketAppDemo)**
 
+What can I do with this bundle?
+-------------------------------
 
-What can I do with this bundle
-------------------------------
+Websockets are very helpful for applications which require live activity and updates, including:
 
-Make real time application like
-* Chat Application
-* Real time notification
+* Chat applications
+* Real time notifications
 * Browser games
 
-More commonly, all application who meet real time.
-
-Built in feature
+Built in features
 -----------------
 
 * PHP Websocket server (IO / WAMP)
 * PHP Websocket client (IO / WAMP)
-* JS Websocket client (IO / WAMP)
-* PubSub (with routing)
-* Remote procedure call
-* User authentication through websocket
-* Periodic call
+* JavaScript Websocket client (IO / WAMP)
+* [PubSub Router](https://github.com/GeniusesOfSymfony/PubSubRouterBundle)
+* Remote Procedure Calls
+* User authentication
+* Periodic calls
 * Origin checker
 * Push (zmq, amqp)
 
 Resources
-----------
+---------
+
 * [Installation Instructions](#installation-instructions)
 * [Client Setup](Resources/docs/ClientSetup.md)
-* [Server Side of RPC](Resources/docs/RPCSetup.md)
+* [RPC Handlers](Resources/docs/RPCSetup.md)
 * [PubSub Topic Handlers](Resources/docs/TopicSetup.md)
-* [Periodic Services](Resources/docs/PeriodicSetup.md)(functions to be run every x seconds with the IO loop.)
+* [Periodic Services](Resources/docs/PeriodicSetup.md)
 * [Session Management & User authentication](Resources/docs/SessionSetup.md)
 * [Server Events](Resources/docs/Events.md)
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
@@ -54,89 +53,95 @@ Resources
 * [SSL configuration](Resources/docs/Ssl.md)
 
 Code Cookbook
---------------
+-------------
+
 * [Sharing Config between Server and Client](Resources/docs/code/SharingConfig.md)
-
-Overview
---------
-
-You must achieve these following steps before send your first message through websocket.
-
-1. Install the bundle
-2. Create you first topic handler
-3. Implement the client (Javascript)
-
-Let's do it !
 
 Installation Instructions
 -------------------------
 
-### Step 1: Install via composer
+### Step 1: Install via Composer
+
+If your application requires support for Symfony versions before 3.4, use the 1.x releases of this bundle. For Symfony 3.4 or newer, use the 2.x releases.
 
 `composer require gos/web-socket-bundle`
 
-### Step 2: Add to your App Kernel
+### Step 2: Enable the bundle
+
+If your application is based on the Symfony Standard structure, you will need to add the bundle and its dependency, the `GosPubSubRouterBundle`, to your `AppKernel` class' `registerBundles()` method.
 
 ```php
 <?php
 // app/AppKernel.php
 
-public function registerBundles()
+// ...
+class AppKernel extends Kernel
 {
-    $bundles = array(
+    public function registerBundles()
+    {
+        $bundles = [
+            // ...
+
+            new Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle(),
+            new Gos\Bundle\WebSocketBundle\GosWebSocketBundle(),
+        ];
+
         // ...
-        new Gos\Bundle\WebSocketBundle\GosWebSocketBundle(),
-        new Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle(),
-    );
+    }
+
+    // ...
 }
 ```
-### Step 3: Configure WebSocket Server
 
-Add the following to your app/config.yml
+If your application is based on the Symfony Flex structure, the bundle should be automatically registered, otherwise you will need to add it and its dependency, the `GosPubSubRouterBundle`, to your `config/bundles.php` file.
 
-```yaml
-# Web Socket Configuration
-gos_web_socket:
-    server:
-        port: 8080        #The port the socket server will listen on
-        host: 127.0.0.1   #The host ip to bind to
+```php
+<?php
+
+return [
+    // ...
+
+    Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle::class => ['all' => true],
+    Gos\Bundle\WebSocketBundle\GosWebSocketBundle::class => ['all' => true],
+];
+
 ```
 
-_Note: when connecting on the client, if possible use the same values as here to ensure compatibility for sessions etc._
+### Step 3: Configure the bundle
 
-### Step 4: Launching the Server
+The following is the minimum configuration necessary to use the bundle. If you are using the Symfony Standard structure, this will be added to your `app/config/config.yml` file. If you are using the Symfony Flex structure, this will be added to your `config/packages/gos_web_socket.yaml` file.
 
-The Server Side WebSocket installation is now complete. You should be able to run this from the root of your symfony installation.
+```yaml
+gos_web_socket:
+    server:
+        port: 8080        # The port the socket server will listen on
+        host: 127.0.0.1   # The host ip to bind to
+```
 
-For Symfony 2.7 & 2.8
+### Step 4: Launching the server
 
-```command
+With the bundle installed and configured, you can now launch the websocket server through your Symfony application's command-line console.
+
+For Symfony 2.x:
+
+```bash
 php app/console gos:websocket:server
 ```
 
-For Symfony >3.x
+For Symfony 3.x and newer:
 
-```command
+```bash
 php bin/console gos:websocket:server
 ```
 
-
 If everything is successful, you will see something similar to the following:
 
+```sh
+INFO      [websocket] Starting web socket
+INFO      [websocket] Launching Ratchet on 127.0.0.1:8080 PID: 12345
 ```
-Starting Gos WebSocket
-Launching Ratchet WS Server on: 127.0.0.1:8080
-```
 
-This means the websocket server is now up and running ! 
-
-**From here, only the websocket server is running ! That doesn't mean you can subscribe, publish, call. Follow next step to do it :)**
-
-### Next Steps
-
-For further documentations on how to use WebSocket, please continue with the client side setup.
-
-* [Setup Client Javascript](Resources/docs/ClientSetup.md)
+Congratulations, your websocket server is now running. However, you will still need to add integrations to your application to fully use the bundle.
 
 ## Original Project
 

@@ -1,32 +1,35 @@
 # Topic Handler Setup
 
-Although the standard Gos WebSocket PubSub can be useful as a simple channel for allowing messages to be pushed to users, anymore advanced functionality will require custom Topic Handlers.
+Although the standard GosWebSocketBundle PubSub can be useful as a simple channel for allowing messages to be pushed to users, more advanced functionality will require custom Topic Handlers.
 
-Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
+Similar to RPC, topic handlers are specialized Symfony services. They must implement `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`.
 
-### What is a topic ?
-A topic is the server side representation of a pubsub channel.
+## What is a topic?
 
-You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
+A topic is the server side representation of a PubSub channel.
+
+You just have to register a topic who catch all channels prefixed by `chat` to handle PubSub. A topic can only support one prefix.
 
 ## Overview
 
 * Create the topic handler service
-* Register your service with symfony
+* Register your service with Symfony
 * Connect the client with your topic
-* Link the topic with channel with pubsub router
+* Link the topic with GosPubSubRouterBundle
 
 ## Step 1: Create the Topic Handler Service
+
+Your service is a PHP class which must implement `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`.
 
 ```php
 <?php
 
-namespace Acme\HelloBundle\Topic;
+namespace App\Websocket\Topic;
 
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class AcmeTopic implements TopicInterface
 {
@@ -36,28 +39,29 @@ class AcmeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
+     *
      * @return void
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast(['msg' => $connection->resourceId . " has joined " . $topic->getId()]);
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has joined '.$topic->getId()]);
     }
 
     /**
-     * This will receive any UnSubscription requests for this topic.
+     * This will receive any unsubscription requests for this topic.
      *
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
+     *
      * @return void
      */
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast(['msg' => $connection->resourceId . " has left " . $topic->getId()]);
+        $topic->broadcast(['msg' => $connection->resourceId.' has left '.$topic->getId()]);
     }
-
 
     /**
      * This will receive any Publish requests for this topic.
@@ -65,29 +69,39 @@ class AcmeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @param $event
+     * @param mixed $event
      * @param array $exclude
-     * @param array $eligible
+     * @param array $eligibles
+     *
      * @return mixed|void
      */
-    public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
-    {
+    public function onPublish(
+        ConnectionInterface $connection,
+        Topic $topic,
+        WampRequest $request,
+        $event,
+        array $exclude,
+        array $eligible
+    ) {
         /*
-        	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
+            $topic->getId() will contain the FULL requested uri, so you can proceed based on that
 
-            if ($topic->getId() === 'acme/channel/shout')
-     	       //shout something to all subs.
+            if ($topic->getId() == "acme/channel/shout")
+               //shout something to all subs.
         */
 
-        $topic->broadcast([
-        	'msg' => $event,
-        ]);
+        $topic->broadcast(
+            [
+                'msg' => $event,
+            ]
+        );
     }
 
     /**
-    * Like RPC is will use to prefix the channel
-    * @return string
-    */
+     * Like RPC is will use to prefix the channel
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'acme.topic';
@@ -95,89 +109,69 @@ class AcmeTopic implements TopicInterface
 }
 ```
 
-### Most important things in topic
-
-### Broadcast full definition
-
-`Topic::broadcast($msg, array $exclude = array(), array $eligible = array());`
-
-Send a message to all the connections in this topic.
-
-**Note :** `$exclude` and `$include` work with Wamp Session ID available through `$connection->WAMP->sessionId`
-
-#### How get the current channel information (route, attributes, path etc ...) ?
+### Accessing request information
 
 `$request->getRouteName()` Will give the matched route name
 
-`$request->getRoute()` will give [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/RouteInterface.php) object.
+`$request->getRoute()` will give a [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/v0.3.5/Router/RouteInterface.php) object with information about the current route.
 
-`$request->getAttributes()` will give [ParameterBag](http://api.symfony.com/2.6/Symfony/Component/HttpFoundation/ParameterBag.html)
+`$request->getAttributes()` will give a [ParameterBag](https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php) object with the request attributes.
 
-For example, your channel pattern is `chat/user/{room}`, user subscribe to `chat/user/room1`
+For example, your channel pattern is `chat/user/{room}` and the user subscribes to `chat/user/room1`
 
-`$request->getAttributes()->get('room');` will return `room1`. You can look step3 who explain how pubsub router work.
+`$request->getAttributes()->get('room');` will return `room1`.
 
-`$topic->getId()` will return the subscribed channel e.g : `chat/user/room1`
+`$topic->getId()` will return the subscribed channel (`chat/user/room1`)
 
-#### How iterate over my subscribers ?
+### How to iterate over my subscribers?
 
-`Topic` implements `IteratorAggregate`, you can iterate over subscribers present in your topic. Client are reprensented by `ConnectionInterface`
+`Ratchet\Wamp\Topic` implements `IteratorAggregate`, whic allows you to iterate over subscribers present in your topic. Clients are reprensented by a `Ratchet\ConnectionInterface` object.
 
 ```php
 /** @var ConnectionInterface $client **/
 foreach ($topic as $client) {
-    //Do stuff ...
+    // Do stuff ...
 }
 ```
 
-#### How send a message only to my current client ?
-
-`$connection->event($topic->getId(), ['msg' => 'lol']);`
-
-#### How count the number of subscribers I currently have ?
-
-`Topic` implements `Countable` interface, you just have to do `count($topic)`
-
-#### Topic interface & explaination
+## Topic interface & explaination
 
 The **4 methods** that must be implemented are:
 
-* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client subscribe to the topic
-* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client unsubscribe to the topic
-* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` When client publish inside the topic
-* `getName()` Use for routing definition, used to point this class.
+* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` is triggered when a client subscribes to a topic
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` is triggered when a client unsubscribes from a topic
+* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` is triggered when a client publishes a message to the topic
+* `getName()` is used to identify the topic inside the bundle's services.
 
 Where
-* `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
+* `ConnectionInterface $connection` is the [Connection object](http://socketo.me/api/class-Ratchet.ConnectionInterface.html) of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
-* `WampRequest` Is the representation of the request make trough websocket.
+* `WampRequest` Is the representation of the request made to the websocket server.
 
-### Firewall setup (Topic)
+## Firewall setup (Topic)
 
-It is possible to extend basic functionality of Topic Services to exclude unwanted connections.
-You must implement `SecuredTopicInterface` to implement firewall functionality into your `Topic` object.
+It is possible to extend Topic services to exclude unwanted connections. Your service must implement `Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface` to implement firewall functionality into your Topic object.
 
-SecuredTopicInterface requires your `Topic` to implement one additional function:
+The `SecuredTopicInterface` requires your Topic to implement one additional method:
 
-* `secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
+* `secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
 
-It must throw an exception (instance of `FirewallRejectionException`) if connection security check fails.
+If a connection is not allowed to the topic, the `secure()` method *MUST* throw a `Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException`.
 
-A possible implementation is the following:
+An example implementation is the following:
 
 ```php
 <?php
 
-namespace Acme\HomeBundle\Topics;
+namespace App\Websocket\Topic;
 
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class AcmeSecuredTopic implements TopicInterface, SecuredTopicInterface
+class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
 {
     /**
      * @param ConnectionInterface $conn
@@ -187,21 +181,29 @@ class AcmeSecuredTopic implements TopicInterface, SecuredTopicInterface
      * @param string[]|null       $eligible
      * @param string|null         $provider
      *
-     * @return string|null        $error
+     * @return void
      */
-    public function secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
-        // check input data to verify if connection must be blocked
-        if ( /* ... */ ) {
-            throw new FirewallRejectionException();
-        } else {
-            // grant access
+        // Check input data to verify if connection must be blocked
+        if ($request->getAttributes()->has('denied')) {
+            throw new FirewallRejectionException('Access denied');
         }
+
+        // Access is granted
+    }
+
+    /**
+     * Like RPC is will use to prefix the channel
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.secured.topic';
     }
 }
-
 ```
-
 
 ### Periodic Timer (Topic & Connection)
 
