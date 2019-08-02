@@ -100,27 +100,11 @@ gos_web_socket:
         - '@app.websocket.rpc.acme'
 ```
 
-### Example Client Usage
-The domain will match the network namespace for sending messages to this service.
-
-e.g.
-
-```javascript
-session.call("sample/sum", {"term1": 2, "term2": 5}).then(
-    function (result) {
-        console.log("RPC Valid!", result);
-    },
-    function (error, desc) {
-        console.log("RPC Error", error, desc);
-    }
-);
-```
-
 By using network namespaces, this allows you to logically divide and group your application's handlers.
 
 ## Step 3: Register your service with GosPubSubRouterBundle
 
-Now that you have created your RPC service and implemented your RPC call in your frontend client, you must now link the path with your service. `sample/sum` will refer to the service you've created.
+Now that you have created your RPC service, you must now link the path with your service. `sample/sum` will refer to the service you've created.
 
 If not already created, you should create a routing file for the GosPubSubRouterBundle configuration. For Symfony Standard, you should use either `app/config/pubsub/routing.yml` or your bundle's `Resources/config/pubsub/routing.yml`. For Symfony Flex, you should use `config/pubsub/routing.yaml`.
 
@@ -146,7 +130,7 @@ gos_web_socket:
                 - '%kernel.project_dir%/config/pubsub/routing.yaml'
 ```
 
-From here, each call who match with this pattern will handled by the `AcmeRpc` class.
+From here, each call that matches with this pattern will handled by the `AcmeRpc` class.
 
 Similar to Symfony's Routing component, you can define multiple routes in a single file.
 
@@ -167,3 +151,22 @@ acme_de_rpc:
         method:
             pattern: "method_d|method_e"
 ```
+
+### Step 4: Call a RPC function with the JavaScript client
+
+You can now call your RPC function using the JavaScript client.
+
+e.g.
+
+```javascript
+session.call("sample/sum", {"term1": 2, "term2": 5}).then(
+    function (result) {
+        console.log("RPC Valid!", result);
+    },
+    function (error, desc) {
+        console.log("RPC Error", error, desc);
+    }
+);
+```
+
+For more information on the JavaScript Client the bundle, please see [Client Side Setup](ClientSetup.md)
