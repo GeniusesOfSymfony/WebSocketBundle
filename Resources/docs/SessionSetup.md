@@ -77,6 +77,8 @@ User is directly authenticated against his firewall, anonymous users are allow.
 
 **Important:** The firewall must be the firewall context name if exist. Else the firewall name
 
+**Important:** If you change [session name](https://symfony.com/doc/current/reference/configuration/framework.html#name) in Symfony change parameter "'session.name" in php.ini
+
 **Anonymous user is represented by string, example : anon-54e3352d535d2**
 **Authenticated user is represented by UserInterface object**
 
