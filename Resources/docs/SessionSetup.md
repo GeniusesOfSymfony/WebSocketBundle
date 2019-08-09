@@ -167,7 +167,7 @@ final class AcmeRpc implements RpcInterface
      * @param ConnectionInterface $connection
      * @param WampRequest $request
      * @param array $params
-	 *
+     *
      * @return array
      */
     public function sum(ConnectionInterface $connection, WampRequest $request, $params)
@@ -179,10 +179,10 @@ final class AcmeRpc implements RpcInterface
         }
 
         return ['error' => true, 'msg' => 'You must be authenticated to use this function.'];
-	}
+    }
 
     /**
-     * Name of RPC, used by the PubSub router.
+     * Name of the RPC handler, used by the PubSub router.
      *
      * @return string
      */
@@ -262,7 +262,7 @@ final class AcmeTopic implements TopicInterface
      * @param array $exclude
      * @param array $eligibles
      *
-     * @return mixed|void
+     * @return mixed
      */
     public function onPublish(
         ConnectionInterface $connection,

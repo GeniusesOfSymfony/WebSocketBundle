@@ -50,16 +50,16 @@ final class AcmeRpc implements RpcInterface
      * @param ConnectionInterface $connection
      * @param WampRequest $request
      * @param array $params
-	 *
+     *
      * @return array
      */
     public function sum(ConnectionInterface $connection, WampRequest $request, $params)
     {
-		return ['result' => array_sum($params)];
-	}
+        return ['result' => array_sum($params)];
+    }
 
     /**
-     * Name of RPC, used by the PubSub router.
+     * Name of the RPC handler, used by the PubSub router.
      *
      * @return string
      */

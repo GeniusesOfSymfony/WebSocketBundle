@@ -73,7 +73,7 @@ class AcmeTopic implements TopicInterface
      * @param array $exclude
      * @param array $eligibles
      *
-     * @return mixed|void
+     * @return mixed
      */
     public function onPublish(
         ConnectionInterface $connection,
@@ -128,7 +128,7 @@ For example, your channel pattern is `chat/user/{room}` and the user subscribes 
 `Ratchet\Wamp\Topic` implements `IteratorAggregate`, whic allows you to iterate over subscribers present in your topic. Clients are reprensented by a `Ratchet\ConnectionInterface` object.
 
 ```php
-/** @var ConnectionInterface $client **/
+/** @var ConnectionInterface $client */
 foreach ($topic as $client) {
     // Do stuff ...
 }
