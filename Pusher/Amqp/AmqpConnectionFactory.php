@@ -17,6 +17,9 @@ final class AmqpConnectionFactory implements AmqpConnectionFactoryInterface
         $this->config = $this->resolveConfig($config);
     }
 
+    /**
+     * @throws PusherUnsupportedException if the AMQP pusher is not supported in the current environment
+     */
     public function createConnection(): \AMQPConnection
     {
         if (!$this->isSupported()) {

@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
@@ -31,6 +32,9 @@ interface TopicDispatcherInterface
 
     /**
      * @param string|array $payload
+     *
+     * @throws PushUnsupportedException if the topic does not support push requests
+     * @throws \InvalidArgumentException if an unsupported request type is given
      */
     public function dispatch(
         string $calledMethod,

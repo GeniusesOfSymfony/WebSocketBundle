@@ -24,6 +24,8 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
 
     /**
      * @param Connection|PingableConnection $connection
+     *
+     * @throws \InvalidArgumentException if the connection is not an appropriate type
      */
     public function __construct($connection)
     {

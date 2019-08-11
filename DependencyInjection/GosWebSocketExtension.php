@@ -144,6 +144,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->loadPushers($configs, $container);
     }
 
+    /**
+     * @throws InvalidArgumentException if an unsupported ping service type is given
+     */
     private function loadPingServices(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['ping'])) {
@@ -293,7 +296,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     }
 
     /**
-     * @throws RuntimeException
+     * @throws RuntimeException if required dependencies are missing
      */
     public function prepend(ContainerBuilder $container): void
     {

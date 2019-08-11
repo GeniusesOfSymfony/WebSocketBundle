@@ -15,7 +15,7 @@ final class PusherRegistry
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the requested pusher was not registered
      */
     public function getPusher(string $name): PusherInterface
     {

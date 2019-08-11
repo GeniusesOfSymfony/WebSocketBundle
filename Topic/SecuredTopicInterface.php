@@ -12,7 +12,7 @@ interface SecuredTopicInterface
     /**
      * @param string|array $payload
      *
-     * @throws FirewallRejectionException
+     * @throws FirewallRejectionException if the connection is not authorized access to the topic
      */
     public function secure(
         ?ConnectionInterface $conn,

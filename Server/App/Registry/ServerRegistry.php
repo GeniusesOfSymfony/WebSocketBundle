@@ -20,7 +20,7 @@ final class ServerRegistry
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the requested server was not registered
      */
     public function getServer(string $serverName): ServerInterface
     {

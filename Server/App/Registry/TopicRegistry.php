@@ -20,7 +20,7 @@ final class TopicRegistry
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the requested topic was not registered
      */
     public function getTopic(string $topicName): TopicInterface
     {

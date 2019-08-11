@@ -25,6 +25,9 @@ final class ZmqConnectionFactory
         return $this->config['protocol'].'://'.$this->config['host'].':'.$this->config['port'];
     }
 
+    /**
+     * @throws PusherUnsupportedException if the ZMQ pusher is not supported in the current environment
+     */
     public function createConnection(): \ZMQSocket
     {
         if (!$this->isSupported()) {
@@ -39,6 +42,9 @@ final class ZmqConnectionFactory
         return $connection;
     }
 
+    /**
+     * @throws PusherUnsupportedException if the ZMQ pusher is not supported in the current environment
+     */
     public function createWrappedConnection(LoopInterface $loop, int $socketType = 7 /*\ZMQ::SOCKET_PULL*/): SocketWrapper
     {
         if (!$this->isSupported()) {

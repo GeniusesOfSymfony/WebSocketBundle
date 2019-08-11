@@ -15,7 +15,7 @@ final class ServerPushHandlerRegistry
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the requested push handler was not registered
      */
     public function getPushHandler(string $name): ServerPushHandlerInterface
     {

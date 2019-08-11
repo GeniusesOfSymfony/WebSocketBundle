@@ -96,7 +96,8 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     /**
      * @param string|array $payload
      *
-     * @throws \Exception
+     * @throws PushUnsupportedException if the topic does not support push requests
+     * @throws \InvalidArgumentException if an unsupported request type is given
      */
     public function dispatch(
         string $calledMethod,

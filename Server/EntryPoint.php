@@ -20,7 +20,7 @@ final class EntryPoint implements ServerLauncherInterface
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws \RuntimeException if unable to find a server to launch
      */
     public function launch(?string $serverName, string $host, int $port, bool $profile): void
     {

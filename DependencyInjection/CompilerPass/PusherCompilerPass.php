@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 final class PusherCompilerPass implements CompilerPassInterface
 {
     /**
-     * @param ContainerBuilder $container
+     * @throws InvalidArgumentException if the service tag is missing required attributes
      */
     public function process(ContainerBuilder $container): void
     {

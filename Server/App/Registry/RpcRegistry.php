@@ -20,7 +20,7 @@ final class RpcRegistry
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the requested handler was not registered
      */
     public function getRpc(string $name): RpcInterface
     {
