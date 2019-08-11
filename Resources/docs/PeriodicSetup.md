@@ -39,7 +39,7 @@ class AcmePeriodic implements PeriodicInterface
 
 For an application based on the Symfony Standard structure, you can register services in either your `app/config/services.yml` file or your bundle's `Resources/config/services.yml` file. For an application based on Symfony Flex, use the `config/services.yaml` file.
 
-Periodic services must be tagged with the `gos_web_socket.periodic` tag to be correctly registered.
+Periodic services must be tagged with the `gos_web_socket.periodic` tag to be correctly registered. Note that when autowiring is enabled, your service will be automatically tagged.
 
 ```yaml
 services:
@@ -50,15 +50,5 @@ services:
 ```
 
 For other formats, please review the [Symfony Documentation](http://symfony.com/doc/master/book/service_container.html).
-
-### Alternative Service Registration (Deprecated)
-
-Alternatively, you can list your Periodic services in the bundle's configuration file. Note, this method is deprecated and removed in GosWebSocketBundle 2.0.
-
-```yaml
-gos_web_socket:
-    periodic:
-        - '@app.websocket.periodic.acme'
-```
 
 Try pairing up a Periodic function with a [Custom Topic handler](TopicSetup.md) to perform actions on a set of clients connected to a certain topic.

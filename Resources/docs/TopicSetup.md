@@ -361,7 +361,7 @@ class AcmeConnectionPeriodicTopic extends AcmeTopic
 
 For an application based on the Symfony Standard structure, you can register services in either your `app/config/services.yml` file or your bundle's `Resources/config/services.yml` file. For an application based on Symfony Flex, use the `config/services.yaml` file.
 
-Topic handlers must be tagged with the `gos_web_socket.topic` tag to be correctly registered.
+Topic handlers must be tagged with the `gos_web_socket.topic` tag to be correctly registered. Note that when autowiring is enabled, your service will be automatically tagged.
 
 ```yaml
 services:
@@ -373,16 +373,6 @@ services:
 
 For other formats, please review the [Symfony Documentation](http://symfony.com/doc/master/book/service_container.html).
 
-### Alternative Service Registration (Deprecated)
-
-Alternatively, you can list your Topic services in the bundle's configuration file. Note, this method is deprecated and removed in GosWebSocketBundle 2.0.
-
-```yaml
-gos_web_socket:
-    topics:
-        - '@app.websocket.topic.acme'
-```
-
 ## Step 3: Register your service with GosPubSubRouterBundle
 
 Now that you have created your Topic service, you must now link the path with your service. `acme/channel` will refer to the service you've created.
@@ -392,8 +382,7 @@ If not already created, you should create a routing file for the GosPubSubRouter
 ```yaml
 acme_topic:
     channel: acme/channel
-    handler:
-        callback: 'acme.topic'
+    handler: 'acme.topic'
 ```
 
 Next, you will need to include the new resource in the bundle's configuration to ensure the PubSub router is set up correctly.
@@ -415,13 +404,11 @@ Similar to Symfony's Routing component, you can define multiple routes in a sing
 ```yaml
 acme_topic:
     channel: acme/channel
-    handler:
-        callback: 'acme.topic'
+    handler: 'acme.topic'
             
 acme_secured_topic:
     channel: acme/channel/secure
-    handler:
-        callback: 'acme.secured.topic'
+    handler: 'acme.secured.topic'
 ```
 
 ## Step 4: Connect client to your topics

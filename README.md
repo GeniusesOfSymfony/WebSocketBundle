@@ -124,14 +124,6 @@ gos_web_socket:
 
 With the bundle installed and configured, you can now launch the websocket server through your Symfony application's command-line console.
 
-For Symfony 2.x:
-
-```bash
-php app/console gos:websocket:server
-```
-
-For Symfony 3.x and newer:
-
 ```bash
 php bin/console gos:websocket:server
 ```

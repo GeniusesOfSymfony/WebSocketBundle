@@ -25,7 +25,7 @@ To use the AMQP pusher, you will need to enable it in the bundle's configuration
 gos_web_socket:
     pushers:
         amqp:
-            default: false # Unused
+            enabled: true # Flag to enable this pusher
             host: 127.0.0.1 # Host address for the AMQP server
             port: 5672 # Port the AMQP server is listening on
             login: ~ # Required, the login for the AMQP server
@@ -50,6 +50,7 @@ To use the WAMP pusher, you will need to enable it in the bundle's configuration
 gos_web_socket:
     pushers:
         wamp:
+            enabled: true # Flag to enable this pusher
             host: 127.0.0.1 # This will probably be the same as your `gos_web_socket.server.host` value
             port: 80 # This will probably be the same as your `gos_web_socket.server.port` value
             ssl: false # Flag to enable SSL connections to the websocket server, default false
@@ -75,7 +76,7 @@ To use the ZMQ pusher, you will need to enable it in the bundle's configuration.
 gos_web_socket:
     pushers:
         zmq:
-            default: false # Unused
+            enabled: true # Flag to enable this pusher
             host: 127.0.0.1 # Host address for the ZMQ server
             port: 5555 # Port the ZMQ server is listening on
             persistent: true # Flag indicating the current context is persistent, default `true`

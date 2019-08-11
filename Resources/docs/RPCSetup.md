@@ -78,7 +78,7 @@ If you return false or null, it will return an error to the client, informing th
 
 For an application based on the Symfony Standard structure, you can register services in either your `app/config/services.yml` file or your bundle's `Resources/config/services.yml` file. For an application based on Symfony Flex, use the `config/services.yaml` file.
 
-RPC handlers must be tagged with the `gos_web_socket.rpc` tag to be correctly registered.
+RPC handlers must be tagged with the `gos_web_socket.rpc` tag to be correctly registered. Note that when autowiring is enabled, your service will be automatically tagged.
 
 ```yaml
 services:
@@ -90,18 +90,6 @@ services:
 
 For other formats, please review the [Symfony Documentation](http://symfony.com/doc/master/book/service_container.html).
 
-### Alternative Service Registration (Deprecated)
-
-Alternatively, you can list your RPC services in the bundle's configuration file. Note, this method is deprecated and removed in GosWebSocketBundle 2.0.
-
-```yaml
-gos_web_socket:
-    rpc:
-        - '@app.websocket.rpc.acme'
-```
-
-By using network namespaces, this allows you to logically divide and group your application's handlers.
-
 ## Step 3: Register your service with GosPubSubRouterBundle
 
 Now that you have created your RPC service, you must now link the path with your service. `sample/sum` will refer to the service you've created.
@@ -111,11 +99,9 @@ If not already created, you should create a routing file for the GosPubSubRouter
 ```yaml
 acme_rpc:
     channel: sample/{method}
-    handler:
-        callback: 'acme.rpc' #related to the getName() or your RPC service
+    handler: 'acme.rpc' #related to the getName() or your RPC service
     requirements:
-        method:
-            pattern: "[a-z_]+"
+        method: "[a-z_]+"
 ```
 
 Next, you will need to include the new resource in the bundle's configuration to ensure the PubSub router is set up correctly.
@@ -137,19 +123,15 @@ Similar to Symfony's Routing component, you can define multiple routes in a sing
 ```yaml
 acme_abc_rpc:
     channel: sample/{method}
-    handler:
-        callback: 'acme.method_abc.rpc'
+    handler: 'acme.method_abc.rpc'
     requirements:
-        method:
-            pattern: "method_a|method_b|method_c"
+        method: "method_a|method_b|method_c"
             
 acme_de_rpc:
     channel: sample/{method}
-    handler:
-        callback: 'acme.method_de.rpc'
+    handler: 'acme.method_de.rpc'
     requirements:
-        method:
-            pattern: "method_d|method_e"
+        method: "method_d|method_e"
 ```
 
 ### Step 4: Call a RPC function with the JavaScript client

@@ -197,7 +197,7 @@ final class AcmeRpc implements RpcInterface
 
 ## Find the connection for a specific user
 
-You can use the `findByUsername` method of the client manipulator to find a connection for the given username.
+You can use the `findAllByUsername` method of the client manipulator to find all active connections for the given username.
 
 ```php
 <?php
@@ -285,11 +285,16 @@ final class AcmeTopic implements TopicInterface
             return;
         }
 
-        $recipient = $this->clientManipulator->findByUsername($topic, $params['username']);
+        $recipients = $this->clientManipulator->findAllByUsername($topic, $params['username']);
 
-        // Check if a connection was found, this will be false if the user is not connected
-        if ($recipient !== false) {
-            $topic->broadcast('message', [], [$recipient['connection']->WAMP->sessionId]);
+        if (!empty($recipients)) {
+            $recipientIds = [];
+
+            foreach ($recipients as $recipient) {
+                $recipientIds[] = $userConnection['connection']->WAMP->sessionId;
+            }
+
+            $topic->broadcast('message', [], $recipientIds);
         }
     }
 
