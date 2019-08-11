@@ -1,190 +1,153 @@
-# Pusher
+# Pusher & Push Handler
 
-By different nature of pusher you may need additional php extension, if required it will be mentioned.
- 
-## ZMQ Pusher
+The GosWebSocketBundle contains a system loosely similar to [Symfony's Messenger component](https://symfony.com/doc/current/components/messenger.html) which allows you to send and receive messages with third party systems.
 
-It required **php-zmq** extension. 
+Supported integrations include:
 
-**1. PHP extension installation** 
-
-```cmd
-sudo pecl install zmq-beta
-```
-
-```cmd
-touch /etc/php5/mods-available/zmq.ini
-echo 'extension=zmq.so' >> /etc/php5/mods-available/zmq.ini
-sudo php5enmod zmq
-```
-
-You will need to install a new dependency through composer:
-
-```cmd
-composer require react/zmq
-```
-
-Then reload php-fpm server or apache/nginx if you are not using php-fpm
-
-**2. Bundle Configuration**
-
-```yaml
-# Gos Web Socket Bundle
-gos_web_socket:
-    pushers:
-        zmq:
-            default: true
-            host: 127.0.0.1
-            port: 5555
-            persistent: true
-            protocol: tcp
-```
-
-**NOTE :** if `default` set to true service is available through 'gos_web_socket.pusher' insteadof 'gos_web_socket.zmq.pusher'
-
-After that, you will see this message when you start the websocket server
-
-```text
-[2015-08-02 17:36:38] websocket.INFO: ZMQ transport listening on 127.0.0.1:5555
-```
-
-**3. Push**
-
-```php
-$pusher = $this->container->get('gos_web_socket.zmq.pusher');
-//push(data, route_name, route_arguments)
-$pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1']);
-```
+* AMQP (pusher & push handler)
+* WAMP (pusher)
+* ZMQ (pusher & push handler)
 
 ## AMQP Pusher
 
-It required **amqp** extension. 
+The AMQP Pusher allows you to send and receive messages using an AMQP compliant system, such as RabbitMQ.
 
-**1. PHP extension installation** 
+### Extra Requirements
 
-```cmd
-sudo pecl install amqp
-```
+* The [`amqp`](https://pecl.php.net/package/amqp) extension for PHP (`pecl install amqp`)
+* The [`gos/react-amqp`](https://github.com/GeniusesOfSymfony/ReactAMQP) Composer package (`composer require gos/react-amqp`)
 
-```cmd
-touch /etc/php5/mods-available/amqp.ini
-echo 'extension=amqp.so' >> /etc/php5/mods-available/amqp.ini
-sudo php5enmod amqp
-```
+### Configuration
 
-You will need to install a new dependency through composer:
+To use the AMQP pusher, you will need to enable it in the bundle's configuration. For an application based on the Symfony Standard structure, you will need to update your `app/config/config.yml` file. For an application based on Symfony Flex, use the `config/packages/gos_web_socket.yaml` file.
 
-```cmd
-composer require gos/react-amqp
-```
-
-**2. Bundle Configuration**
-
-```yml
+```yaml
 gos_web_socket:
     pushers:
         amqp:
-            host: 127.0.0.1
-            port: 5672
-            login: guest
-            password: guest
-            vhost: '/'
+            default: false # Unused
+            host: 127.0.0.1 # Host address for the AMQP server
+            port: 5672 # Port the AMQP server is listening on
+            login: ~ # Required, the login for the AMQP server
+            password: ~ # Required, the password for the AMQP server
+            vhost: / # The virtual host on the host, default `/`
+            read_timeout: 0 # Timeout for incoming activity in seconds, default 0
+            write_timeout: 0 # Timeout for outgoing activity in seconds, default 0
+            connect_timeout: 0 # Connection timeout in seconds, default 0
+            queue_name: gos_websocket # The name of the queue for messages, default `gos_websocket`
+            exchange_name: gos_websocket_exchange # The name of the exchange for messages, default `gos_websocket`
 ```
 
-**NOTE** : We create Exchange (`gos_websocket_exchange`) and Queue (`gos_websocket`) **BUT** you need to manually bind the `gos_websocket` queue to `gos_websocket_exchange` from server admin panel.
+## WAMP Pusher
 
-**3. Push**
+The WAMP pusher allows you to push a message to your websocket server using the [`gos/websocket-client`](https://github.com/GeniusesOfSymfony/WebSocketPhpClient) library.
 
-```php
-$pusher = $this->container->get('gos_web_socket.amqp.pusher');
-//push(data, route_name, route_arguments, $context)
-$pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1', $context]);
-```
+### Configuration
 
-**NOTE :** `$context` is optional but you can pass option to publish method like 'routing_key', 'publish_flags' and 'attributes' (**See** : https://github.com/pdezwart/php-amqp/blob/master/amqp_exchange.c#L576) 
-## Websocket Pusher
+To use the WAMP pusher, you will need to enable it in the bundle's configuration. For an application based on the Symfony Standard structure, you will need to update your `app/config/config.yml` file. For an application based on Symfony Flex, use the `config/packages/gos_web_socket.yaml` file.
 
-**NOTE :** Websocket Pusher is not the most faster and powerful because he have a lot of overhead (Handshake have high cost).
-
-**NOTE 2 :** He call directly `onPublish` method not `onPush` because we use WAMP protocol.
-
-**1. Bundle Configuration**
-
-```yml
+```yaml
 gos_web_socket:
     pushers:
         wamp:
-            host: 127.0.0.1
-            port: 1337
+            host: 127.0.0.1 # This will probably be the same as your `gos_web_socket.server.host` value
+            port: 80 # This will probably be the same as your `gos_web_socket.server.port` value
+            ssl: false # Flag to enable SSL connections to the websocket server, default false
+            origin: null # The origin domain for the pusher, default null (if origin checking is enabled on your websocket server, this value must be allowed)
 ```
 
-**2. Push**
+Note the bundle only provides a `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` implementation for WAMP, the equivalent for `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` on WAMP is your websocket server. Also be aware that when the pusher is used to send a message to a Topic, your topic's `onPublish` method is triggered versus `onPush` for WAMP connections.
 
-```php
-$pusher = $this->container->get('gos_web_socket.wamp.pusher');
-//push(data, route_name, route_arguments)
-$pusher->push(['my_data' => 'data'], 'user_notification', ['username' => 'user1']);
+## ZMQ Pusher
+
+The ZMQ Pusher allows you to send and receive messages using an ZMQ compliant system.
+
+### Extra Requirements
+
+* The [`zmq`](https://pecl.php.net/package/zmq) extension for PHP (`pecl install zmq`)
+* The [`react/zmq`](https://github.com/friends-of-reactphp/zmq) Composer package (`composer require react/zmq`)
+
+### Configuration
+
+To use the ZMQ pusher, you will need to enable it in the bundle's configuration. For an application based on the Symfony Standard structure, you will need to update your `app/config/config.yml` file. For an application based on Symfony Flex, use the `config/packages/gos_web_socket.yaml` file.
+
+```yaml
+gos_web_socket:
+    pushers:
+        zmq:
+            default: false # Unused
+            host: 127.0.0.1 # Host address for the ZMQ server
+            port: 5555 # Port the ZMQ server is listening on
+            persistent: true # Flag indicating the current context is persistent, default `true`
+            protocol: tcp # The protocol to use for the connection, default `tcp`
+            linger: -1 # Specifies how long the socket blocks trying flush messages after it has been closed, default -1
 ```
 
-## Rely push to your topic
+## Using a pusher
 
-Implement `PushableTopicInterface` interface to your topic 
+Depending on the integration(s) in your application, you will need to retrieve the appropriate service from the service container.
+
+* AMQP - `gos_web_socket.amqp.pusher`
+* WAMP - `gos_web_socket.wamp.pusher`
+* ZMQ - `gos_web_socket.zmq.pusher`
+
+The below example demonstrates pushing a message using the WAMP pusher from a controller after updating a record in the database.
+
 ```php
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\Wamp\Topic;
+<?php
 
-class AcmeTopic implements TopicInterface, PushableTopicInterface
+use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
+use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+
+final class PostController extends AbstractController
 {
-    /**
-     * @param Topic        $topic
-     * @param WampRequest  $request
-     * @param array|string $data
-     * @param string       $provider The name of pusher who push the data
-     */
-    public function onPush(Topic $topic, WampRequest $request, $data, $provider)
+    public function update(Request $request)
     {
-        $topic->broadcast($data);
+        // Do stuff...
+
+        /** @var PusherInterface $pusher */
+        $pusher = $this->get('gos_web_socket.wamp.pusher');
+
+        $pusher->push($messageData, $routeName, $routeParameters, $context);
     }
+
+    public static function getSubscribedServices()
+    {
+        return array_merge(
+            parent::getSubscribedServices(),
+            [
+                'gos_web_socket.wamp.pusher' => WampPusher::class,
+            ]
+        );
+    }
+
 }
 ```
 
-# Pusher event
+The following data is required when calling `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface::push()`:
+
+* `$messageData` is the data to be sent with the message
+* `$routeName` is the name of the route which should receive the message
+* `$routeParameters` is an array of parameters required to route the message to the `$routeName`
+* `$context` is an array of extra context information for the pusher (presently only the AMQP pusher uses this)
+
+## Pusher events
+
+The server push handlers will dispatch events when a message succeeds or fails, allowing your application to hook these handlers with extra logic.
 
 When pusher send message or fail to send it, we dispatch event to allow you to plug your own logic.
 
-- **Success** : `gos_web_socket.push_success`
-- **Fail** : `gos_web_socket.push_fail`
+* `gos_web_socket.push_success` is dispatched when a server push succeeds
+* `gos_web_socket.push_fail` is dispatched when a server push fails
 
-Will give an `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` where can access to the message and to the handler.
+For both events, a `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` object is sent to event listeners.
 
-# Last word
+## Custom pushers
 
-**You can use pushers all together !**
+For advanced use cases, you can also create your own integrations.
 
-**Config**
+For a custom pusher, your service must implement `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` and be tagged with the `gos_web_socket.pusher` service tag.
 
-```yml
-    pushers:
-        zmq:
-            default: true
-            host: 127.0.0.1
-            port: 5555
-            persistent: true
-            protocol: tcp
-        amqp:
-            host: 127.0.0.1
-            port: 5672
-            login: guest
-            password: guest
-```
-
-```php
-$pusher = $this->container->get('gos_web_socket.amqp.pusher');
-$pusher->push($message, 'user_notification', ['username' => 'user1']);
-
-$pusher = $this->container->get('gos_web_socket.zmq.pusher');
-$pusher->push($message, 'user_notification', ['username' => 'user1']);
-```
+For a custom server push handler, your service must implement `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` and be tagged with the `gos_web_socket.push_handler` service tag.
