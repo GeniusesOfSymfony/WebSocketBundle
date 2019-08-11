@@ -14,6 +14,9 @@ Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js)
 
 **[Demo project](https://github.com/GeniusesOfSymfony/WebsocketAppDemo)**
 
+To view the documentation for the 1.x versions of this bundle, please view the [1.x](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x) branch of this repository.
+To view the documentation for the 2.x versions of this bundle, please view the [master](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/master) branch of this repository.
+
 What can I do with this bundle?
 -------------------------------
 
