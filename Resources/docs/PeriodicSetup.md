@@ -1,70 +1,64 @@
-# Periodic Function Services
+# Periodic Services
 
-With realtime applications, sometimes you need code to be executed regardless of events, e.g. a matchmaking engine.
+With real-time applications, sometimes you need code to be executed regardless of whether there are clients connected to the server or a specific Topic (channel). With the GosWebSocketBundle, these can easily be added and will run within the [React Server](http://reactphp.org/) event loop.
 
-With Gos WebSocket these can easily be added and will run within the [React Server](http://reactphp.org/) event loop.
+## Step 1: Create the Periodic Service
 
-## Step 1: Create the Periodic Service Class
-
-Every periodic service must implement the PeriodicInterface.
+Your service is a PHP class which must implement `Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface`.
 
 ```php
 <?php
 
-namespace Acme\HomeBundle\Periodic;
+namespace App\Websocket\Periodic;
 
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 
 class AcmePeriodic implements PeriodicInterface
 {
     /**
-     * This function is executed every 5 seconds.
-     *
-     * For more advanced functionality, try injecting a Topic Service to perform actions on your connections every x seconds.
+     * This function is executed every 5 seconds, as specified by the `getTimeout()` method.
      */
     public function tick()
     {
-        echo "Executed once every 5 seconds" . PHP_EOL;
+        echo "It has been 5 seconds since this was last run" . PHP_EOL;
     }
 
     /**
-     * {@inheritdoc}
+     * Defines the timeout for a periodic service, the service will be executed at the interval specified by this method.
+     *
+     * @return int Time between "ticks" of this service, in seconds
      */
     public function getTimeout()
     {
         return 5;
     }
 }
-
 ```
 
 ## Step 2: Register your service with Symfony
 
-If you are using YML, edit "YourBundle/Resources/config/services/services.yml"
-For other formats, please check the [Symfony2 Documents](http://symfony.com/doc/master/book/service_container.html)
+For an application based on the Symfony Standard structure, you can register services in either your `app/config/services.yml` file or your bundle's `Resources/config/services.yml` file. For an application based on Symfony Flex, use the `config/services.yaml` file.
+
+Periodic services must be tagged with the `gos_web_socket.periodic` tag to be correctly registered.
 
 ```yaml
 services:
-    acme_hello.periodic_sample_service:
-        class: Acme\HelloBundle\Periodic\AcmePeriodic
-```
-
-From now you can directly tag your service to register your service into GosWebSocket
-
-```yaml
-services:
-    acme_hello.periodic_sample_service:
-        class: Acme\HelloBundle\Periodic\AcmePeriodic
+    app.websocket.periodic.acme:
+        class: App\Websocket\Periodic\AcmePeriodic
         tags:
             - { name: gos_web_socket.periodic }
 ```
 
-**or** register via "app/config/config.yml"
+For other formats, please review the [Symfony Documentation](http://symfony.com/doc/master/book/service_container.html).
+
+### Alternative Service Registration (Deprecated)
+
+Alternatively, you can list your Periodic services in the bundle's configuration file. Note, this method is deprecated and removed in GosWebSocketBundle 2.0.
 
 ```yaml
 gos_web_socket:
     periodic:
-        - @acme_hello.periodic_sample_service
+        - '@app.websocket.periodic.acme'
 ```
 
 Try pairing up a Periodic function with a [Custom Topic handler](TopicSetup.md) to perform actions on a set of clients connected to a certain topic.

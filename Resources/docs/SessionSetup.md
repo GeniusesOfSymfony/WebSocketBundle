@@ -1,109 +1,82 @@
-# Session sharing and user authentication
+# Session Sharing and User Authentication
 
-Thanks to Ratchet its easy to get the shared info from the same website session. As per the
-[Ratchet documentation](http://socketo.me/docs/sessions), you must use a session handler other than the native one,
-such as [Symfony PDO Session Handler](http://symfony.com/doc/master/cookbook/configuration/pdo_session_storage.html).
+Thanks to Ratchet, it's easy to get the user info from the session your website's visitors create. As per the [Ratchet documentation](http://socketo.me/docs/sessions), not all session handlers are compatible with this system.
 
-**All session handler based on `\SessionHandlerInterface` work ! Not only PDO !**
+## Define a session handler service
 
-## Symfony PDO Session Handler
-Create the following services:
+To use session sharing, the session handler must be a service defined in your application. The below example creates a service which uses PDO as the session handler and re-uses the same connection opened by Doctrine.
 
-```yml
-services:
-    pdo:
-        class: PDO
-        arguments:
-            dsn: mysql:host=%database_host%;port=%database_port%;dbname=%database_name%
-            user: %database_user%
-            password: %database_password%
-        calls:
-            - [ setAttribute, [3, 2] ] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+```yaml
+session.handler.pdo:
+    class: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+    arguments:
+        - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+        - { lock_mode: 0 }
 
-    session.handler.pdo:
-        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        arguments: [@pdo, {lock_mode: 0}]
 ```
 
-For Symfony3.3 use arguments in format:
+If using the PDO session handler, ensure you have [set up the database correctly](https://symfony.com/doc/current/doctrine/pdo_session_storage.html) as well.
 
-```yml
-arguments:
-    - 'mysql:host=%database_host%;port=%database_port%;dbname=%database_name%'
-    - '%database_user%'
-    - '%database_password%'
-```  
+## Configure the session handler
 
-If you're using Doctrine & want to re-use the same connection:
-
-```yml
-services:
-    session.handler.pdo:
-        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        arguments: 
-            - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
-            - {lock_mode: 0}
-````
-
-[Create table in your DB](http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#mysql)
-
-Configure the Session Handler in your config.yml
+First, you will need to ensure the FrameworkBundle is configured to use the session handler service you've defined. For Symfony Standard based applications, you should update the `app/config/config.yml` file. For Symfony Flex applications, you should update `config/packages/framework.yaml`.
 
 ```yaml
 framework:
-    ...
     session:
-        handler_id: session.handler.pdo
+        handler_id: 'session.handler.pdo'
 ```
 
-This is what informs Symfony2 of what to use as the session handler.
-
-Similarly, we can do the same thing with Gos WebSocket to enable a shared session.
-
+Next, you will need to ensure the GosWebSocketBundle is configured to use the same session handler. For Symfony Standard based applications, you should update the `app/config/config.yml` file. For Symfony Flex applications, you should update `config/packages/gos_web_socket.yaml`.
 
 ```yaml
 gos_web_socket:
-    ...
     client:
-        firewall: secured_area #can be an array of firewalls
-        session_handler: @session.handler.pdo
+        firewall: main # Can be an array of firewalls
+        session_handler: 'session.handler.pdo'
 ```
 
-By using the same value, we are using the same exact service in both the WebSocket server and the Symfony2 application.
-If you experience any issues with the session being empty or not as expected. Please ensure that everything is connecting via
-the same URL, so the cookies can be read.
-
-User is directly authenticated against his firewall, anonymous users are allow.
-
-**Important:** The firewall must be the firewall context name if exist. Else the firewall name
+**Note:** You must ensure your application's sessions are set up correctly to allow both the websocket server and your HTTP server to read the same session cookies.
 
 **Important:** If you change [session name](https://symfony.com/doc/current/reference/configuration/framework.html#name) in Symfony change parameter "'session.name" in php.ini
 
-**Anonymous user is represented by string, example : anon-54e3352d535d2**
-**Authenticated user is represented by UserInterface object**
+When a connection is opened to the websocket server, the user is authenticated against the firewall(s) you have configured the bundle to use from your application.
 
-## Client storage
+Similar to the `getUser()` method in controllers, an anonymous user is represented as a string and an authenticated user is represented as a `Symfony\Component\Security\Core\User\UserInterface` object (typically the User entity or data object you have configured).
 
-Each user connected to socket is persisted in our persistence layer. By default they are stored in php via SplStorage.
+## Client Storage
+
+The `Symfony\Component\Security\Core\Authentication\Token\TokenInterface` that all user info is derived from is stored in a bundle specific persistence layer, by default this is an in-memory storage layer.
 
 ### Customize client storage
+
+The storage layer can be customized using the `gos_web_socket.client.storage` configuration key. For Symfony Standard based applications, you should update the `app/config/config.yml` file. For Symfony Flex applications, you should update `config/packages/gos_web_socket.yaml`.
 
 ```yaml
 gos_web_socket:
     client:
-        firewall: secured_area
-        session_handler: @session.handler.pdo
+        firewall: main
+        session_handler: 'session.handler.pdo'
         storage:
-            driver: @gos_web_scocket.client_storage.predis.driver
-            ttl: 28800 #(optionally) time to live if you use redis driver
-            prefix: client #(optionally) prefix if you use redis driver, create key "client:1" instead key "1"
+            driver: 'app.websocket.client_storage.predis'
+            ttl: 28800 # Optional, time to live if you use a compatible cache driver
+            prefix: client # Optional, key prefix if you use a compatible cache driver, creates key as "client:1" instead of "1"
+
+services:
+    app.websocket.client_storage.predis:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        arguments:
+            - '@Predis\Client'
+            - '%web_socket_server.client_storage.prefix'
 ```
 
-### Doctrine Cache Bundle as Client Storage Driver
+In this example, the storage has been changed to a service defined in your application to use a Predis Client as the storage driver.
 
-We natively provide decorator for [DoctrineCacheBundle](https://github.com/doctrine/DoctrineCacheBundle) to decorate Cache provider into client storage driver.
+### Using `doctrine/cache` as a client storage driver
 
-Create redis cache provider
+A decorator is provided which allows for cache drivers from [Doctrine's Cache Library](https://www.doctrine-project.org/projects/cache.html) to be used as the client storage driver.
+
+The below example is used to create a Redis cache provider:
 
 ```yaml
 doctrine_cache:
@@ -115,26 +88,26 @@ doctrine_cache:
                 database: 3
         websocket_cache_client:
             type: redis
-            alias: gos_web_socket.client_storage.driver.redis
+            alias: app.doctrine_cache.websocket
 ```
 
-Use it as driver for client storage.
+You can now use it as the driver for the client storage layer.
 
 ```yaml
 gos_web_socket:
     client:
-        firewall: secured_area
-        session_handler: @session.handler.pdo
+        firewall: main
+        session_handler: 'session.handler.pdo'
         storage:
-            driver: @gos_web_socket.client_storage.driver.redis
-            decorator: @gos_web_socket.client_storage.doctrine.decorator
+            driver: 'app.doctrine_cache.websocket' # The service which should be decorated
+            decorator: 'gos_web_socket.client_storage.doctrine.decorator' # The decorator to apply to the driver
 ```
 
-### Symfony Cache as Client Storage Driver
+### Using `symfony/cache` as a client storage driver
 
-We natively provide decorator for the [Symfony Cache Component](https://symfony.com/doc/current/components/cache.html) to decorate Cache provider into client storage driver.
+A decorator is provided which allows for cache drivers from [Symfony's Cache Component](https://symfony.com/doc/current/components/cache.html) to be used as the client storage driver.
 
-Create redis cache provider
+The below example is used to create a Redis cache provider:
 
 ```yaml
 framework:
@@ -142,156 +115,45 @@ framework:
         default_redis_provider: redis://localhost
 ```
 
-Use it as driver for client storage.
+You can now use it as the driver for the client storage layer.
 
 ```yaml
 gos_web_socket:
     client:
-        firewall: secured_area
-        session_handler: @session.handler.pdo
+        firewall: main
+        session_handler: 'session.handler.pdo'
         storage:
-            driver: @cache.adapter.redis
-            decorator: @gos_web_socket.client_storage.symfony.decorator
+            driver: 'cache.adapter.redis' # The service which should be decorated
+            decorator: 'gos_web_socket.client_storage.symfony.decorator' # The decorator to apply to the driver
 ```
 
-### Create your own Driver
+### Create your own driver
 
-For example, you want store your client through redis server like previous example. But I want use Predis client instead of native redis client. We will use [SncRedisBundle](https://github.com/snc/SncRedisBundle) to provide my predis client.
+If need be, you can also create your own storage driver. All drivers must implement `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface`.
 
-Configure my predis client through SncRedisBundle
+## Retrieve authenticated user
 
-```yaml
-snc_redis:
-    clients:
-        ws_client:
-            type: predis
-            alias: client_storage.driver #snc_redis.client_storage.driver
-            dsn: redis://127.0.0.1/2
-            logging: %kernel.debug%
-            options:
-                profile: 2.2
-                connection_timeout: 10
-                read_write_timeout: 30
+Whenever the `Ratchet\ConnectionInterface` instance is available, you are able to retrieve the user account info using a `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` instance (by default, the `gos_web_socket.websocket.client_manipulator` service).
 
-gos_web_socket:
-    client:
-		...
-        storage:
-            driver: @gos_web_socket.client_storage.driver.predis
-		...
-```
-
-The PHP class :
+For example inside a RPC handler:
 
 ```php
 <?php
 
-namespace Gos\Bundle\WebSocketBundle\Client\Driver;
+namespace App\Websocket\Rpc;
 
-use Predis\Client;
-
-class PredisDriver implements DriverInterface
-{
-    /**
-     * @var Client
-     */
-    protected $client;
-
-    /**
-     * string $prefix
-     */
-    protected $prefix;
-
-    /**
-     * @param Client $client
-     * @param string $prefix
-     */
-    public function __construct(Client $client, $prefix = '')
-    {
-        $this->client = $client;
-        $this->prefix = ($prefix !== false ? $prefix . ':' : '');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function fetch($id)
-    {
-        $result = $this->client->get($this->prefix . $id);
-        if (null === $result) {
-            return false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($id)
-    {
-        return $this->client->exists($this->prefix . $id);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function save($id, $data, $lifeTime = 0)
-    {
-        if ($lifeTime > 0) {
-            $response = $this->client->setex($this->prefix . $id, $lifeTime, $data);
-        } else {
-            $response = $this->client->set($this->prefix . $id, $data);
-        }
-
-        return $response === true || $response == 'OK';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($id)
-    {
-        return $this->client->del($this->prefix . $id) > 0;
-    }
-}
-```
-
-The service definition :
-
-```yaml
-services:
-    gos_web_scocket.client_storage.driver.predis:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
-        arguments:
-            - @snc_redis.cache
-            - %gos_web_socket.client.storage.prefix% #(optionally)if you use prefix
-```
-
-**NOTE :** Predis driver class is included in GosWebSocketBundle, just register the service like below to use it.
-
-# Retrieve authenticated user
-
-Whenever `ConnectionInterface` instance is available your are able to retrieve the associated authenticated user (if he is authenticated against symfony firewall).
-
-ClientManipulator class is available through DI `@gos_web_socket.websocket.client_manipulator`
-
-For example inside a topic :
-
-```php
-use Ratchet\ConnectionInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\Wamp\Topic;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class AcmeTopic implements TopicInterface
+final class AcmeRpc implements RpcInterface
 {
     /**
      * @var ClientManipulatorInterface
      */
-    protected $clientManipulator;
+    private $clientManipulator;
 
     /**
      * @param ClientManipulatorInterface $clientManipulator
@@ -302,32 +164,57 @@ class AcmeTopic implements TopicInterface
     }
 
     /**
+     * Adds the params together, if the user is authenticated
+     *
      * @param ConnectionInterface $connection
-     * @param Topic               $topic
+     * @param WampRequest $request
+     * @param array $params
+     *
+     * @return array
      */
-    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    public function sum(ConnectionInterface $connection, WampRequest $request, $params)
     {
-        $user = $this->clientManipulator->getUser($connection);
+        $user = $this->clientManipulator->getClient($connection);
+
+        if ($user instanceof UserInterface) {
+            return ['result' => array_sum($params)];
+        }
+
+        return ['error' => true, 'msg' => 'You must be authenticated to use this function.'];
+    }
+
+    /**
+     * Name of the RPC handler, used by the PubSub router.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.rpc';
     }
 }
 ```
 
-## Send a message to a specific user
+## Find the connection for a specific user
+
+You can use the `findByUsername` method of the client manipulator to find a connection for the given username.
 
 ```php
-use Ratchet\ConnectionInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+<?php
+
+namespace App\Websocket\Topic;
+
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class AcmeTopic implements TopicInterface
+final class AcmeTopic implements TopicInterface
 {
     /**
      * @var ClientManipulatorInterface
      */
-    protected $clientManipulator;
+    private $clientManipulator;
 
     /**
      * @param ClientManipulatorInterface $clientManipulator
@@ -338,15 +225,82 @@ class AcmeTopic implements TopicInterface
     }
 
     /**
+     * This will receive any Subscription requests for this topic.
+     *
      * @param ConnectionInterface $connection
-     * @param Topic               $topic
+     * @param Topic $topic
+     * @param WampRequest $request
+     *
+     * @return void
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $userConnection = $this->clientManipulator->findByUsername($topic, 'user1');
-        if (false !== $userConnection) {
-            $topic->broadcast('message', array(), array($userConnection['connection']->WAMP->sessionId));
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has joined '.$topic->getId()]);
+    }
+
+    /**
+     * This will receive any unsubscription requests for this topic.
+     *
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
+     *
+     * @return void
+     */
+    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has left '.$topic->getId()]);
+    }
+
+    /**
+     * This will receive any Publish requests for this topic.
+     *
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
+     * @param mixed $event
+     * @param array $exclude
+     * @param array $eligibles
+     *
+     * @return mixed
+     */
+    public function onPublish(
+        ConnectionInterface $connection,
+        Topic $topic,
+        WampRequest $request,
+        $event,
+        array $exclude,
+        array $eligible
+    ) {
+        if (!isset($event['username'])) {
+            // Broadcast an error back to the publisher
+            $topic->broadcast(
+                ['error' => true, 'msg' => 'The username parameter is required.'],
+                [],
+                [$connection->WAMP->sessionId]
+            );
+
+            return;
         }
+
+        $recipient = $this->clientManipulator->findByUsername($topic, $params['username']);
+
+        // Check if a connection was found, this will be false if the user is not connected
+        if ($recipient !== false) {
+            $topic->broadcast('message', [], [$recipient['connection']->WAMP->sessionId]);
+        }
+    }
+
+    /**
+     * Like RPC the name is used to identify the channel
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.topic';
     }
 }
 ```
