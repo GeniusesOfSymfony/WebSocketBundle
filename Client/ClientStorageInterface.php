@@ -14,7 +14,7 @@ interface ClientStorageInterface
 
     /**
      * @throws ClientNotFoundException if the specified client could not be found
-     * @throws StorageException if the client could not be read from storage
+     * @throws StorageException        if the client could not be read from storage
      */
     public function getClient(string $identifier): TokenInterface;
 

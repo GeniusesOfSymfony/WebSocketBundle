@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Amqp;
 
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;

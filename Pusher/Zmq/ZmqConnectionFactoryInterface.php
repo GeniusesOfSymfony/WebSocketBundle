@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\Exception\PusherUnsupportedException;
 use React\EventLoop\LoopInterface;
-use React\ZMQ\Context;
 use React\ZMQ\SocketWrapper;
 
 interface ZmqConnectionFactoryInterface

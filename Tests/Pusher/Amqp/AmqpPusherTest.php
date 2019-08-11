@@ -5,7 +5,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Amqp;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

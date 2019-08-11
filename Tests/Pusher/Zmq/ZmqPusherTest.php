@@ -3,10 +3,9 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Zmq;
 
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer;
-use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher;
+use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;

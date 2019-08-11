@@ -33,7 +33,7 @@ interface TopicDispatcherInterface
     /**
      * @param string|array $payload
      *
-     * @throws PushUnsupportedException if the topic does not support push requests
+     * @throws PushUnsupportedException  if the topic does not support push requests
      * @throws \InvalidArgumentException if an unsupported request type is given
      */
     public function dispatch(
