@@ -16,11 +16,11 @@ final class ServerCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('gos_web_socket.server.registry')) {
+        if (!$container->hasDefinition('gos_web_socket.registry.server')) {
             return;
         }
 
-        $definition = $container->getDefinition('gos_web_socket.server.registry');
+        $definition = $container->getDefinition('gos_web_socket.registry.server');
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.server');
 
         foreach ($taggedServices as $id => $attributes) {

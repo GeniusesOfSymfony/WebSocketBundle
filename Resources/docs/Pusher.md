@@ -88,9 +88,9 @@ gos_web_socket:
 
 Depending on the integration(s) in your application, you will need to retrieve the appropriate service from the service container.
 
-* AMQP - `gos_web_socket.amqp.pusher`
-* WAMP - `gos_web_socket.wamp.pusher`
-* ZMQ - `gos_web_socket.zmq.pusher`
+* AMQP - `gos_web_socket.pusher.amqp`
+* WAMP - `gos_web_socket.pusher.wamp`
+* ZMQ - `gos_web_socket.pusher.zmq`
 
 The below example demonstrates pushing a message using the WAMP pusher from a controller after updating a record in the database.
 
@@ -109,7 +109,7 @@ final class PostController extends AbstractController
         // Do stuff...
 
         /** @var PusherInterface $pusher */
-        $pusher = $this->get('gos_web_socket.wamp.pusher');
+        $pusher = $this->get('gos_web_socket.pusher.wamp');
 
         $pusher->push($messageData, $routeName, $routeParameters, $context);
     }
@@ -119,7 +119,7 @@ final class PostController extends AbstractController
         return array_merge(
             parent::getSubscribedServices(),
             [
-                'gos_web_socket.wamp.pusher' => WampPusher::class,
+                'gos_web_socket.pusher.wamp' => WampPusher::class,
             ]
         );
     }

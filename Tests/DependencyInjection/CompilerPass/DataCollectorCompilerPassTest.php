@@ -25,11 +25,11 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $wampPusher = new Definition(WampPusher::class);
         $wampPusher->addTag('gos_web_socket.pusher');
 
-        $this->setDefinition('gos_web_socket.wamp.pusher', $wampPusher);
+        $this->setDefinition('gos_web_socket.pusher.wamp', $wampPusher);
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher', WampPusher::class);
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp', WampPusher::class);
     }
 
     public function testPushersAreDecoratedInDebugMode()
@@ -41,15 +41,15 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $wampPusher = new Definition(WampPusher::class);
         $wampPusher->addTag('gos_web_socket.pusher');
 
-        $this->setDefinition('gos_web_socket.wamp.pusher', $wampPusher);
+        $this->setDefinition('gos_web_socket.pusher.wamp', $wampPusher);
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.data_collector', PusherDecorator::class);
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.data_collector', PusherDecorator::class);
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'gos_web_socket.wamp.pusher.data_collector',
+            'gos_web_socket.pusher.wamp.data_collector',
             0,
-            new Reference('gos_web_socket.wamp.pusher.data_collector.inner')
+            new Reference('gos_web_socket.pusher.wamp.data_collector.inner')
         );
     }
 

@@ -16,11 +16,11 @@ final class TopicCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('gos_web_socket.topic.registry')) {
+        if (!$container->hasDefinition('gos_web_socket.registry.topic')) {
             return;
         }
 
-        $definition = $container->getDefinition('gos_web_socket.topic.registry');
+        $definition = $container->getDefinition('gos_web_socket.registry.topic');
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.topic');
 
         foreach ($taggedServices as $id => $attributes) {

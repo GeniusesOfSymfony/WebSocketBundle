@@ -1,39 +1,39 @@
 services:
     Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface:
-        alias: gos_web_socket.websocket_authentification.provider
+        alias: gos_web_socket.client.authentication.websocket_provider
 
     Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface:
-        alias: gos_web_socket.websocket.client_manipulator
+        alias: gos_web_socket.client.manipulator
 
     Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface:
-        alias: gos_web_socket.client_storage
+        alias: gos_web_socket.client.storage
 
     Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry:
-        alias: gos_web_socket.pusher_registry
+        alias: gos_web_socket.registry.pusher
 
     Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry:
-        alias: gos_web_socket.server_push_handler.registry
+        alias: gos_web_socket.registry.server_push_handler
 
     Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface:
-        alias: gos_web_socket.rpc.dispatcher
+        alias: gos_web_socket.dispatcher.rpc
 
     Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface:
-        alias: gos_web_socket.topic.dispatcher
+        alias: gos_web_socket.dispatcher.topic
 
     Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry:
-        alias: gos_web_socket.origins.registry
+        alias: gos_web_socket.registry.origins
 
     Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry:
-        alias: gos_web_socket.periodic.registry
+        alias: gos_web_socket.registry.periodic
 
     Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry:
-        alias: gos_web_socket.rpc.registry
+        alias: gos_web_socket.registry.rpc
 
     Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry:
-        alias: gos_web_socket.server.registry
+        alias: gos_web_socket.registry.server
 
     Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry:
-        alias: gos_web_socket.topic.registry
+        alias: gos_web_socket.registry.topic
 
     Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface:
         alias: gos_web_socket.entry_point

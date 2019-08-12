@@ -13,7 +13,7 @@ class ServerCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $this->registerService('gos_web_socket.server.registry', ServerRegistry::class);
+        $this->registerService('gos_web_socket.registry.server', ServerRegistry::class);
         $this->registerService('test.server', ServerInterface::class)
             ->addTag('gos_web_socket.server');
 
@@ -21,7 +21,7 @@ class ServerCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->assertContainerBuilderHasService('test.server', ServerInterface::class);
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.server.registry',
+            'gos_web_socket.registry.server',
             'addServer',
             [new Reference('test.server')]
         );

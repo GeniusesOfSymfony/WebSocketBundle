@@ -13,7 +13,7 @@ class RpcCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $this->registerService('gos_web_socket.rpc.registry', RpcRegistry::class);
+        $this->registerService('gos_web_socket.registry.rpc', RpcRegistry::class);
         $this->registerService('test.rpc', RpcInterface::class)
             ->addTag('gos_web_socket.rpc');
 
@@ -21,7 +21,7 @@ class RpcCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->assertContainerBuilderHasService('test.rpc', RpcInterface::class);
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.rpc.registry',
+            'gos_web_socket.registry.rpc',
             'addRpc',
             [new Reference('test.rpc')]
         );

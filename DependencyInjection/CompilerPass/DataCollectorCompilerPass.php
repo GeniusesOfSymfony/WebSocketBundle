@@ -29,7 +29,7 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
                 [
                     new Reference($collectorId.'.inner'),
                     new Reference('debug.stopwatch'),
-                    new Reference('gos_web_socket.data_collector'),
+                    new Reference('gos_web_socket.data_collector.websocket'),
                 ]
             );
             $collectingPusherDef->setDecoratedService($id);

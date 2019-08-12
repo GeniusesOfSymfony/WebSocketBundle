@@ -13,7 +13,7 @@ class PeriodicCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPeriodicHandlersAreAddedToTheRegistry()
     {
-        $this->registerService('gos_web_socket.periodic.registry', PeriodicRegistry::class);
+        $this->registerService('gos_web_socket.registry.periodic', PeriodicRegistry::class);
         $this->registerService('test.periodic.doctrine', DoctrinePeriodicPing::class)
             ->addTag('gos_web_socket.periodic');
 
@@ -21,7 +21,7 @@ class PeriodicCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->assertContainerBuilderHasService('test.periodic.doctrine', DoctrinePeriodicPing::class);
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.periodic.registry',
+            'gos_web_socket.registry.periodic',
             'addPeriodic',
             [new Reference('test.periodic.doctrine')]
         );

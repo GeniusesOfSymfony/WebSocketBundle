@@ -14,8 +14,8 @@ final class PusherCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        if ($container->hasDefinition('gos_web_socket.pusher_registry')) {
-            $registryDefinition = $container->getDefinition('gos_web_socket.pusher_registry');
+        if ($container->hasDefinition('gos_web_socket.registry.pusher')) {
+            $registryDefinition = $container->getDefinition('gos_web_socket.registry.pusher');
 
             foreach ($container->findTaggedServiceIds('gos_web_socket.pusher') as $id => $attributes) {
                 if (!isset($attributes[0]['alias'])) {

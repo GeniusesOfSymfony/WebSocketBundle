@@ -18,7 +18,7 @@ gos_web_socket:
         firewall: secured_area
         session_handler: @session.handler.pdo
         storage:
-            driver: @gos_web_socket.client_storage.driver.predis
+            driver: @gos_web_socket.client.storage.predis_driver
     shared_config: true
     server:
         host: notification.dev

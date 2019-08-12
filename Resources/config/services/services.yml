@@ -1,104 +1,35 @@
 services:
-    gos_web_socket.entry_point:
-        class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
-        public: true
-        arguments:
-            - '@gos_web_socket.server.registry'
-
-    gos_web_socket.websocket_server.command:
-        class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
+    gos_web_socket.client.authentication.websocket_provider:
+        class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         public: false
         arguments:
-            - '@gos_web_socket.entry_point'
-            - '%gos_web_socket.server.host%'
-            - '%gos_web_socket.server.port%'
-        tags:
-            - { name: console.command, command: gos:websocket:server }
-
-    gos_web_socket.ws.client:
-        class: Gos\Component\WebSocketClient\Wamp\Client
-        public: true
-        arguments:
-            - '%gos_web_socket.server.host%'
-            - '%gos_web_socket.server.port%'
+            - '@gos_web_socket.client.storage'
+            - '%gos_web_socket.firewall%'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
-    gos_web_socket.ws.server:
-        class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
+    gos_web_socket.client.driver.doctrine_cache:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
-        arguments:
-            - '@gos_web_socket.ws.server_builder'
-            - '@gos_web_socket.server.event_loop'
-            - '@event_dispatcher'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: gos_web_socket.server }
+        # arguments are set by the container extension
 
-    gos_web_socket.ws.server_builder:
-        class: Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder
+    gos_web_socket.client.driver.symfony_cache:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
-        arguments:
-            - '@gos_web_socket.server.event_loop'
-            - '@gos_web_socket_server.wamp_application'
-            - '@gos_web_socket.wamp.topic_manager'
-            - '@gos_web_socket.origins.registry'
-            - '@event_dispatcher'
-            - '%gos_web_socket.server.origin_check%'
-            - '%gos_web_socket.server.keepalive_ping%'
-            - '%gos_web_socket.server.keepalive_interval%'
+        # arguments are set by the container extension
 
-    gos_web_socket.server.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
-        public: true
-
-    gos_web_socket.rpc.dispatcher:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
-        public: true
-        arguments:
-            - '@gos_web_socket.rpc.registry'
-
-    gos_web_socket.rpc.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
-        public: true
-
-    gos_web_socket.topic.dispatcher:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
-        public: true
-        arguments:
-            - '@gos_web_socket.topic.registry'
-            - '@gos_web_socket.router.wamp'
-            - '@gos_web_socket.topic.periodic_timer'
-            - '@gos_web_socket.wamp.topic_manager'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-
-    gos_web_socket.topic.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
-        public: true
-
-    gos_web_socket.periodic.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
-        public: true
-
-    gos_web_socket.origins.registry:
-        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
-        public: true
-
-    gos_web_socket_server.wamp_application:
-        class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
+    gos_web_socket.client.driver.in_memory:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
         public: false
-        arguments:
-            - '@gos_web_socket.rpc.dispatcher'
-            - '@gos_web_socket.topic.dispatcher'
-            - '@event_dispatcher'
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.router.wamp'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
-    gos_web_socket.client_storage:
+    gos_web_socket.client.manipulator:
+        class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
+        public: true
+        arguments:
+            - '@gos_web_socket.client.storage'
+            - '@gos_web_socket.client.authentication.websocket_provider'
+
+    gos_web_socket.client.storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         public: false
         arguments:
@@ -106,26 +37,45 @@ services:
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
-    gos_web_socket.client_storage.doctrine.decorator:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
+    gos_web_socket.command.websocket_server:
+        class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         public: false
-        # arguments are set by the container extension
+        arguments:
+            - '@gos_web_socket.server.entry_point'
+            - '%gos_web_socket.server.host%'
+            - '%gos_web_socket.server.port%'
+        tags:
+            - { name: console.command, command: gos:websocket:server }
 
-    gos_web_socket.client_storage.symfony.decorator:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
+    gos_web_socket.data_collector.websocket:
+        class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
         public: false
-        # arguments are set by the container extension
+        tags:
+            - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }
 
-    gos_web_socket.server.in_memory.client_storage.driver:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
-        public: false
+    gos_web_socket.dispatcher.rpc:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
+        public: true
+        arguments:
+            - '@gos_web_socket.registry.rpc'
 
-    gos_web_socket.client_event.listener:
+    gos_web_socket.dispatcher.topic:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
+        public: true
+        arguments:
+            - '@gos_web_socket.registry.topic'
+            - '@gos_web_socket.router.wamp'
+            - '@gos_web_socket.topic.periodic_timer'
+            - '@gos_web_socket.wamp.topic_manager'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+
+    gos_web_socket.event_listener.client:
         class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
         public: false
         arguments:
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.websocket_authentification.provider'
+            - '@gos_web_socket.client.storage'
+            - '@gos_web_socket.client.authentication.websocket_provider'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
         tags:
@@ -134,13 +84,55 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
-    gos_web_socket.router.wamp:
-        class: Gos\Bundle\WebSocketBundle\Router\WampRouter
+    gos_web_socket.event_listener.kernel_terminate:
+        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
         public: false
         arguments:
-            - '@gos_pubsub_router.router.websocket'
+            - '@gos_web_socket.registry.pusher'
+        tags:
+            - { name: kernel.event_listener, event: 'kernel.terminate', method: closeConnection }
+
+    gos_web_socket.event_listener.register_periodic_memory_timer:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicMemoryTimerListener
+        public: false
+        arguments:
+            - '@gos_web_socket.registry.periodic'
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
+
+    gos_web_socket.event_listener.register_periodic_timers:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicTimersListener
+        public: false
+        arguments:
+            - '@gos_web_socket.registry.periodic'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
+
+    gos_web_socket.event_listener.register_push_handlers:
+        class: Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener
+        public: false
+        arguments:
+            - '@gos_web_socket.registry.server_push_handler'
+            - '@gos_web_socket.server.application.wamp'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
+
+    gos_web_socket.event_listener.start_server:
+        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
+        public: false
+        arguments:
+            - '@gos_web_socket.registry.periodic'
+            - '@gos_web_socket.registry.server_push_handler'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
 
     gos_web_socket.periodic_ping.doctrine:
         class: Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing
@@ -158,82 +150,13 @@ services:
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
-    gos_web_socket.memory_usage.periodic:
+    gos_web_socket.periodic_ping.memory_usage:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
         public: false
         calls:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
-    gos_web_socket.pnctl_event.listener:
-        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
-        public: false
-        arguments:
-            - '@gos_web_socket.periodic.registry'
-            - '@gos_web_socket.server_push_handler.registry'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
-
-    gos_web_socket.event_listener.register_periodic_memory_timer:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicMemoryTimerListener
-        public: false
-        arguments:
-            - '@gos_web_socket.periodic.registry'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
-
-    gos_web_socket.event_listener.register_periodic_timers:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicTimersListener
-        public: false
-        arguments:
-            - '@gos_web_socket.periodic.registry'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
-
-    gos_web_socket.event_listener.register_push_handlers:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener
-        public: false
-        arguments:
-            - '@gos_web_socket.server_push_handler.registry'
-            - '@gos_web_socket_server.wamp_application'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
-
-    gos_web_socket.server.event_loop:
-        class: React\EventLoop\LoopInterface
-        public: true
-        factory: ['React\EventLoop\Factory', 'create']
-
-    gos_web_socket.topic.periodic_timer:
-        class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
-        public: true
-        arguments:
-            - '@gos_web_socket.server.event_loop'
-
-    gos_web_socket.websocket_authentification.provider:
-        class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
-        public: false
-        arguments:
-            - '@gos_web_socket.client_storage'
-            - '%gos_web_socket.firewall%'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-
-    gos_web_socket.websocket.client_manipulator:
-        class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
-        public: true
-        arguments:
-            - '@gos_web_socket.client_storage'
-            - '@gos_web_socket.websocket_authentification.provider'
-
-    gos_web_socket.amqp.pusher:
+    gos_web_socket.pusher.amqp:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
         public: true
         arguments:
@@ -243,27 +166,7 @@ services:
         tags:
             - { name: gos_web_socket.pusher, alias: amqp }
 
-    gos_web_socket.wamp.pusher:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
-        public: true
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - ~ # connection factory argument is set by the container extension
-        tags:
-            - { name: gos_web_socket.pusher, alias: wamp }
-
-    gos_web_socket.zmq.pusher:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
-        public: true
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - ~ # connection factory argument is set by the container extension
-        tags:
-            - { name: gos_web_socket.pusher, alias: zmq }
-
-    gos_web_socket.amqp.server_push_handler:
+    gos_web_socket.pusher.amqp.push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
         arguments:
             - '@gos_web_socket.router.wamp'
@@ -275,7 +178,27 @@ services:
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
 
-    gos_web_socket.zmq.server_push_handler:
+    gos_web_socket.pusher.wamp:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
+        public: true
+        arguments:
+            - '@gos_web_socket.router.wamp'
+            - '@serializer'
+            - ~ # connection factory argument is set by the container extension
+        tags:
+            - { name: gos_web_socket.pusher, alias: wamp }
+
+    gos_web_socket.pusher.zmq:
+        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
+        public: true
+        arguments:
+            - '@gos_web_socket.router.wamp'
+            - '@serializer'
+            - ~ # connection factory argument is set by the container extension
+        tags:
+            - { name: gos_web_socket.pusher, alias: zmq }
+
+    gos_web_socket.pusher.zmq.push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:
             - '@gos_web_socket.router.wamp'
@@ -287,28 +210,107 @@ services:
         tags:
             - { name: gos_web_socket.push_handler, alias: zmq }
 
+    gos_web_socket.registry.periodic:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
+        public: true
+
+    gos_web_socket.registry.origins:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
+        public: true
+
+    gos_web_socket.registry.pusher:
+        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
+        public: true
+
+    gos_web_socket.registry.rpc:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
+        public: true
+
+    gos_web_socket.registry.server:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
+        public: true
+
+    gos_web_socket.registry.server_push_handler:
+        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
+        public: true
+
+    gos_web_socket.registry.topic:
+        class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
+        public: true
+
+    gos_web_socket.router.wamp:
+        class: Gos\Bundle\WebSocketBundle\Router\WampRouter
+        public: false
+        arguments:
+            - '@gos_pubsub_router.router.websocket'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+
+    gos_web_socket.server.application.wamp:
+        class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
+        public: false
+        arguments:
+            - '@gos_web_socket.dispatcher.rpc'
+            - '@gos_web_socket.dispatcher.topic'
+            - '@event_dispatcher'
+            - '@gos_web_socket.client.storage'
+            - '@gos_web_socket.router.wamp'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+
+    gos_web_socket.server.builder:
+        class: Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder
+        public: false
+        arguments:
+            - '@gos_web_socket.server.event_loop'
+            - '@gos_web_socket.server.application.wamp'
+            - '@gos_web_socket.wamp.topic_manager'
+            - '@gos_web_socket.registry.origins'
+            - '@event_dispatcher'
+            - '%gos_web_socket.server.origin_check%'
+            - '%gos_web_socket.server.keepalive_ping%'
+            - '%gos_web_socket.server.keepalive_interval%'
+
+    gos_web_socket.server.entry_point:
+        class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
+        public: true
+        arguments:
+            - '@gos_web_socket.registry.server'
+
+    gos_web_socket.server.event_loop:
+        class: React\EventLoop\LoopInterface
+        public: true
+        factory: ['React\EventLoop\Factory', 'create']
+
+    gos_web_socket.server.websocket:
+        class: Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer
+        public: false
+        arguments:
+            - '@gos_web_socket.server.builder'
+            - '@gos_web_socket.server.event_loop'
+            - '@event_dispatcher'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+        tags:
+            - { name: gos_web_socket.server }
+
+    gos_web_socket.topic.periodic_timer:
+        class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
+        public: true
+        arguments:
+            - '@gos_web_socket.server.event_loop'
+
+    gos_web_socket.wamp.client:
+        class: Gos\Component\WebSocketClient\Wamp\Client
+        public: true
+        arguments:
+            - '%gos_web_socket.server.host%'
+            - '%gos_web_socket.server.port%'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
+
     gos_web_socket.wamp.topic_manager:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
         public: true
         calls:
-            - [ setWampApplication, ['@gos_web_socket_server.wamp_application'] ]
-
-    gos_web_socket.kernel_event.terminate:
-        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
-        public: false
-        arguments:
-            - '@gos_web_socket.pusher_registry'
-
-    gos_web_socket.pusher_registry:
-        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
-        public: true
-
-    gos_web_socket.server_push_handler.registry:
-        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
-        public: true
-
-    gos_web_socket.data_collector:
-        class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
-        public: false
-        tags:
-            - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }
+            - [ setWampApplication, ['@gos_web_socket.server.application.wamp'] ]

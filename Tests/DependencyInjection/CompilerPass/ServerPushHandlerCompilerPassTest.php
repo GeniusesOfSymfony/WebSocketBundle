@@ -14,7 +14,7 @@ class ServerPushHandlerCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testServerPushHandlersAreAddedToTheRegistry()
     {
-        $this->registerService('gos_web_socket.server_push_handler.registry', ServerPushHandlerRegistry::class);
+        $this->registerService('gos_web_socket.registry.server_push_handler', ServerPushHandlerRegistry::class);
         $this->registerService('test.server_push_handler', ServerPushHandlerInterface::class)
             ->addTag('gos_web_socket.push_handler', ['alias' => 'test']);
 
@@ -22,7 +22,7 @@ class ServerPushHandlerCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->assertContainerBuilderHasService('test.server_push_handler', ServerPushHandlerInterface::class);
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.server_push_handler.registry',
+            'gos_web_socket.registry.server_push_handler',
             'addPushHandler',
             [new Reference('test.server_push_handler')]
         );
@@ -35,7 +35,7 @@ class ServerPushHandlerCompilerPassTest extends AbstractCompilerPassTestCase
             'Service "test.server_push_handler" must define the "alias" attribute on "gos_web_socket.push_handler" tags.'
         );
 
-        $this->registerService('gos_web_socket.server_push_handler.registry', ServerPushHandlerRegistry::class);
+        $this->registerService('gos_web_socket.registry.server_push_handler', ServerPushHandlerRegistry::class);
         $this->registerService('test.server_push_handler', ServerPushHandlerInterface::class)
             ->addTag('gos_web_socket.push_handler');
 

@@ -16,11 +16,11 @@ final class PeriodicCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('gos_web_socket.periodic.registry')) {
+        if (!$container->hasDefinition('gos_web_socket.registry.periodic')) {
             return;
         }
 
-        $definition = $container->getDefinition('gos_web_socket.periodic.registry');
+        $definition = $container->getDefinition('gos_web_socket.registry.periodic');
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.periodic');
 
         foreach ($taggedServices as $id => $attributes) {

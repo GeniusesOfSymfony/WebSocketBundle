@@ -60,6 +60,7 @@ gos_web_socket:
 - The router and serializer dependencies of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher` and its subclasses are now injected through the constructors
 - The first argument of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher::doPush()` is now a `Gos\Bundle\WebSocketBundle\Pusher\Message` object instead of a serialized message, subclasses should handle serialization on their own if needed
 - Server pushers and push handlers now use the `@serializer` service to serialize and deserialize messages instead of a separate `Symfony\Component\Serializer\Serializer` instance
+- Renamed a number of bundle services to use a consistent naming convention and deprecated the previous service IDs, please review the `Resources/config/services/deprecated_aliases.yml` file for a list of changes
 - The container parameters set by the bundle have been renamed for consistency and to use the bundle's prefix:
     - `web_socket_server.client_storage.ttl` is now `gos_web_socket.client.storage.ttl`
     - `web_socket_server.client_storage.prefix` is now `gos_web_socket.client.storage.prefix`
@@ -88,7 +89,7 @@ gos_web_socket:
     - The `gos_web_socket.assetic` configuration node should be removed from your application
 - Removed deprecated classes/traits/interfaces
     - `Gos\Bundle\WebSocketBundle\Client\DoctrineCacheDriverDecorator` was removed, use `Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator` instead
-    - `Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait` was removed, inject the `@gos_web_socket.websocket.client_manipulator` service instead
+    - `Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait` was removed, inject the `@gos_web_socket.client.manipulator` service instead
 - Removed the following configuration nodes, these services should be tagged instead
     - `gos_web_socket.periodic`, tag your services with the `gos_web_socket.periodic` tag
     - `gos_web_socket.rpc`, tag your services with the `gos_web_socket.rpc` tag

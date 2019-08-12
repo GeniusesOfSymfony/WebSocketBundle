@@ -12,7 +12,7 @@ final class Configuration implements ConfigurationInterface
 {
     private const DEFAULT_TTL = 900;
     private const DEFAULT_PREFIX = '';
-    private const DEFAULT_CLIENT_STORAGE_SERVICE = '@gos_web_socket.server.in_memory.client_storage.driver';
+    private const DEFAULT_CLIENT_STORAGE_SERVICE = 'gos_web_socket.client.driver.in_memory';
     private const DEFAULT_FIREWALL = 'ws_firewall';
     private const DEFAULT_ORIGIN_CHECKER = false;
     private const DEFAULT_KEEPALIVE_PING = false;
@@ -47,7 +47,7 @@ final class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('driver')
                                 ->defaultValue(static::DEFAULT_CLIENT_STORAGE_SERVICE)
-                                ->example('@gos_web_socket.server.in_memory.client_storage.driver')
+                                ->example(static::DEFAULT_CLIENT_STORAGE_SERVICE)
                             ->end()
                             ->integerNode('ttl')
                                 ->defaultValue(static::DEFAULT_TTL)

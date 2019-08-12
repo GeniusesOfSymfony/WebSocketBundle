@@ -154,7 +154,7 @@ final class ConfigurationTest extends TestCase
             'client' => [
                 'firewall' => 'ws_firewall',
                 'storage' => [
-                    'driver' => '@gos_web_socket.server.in_memory.client_storage.driver',
+                    'driver' => 'gos_web_socket.client.driver.in_memory',
                     'ttl' => 900,
                     'prefix' => '',
                 ],

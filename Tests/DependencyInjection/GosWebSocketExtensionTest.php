@@ -230,7 +230,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
 
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.origins.registry',
+            'gos_web_socket.registry.origins',
             'addOrigin',
             ['github.com']
         );
@@ -254,7 +254,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                     'session_handler' => 'session.handler.pdo',
                     'firewall' => 'ws_firewall',
                     'storage' => [
-                        'driver' => 'gos_web_socket.server.in_memory.client_storage.driver',
+                        'driver' => 'gos_web_socket.client.driver.in_memory',
                         'ttl' => 900,
                         'prefix' => '',
                     ],
@@ -266,15 +266,15 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.ws.server_builder',
+            'gos_web_socket.server.builder',
             'setSessionHandler',
             [new Reference('session.handler.pdo')]
         );
 
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.client_storage',
+            'gos_web_socket.client.storage',
             'setStorageDriver',
-            [new Reference('gos_web_socket.server.in_memory.client_storage.driver')]
+            [new Reference('gos_web_socket.client.driver.in_memory')]
         );
     }
 
@@ -296,10 +296,10 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                     'session_handler' => 'session.handler.pdo',
                     'firewall' => 'ws_firewall',
                     'storage' => [
-                        'driver' => 'gos_web_socket.server.in_memory.client_storage.driver',
+                        'driver' => 'gos_web_socket.client.driver.in_memory',
                         'ttl' => 900,
                         'prefix' => '',
-                        'decorator' => 'gos_web_socket.client_storage.symfony.decorator',
+                        'decorator' => 'gos_web_socket.client.driver.symfony_cache',
                     ],
                 ],
             ]
@@ -309,15 +309,15 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
 
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.ws.server_builder',
+            'gos_web_socket.server.builder',
             'setSessionHandler',
             [new Reference('session.handler.pdo')]
         );
 
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.client_storage',
+            'gos_web_socket.client.storage',
             'setStorageDriver',
-            [new Reference('gos_web_socket.client_storage.symfony.decorator')]
+            [new Reference('gos_web_socket.client.driver.symfony_cache')]
         );
     }
 
@@ -385,9 +385,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasService('gos_web_socket.wamp.pusher.connection_factory');
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.connection_factory');
 
-        $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.wamp.pusher.connection_factory'));
+        $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.pusher.wamp.connection_factory'));
     }
 
     public function testContainerIsLoadedWithAmqpPusherConfigured()
@@ -420,9 +420,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasService('gos_web_socket.amqp.pusher.connection_factory');
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.connection_factory');
 
-        $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.amqp.pusher.connection_factory'));
+        $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.pusher.amqp.connection_factory'));
     }
 
     public function testContainerIsLoadedWithZmqPusherConfigured()
@@ -449,9 +449,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
-        $this->assertContainerBuilderHasService('gos_web_socket.zmq.pusher.connection_factory');
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.zmq.connection_factory');
 
-        $this->assertInstanceOf(ZmqConnectionFactory::class, $this->container->get('gos_web_socket.zmq.pusher.connection_factory'));
+        $this->assertInstanceOf(ZmqConnectionFactory::class, $this->container->get('gos_web_socket.pusher.zmq.connection_factory'));
     }
 
     protected function getContainerExtensions(): array

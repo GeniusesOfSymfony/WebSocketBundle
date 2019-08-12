@@ -100,7 +100,7 @@ gos_web_socket:
         session_handler: 'session.handler.pdo'
         storage:
             driver: 'app.doctrine_cache.websocket' # The service which should be decorated
-            decorator: 'gos_web_socket.client_storage.doctrine.decorator' # The decorator to apply to the driver
+            decorator: 'gos_web_socket.client.driver.doctrine_cache' # The decorator to apply to the driver
 ```
 
 ### Using `symfony/cache` as a client storage driver
@@ -124,7 +124,7 @@ gos_web_socket:
         session_handler: 'session.handler.pdo'
         storage:
             driver: 'cache.adapter.redis' # The service which should be decorated
-            decorator: 'gos_web_socket.client_storage.symfony.decorator' # The decorator to apply to the driver
+            decorator: 'gos_web_socket.client.driver.symfony_cache' # The decorator to apply to the driver
 ```
 
 ### Create your own driver
@@ -133,7 +133,7 @@ If need be, you can also create your own storage driver. All drivers must implem
 
 ## Retrieve authenticated user
 
-Whenever the `Ratchet\ConnectionInterface` instance is available, you are able to retrieve the user account info using a `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` instance (by default, the `gos_web_socket.websocket.client_manipulator` service).
+Whenever the `Ratchet\ConnectionInterface` instance is available, you are able to retrieve the user account info using a `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` instance (by default, the `@gos_web_socket.client.manipulator` service).
 
 For example inside a RPC handler:
 

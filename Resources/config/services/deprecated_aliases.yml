@@ -1,0 +1,93 @@
+services:
+    gos_web_socket.amqp.pusher:
+        alias: gos_web_socket.pusher.amqp
+
+    gos_web_socket.amqp.server_push_handler:
+        alias: gos_web_socket.pusher.amqp.push_handler
+
+    gos_web_socket.client_event.listener:
+        alias: gos_web_socket.event_listener.client
+
+    gos_web_socket.client_storage:
+        alias: gos_web_socket.client.storage
+
+    gos_web_socket.client_storage.doctrine.decorator:
+        alias: gos_web_socket.client.driver.doctrine_cache
+
+    gos_web_socket.client_storage.symfony.decorator:
+        alias: gos_web_socket.client.driver.symfony_cache
+
+    gos_web_socket.data_collector:
+        alias: gos_web_socket.data_collector.websocket
+
+    gos_web_socket.entry_point:
+        alias: gos_web_socket.server.entry_point
+
+    gos_web_socket.kernel_event.terminate:
+        alias: gos_web_socket.event_listener.kernel_terminate
+
+    gos_web_socket.memory_usage.periodic:
+        alias: gos_web_socket.periodic_ping.memory_usage
+
+    gos_web_socket.origins.registry:
+        alias: gos_web_socket.registry.origins
+
+    gos_web_socket.pnctl_event.listener:
+        alias: gos_web_socket.event_listener.start_server
+
+    gos_web_socket.periodic.registry:
+        alias: gos_web_socket.registry.periodic
+
+    gos_web_socket.pusher_registry:
+        alias: gos_web_socket.registry.pusher
+
+    gos_web_socket.rpc.dispatcher:
+        alias: gos_web_socket.dispatcher.rpc
+
+    gos_web_socket.rpc.registry:
+        alias: gos_web_socket.registry.rpc
+
+    gos_web_socket.server.in_memory.client_storage.driver:
+        alias: gos_web_socket.client.driver.in_memory
+
+    gos_web_socket.server.registry:
+        alias: gos_web_socket.registry.server
+
+    gos_web_socket.server_push_handler.registry:
+        alias: gos_web_socket.registry.server_push_handler
+
+    gos_web_socket.topic.dispatcher:
+        alias: gos_web_socket.dispatcher.topic
+
+    gos_web_socket.topic.registry:
+        alias: gos_web_socket.registry.topic
+
+    gos_web_socket.wamp.pusher:
+        alias: gos_web_socket.pusher.wamp
+
+    gos_web_socket.websocket_server.command:
+        alias: gos_web_socket.command.websocket_server
+
+    gos_web_socket.ws.client:
+        alias: gos_web_socket.wamp.client
+
+    gos_web_socket.ws.server:
+        alias: gos_web_socket.server.websocket
+
+    gos_web_socket.ws.server_builder:
+        alias: gos_web_socket.server.builder
+
+    gos_web_socket.websocket_authentification.provider:
+        alias: gos_web_socket.client.authentication.websocket_provider
+
+    gos_web_socket.websocket.client_manipulator:
+        alias: gos_web_socket.client.manipulator
+
+    gos_web_socket.zmq.pusher:
+        alias: gos_web_socket.pusher.zmq
+
+    gos_web_socket.zmq.server_push_handler:
+        alias: gos_web_socket.pusher.zmq.push_handler
+
+    gos_web_socket_server.wamp_application:
+        alias: gos_web_socket.server.application.wamp

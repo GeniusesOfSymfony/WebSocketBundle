@@ -14,7 +14,7 @@ class PusherCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPushersAreAddedToTheRegistry()
     {
-        $this->registerService('gos_web_socket.pusher_registry', PusherRegistry::class);
+        $this->registerService('gos_web_socket.registry.pusher', PusherRegistry::class);
         $this->registerService('test.pusher', PusherInterface::class)
             ->addTag('gos_web_socket.pusher', ['alias' => 'test']);
 
@@ -22,7 +22,7 @@ class PusherCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->assertContainerBuilderHasService('test.pusher', PusherInterface::class);
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.pusher_registry',
+            'gos_web_socket.registry.pusher',
             'addPusher',
             [new Reference('test.pusher')]
         );
@@ -33,7 +33,7 @@ class PusherCompilerPassTest extends AbstractCompilerPassTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Service "test.pusher" must define the "alias" attribute on "gos_web_socket.pusher" tags.');
 
-        $this->registerService('gos_web_socket.pusher_registry', PusherRegistry::class);
+        $this->registerService('gos_web_socket.registry.pusher', PusherRegistry::class);
         $this->registerService('test.pusher', PusherInterface::class)
             ->addTag('gos_web_socket.pusher');
 

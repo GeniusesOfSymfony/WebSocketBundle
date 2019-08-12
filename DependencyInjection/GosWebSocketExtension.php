@@ -30,8 +30,42 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     /**
-     * {@inheritdoc}
+     * Map containing a list of deprecated service keys where the key is the deprecated alias and the value is the new service identifier.
      */
+    private const DEPRECATED_SERVICE_ALIASES = [
+        'gos_web_socket.amqp.pusher' => 'gos_web_socket.pusher.amqp',
+        'gos_web_socket.amqp.server_push_handler' => 'gos_web_socket.pusher.amqp.push_handler',
+        'gos_web_socket.client_event.listener' => 'gos_web_socket.event_listener.client',
+        'gos_web_socket.client_storage' => 'gos_web_socket.client.storage',
+        'gos_web_socket.client_storage.doctrine.decorator' => 'gos_web_socket.client.driver.doctrine_cache',
+        'gos_web_socket.client_storage.symfony.decorator' => 'gos_web_socket.client.driver.symfony_cache',
+        'gos_web_socket.data_collector' => 'gos_web_socket.data_collector.websocket',
+        'gos_web_socket.entry_point' => 'gos_web_socket.server.entry_point',
+        'gos_web_socket.kernel_event.terminate' => 'gos_web_socket.event_listener.kernel_terminate',
+        'gos_web_socket.memory_usage.periodic' => 'gos_web_socket.periodic_ping.memory_usage',
+        'gos_web_socket.origins.registry' => 'gos_web_socket.registry.origins',
+        'gos_web_socket.pnctl_event.listener' => 'gos_web_socket.event_listener.start_server',
+        'gos_web_socket.periodic.registry' => 'gos_web_socket.registry.periodic',
+        'gos_web_socket.pusher_registry' => 'gos_web_socket.registry.pusher',
+        'gos_web_socket.rpc.dispatcher' => 'gos_web_socket.dispatcher.rpc',
+        'gos_web_socket.rpc.registry' => 'gos_web_socket.registry.rpc',
+        'gos_web_socket.server.in_memory.client_storage.driver' => 'gos_web_socket.client.driver.in_memory',
+        'gos_web_socket.server.registry' => 'gos_web_socket.registry.server',
+        'gos_web_socket.server_push_handler.registry' => 'gos_web_socket.registry.server_push_handler',
+        'gos_web_socket.topic.dispatcher' => 'gos_web_socket.dispatcher.topic',
+        'gos_web_socket.topic.registry' => 'gos_web_socket.registry.topic',
+        'gos_web_socket.wamp.pusher' => 'gos_web_socket.pusher.wamp',
+        'gos_web_socket.websocket_server.command' => 'gos_web_socket.command.websocket_server',
+        'gos_web_socket.ws.client' => 'gos_web_socket.wamp.client',
+        'gos_web_socket.ws.server' => 'gos_web_socket.server.websocket',
+        'gos_web_socket.ws.server_builder' => 'gos_web_socket.server.builder',
+        'gos_web_socket.websocket_authentification.provider' => 'gos_web_socket.client.authentication.websocket_provider',
+        'gos_web_socket.websocket.client_manipulator' => 'gos_web_socket.client.manipulator',
+        'gos_web_socket.zmq.pusher' => 'gos_web_socket.pusher.zmq',
+        'gos_web_socket.zmq.server_push_handler' => 'gos_web_socket.pusher.zmq.push_handler',
+        'gos_web_socket_server.wamp_application' => 'gos_web_socket.server.application.wamp',
+    ];
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader(
@@ -41,6 +75,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $loader->load('services.yml');
         $loader->load('aliases.yml');
+        $loader->load('deprecated_aliases.yml');
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
@@ -100,7 +135,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (!empty($configs['origins'])) {
-            $originsRegistryDef = $container->getDefinition('gos_web_socket.origins.registry');
+            $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
 
             foreach ($configs['origins'] as $origin) {
                 $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
@@ -114,7 +149,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             if (isset($clientConf['session_handler'])) {
                 $sessionHandler = ltrim($clientConf['session_handler'], '@');
 
-                $container->getDefinition('gos_web_socket.ws.server_builder')
+                $container->getDefinition('gos_web_socket.server.builder')
                     ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
 
                 $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
@@ -135,13 +170,26 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 // Alias the DriverInterface in use
                 $container->setAlias(DriverInterface::class, new Alias($storageDriver));
 
-                $container->getDefinition('gos_web_socket.client_storage')
+                $container->getDefinition('gos_web_socket.client.storage')
                     ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
             }
         }
 
         $this->loadPingServices($configs, $container);
         $this->loadPushers($configs, $container);
+
+        // Mark service aliases deprecated if able
+        if (method_exists(Alias::class, 'setDeprecated')) {
+            foreach (self::DEPRECATED_SERVICE_ALIASES as $deprecatedAlias => $newService) {
+                if ($container->hasAlias($deprecatedAlias)) {
+                    $container->getAlias($deprecatedAlias)
+                        ->setDeprecated(
+                            true,
+                            'The "%alias_id%" service alias is deprecated and will be removed in GosWebSocketBundle 3.0, you should use the "'.$newService.'" service instead.'
+                        );
+                }
+            }
+        }
     }
 
     /**
@@ -191,12 +239,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         if (!isset($configs['pushers'])) {
             // Untag all of the pushers
-            foreach (['gos_web_socket.amqp.pusher', 'gos_web_socket.wamp.pusher', 'gos_web_socket.zmq.pusher'] as $pusher) {
+            foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp', 'gos_web_socket.pusher.zmq'] as $pusher) {
                 $container->getDefinition($pusher)
                     ->clearTag('gos_web_socket.pusher');
             }
 
-            foreach (['gos_web_socket.amqp.server_push_handler', 'gos_web_socket.zmq.server_push_handler'] as $pusher) {
+            foreach (['gos_web_socket.pusher.amqp.push_handler', 'gos_web_socket.pusher.zmq.push_handler'] as $pusher) {
                 $container->getDefinition($pusher)
                     ->clearTag('gos_web_socket.push_handler');
             }
@@ -221,18 +269,18 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             );
             $connectionFactoryDef->setPrivate(true);
 
-            $container->setDefinition('gos_web_socket.amqp.pusher.connection_factory', $connectionFactoryDef);
+            $container->setDefinition('gos_web_socket.pusher.amqp.connection_factory', $connectionFactoryDef);
 
-            $container->getDefinition('gos_web_socket.amqp.pusher')
-                ->setArgument(2, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.pusher.amqp')
+                ->setArgument(2, new Reference('gos_web_socket.pusher.amqp.connection_factory'));
 
-            $container->getDefinition('gos_web_socket.amqp.server_push_handler')
-                ->setArgument(3, new Reference('gos_web_socket.amqp.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
+                ->setArgument(3, new Reference('gos_web_socket.pusher.amqp.connection_factory'));
         } else {
-            $container->getDefinition('gos_web_socket.amqp.pusher')
+            $container->getDefinition('gos_web_socket.pusher.amqp')
                 ->clearTag('gos_web_socket.pusher');
 
-            $container->getDefinition('gos_web_socket.amqp.server_push_handler')
+            $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
                 ->clearTag('gos_web_socket.push_handler');
         }
 
@@ -253,18 +301,18 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             );
             $connectionFactoryDef->setPrivate(true);
 
-            $container->setDefinition('gos_web_socket.zmq.pusher.connection_factory', $connectionFactoryDef);
+            $container->setDefinition('gos_web_socket.pusher.zmq.connection_factory', $connectionFactoryDef);
 
-            $container->getDefinition('gos_web_socket.zmq.pusher')
-                ->setArgument(2, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.pusher.zmq')
+                ->setArgument(2, new Reference('gos_web_socket.pusher.zmq.connection_factory'));
 
-            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
-                ->setArgument(4, new Reference('gos_web_socket.zmq.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.pusher.zmq.push_handler')
+                ->setArgument(4, new Reference('gos_web_socket.pusher.zmq.connection_factory'));
         } else {
-            $container->getDefinition('gos_web_socket.zmq.pusher')
+            $container->getDefinition('gos_web_socket.pusher.zmq')
                 ->clearTag('gos_web_socket.pusher');
 
-            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+            $container->getDefinition('gos_web_socket.pusher.zmq.push_handler')
                 ->clearTag('gos_web_socket.push_handler');
         }
 
@@ -285,12 +333,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             );
             $connectionFactoryDef->setPrivate(true);
 
-            $container->setDefinition('gos_web_socket.wamp.pusher.connection_factory', $connectionFactoryDef);
+            $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
 
-            $container->getDefinition('gos_web_socket.wamp.pusher')
-                ->setArgument(2, new Reference('gos_web_socket.wamp.pusher.connection_factory'));
+            $container->getDefinition('gos_web_socket.pusher.wamp')
+                ->setArgument(2, new Reference('gos_web_socket.pusher.wamp.connection_factory'));
         } else {
-            $container->getDefinition('gos_web_socket.wamp.pusher')
+            $container->getDefinition('gos_web_socket.pusher.wamp')
                 ->clearTag('gos_web_socket.pusher');
         }
     }

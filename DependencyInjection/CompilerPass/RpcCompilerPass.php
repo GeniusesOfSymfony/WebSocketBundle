@@ -16,11 +16,11 @@ final class RpcCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('gos_web_socket.rpc.registry')) {
+        if (!$container->hasDefinition('gos_web_socket.registry.rpc')) {
             return;
         }
 
-        $definition = $container->getDefinition('gos_web_socket.rpc.registry');
+        $definition = $container->getDefinition('gos_web_socket.registry.rpc');
         $taggedServices = $container->findTaggedServiceIds('gos_web_socket.rpc');
 
         foreach ($taggedServices as $id => $attributes) {

@@ -6,7 +6,7 @@ gos_web_socket:
         session_handler:      ~ # Example: @session.handler.pdo
         firewall:             ws_firewall # Example: secured_area
         storage:
-            driver:               '@gos_web_socket.server.in_memory.client_storage.driver' # Example: @gos_web_socket.server.in_memory.client_storage.driver
+            driver:               'gos_web_socket.client.driver.in_memory' # Example: gos_web_socket.client.driver.in_memory
             ttl:                  900 # Example: 3600
             prefix:               '' # Example: client
             decorator:            ~
