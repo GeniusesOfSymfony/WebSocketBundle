@@ -17,12 +17,19 @@
     ],
     "require": {
         "php": ">=7.2",
-        "symfony/framework-bundle": "^2.3|^3.0|^4.0",
+        "cboden/ratchet": "^0.4.1",
         "gos/pubsub-router-bundle": "^0.3",
         "gos/websocket-client": "^0.1",
         "ocramius/proxy-manager": "^1.0|^2.1",
-        "cboden/ratchet": "^0.4.1",
-        "react/event-loop": "^1.0"
+        "psr/log": "^1.0",
+        "react/event-loop": "^1.0",
+        "symfony/config": "^2.3|^3.0|^4.0",
+        "symfony/console": "^2.3|^3.0|^4.0",
+        "symfony/dependency-injection": "^2.3|^3.0|^4.0",
+        "symfony/event-dispatcher": "^2.3|^3.0|^4.0",
+        "symfony/http-foundation": "^2.3|^3.0|^4.0",
+        "symfony/http-kernel": "^2.3|^3.0|^4.0",
+        "symfony/security-core": "^2.3|^3.0|^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"
@@ -31,13 +38,17 @@
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" }
     },
     "suggest": {
-      "ext-libevent": ">=0.0.5",
-      "ext-libev": "*",
-      "ext-zmq": "*",
-      "ext-amqp": "*",
-      "doctrine/cache": "* to use doctrine/cache as a client driver",
-      "symfony/cache": ">=3.1 to use symfony/cache as a client driver",
-      "symfony/proxy-manager-bridge": "~2.3"
+        "ext-amqp": "* to use the amqp pusher",
+        "ext-zmq": "* to use the zmq pusher",
+        "doctrine/cache": "^1.0 to use doctrine/cache as a client driver",
+        "gos/react-amqp": "^0.2 to use the amqp server push handler",
+        "predis/predis": "^1.0 to use Predis as a client driver",
+        "react/zmq": "^0.4 to use zmq server push handler",
+        "symfony/cache": "^3.1|^4.0 to use symfony/cache as a client driver",
+        "symfony/options-resolver": "^2.3|^3.0|^4.0 to use the pushers",
+        "symfony/serializer": "^2.3|^3.0|^4.0 to use the pushers",
+        "symfony/stopwatch": "^2.3|^3.0|^4.0 to use the data collectors",
+        "symfony/twig-bridge": "^2.3|^3.0|^4.0 to use the Twig extension"
     },
     "extra": {
         "branch-alias": {
