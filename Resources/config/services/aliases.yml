@@ -41,5 +41,8 @@ services:
     Gos\Bundle\WebSocketBundle\Topic\TopicManager:
         alias: gos_web_socket.wamp.topic_manager
 
+    Gos\Component\WebSocketClient\Wamp\ClientInterface:
+        alias: gos_web_socket.wamp.client
+
     React\EventLoop\LoopInterface:
         alias: gos_web_socket.server.event_loop

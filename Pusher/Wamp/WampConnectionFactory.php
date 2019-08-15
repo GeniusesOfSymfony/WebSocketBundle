@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class WampConnectionFactory implements WampConnectionFactoryInterface
@@ -17,7 +18,7 @@ final class WampConnectionFactory implements WampConnectionFactoryInterface
         $this->config = $this->resolveConfig($config);
     }
 
-    public function createConnection(): Client
+    public function createConnection(): ClientInterface
     {
         return new Client(
             $this->config['host'],

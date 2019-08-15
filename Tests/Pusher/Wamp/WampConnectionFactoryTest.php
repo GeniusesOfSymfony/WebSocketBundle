@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Wamp;
 
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
-use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -80,6 +80,6 @@ class WampConnectionFactoryTest extends TestCase
 
         $connection = (new WampConnectionFactory($config))->createConnection();
 
-        $this->assertInstanceOf(Client::class, $connection);
+        $this->assertInstanceOf(ClientInterface::class, $connection);
     }
 }
