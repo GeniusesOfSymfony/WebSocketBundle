@@ -6,7 +6,7 @@ use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
-use Gos\Component\WebSocketClient\Wamp\ClientInterface;
+use Gos\Component\WebSocketClient\Wamp\Client;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -58,7 +58,7 @@ class WampPusherTest extends TestCase
             ->method('generate')
             ->willReturn('channel/42');
 
-        $connection = $this->createMock(ClientInterface::class);
+        $connection = $this->createMock(Client::class);
         $connection->expects($this->once())
             ->method('connect');
 
