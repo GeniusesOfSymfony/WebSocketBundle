@@ -15,6 +15,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
@@ -331,10 +332,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
-
-            if ($container->hasDefinition('monolog.logger.websocket')) {
-                $connectionFactoryDef->addMethodCall('setLogger', [new Reference('monolog.logger.websocket')]);
-            }
+            $connectionFactoryDef->addMethodCall('setLogger', [new Reference('monolog.logger.websocket', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
 
             $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
 
