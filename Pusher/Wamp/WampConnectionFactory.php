@@ -4,10 +4,14 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Component\WebSocketClient\Wamp\Client;
 use Gos\Component\WebSocketClient\Wamp\ClientInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class WampConnectionFactory implements WampConnectionFactoryInterface
+final class WampConnectionFactory implements WampConnectionFactoryInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var array
      */
@@ -20,12 +24,18 @@ final class WampConnectionFactory implements WampConnectionFactoryInterface
 
     public function createConnection(): ClientInterface
     {
-        return new Client(
+        $client = new Client(
             $this->config['host'],
             $this->config['port'],
             $this->config['ssl'],
             $this->config['origin']
         );
+
+        if ($this->logger) {
+            $client->setLogger($this->logger);
+        }
+
+        return $client;
     }
 
     private function resolveConfig(array $config): array

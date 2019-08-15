@@ -68,9 +68,6 @@ services:
     gos_web_socket.websocket_server.command:
         alias: gos_web_socket.command.websocket_server
 
-    gos_web_socket.ws.client:
-        alias: gos_web_socket.wamp.client
-
     gos_web_socket.ws.server:
         alias: gos_web_socket.server.websocket
 

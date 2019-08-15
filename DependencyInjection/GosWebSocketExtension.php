@@ -56,7 +56,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         'gos_web_socket.topic.registry' => 'gos_web_socket.registry.topic',
         'gos_web_socket.wamp.pusher' => 'gos_web_socket.pusher.wamp',
         'gos_web_socket.websocket_server.command' => 'gos_web_socket.command.websocket_server',
-        'gos_web_socket.ws.client' => 'gos_web_socket.wamp.client',
         'gos_web_socket.ws.server' => 'gos_web_socket.server.websocket',
         'gos_web_socket.ws.server_builder' => 'gos_web_socket.server.builder',
         'gos_web_socket.websocket_authentification.provider' => 'gos_web_socket.client.authentication.websocket_provider',
@@ -332,6 +331,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
+
+            if ($container->hasDefinition('monolog.logger.websocket')) {
+                $connectionFactoryDef->addMethodCall('setLogger', [new Reference('monolog.logger.websocket')]);
+            }
 
             $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
 

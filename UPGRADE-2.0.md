@@ -104,3 +104,4 @@ gos_web_socket:
 - Removed `Gos\Bundle\WebSocketBundle\Pusher\Serializer\MessageSerializer`, a `Symfony\Component\Serializer\SerializerInterface` implementation should be used instead (generally the `@serializer` service)
 - The `Gos\Bundle\WebSocketBundle\Pusher\Amqp\Utils` class has been removed
     - This was an internal helper for building `ext/amqp` related dependencies and should not have been used by package users
+- Removed the `gos_web_socket.ws.client` service, a `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface` instance should be used to create the client if needed

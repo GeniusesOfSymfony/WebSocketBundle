@@ -300,15 +300,6 @@ services:
         arguments:
             - '@gos_web_socket.server.event_loop'
 
-    gos_web_socket.wamp.client:
-        class: Gos\Component\WebSocketClient\Wamp\Client
-        public: true
-        arguments:
-            - '%gos_web_socket.server.host%'
-            - '%gos_web_socket.server.port%'
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-
     gos_web_socket.wamp.topic_manager:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicManager
         public: true
