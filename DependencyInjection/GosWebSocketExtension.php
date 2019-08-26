@@ -39,6 +39,12 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             $container->getDefinition('gos_web_socket.twig.extension')
                 ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for Assetic will be removed.');
+
+            $container->getDefinition('gos_web_socket.zmq.pusher')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for ZMQ as a pusher will be removed.');
+
+            $container->getDefinition('gos_web_socket.zmq.server_push_handler')
+                ->setDeprecated(true, 'The "%service_id%" service is deprecated. Support for ZMQ as a server push handler will be removed.');
         }
 
         $container->setParameter(
@@ -173,10 +179,23 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
                 ->replaceArgument(0, new Reference('gos_pubsub_router.websocket'));
         }
 
-        // WAMP Pusher Configuration
-        if (isset($configs['pushers']) && isset($configs['pushers']['wamp'])) {
-            if (!is_bool($configs['pushers']['wamp']['ssl'])) {
-                throw new \InvalidArgumentException(sprintf('The ssl node under wamp pusher configuration must be a boolean value'));
+        // Pusher Configuration
+        if (isset($configs['pushers'])) {
+            // Validate WAMP configuration
+            if (isset($configs['pushers']['wamp'])) {
+                if (!is_bool($configs['pushers']['wamp']['ssl'])) {
+                    throw new \InvalidArgumentException(
+                        sprintf('The ssl node under wamp pusher configuration must be a boolean value')
+                    );
+                }
+            }
+
+            // Deprecate ZMQ pusher
+            if (isset($configs['pushers']['zmq'])) {
+                @trigger_error(
+                    'Support for the ZMQ pusher is deprecated and will be removed in 2.0.',
+                    E_USER_DEPRECATED
+                );
             }
         }
     }

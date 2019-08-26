@@ -18,6 +18,11 @@ use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', ZmqServerPushHandler::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated to be removed in 2.0
+ */
 class ZmqServerPushHandler extends AbstractServerPushHandler
 {
     /** @var PusherInterface  */
