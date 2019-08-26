@@ -66,29 +66,29 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
         $this->consumer = new Consumer($this->connectionFactory->createQueue($connection), $loop, 0.1, 10);
         $this->consumer->on(
             'consume',
-            function (\AMQPEnvelope $envelop, \AMQPQueue $queue) use ($app, $connection) {
+            function (\AMQPEnvelope $envelope, \AMQPQueue $queue) use ($app, $connection) {
                 try {
                     /** @var Message $message */
-                    $message = $this->serializer->deserialize($envelop->getBody(), Message::class, 'json');
+                    $message = $this->serializer->deserialize($envelope->getBody(), Message::class, 'json');
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
-                    $queue->ack($envelop->getDeliveryTag());
-                    $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($envelop->getBody(), $this));
+                    $queue->ack($envelope->getDeliveryTag());
+                    $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($envelope->getBody(), $this));
                 } catch (\Exception $e) {
                     if ($this->logger) {
                         $this->logger->error(
                             'AMQP handler failed to ack message',
                             [
                                 'exception' => $e,
-                                'message' => $envelop->getBody(),
+                                'message' => $envelope->getBody(),
                             ]
                         );
                     }
 
-                    $queue->reject($envelop->getDeliveryTag());
+                    $queue->reject($envelope->getDeliveryTag());
                     $this->eventDispatcher->dispatch(
                         Events::PUSHER_FAIL,
-                        new PushHandlerEvent($envelop->getBody(), $this)
+                        new PushHandlerEvent($envelope->getBody(), $this)
                     );
                 }
 
