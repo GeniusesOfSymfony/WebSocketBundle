@@ -59,6 +59,7 @@ gos_web_socket:
 - The `clientStorageId` property of a connection is no longer set (i.e. `$connection->WAMP->clientStorageId`), if you need this you should get it from the `ClientStorageInterface` (i.e. `$clientStorage->getStorageId($connection)`)
 - The router and serializer dependencies of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher` and its subclasses are now injected through the constructors
 - The first argument of `Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher::doPush()` is now a `Gos\Bundle\WebSocketBundle\Pusher\Message` object instead of a serialized message, subclasses should handle serialization on their own if needed
+- The second argument of `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface::handle()` is now typehinted as a `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface` object
 - Server pushers and push handlers now use the `@serializer` service to serialize and deserialize messages instead of a separate `Symfony\Component\Serializer\Serializer` instance
 - Renamed a number of bundle services to use a consistent naming convention and deprecated the previous service IDs, please review the `Resources/config/services/deprecated_aliases.yml` file for a list of changes
 - The container parameters set by the bundle have been renamed for consistency and to use the bundle's prefix:

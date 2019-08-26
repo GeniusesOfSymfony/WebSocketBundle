@@ -4,8 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Pusher;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
+use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use PHPUnit\Framework\TestCase;
-use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 
 class ServerPushHandlerRegistryTest extends TestCase
@@ -25,7 +25,7 @@ class ServerPushHandlerRegistryTest extends TestCase
     public function testPushHandlersAreAddedToTheRegistry()
     {
         $handler = new class() implements ServerPushHandlerInterface {
-            public function handle(LoopInterface $loop, WampServerInterface $app): void
+            public function handle(LoopInterface $loop, PushableWampServerInterface $app): void
             {
                 // no-op
             }
@@ -59,7 +59,7 @@ class ServerPushHandlerRegistryTest extends TestCase
         $this->expectExceptionMessage('A push handler named "main" has not been registered.');
 
         $handler = new class() implements ServerPushHandlerInterface {
-            public function handle(LoopInterface $loop, WampServerInterface $app): void
+            public function handle(LoopInterface $loop, PushableWampServerInterface $app): void
             {
                 // no-op
             }

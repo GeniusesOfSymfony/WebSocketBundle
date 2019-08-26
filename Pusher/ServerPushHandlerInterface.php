@@ -2,12 +2,12 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher;
 
-use Ratchet\Wamp\WampServerInterface;
+use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use React\EventLoop\LoopInterface;
 
 interface ServerPushHandlerInterface
 {
-    public function handle(LoopInterface $loop, WampServerInterface $app): void;
+    public function handle(LoopInterface $loop, PushableWampServerInterface $app): void;
 
     public function close(): void;
 

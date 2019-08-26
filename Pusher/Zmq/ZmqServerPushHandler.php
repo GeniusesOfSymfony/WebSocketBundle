@@ -7,10 +7,10 @@ use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
+use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\Wamp\Topic;
-use Ratchet\Wamp\WampServerInterface;
 use React\EventLoop\LoopInterface;
 use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -57,7 +57,7 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
         $this->connectionFactory = $connectionFactory;
     }
 
-    public function handle(LoopInterface $loop, WampServerInterface $app): void
+    public function handle(LoopInterface $loop, PushableWampServerInterface $app): void
     {
         $this->consumer = $this->connectionFactory->createWrappedConnection($loop, \ZMQ::SOCKET_PULL);
 

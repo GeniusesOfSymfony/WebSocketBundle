@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
-use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
@@ -19,9 +19,9 @@ class RegisterPushHandlersListenerTest extends TestCase
     private $pushHandlerRegistry;
 
     /**
-     * @var MockObject|WampApplication
+     * @var MockObject|PushableWampServerInterface
      */
-    private $wampApplication;
+    private $wampServer;
 
     /**
      * @var RegisterPushHandlersListener
@@ -33,9 +33,9 @@ class RegisterPushHandlersListenerTest extends TestCase
         parent::setUp();
 
         $this->pushHandlerRegistry = new ServerPushHandlerRegistry();
-        $this->wampApplication = $this->createMock(WampApplication::class);
+        $this->wampServer = $this->createMock(PushableWampServerInterface::class);
 
-        $this->listener = new RegisterPushHandlersListener($this->pushHandlerRegistry, $this->wampApplication);
+        $this->listener = new RegisterPushHandlersListener($this->pushHandlerRegistry, $this->wampServer);
     }
 
     public function testThePushHandlersAreRegisteredToTheLoop()
@@ -49,7 +49,7 @@ class RegisterPushHandlersListenerTest extends TestCase
 
         $handler->expects($this->once())
             ->method('handle')
-            ->with($loop, $this->wampApplication);
+            ->with($loop, $this->wampServer);
 
         $this->pushHandlerRegistry->addPushHandler($handler);
 

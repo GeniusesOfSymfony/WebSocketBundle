@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
-use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
+use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -17,14 +17,14 @@ final class RegisterPushHandlersListener implements LoggerAwareInterface
     private $pushHandlerRegistry;
 
     /**
-     * @var WampApplication
+     * @var PushableWampServerInterface
      */
-    private $wampApplication;
+    private $wampServer;
 
-    public function __construct(ServerPushHandlerRegistry $pushHandlerRegistry, WampApplication $wampApplication)
+    public function __construct(ServerPushHandlerRegistry $pushHandlerRegistry, PushableWampServerInterface $wampServer)
     {
         $this->pushHandlerRegistry = $pushHandlerRegistry;
-        $this->wampApplication = $wampApplication;
+        $this->wampServer = $wampServer;
     }
 
     public function registerPushHandlers(ServerEvent $event): void
@@ -33,7 +33,7 @@ final class RegisterPushHandlersListener implements LoggerAwareInterface
 
         foreach ($this->pushHandlerRegistry->getPushers() as $handler) {
             try {
-                $handler->handle($loop, $this->wampApplication);
+                $handler->handle($loop, $this->wampServer);
             } catch (\Exception $e) {
                 if ($this->logger) {
                     $this->logger->error(
