@@ -80,11 +80,5 @@ services:
     gos_web_socket.websocket.client_manipulator:
         alias: gos_web_socket.client.manipulator
 
-    gos_web_socket.zmq.pusher:
-        alias: gos_web_socket.pusher.zmq
-
-    gos_web_socket.zmq.server_push_handler:
-        alias: gos_web_socket.pusher.zmq.push_handler
-
     gos_web_socket_server.wamp_application:
         alias: gos_web_socket.server.application.wamp

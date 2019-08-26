@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
-use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
@@ -61,8 +60,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         'gos_web_socket.ws.server_builder' => 'gos_web_socket.server.builder',
         'gos_web_socket.websocket_authentification.provider' => 'gos_web_socket.client.authentication.websocket_provider',
         'gos_web_socket.websocket.client_manipulator' => 'gos_web_socket.client.manipulator',
-        'gos_web_socket.zmq.pusher' => 'gos_web_socket.pusher.zmq',
-        'gos_web_socket.zmq.server_push_handler' => 'gos_web_socket.pusher.zmq.push_handler',
         'gos_web_socket_server.wamp_application' => 'gos_web_socket.server.application.wamp',
     ];
 
@@ -239,12 +236,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         if (!isset($configs['pushers'])) {
             // Untag all of the pushers
-            foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp', 'gos_web_socket.pusher.zmq'] as $pusher) {
+            foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
                 $container->getDefinition($pusher)
                     ->clearTag('gos_web_socket.pusher');
             }
 
-            foreach (['gos_web_socket.pusher.amqp.push_handler', 'gos_web_socket.pusher.zmq.push_handler'] as $pusher) {
+            foreach (['gos_web_socket.pusher.amqp.push_handler'] as $pusher) {
                 $container->getDefinition($pusher)
                     ->clearTag('gos_web_socket.push_handler');
             }
@@ -281,38 +278,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ->clearTag('gos_web_socket.pusher');
 
             $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
-                ->clearTag('gos_web_socket.push_handler');
-        }
-
-        if (isset($configs['pushers']['zmq']) && $configs['pushers']['zmq']['enabled']) {
-            // Pull the 'enabled' field out of the pusher's config
-            $factoryConfig = $configs['pushers']['zmq'];
-            unset($factoryConfig['enabled']);
-
-            // Resolve placeholders for host and port
-            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
-            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
-
-            $connectionFactoryDef = new Definition(
-                ZmqConnectionFactory::class,
-                [
-                    $factoryConfig,
-                ]
-            );
-            $connectionFactoryDef->setPrivate(true);
-
-            $container->setDefinition('gos_web_socket.pusher.zmq.connection_factory', $connectionFactoryDef);
-
-            $container->getDefinition('gos_web_socket.pusher.zmq')
-                ->setArgument(2, new Reference('gos_web_socket.pusher.zmq.connection_factory'));
-
-            $container->getDefinition('gos_web_socket.pusher.zmq.push_handler')
-                ->setArgument(4, new Reference('gos_web_socket.pusher.zmq.connection_factory'));
-        } else {
-            $container->getDefinition('gos_web_socket.pusher.zmq')
-                ->clearTag('gos_web_socket.pusher');
-
-            $container->getDefinition('gos_web_socket.pusher.zmq.push_handler')
                 ->clearTag('gos_web_socket.push_handler');
         }
 

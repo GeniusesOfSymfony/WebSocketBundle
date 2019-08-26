@@ -37,7 +37,7 @@ Built in features
 * User authentication
 * Periodic calls
 * Origin checker
-* Push (zmq, amqp)
+* Push (amqp)
 
 Resources
 ---------

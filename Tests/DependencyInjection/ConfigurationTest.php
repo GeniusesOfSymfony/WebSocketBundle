@@ -116,14 +116,6 @@ final class ConfigurationTest extends TestCase
                     'ssl' => false,
                     'origin' => null,
                 ],
-                'zmq' => [
-                    'enabled' => false,
-                    'host' => '127.0.0.1',
-                    'port' => 1337,
-                    'persistent' => true,
-                    'protocol' => 'tcp',
-                    'linger' => -1,
-                ],
                 'amqp' => [
                     'enabled' => false,
                     'host' => '127.0.0.1',

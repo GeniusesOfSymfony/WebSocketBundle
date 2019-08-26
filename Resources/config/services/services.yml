@@ -188,30 +188,6 @@ services:
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
 
-    # Deprecated and will be removed in 2.0
-    gos_web_socket.pusher.zmq:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
-        public: true
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - ~ # connection factory argument is set by the container extension
-        tags:
-            - { name: gos_web_socket.pusher, alias: zmq }
-
-    # Deprecated and will be removed in 2.0
-    gos_web_socket.pusher.zmq.push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - '@event_dispatcher'
-            - ~ # ZmqConnectionFactory dependency is set by the container extension
-        calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
-        tags:
-            - { name: gos_web_socket.push_handler, alias: zmq }
-
     gos_web_socket.registry.periodic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
         public: true

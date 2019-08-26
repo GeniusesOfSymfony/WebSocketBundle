@@ -36,13 +36,6 @@ gos_web_socket:
                 # The type of the service to be pinged; valid options are "doctrine" and "pdo"
                 type:                 ~ # One of "doctrine"; "pdo", Required
     pushers:
-        zmq:
-            enabled:              false
-            host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 1337
-            persistent:           true
-            protocol:             tcp # One of "tcp"; "ipc"; "inproc"; "pgm"; "epgm"
-            linger:               -1
         amqp:
             enabled:              false
             host:                 ~ # Required, Example: 127.0.0.1

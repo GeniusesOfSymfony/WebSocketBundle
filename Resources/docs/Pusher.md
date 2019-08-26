@@ -6,7 +6,6 @@ Supported integrations include:
 
 * AMQP (pusher & push handler)
 * WAMP (pusher)
-* ZMQ (pusher & push handler)
 
 ## AMQP Pusher
 
@@ -59,38 +58,12 @@ gos_web_socket:
 
 Note the bundle only provides a `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` implementation for WAMP, the equivalent for `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface` on WAMP is your websocket server. Also be aware that when the pusher is used to send a message to a Topic, your topic's `onPublish` method is triggered versus `onPush` for WAMP connections.
 
-## ZMQ Pusher
-
-The ZMQ Pusher allows you to send and receive messages using an ZMQ compliant system.
-
-### Extra Requirements
-
-* The [`zmq`](https://pecl.php.net/package/zmq) extension for PHP (`pecl install zmq`)
-* The [`react/zmq`](https://github.com/friends-of-reactphp/zmq) Composer package (`composer require react/zmq`)
-
-### Configuration
-
-To use the ZMQ pusher, you will need to enable it in the bundle's configuration. For an application based on the Symfony Standard structure, you will need to update your `app/config/config.yml` file. For an application based on Symfony Flex, use the `config/packages/gos_web_socket.yaml` file.
-
-```yaml
-gos_web_socket:
-    pushers:
-        zmq:
-            enabled: true # Flag to enable this pusher
-            host: 127.0.0.1 # Host address for the ZMQ server
-            port: 5555 # Port the ZMQ server is listening on
-            persistent: true # Flag indicating the current context is persistent, default `true`
-            protocol: tcp # The protocol to use for the connection, default `tcp`
-            linger: -1 # Specifies how long the socket blocks trying flush messages after it has been closed, default -1
-```
-
 ## Using a pusher
 
 Depending on the integration(s) in your application, you will need to retrieve the appropriate service from the service container.
 
 * AMQP - `gos_web_socket.pusher.amqp`
 * WAMP - `gos_web_socket.pusher.wamp`
-* ZMQ - `gos_web_socket.pusher.zmq`
 
 The below example demonstrates pushing a message using the WAMP pusher from a controller after updating a record in the database.
 

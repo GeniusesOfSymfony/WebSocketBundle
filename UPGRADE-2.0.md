@@ -96,7 +96,7 @@ gos_web_socket:
     - `gos_web_socket.rpc`, tag your services with the `gos_web_socket.rpc` tag
     - `gos_web_socket.servers`, tag your services with the `gos_web_socket.server` tag
     - `gos_web_socket.topics`, tag your services with the `gos_web_socket.topic` tag
-- Removed the `gos_web_socket.pushers.amqp.default` and `gos_web_socket.pushers.zmq.default` configuration nodes, they were unused
+- Removed the `gos_web_socket.pushers.amqp.default` configuration node, it was unused
 - The `gos:server` command was removed, use the `gos:websocket:server` command instead
 - Removed the `PingableDriverCompilerPass` which previously configured the PDO ping periodic service
 - Removed the `gos_web_socket.pdo.periodic_ping` service 
@@ -106,3 +106,4 @@ gos_web_socket:
 - The `Gos\Bundle\WebSocketBundle\Pusher\Amqp\Utils` class has been removed
     - This was an internal helper for building `ext/amqp` related dependencies and should not have been used by package users
 - Removed the `gos_web_socket.ws.client` service, a `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface` instance should be used to create the client if needed
+- Removed support for ZeroMQ as a push service due to the PHP extension being unmaintained

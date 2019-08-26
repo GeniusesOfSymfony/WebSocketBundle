@@ -9,7 +9,6 @@ use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
-use Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqConnectionFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
@@ -423,35 +422,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.connection_factory');
 
         $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.pusher.amqp.connection_factory'));
-    }
-
-    public function testContainerIsLoadedWithZmqPusherConfigured()
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $bundleConfig = [
-            'pushers' => [
-                'zmq' => [
-                    'persistent' => true,
-                    'host' => 'localhost',
-                    'port' => 1337,
-                    'protocol' => 'tcp',
-                    'linger' => -1,
-                ],
-            ],
-        ];
-
-        $this->load($bundleConfig);
-
-        $this->assertContainerBuilderHasService('gos_web_socket.pusher.zmq.connection_factory');
-
-        $this->assertInstanceOf(ZmqConnectionFactory::class, $this->container->get('gos_web_socket.pusher.zmq.connection_factory'));
     }
 
     protected function getContainerExtensions(): array
