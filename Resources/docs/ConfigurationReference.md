@@ -26,7 +26,7 @@ gos_web_socket:
     servers:              [] # Deprecated (The child node "servers" at path "gos_web_socket" is deprecated. Add the `gos_web_socket.server` tag to your service definitions instead.)
     origins:              []
     pushers:
-        zmq:
+        zmq:  # Deprecated (The child node "zmq" at path "gos_web_socket.pushers" is deprecated. Support for ZMQ will be removed.)
             default:              false
             host:                 ~ # Required, Example: 127.0.0.1
             port:                 ~ # Required, Example: 1337

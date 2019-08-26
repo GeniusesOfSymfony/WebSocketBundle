@@ -6,7 +6,7 @@ Supported integrations include:
 
 * AMQP (pusher & push handler)
 * WAMP (pusher)
-* ZMQ (pusher & push handler)
+* (_deprecated_) ZMQ (pusher & push handler)
 
 ## AMQP Pusher
 
@@ -61,6 +61,8 @@ Note the bundle only provides a `Gos\Bundle\WebSocketBundle\Pusher\PusherInterfa
 ## ZMQ Pusher
 
 The ZMQ Pusher allows you to send and receive messages using an ZMQ compliant system.
+
+**NOTE:** Support for ZMQ is deprecated and removed in 2.0 
 
 ### Extra Requirements
 
