@@ -101,6 +101,8 @@ final class ZmqServerPushHandler extends AbstractServerPushHandler implements Lo
 
     public function close(): void
     {
-        $this->consumer->close();
+        if (null !== $this->consumer) {
+            $this->consumer->close();
+        }
     }
 }
