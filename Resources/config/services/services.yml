@@ -188,6 +188,7 @@ services:
         tags:
             - { name: gos_web_socket.pusher, alias: wamp }
 
+    # Deprecated and will be removed in 2.0
     gos_web_socket.pusher.zmq:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqPusher
         public: true
@@ -198,6 +199,7 @@ services:
         tags:
             - { name: gos_web_socket.pusher, alias: zmq }
 
+    # Deprecated and will be removed in 2.0
     gos_web_socket.pusher.zmq.push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Zmq\ZmqServerPushHandler
         arguments:

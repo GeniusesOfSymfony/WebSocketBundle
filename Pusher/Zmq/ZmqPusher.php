@@ -7,6 +7,11 @@ use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Symfony\Component\Serializer\SerializerInterface;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', ZmqPusher::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated to be removed in 2.0
+ */
 final class ZmqPusher extends AbstractPusher
 {
     /**

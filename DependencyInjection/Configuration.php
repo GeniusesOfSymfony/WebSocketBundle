@@ -212,6 +212,10 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
+        if (method_exists($node, 'setDeprecated')) {
+            $node->setDeprecated('The child node "%node%" at path "%path%" is deprecated. Support for ZMQ will be removed.');
+        }
+
         return $node;
     }
 
