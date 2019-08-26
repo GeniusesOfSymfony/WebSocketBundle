@@ -55,6 +55,8 @@ before_install:
   - yes '' | pecl install -f amqp
 
 before_script:
+  - composer require --dev --no-update gos/react-amqp:^0.3
+  # Set Symfony packages to defined framework version
   - composer remove --no-update symfony/*
   - composer remove --dev --no-update symfony/*
   - composer require --no-update symfony/symfony:${SYMFONY_VERSION}

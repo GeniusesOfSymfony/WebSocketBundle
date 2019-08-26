@@ -45,6 +45,11 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
      */
     private $connectionFactory;
 
+    /**
+     * @var \AMQPConnection
+     */
+    private $connection;
+
     public function __construct(
         WampRouter $router,
         SerializerInterface $serializer,
@@ -59,14 +64,13 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
 
     public function handle(LoopInterface $loop, PushableWampServerInterface $app): void
     {
-        $connection = $this->connectionFactory->createConnection();
+        $this->connection = $this->connectionFactory->createConnection();
+        $this->connection->connect();
 
-        $connection->connect();
-
-        $this->consumer = new Consumer($this->connectionFactory->createQueue($connection), $loop, 0.1, 10);
+        $this->consumer = new Consumer($this->connectionFactory->createQueue($this->connection), $loop, 0.1, 10);
         $this->consumer->on(
             'consume',
-            function (\AMQPEnvelope $envelope, \AMQPQueue $queue) use ($app, $connection) {
+            function (\AMQPEnvelope $envelope, \AMQPQueue $queue) use ($app) {
                 try {
                     /** @var Message $message */
                     $message = $this->serializer->deserialize($envelope->getBody(), Message::class, 'json');
@@ -96,8 +100,8 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $this->logger->info(
                         sprintf(
                             'AMQP transport listening on %s:%s',
-                            $connection->getHost(),
-                            $connection->getPort()
+                            $this->connection->getHost(),
+                            $this->connection->getPort()
                         )
                     );
                 }
@@ -109,6 +113,10 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
     {
         if (null !== $this->consumer) {
             $this->consumer->emit('close_amqp_consumer');
+        }
+
+        if (null !== $this->connection) {
+            $this->connection->disconnect();
         }
     }
 }
