@@ -13,11 +13,15 @@ interface PusherInterface
 
     /**
      * @return array
+     *
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in pushers.
      */
     public function getConfig();
 
     /**
      * @param array $config
+     *
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in pushers.
      */
     public function setConfig($config);
 

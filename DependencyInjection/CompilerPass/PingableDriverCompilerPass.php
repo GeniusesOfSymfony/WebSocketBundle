@@ -7,6 +7,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
+@trigger_error(
+    sprintf('The %s class is deprecated will be removed in 2.0.', PingableDriverCompilerPass::class),
+    E_USER_DEPRECATED
+);
+
+/**
+ * @deprecated to be removed in 2.0.
+ */
 class PingableDriverCompilerPass implements CompilerPassInterface
 {
     /**

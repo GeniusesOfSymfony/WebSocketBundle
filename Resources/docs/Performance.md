@@ -1,5 +1,6 @@
-Performance
------------
+# Performance
+
+**NOTE**: This benchmark was performed in April 2015, an updated benchmark has not been performed since.
 
 Benchmarked with [https://github.com/observing/thor](https://github.com/observing/thor).
 

@@ -7,21 +7,32 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 
 abstract class AbstractPusher implements PusherInterface
 {
-    /** @var  MessageSerializer */
+    /**
+     * @var MessageSerializer
+     */
     protected $serializer;
 
-    /** @var  Array */
+    /**
+     * @var array
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in pushers.
+     */
     private $config;
 
-    /** @var  WampRouter */
+    /**
+     * @var WampRouter
+     */
     protected $router;
 
-    /** @var  bool */
+    /**
+     * @var bool
+     */
     protected $connected = false;
 
     protected $connection;
 
-    /** @var  string */
+    /**
+     * @var string
+     */
     protected $name;
 
     /**
@@ -49,18 +60,28 @@ abstract class AbstractPusher implements PusherInterface
     }
 
     /**
-     * @param array $config
+     * {@inheritdoc}
      */
     public function setConfig($config)
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         $this->config = $config;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getConfig()
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         return $this->config;
     }
 
@@ -73,7 +94,7 @@ abstract class AbstractPusher implements PusherInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {

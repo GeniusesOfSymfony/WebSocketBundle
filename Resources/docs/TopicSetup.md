@@ -1,32 +1,35 @@
 # Topic Handler Setup
 
-Although the standard Gos WebSocket PubSub can be useful as a simple channel for allowing messages to be pushed to users, anymore advanced functionality will require custom Topic Handlers.
+Although the standard GosWebSocketBundle PubSub can be useful as a simple channel for allowing messages to be pushed to users, more advanced functionality will require custom Topic Handlers.
 
-Similar to RPC, topic handlers are slightly specialised Symfony2 services. They must implement the interface `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
+Similar to RPC, topic handlers are specialized Symfony services. They must implement `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`.
 
-### What is a topic ?
-A topic is the server side representation of a pubsub channel.
+## What is a topic?
 
-You just have to register a topic who catch all channel prefixed by `chat` to handle pubsub. A topic can only support one prefix.
+A topic is the server side representation of a PubSub channel.
+
+You just have to register a topic who catch all channels prefixed by `chat` to handle PubSub. A topic can only support one prefix.
 
 ## Overview
 
 * Create the topic handler service
-* Register your service with symfony
+* Register your service with Symfony
 * Connect the client with your topic
-* Link the topic with channel with pubsub router
+* Link the topic with GosPubSubRouterBundle
 
 ## Step 1: Create the Topic Handler Service
+
+Your service is a PHP class which must implement `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`.
 
 ```php
 <?php
 
-namespace Acme\HelloBundle\Topic;
+namespace App\Websocket\Topic;
 
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class AcmeTopic implements TopicInterface
 {
@@ -36,28 +39,29 @@ class AcmeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
+     *
      * @return void
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast(['msg' => $connection->resourceId . " has joined " . $topic->getId()]);
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has joined '.$topic->getId()]);
     }
 
     /**
-     * This will receive any UnSubscription requests for this topic.
+     * This will receive any unsubscription requests for this topic.
      *
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
+     *
      * @return void
      */
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast(['msg' => $connection->resourceId . " has left " . $topic->getId()]);
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has left '.$topic->getId()]);
     }
-
 
     /**
      * This will receive any Publish requests for this topic.
@@ -65,29 +69,39 @@ class AcmeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @param $event
+     * @param mixed $event
      * @param array $exclude
-     * @param array $eligible
-     * @return mixed|void
+     * @param array $eligibles
+     *
+     * @return mixed
      */
-    public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
-    {
+    public function onPublish(
+        ConnectionInterface $connection,
+        Topic $topic,
+        WampRequest $request,
+        $event,
+        array $exclude,
+        array $eligible
+    ) {
         /*
-        	$topic->getId() will contain the FULL requested uri, so you can proceed based on that
+            $topic->getId() will contain the FULL requested uri, so you can proceed based on that
 
-            if ($topic->getId() === 'acme/channel/shout')
-     	       //shout something to all subs.
+            if ($topic->getId() == "acme/channel/shout")
+               //shout something to all subs.
         */
 
-        $topic->broadcast([
-        	'msg' => $event,
-        ]);
+        $topic->broadcast(
+            [
+                'msg' => $event,
+            ]
+        );
     }
 
     /**
-    * Like RPC is will use to prefix the channel
-    * @return string
-    */
+     * Like RPC the name is used to identify the channel
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'acme.topic';
@@ -95,89 +109,69 @@ class AcmeTopic implements TopicInterface
 }
 ```
 
-### Most important things in topic
-
-### Broadcast full definition
-
-`Topic::broadcast($msg, array $exclude = array(), array $eligible = array());`
-
-Send a message to all the connections in this topic.
-
-**Note :** `$exclude` and `$include` work with Wamp Session ID available through `$connection->WAMP->sessionId`
-
-#### How get the current channel information (route, attributes, path etc ...) ?
+### Accessing request information
 
 `$request->getRouteName()` Will give the matched route name
 
-`$request->getRoute()` will give [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/master/Router/RouteInterface.php) object.
+`$request->getRoute()` will give a [RouteInterface](https://github.com/GeniusesOfSymfony/PubSubRouterBundle/blob/v0.3.5/Router/RouteInterface.php) object with information about the current route.
 
-`$request->getAttributes()` will give [ParameterBag](http://api.symfony.com/2.6/Symfony/Component/HttpFoundation/ParameterBag.html)
+`$request->getAttributes()` will give a [ParameterBag](https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php) object with the request attributes.
 
-For example, your channel pattern is `chat/user/{room}`, user subscribe to `chat/user/room1`
+For example, your channel pattern is `chat/user/{room}` and the user subscribes to `chat/user/room1`
 
-`$request->getAttributes()->get('room');` will return `room1`. You can look step3 who explain how pubsub router work.
+`$request->getAttributes()->get('room');` will return `room1`.
 
-`$topic->getId()` will return the subscribed channel e.g : `chat/user/room1`
+`$topic->getId()` will return the subscribed channel (`chat/user/room1`)
 
-#### How iterate over my subscribers ?
+### How to iterate over my subscribers?
 
-`Topic` implements `IteratorAggregate`, you can iterate over subscribers present in your topic. Client are reprensented by `ConnectionInterface`
+`Ratchet\Wamp\Topic` implements `IteratorAggregate`, whic allows you to iterate over subscribers present in your topic. Clients are reprensented by a `Ratchet\ConnectionInterface` object.
 
 ```php
-/** @var ConnectionInterface $client **/
+/** @var ConnectionInterface $client */
 foreach ($topic as $client) {
-    //Do stuff ...
+    // Do stuff ...
 }
 ```
 
-#### How send a message only to my current client ?
-
-`$connection->event($topic->getId(), ['msg' => 'lol']);`
-
-#### How count the number of subscribers I currently have ?
-
-`Topic` implements `Countable` interface, you just have to do `count($topic)`
-
-#### Topic interface & explaination
+## Topic interface & explaination
 
 The **4 methods** that must be implemented are:
 
-* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client subscribe to the topic
-* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` When client unsubscribe to the topic
-* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` When client publish inside the topic
-* `getName()` Use for routing definition, used to point this class.
+* `onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` is triggered when a client subscribes to a topic
+* `onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)` is triggered when a client unsubscribes from a topic
+* `onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)` is triggered when a client publishes a message to the topic
+* `getName()` is used to identify the topic inside the bundle's services.
 
 Where
-* `ConnectionInterface $connection` is the connection object of the client who has initiated this event.
+* `ConnectionInterface $connection` is the [Connection object](http://socketo.me/api/class-Ratchet.ConnectionInterface.html) of the client who has initiated this event.
 * `TopicInterface $topic` is the [Topic object](http://socketo.me/api/class-Ratchet.Wamp.Topic.html). This also contains a list of current subscribers, so you don't have to manually keep track.
-* `WampRequest` Is the representation of the request make trough websocket.
+* `WampRequest` Is the representation of the request made to the websocket server.
 
-### Firewall setup (Topic)
+## Firewall setup (Topic)
 
-It is possible to extend basic functionality of Topic Services to exclude unwanted connections.
-You must implement `SecuredTopicInterface` to implement firewall functionality into your `Topic` object.
+It is possible to extend Topic services to exclude unwanted connections. Your service must implement `Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface` to implement firewall functionality into your Topic object.
 
-SecuredTopicInterface requires your `Topic` to implement one additional function:
+The `SecuredTopicInterface` requires your Topic to implement one additional method:
 
-* `secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
+* `secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)`
 
-It must throw an exception (instance of `FirewallRejectionException`) if connection security check fails.
+If a connection is not allowed to the topic, the `secure()` method *MUST* throw a `Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException`.
 
-A possible implementation is the following:
+An example implementation is the following:
 
 ```php
 <?php
 
-namespace Acme\HomeBundle\Topics;
+namespace App\Websocket\Topic;
 
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class AcmeSecuredTopic implements TopicInterface, SecuredTopicInterface
+class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
 {
     /**
      * @param ConnectionInterface $conn
@@ -187,58 +181,61 @@ class AcmeSecuredTopic implements TopicInterface, SecuredTopicInterface
      * @param string[]|null       $eligible
      * @param string|null         $provider
      *
-     * @return string|null        $error
+     * @return void
      */
-    public function secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
-        // check input data to verify if connection must be blocked
-        if ( /* ... */ ) {
-            throw new FirewallRejectionException();
-        } else {
-            // grant access
+        // Check input data to verify if connection must be blocked
+        if ($request->getAttributes()->has('denied')) {
+            throw new FirewallRejectionException('Access denied');
         }
+
+        // Access is granted
+    }
+
+    /**
+     * Like RPC the name is used to identify the channel
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.secured.topic';
     }
 }
-
 ```
 
+## Periodic Timer (Topic & Connection)
 
-### Periodic Timer (Topic & Connection)
+Periodic timers are active when at least one client is connected. A periodic timer can be created on either a Topic or a Connection.
 
-Topic periodic timer are active when at least one client is connected.
+### Topic Timers
 
-#### Attached on the topic (Means all subscribers are affected by this periodic timer)
+Timers on a Topic are executed at a regular interval for as long as there is at least one client connected to that Topic (channel). Any actions taken in the periodic event will apply to all connected clients.
 
-You must implement `TopicPeriodicTimerInterface` to attach periodic timer to your `Topic` object.
+Your service must implement `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface` to attach a periodic timer to your Topic.
 
-> In other word, if you have something like : "Each 5 minutes all subscriber of my topic must recieve a message (ads, bot message etc...)" This feature is for that.
+To implement an example fulfilling a scenario of "every 5 minutes all subscribers of my topic must recieve a message", the following will guide you on how to accomplish this.
 
-You will need to add these 2 functions :
+You will need to add these two methods to your Topic:
 
-* `setPeriodicTimer(TopicPeriodicTimer $periodicTimer)`
 * `registerPeriodicTimer(Topic $topic)`
+* `setPeriodicTimer(TopicPeriodicTimer $periodicTimer)`
 
-A trait is available to make your life easier, it implement `setPeriodicTimer` and related property: `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait`
+The `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait` is available to fulfill this requirement.
 
 ```php
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
+<?php
+
+namespace App\Websocket\Topic;
+
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
+use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
+use Ratchet\Wamp\Topic;
 
-class AcmeTopic implements TopicInterface, TopicPeriodicTimerInterface
+class AcmePeriodicTopic extends AcmeTopic implements TopicPeriodicTimerInterface
 {
-    /**
-     * @var TopicPeriodicTimer
-     */
-    protected $periodicTimer;
-
-    /**
-     * @param TopicPeriodicTimer $periodicTimer
-     */
-    public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer)
-    {
-        $this->periodicTimer = $periodicTimer;
-    }
+    use TopicPeriodicTimerTrait;
 
     /**
      * @param Topic $topic
@@ -247,175 +244,200 @@ class AcmeTopic implements TopicInterface, TopicPeriodicTimerInterface
      */
     public function registerPeriodicTimer(Topic $topic)
     {
-        //add
-        $this->periodicTimer->addPeriodicTimer($this, 'hello', 2, function() use ($topic) {
-            $topic->broadcast('hello world');
-        });
+        // Adds the periodic timer the first time a client connects to the topic
+        $this->periodicTimer->addPeriodicTimer(
+            $this,
+            'hello',
+            300,
+            function () use ($topic) {
+                $topic->broadcast('hello world');
+            }
+        );
 
-        //exist
+        // Checks if a timer has already been created
         $this->periodicTimer->isPeriodicTimerActive($this, 'hello'); // true or false
 
-        //remove
+        // Removes an active timer
         $this->periodicTimer->cancelPeriodicTimer($this, 'hello');
     }
-```
 
-#### Attached on connection (means each client can have different periodic timer)
-
-This feature allow you to use Periodic Timer to emit periodically to your client.
-
-> In other word, if you have something like "Each 5 second this bob must recieve this message, and alice muste reciev another message each 10 minutes and then cancel timer of bob only" this feature is for you.
-
-```php
-use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer;
-
-/**
- * @param  ConnectionInterface $connection
- * @param  Topic               $topic
- * @param WampRequest          $request
- */
-public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
-{
-    /** @var ConnectionPeriodicTimer $topicTimer */
-    $topicTimer = $connection->PeriodicTimer;
-
-    //Add periodic timer
-    $topicTimer->addPeriodicTimer('hello', 2, function() use ($topic, $connection) {
-        $connection->event($topic->getId(), ['msg' => 'hello world']);
-    });
-
-    //exist
-    $topicTimer->isPeriodicTimerActive('hello'); //true or false
-
-    //Remove periodic timer
-    $topicTimer->cancelPeriodicTimer('hello');
+    /**
+     * Like RPC the name is used to identify the channel
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.periodic.topic';
+    }
 }
 ```
 
-:collision: **Periodic timer is bind on the current connection ! So if you broadcast from periodic timer your clients will recieve this message x * the number of subscribers**
+### Connection Timers
+
+Timers on a Connection are executed at a regular interval for as long as the client is connected to theserver. Any actions taken in the periodic event will apply only to the specific client.
+
+A `$PeriodicTimer` property is added to the `Ratchet\ConnectionInterface` object when a client connects to the server, this object is a `Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer` object.
+
+To implement an example fulfilling a scenario of "every 5 minutes the client must recieve a message", the following will guide you on how to accomplish this.
+
+```php
+<?php
+
+namespace App\Websocket\Topic;
+
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\ConnectionPeriodicTimer;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class AcmeConnectionPeriodicTopic extends AcmeTopic
+{
+    /**
+     * This will receive any Subscription requests for this topic.
+     *
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
+     *
+     * @return void
+     */
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has joined '.$topic->getId()]);
+
+        /** @var ConnectionPeriodicTimer $topicTimer */
+        $topicTimer = $connection->PeriodicTimer;
+
+        // Adds the periodic timer the first time a client connects to the topic
+        $topicTimer->addPeriodicTimer(
+            'hello',
+            300,
+            function () use ($connection, $topic) {
+                // Broadcasts only to the current user
+                $topic->broadcast('hello world', [], [$connection->resourceId]);
+            }
+        );
+    }
+
+    /**
+     * This will receive any unsubscription requests for this topic.
+     *
+     * @param ConnectionInterface $connection
+     * @param Topic $topic
+     * @param WampRequest $request
+     *
+     * @return void
+     */
+    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+    {
+        // This will broadcast the message to ALL subscribers of this topic.
+        $topic->broadcast(['msg' => $connection->resourceId.' has left '.$topic->getId()]);
+
+        /** @var ConnectionPeriodicTimer $topicTimer */
+        $topicTimer = $connection->PeriodicTimer;
+
+        // Checks if a timer has been created
+        if ($topicTimer->isPeriodicTimerActive('hello')) {
+            // Removes an active timer
+            $topicTimer->cancelPeriodicTimer('hello');
+        }
+    }
+
+    /**
+     * Like RPC the name is used to identify the channel
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'acme.connection_periodic.topic';
+    }
+}
+```
 
 ## Step 2: Register your service with Symfony
 
-If you are using **YML**, edit `YourBundle/Resources/config/services.yml`
+For an application based on the Symfony Standard structure, you can register services in either your `app/config/services.yml` file or your bundle's `Resources/config/services.yml` file. For an application based on Symfony Flex, use the `config/services.yaml` file.
 
-For other formats, please check the [Symfony2 Documents](http://symfony.com/doc/master/book/service_container.html)
-
-```yaml
-services:
-    acme_hello.topic_sample_service:
-        class: Acme\HelloBundle\Topic\AcmeTopic
-```
-
-From now you can directly tag your service to register your service into GosWebSocket
+Topic handlers must be tagged with the `gos_web_socket.topic` tag to be correctly registered.
 
 ```yaml
 services:
-    acme_hello.topic_sample_service:
-        class: Acme\HelloBundle\Topic\AcmeTopic
+    app.websocket.topic.acme:
+        class: App\Websocket\Topic\AcmeTopic
         tags:
             - { name: gos_web_socket.topic }
 ```
 
-**or** register via "app/config/config.yml"
+For other formats, please review the [Symfony Documentation](http://symfony.com/doc/master/book/service_container.html).
+
+### Alternative Service Registration (Deprecated)
+
+Alternatively, you can list your Topic services in the bundle's configuration file. Note, this method is deprecated and removed in GosWebSocketBundle 2.0.
 
 ```yaml
 gos_web_socket:
     topics:
-        - @acme_hello.topic_sample_service
+        - '@app.websocket.topic.acme'
 ```
 
-### Retrieve authenticated user through Symfony firewall
+## Step 3: Register your service with GosPubSubRouterBundle
 
-Look at [here](SessionSetup.md)
+Now that you have created your Topic service, you must now link the path with your service. `acme/channel` will refer to the service you've created.
 
-## Step 3: Connect client to your topics
-The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
-
-```javascript
-    ...
-
-    //the callback function in "subscribe" is called everytime an event is published in that channel.
-    session.subscribe("acme/channel", function(uri, payload){
-        console.log("Received message", payload.msg);
-    });
-
-    session.publish("acme/channel", {msg: "This is a message!"});
-
-    session.unsubscribe("acme/channel");
-
-    session.publish("acme/channel", {msg: "I won't see this"});
-```
-
-## Step 4 : Link channel & topic with pubsub router
-
-* Channel can be static e.g : `acme/user`
-* Channel can be dynamic e.g : `acme/user/*`
-
-Now will say to the system, topic named `acme.topic` (related to Topic::getName())` will handle channel pattern.
-
-if he not already exists, create `AcmeBundle/Resources/config/pubsub/routing.yml` and register it in the websocket bundle configuration
-
-**NOTE** : Don't forget to clear your cache take in account the new file.
-
-```yaml
-gos_web_socket:
-    ...
-    server:
-        host: 127.0.0.1
-        port: 8080
-        router:
-            resources:
-                - @AcmeBundle/Resources/config/pubsub/routing.yml
-    ...
-```
-
-Create the route to rely channel / topic
+If not already created, you should create a routing file for the GosPubSubRouterBundle configuration. For Symfony Standard, you should use either `app/config/pubsub/routing.yml` or your bundle's `Resources/config/pubsub/routing.yml`. For Symfony Flex, you should use `config/pubsub/routing.yaml`.
 
 ```yaml
 acme_topic:
     channel: acme/channel
     handler:
-        callback: 'acme.topic' #related to the getName() of your topic
+        callback: 'acme.topic'
 ```
 
-### Advanced example
+Next, you will need to include the new resource in the bundle's configuration to ensure the PubSub router is set up correctly.
 
 ```yaml
-acme_topic_chat:
-    channel: acme/chat/{room}/{user_id}
-    handler:
-        callback: 'acme.topic' #related to the getName() of your topic
-    requirements:
-        room:
-            pattern: "[a-z]+" #accept all valid regex, don't put delimiters !
-        user_id:
-            pattern: "\d+"
+gos_web_socket:
+    server:
+        port: 8080
+        host: 127.0.0.1
+        router:
+            resources:
+                - '%kernel.project_dir%/config/pubsub/routing.yaml'
 ```
 
-From here, each call who match with this pattern will handled by AcmeTopic.
+From here, each call that matches with this pattern will handled by the `AcmeTopic` class.
 
-This route will match `acme/chat/dev_room/123` and will be handled by topic named `acme.topic`
-
-Another example, more complicated : 
+Similar to Symfony's Routing component, you can define multiple routes in a single file.
 
 ```yaml
-acme_topic_chat:
-    channel: notification/user/{role}/{application}/{user}
+acme_topic:
+    channel: acme/channel
     handler:
-        callback: 'notification.topic'
-    requirements:
-        role:
-            pattern: "editor|admin|client"
-        application:
-            pattern: "[a-z]+"
-        user:
-            pattern: "\d+"
-            wildcard: true
+        callback: 'acme.topic'
+            
+acme_secured_topic:
+    channel: acme/channel/secure
+    handler:
+        callback: 'acme.secured.topic'
 ```
 
-Wildcard parameter allow you to match on this : `notification/user/admin/blog-app/*` and also `notification/user/admin/blog-app/all` and by the way `notification/user/admin/blog-app/1234` for notification system it can be usefull.
+## Step 4: Connect client to your topics
+The following javascript will show connecting to this topic, notice how "acme/channel" will match the name "acme" we gave the service.
 
-_Please note, this is not secure as anyone can subscribe to these channels by making a request for them. For true private channels, you will need to implement server side security_
+```javascript
+// The callback function in "subscribe" is called every time an event is published in that channel.
+session.subscribe("acme/channel", function (uri, payload) {
+    console.log("Received message", payload);
+});
 
-For more information on the Client Side of Gos WebSocket, please see [Client Side Setup](ClientSetup.md)
+session.publish("acme/channel", {msg: "This is a message!"});
+
+session.unsubscribe("acme/channel");
+
+session.publish("acme/channel", {msg: "I won't see this"});
+```
+
+For more information on the JavaScript Client the bundle, please see [Client Side Setup](ClientSetup.md)

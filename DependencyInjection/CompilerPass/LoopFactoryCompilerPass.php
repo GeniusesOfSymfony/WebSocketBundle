@@ -5,10 +5,13 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+@trigger_error(
+    sprintf('The %s class is deprecated will be removed in 2.0.', LoopFactoryCompilerPass::class),
+    E_USER_DEPRECATED
+);
+
 /**
- * Class LoopFactoryCompilerPass
- *
- * @package Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass
+ * @deprecated to be removed in 2.0.
  */
 class LoopFactoryCompilerPass implements CompilerPassInterface
 {

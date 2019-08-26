@@ -4,20 +4,22 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 class PusherRegistry
 {
-    /** @var PusherInterface[] */
-    protected $pushers;
-
-    public function __construct()
-    {
-        $this->pushers = [];
-    }
+    /**
+     * @var PusherInterface[]
+     */
+    protected $pushers = [];
 
     /**
      * @param PusherInterface $pusher
-     * @param string          $name
+     * @param string          $name   {@deprecated}
      */
     public function addPusher(PusherInterface $pusher, $name)
     {
+        @trigger_error(
+            sprintf('The $name argument of %s() is deprecated will be removed in 2.0. The name will be extracted from the $pusher instead.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         $this->pushers[$name] = $pusher;
     }
 

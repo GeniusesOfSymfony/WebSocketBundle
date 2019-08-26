@@ -20,11 +20,15 @@ interface ServerPushHandlerInterface
 
     /**
      * @param array $config
+     *
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in server push handlers.
      */
     public function setConfig(array $config);
 
     /**
      * @return array
+     *
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in server push handlers.
      */
     public function getConfig();
 

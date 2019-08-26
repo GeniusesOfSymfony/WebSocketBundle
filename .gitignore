@@ -1,2 +1,8 @@
 /vendor/
 composer.lock
+.phpunit.result.cache
+/phpunit.xml
+.php_cs.cache
+/.php_cs
+/Resources/node_modules/
+/Resources/package-lock.json

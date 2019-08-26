@@ -4,10 +4,15 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 abstract class AbstractServerPushHandler implements ServerPushHandlerInterface
 {
-    /** @var  string */
+    /**
+     * @var string
+     */
     private $name;
 
-    /** @var  string */
+    /**
+     * @var string
+     * @deprecated to be removed in 2.0. Configuration will no longer be automatically injected in server push handlers.
+     */
     private $config;
 
     /**
@@ -27,18 +32,28 @@ abstract class AbstractServerPushHandler implements ServerPushHandlerInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getConfig()
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         return $this->config;
     }
 
     /**
-     * @param array $config
+     * {@inheritdoc}
      */
     public function setConfig(array $config)
     {
+        @trigger_error(
+            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
+            E_USER_DEPRECATED
+        );
+
         $this->config = $config;
     }
 }

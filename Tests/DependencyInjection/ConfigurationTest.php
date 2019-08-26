@@ -3,12 +3,10 @@
 namespace Gos\Bundle\WebSocketBundle\Tests;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
-/**
- * Class ConfigurationTest
- */
-final class ConfigurationTest extends \PHPUnit_Framework_TestCase
+final class ConfigurationTest extends TestCase
 {
     public function testContextConfigurationIsOptional()
     {
@@ -18,14 +16,14 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
          *   host: "127.0.0.1"
          *   port: "8080"
          */
-        $configs = array(
-            array(
-                'server' => array(
+        $configs = [
+            [
+                'server' => [
                     'host' => "127.0.0.1",
                     'port' => "8080",
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $config = $this->process($configs);
 
@@ -42,9 +40,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     protected function process($configs)
     {
-        $processor = new Processor();
-
-        return $processor->processConfiguration(new Configuration(), $configs);
+        return (new Processor())->processConfiguration(new Configuration(), $configs);
     }
 
     public function testTokenSeparatorIsSet()
@@ -59,19 +55,19 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
          *     context:
          *       tokenSeparator: "-"
          */
-        $configs = array(
-            array(
-                'server' => array(
+        $configs = [
+            [
+                'server' => [
                     'host' => "127.0.0.1",
                     'port' => "8080",
-                    'router' => array(
-                        'context' => array(
+                    'router' => [
+                        'context' => [
                             "tokenSeparator" => "/",
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         $config = $this->process($configs);
 
