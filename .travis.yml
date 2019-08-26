@@ -52,7 +52,7 @@ before_install:
   - travis_retry composer self-update
   - sudo apt update
   - sudo apt install -y librabbitmq-dev
-  # - pecl install -f amqp
+  - -yes | pecl install -f amqp
 
 before_script:
   - composer remove --no-update symfony/*
