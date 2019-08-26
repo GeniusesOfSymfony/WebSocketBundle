@@ -62,7 +62,7 @@
         "ext-zmq": "* to use the zmq pusher",
         "doctrine/cache": "^1.8 to use doctrine/cache as a client driver",
         "doctrine/dbal": "^2.8 to use Doctrine ping services",
-        "gos/react-amqp": "^0.2 to use the amqp server push handler",
+        "gos/react-amqp": "^0.3 to use the amqp server push handler",
         "predis/predis": "^1.1 to use Predis as a client driver",
         "react/zmq": "^0.4 to use zmq server push handler",
         "symfony/cache": "^3.4|^4.0 to use symfony/cache as a client driver",
