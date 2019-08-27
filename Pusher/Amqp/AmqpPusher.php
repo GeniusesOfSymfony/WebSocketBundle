@@ -39,9 +39,10 @@ final class AmqpPusher extends AbstractPusher
     {
         if (false === $this->connected) {
             $this->connection = $this->connectionFactory->createConnection();
+            $this->connection->connect();
+
             $this->exchange = $this->connectionFactory->createExchange($this->connection);
 
-            $this->connection->connect();
             $this->setConnected();
         }
 
