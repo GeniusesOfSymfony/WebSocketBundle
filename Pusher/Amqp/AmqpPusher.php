@@ -50,7 +50,7 @@ final class AmqpPusher extends AbstractPusher
 
         $resolver->setDefaults(
             [
-                'routing_key' => null,
+                'routing_key' => '',
                 'publish_flags' => AMQP_NOPARAM,
                 'attributes' => [],
             ]
