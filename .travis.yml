@@ -8,7 +8,7 @@ addons:
 
 env:
   global:
-    - SYMFONY_VERSION="3.4.*"
+    - SYMFONY_REQUIRE="3.4.*"
     - COMPOSER_FLAGS="--prefer-stable"
 
 matrix:
@@ -18,27 +18,27 @@ matrix:
     - php: 7.2
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.2
-      env: SYMFONY_VERSION="4.2.*"
+      env: SYMFONY_REQUIRE="4.2.*"
     - php: 7.3
-      env: SYMFONY_VERSION="4.3.*"
+      env: SYMFONY_REQUIRE="4.3.*"
     - php: 7.3
-      env: SYMFONY_VERSION="4.4.*@dev"
+      env: SYMFONY_REQUIRE="4.4.*@dev"
     - php: 7.3
-      env: SYMFONY_VERSION="5.0.*@dev"
+      env: SYMFONY_REQUIRE="5.0.*@dev"
     - php: 7.4snapshot
-      env: SYMFONY_VERSION="4.3.*"
+      env: SYMFONY_REQUIRE="4.3.*"
     - php: nightly
-      env: SYMFONY_VERSION="4.3.*"
+      env: SYMFONY_REQUIRE="4.3.*"
   allow_failures:
     # Allow failures on next Symfony minor, should always be tested on newest stable PHP branch
     - php: 7.3
-      env: SYMFONY_VERSION="4.4.*@dev"
+      env: SYMFONY_REQUIRE="4.4.*@dev"
     - php: 7.3
-      env: SYMFONY_VERSION="5.0.*@dev"
+      env: SYMFONY_REQUIRE="5.0.*@dev"
     - php: 7.4snapshot
-      env: SYMFONY_VERSION="4.3.*"
+      env: SYMFONY_REQUIRE="4.3.*"
     - php: nightly
-      env: SYMFONY_VERSION="4.3.*"
+      env: SYMFONY_REQUIRE="4.3.*"
 
 cache:
   directories:
@@ -55,13 +55,8 @@ before_install:
   - yes '' | pecl install -f amqp
 
 before_script:
+  - composer global require --no-scripts --no-plugins symfony/flex
   - composer require --dev --no-update gos/react-amqp:^0.3
-  # Set Symfony packages to defined framework version
-  - composer remove --no-update symfony/*
-  - composer remove --dev --no-update symfony/*
-  - composer require --no-update symfony/symfony:${SYMFONY_VERSION}
-  # Restore dev packages not part of the full stack framework
-  - composer require --dev --no-update symfony/polyfill-php73:^1.11 symfony/monolog-bundle:^3.0
   - composer update $COMPOSER_FLAGS
 
 script:
