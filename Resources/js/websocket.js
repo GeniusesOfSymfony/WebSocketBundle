@@ -134,6 +134,7 @@ class GosSocket {
      *
      * @param {String} uri The URI for the RPC handler
      * @param {*} data The data to pass to the handler
+     * @returns {Promise}
      * @throws {Error} If not connected to the websocket server
      */
     rpcCall(uri, data = {}) {
