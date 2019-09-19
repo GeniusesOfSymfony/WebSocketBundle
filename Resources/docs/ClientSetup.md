@@ -88,13 +88,25 @@ The `listener` parameter is a callback function to be removed from the event
 
 The `GosSocket.isConnected()` function is a helper function to determine if the client is currently connected to the websocket server.
 
-#### GosSocket.publishToTopic(uri, data)
+#### GosSocket.publishToTopic(uri, data = {})
 
 The `GosSocket.publishToTopic()` function lets you publish a message to a requested websocket channel.
 
 The `uri` parameter is the URI for the websocket topic to publish to, as defined in your route configuration.
 
-The `data` parameter is the data to be passed to the websocket topic, generally an object.
+The `data` parameter is the optional data to be passed to the websocket topic, generally an object.
+
+If not connected to the websocket server, this function will throw an error.
+
+#### GosSocket.rpcCall(uri, data = {})
+
+The `GosSocket.rpcCall()` function lets you call a RPC function on your websocket server.
+
+The `uri` parameter is the URI for the websocket RPC to call, as defined in your route configuration.
+
+The `data` parameter is the optional data to be passed to the websocket topic, generally an object.
+
+This function will return the resolved Promise from the underlying Autobahn.JS library to allow you to process the response from the server.
 
 If not connected to the websocket server, this function will throw an error.
 
