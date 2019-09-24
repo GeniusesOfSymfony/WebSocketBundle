@@ -7,6 +7,7 @@ use Gos\Bundle\WebSocketBundle\RPC\RpcResponse;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\WampConnection;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -25,6 +26,17 @@ final class RpcDispatcher implements RpcDispatcherInterface
 
     public function dispatch(ConnectionInterface $conn, string $id, Topic $topic, WampRequest $request, array $params): void
     {
+        if (!($conn instanceof WampConnection)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.',
+                    __METHOD__,
+                    WampConnection::class,
+                    get_class($conn)
+                )
+            );
+        }
+
         $callback = $request->getRoute()->getCallback();
 
         if (!$this->rpcRegistry->hasRpc($callback)) {
