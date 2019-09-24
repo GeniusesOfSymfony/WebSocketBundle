@@ -22,11 +22,6 @@ final class ServerBuilder implements ServerBuilderInterface
     private $loop;
 
     /**
-     * @var WampApplication
-     */
-    private $wampApplication;
-
-    /**
      * @var TopicManager
      */
     private $topicManager;
@@ -63,7 +58,6 @@ final class ServerBuilder implements ServerBuilderInterface
 
     public function __construct(
         LoopInterface $loop,
-        WampApplication $wampApplication,
         TopicManager $topicManager,
         OriginRegistry $originRegistry,
         EventDispatcherInterface $eventDispatcher,
@@ -72,7 +66,6 @@ final class ServerBuilder implements ServerBuilderInterface
         int $keepaliveInterval
     ) {
         $this->loop = $loop;
-        $this->wampApplication = $wampApplication;
         $this->topicManager = $topicManager;
         $this->originRegistry = $originRegistry;
         $this->eventDispatcher = $eventDispatcher;
@@ -85,7 +78,7 @@ final class ServerBuilder implements ServerBuilderInterface
     {
         $serverComponent = new WsServer(
             new WampConnectionPeriodicTimer(
-                new WampServer($this->wampApplication, $this->topicManager),
+                new WampServer($this->topicManager),
                 $this->loop
             )
         );

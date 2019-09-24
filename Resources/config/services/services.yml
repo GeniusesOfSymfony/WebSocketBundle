@@ -241,7 +241,6 @@ services:
         public: false
         arguments:
             - '@gos_web_socket.server.event_loop'
-            - '@gos_web_socket.server.application.wamp'
             - '@gos_web_socket.wamp.topic_manager'
             - '@gos_web_socket.registry.origins'
             - '@event_dispatcher'

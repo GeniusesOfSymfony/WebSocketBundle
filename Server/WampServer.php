@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\Wamp\ServerProtocol;
-use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
 /**
@@ -26,7 +25,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
      * If you're looking at the source code, look in the __construct of this
      * class and use that to make your application instead of using this.
      */
-    public function __construct(WampServerInterface $app, TopicManager $topicManager)
+    public function __construct(TopicManager $topicManager)
     {
         $this->wampProtocol = new ServerProtocol($topicManager);
     }

@@ -5,7 +5,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
-use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -21,11 +20,6 @@ class ServerBuilderTest extends TestCase
      * @var MockObject|LoopInterface
      */
     private $loop;
-
-    /**
-     * @var MockObject|WampApplication
-     */
-    private $wampApplication;
 
     /**
      * @var MockObject|TopicManager
@@ -52,14 +46,12 @@ class ServerBuilderTest extends TestCase
         parent::setUp();
 
         $this->loop = $this->createMock(LoopInterface::class);
-        $this->wampApplication = $this->createMock(WampApplication::class);
         $this->topicManager = $this->createMock(TopicManager::class);
         $this->originRegistry = new OriginRegistry();
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->builder = new ServerBuilder(
             $this->loop,
-            $this->wampApplication,
             $this->topicManager,
             $this->originRegistry,
             $this->eventDispatcher,
@@ -115,7 +107,6 @@ class ServerBuilderTest extends TestCase
     {
         $builder = new ServerBuilder(
             $this->loop,
-            $this->wampApplication,
             $this->topicManager,
             $this->originRegistry,
             $this->eventDispatcher,
