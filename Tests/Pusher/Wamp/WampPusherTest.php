@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Amqp;
+namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Wamp;
 
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface;
