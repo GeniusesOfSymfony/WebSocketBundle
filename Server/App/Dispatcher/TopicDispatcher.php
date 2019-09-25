@@ -16,6 +16,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\WampConnection;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -131,7 +132,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     $this->logger->error($e->getMessage(), ['exception' => $e]);
                 }
 
-                if ($conn) {
+                if ($conn && $conn instanceof WampConnection) {
                     $conn->callError(
                         $topic->getId(),
                         $topic,
@@ -216,7 +217,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                 );
             }
 
-            if ($conn) {
+            if ($conn && $conn instanceof WampConnection) {
                 $conn->callError(
                     $topic->getId(),
                     $topic,
