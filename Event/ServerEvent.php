@@ -14,7 +14,7 @@ class ServerEvent extends Event
     protected $loop;
 
     /**
-     * @var Server
+     * @var ServerInterface
      */
     protected $server;
 

@@ -29,7 +29,7 @@ final class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
 
         $memoryUsagePeriodicTimer = new PeriodicMemoryUsage();
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $memoryUsagePeriodicTimer->setLogger($this->logger);
         }
 

@@ -37,7 +37,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
      */
     private function getStorageDriver(): DriverInterface
     {
-        if (!$this->driver) {
+        if (null === $this->driver) {
             throw new \RuntimeException(
                 sprintf(
                     'Storage driver not set in "%s". Did you forget to call "%s::setStorageDriver()?',
@@ -67,7 +67,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug('GET CLIENT '.$identifier);
         }
 
@@ -90,7 +90,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
     {
         $serializedUser = serialize($token);
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $context = [
                 'token' => $token,
                 'username' => $token->getUsername(),
@@ -127,7 +127,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
      */
     public function removeClient(string $identifier): bool
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug('REMOVE CLIENT '.$identifier);
         }
 

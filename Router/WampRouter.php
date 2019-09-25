@@ -32,7 +32,7 @@ final class WampRouter implements LoggerAwareInterface
         try {
             list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
 
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->debug(
                     sprintf(
                         'Matched route "%s"',
@@ -44,7 +44,7 @@ final class WampRouter implements LoggerAwareInterface
 
             return new WampRequest($routeName, $route, new ParameterBag($attributes), $topic->getId());
         } catch (ResourceNotFoundException $e) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->error(
                     sprintf(
                         'Unable to find route for %s',

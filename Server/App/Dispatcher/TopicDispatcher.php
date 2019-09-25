@@ -113,7 +113,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $callback = $request->getRoute()->getCallback();
 
         if (!$this->topicRegistry->hasTopic($callback)) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->error(
                     sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback)
                 );
@@ -128,7 +128,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
             try {
                 $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
             } catch (FirewallRejectionException $e) {
-                if ($this->logger) {
+                if (null !== $this->logger) {
                     $this->logger->error($e->getMessage(), ['exception' => $e]);
                 }
 
@@ -196,7 +196,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
             return true;
         } catch (PushUnsupportedException $e) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->error(
                     $e->getMessage(),
                     [
@@ -207,7 +207,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
             throw $e;
         } catch (\Exception $e) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->error(
                     'Websocket error processing topic callback function.',
                     [

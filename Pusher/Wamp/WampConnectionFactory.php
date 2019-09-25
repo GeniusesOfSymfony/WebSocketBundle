@@ -30,7 +30,7 @@ final class WampConnectionFactory implements WampConnectionFactoryInterface, Log
             $this->config['origin']
         );
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $client->setLogger($this->logger);
         }
 

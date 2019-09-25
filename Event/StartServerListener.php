@@ -39,14 +39,14 @@ final class StartServerListener implements LoggerAwareInterface
             $loop->addSignal(
                 SIGINT,
                 function () use ($server, $loop): void {
-                    if ($this->logger) {
+                    if (null !== $this->logger) {
                         $this->logger->notice('Stopping server ...');
                     }
 
                     foreach ($this->serverPushHandlerRegistry->getPushers() as $handler) {
                         $handler->close();
 
-                        if ($this->logger) {
+                        if (null !== $this->logger) {
                             $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
                         }
                     }
@@ -62,7 +62,7 @@ final class StartServerListener implements LoggerAwareInterface
 
                     $loop->stop();
 
-                    if ($this->logger) {
+                    if (null !== $this->logger) {
                         $this->logger->notice('Server stopped!');
                     }
                 }

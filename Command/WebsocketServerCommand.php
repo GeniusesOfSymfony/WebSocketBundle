@@ -47,7 +47,7 @@ final class WebsocketServerCommand extends Command
             ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'The port of the websocket server');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->serverLauncher->launch(
             $input->getArgument('name'),

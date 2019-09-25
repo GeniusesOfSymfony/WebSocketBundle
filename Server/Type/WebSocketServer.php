@@ -46,7 +46,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 
     public function launch(string $host, int $port, bool $profile): void
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->info('Starting web socket');
         }
 
@@ -62,7 +62,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
         $event = new ServerEvent($this->loop, $server, $profile);
         $this->eventDispatcher->dispatch(Events::SERVER_LAUNCHED, $event);
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->info(
                 sprintf(
                     'Launching %s on %s PID: %s',

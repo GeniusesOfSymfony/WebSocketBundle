@@ -28,7 +28,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
             $loop->addPeriodicTimer($periodic->getTimeout(), [$periodic, 'tick']);
 
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->info(
                     sprintf(
                         'Registered periodic callback %s, executed every %s seconds',

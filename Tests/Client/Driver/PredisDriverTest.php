@@ -80,7 +80,7 @@ class PredisDriverTest extends TestCase
     {
         $this->predis->expects($this->at(0))
             ->method('__call')
-            ->with('del', ['abc'])
+            ->with('del', [['abc']])
             ->willReturn(true);
 
         $this->assertTrue($this->driver->delete('abc'));

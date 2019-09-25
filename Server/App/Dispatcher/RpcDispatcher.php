@@ -32,7 +32,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
                     'Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.',
                     __METHOD__,
                     WampConnection::class,
-                    get_class($conn)
+                    \get_class($conn)
                 )
             );
         }

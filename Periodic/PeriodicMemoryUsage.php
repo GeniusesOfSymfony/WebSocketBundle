@@ -11,7 +11,7 @@ final class PeriodicMemoryUsage implements PeriodicInterface, LoggerAwareInterfa
 
     public function tick(): void
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->info('Memory usage : '.round((memory_get_usage() / (1024 * 1024)), 4).'Mo');
         }
     }

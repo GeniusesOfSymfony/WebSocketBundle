@@ -60,6 +60,6 @@ final class PredisDriver implements DriverInterface
 
     public function delete(string $id): bool
     {
-        return $this->client->del($this->prefix.$id) > 0;
+        return $this->client->del([$this->prefix.$id]) > 0;
     }
 }

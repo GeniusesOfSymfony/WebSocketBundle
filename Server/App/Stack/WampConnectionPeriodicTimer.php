@@ -72,10 +72,14 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getSubProtocols()
     {
-        return $this->decorated->getSubProtocols();
+        if ($this->decorated instanceof WsServerInterface) {
+            return $this->decorated->getSubProtocols();
+        }
+
+        return [];
     }
 }

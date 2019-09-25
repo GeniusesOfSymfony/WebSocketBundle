@@ -79,7 +79,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $queue->ack($envelope->getDeliveryTag());
                     $this->eventDispatcher->dispatch(Events::PUSHER_SUCCESS, new PushHandlerEvent($envelope->getBody(), $this));
                 } catch (\Exception $e) {
-                    if ($this->logger) {
+                    if (null !== $this->logger) {
                         $this->logger->error(
                             'AMQP handler failed to ack message',
                             [
@@ -96,7 +96,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     );
                 }
 
-                if ($this->logger) {
+                if (null !== $this->logger) {
                     $this->logger->info(
                         sprintf(
                             'AMQP transport listening on %s:%s',

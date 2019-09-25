@@ -35,7 +35,7 @@ final class RegisterPushHandlersListener implements LoggerAwareInterface
             try {
                 $handler->handle($loop, $this->wampServer);
             } catch (\Exception $e) {
-                if ($this->logger) {
+                if (null !== $this->logger) {
                     $this->logger->error(
                         $e->getMessage(),
                         [

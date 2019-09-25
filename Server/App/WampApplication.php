@@ -71,7 +71,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
                 $username = $token->getUsername();
@@ -92,13 +92,12 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     }
 
     /**
-     * @param WampRequest $request
-     * @param string      $data
-     * @param string      $provider
+     * @param string|array $data
+     * @param string       $provider
      */
     public function onPush(WampRequest $request, $data, $provider)
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->info(
                 sprintf('Pusher %s has pushed', $provider),
                 [
@@ -129,7 +128,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
                 $username = $token->getUsername();
@@ -155,7 +154,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
                 $username = $token->getUsername();

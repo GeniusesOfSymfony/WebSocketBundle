@@ -8,8 +8,8 @@ use Ratchet\Wamp\WampServerInterface;
 interface PushableWampServerInterface extends WampServerInterface
 {
     /**
-     * @param string $data
-     * @param string $provider
+     * @param string|array $data
+     * @param string       $provider
      */
     public function onPush(WampRequest $request, $data, $provider);
 }

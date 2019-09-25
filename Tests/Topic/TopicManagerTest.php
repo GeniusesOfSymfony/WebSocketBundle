@@ -215,6 +215,9 @@ class TopicManagerTest extends TestCase
     }
 
     /**
+     * @param string $methodCall
+     * @param int    $expectation
+     *
      * @dataProvider topicConnExpectationProvider
      */
     public function testTopicRetentionFromLeavingConnections($methodCall, $expectation)

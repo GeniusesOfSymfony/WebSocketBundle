@@ -57,7 +57,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
             return;
         }
 
-        $this->topicLookup[$topic]->add($conn);
+        $this->topicLookup[(string) $topic]->add($conn);
         $conn->WAMP->subscriptions->attach($topicObj);
         $this->app->onSubscribe($conn, $topicObj);
     }
@@ -118,10 +118,14 @@ class TopicManager implements WsServerInterface, WampServerInterface
         return [];
     }
 
-    public function getTopic(string $topic): Topic
+    public function getTopic($topic): Topic
     {
-        if (!\array_key_exists($topic, $this->topicLookup)) {
-            $this->topicLookup[$topic] = new Topic($topic);
+        if (!\array_key_exists((string) $topic, $this->topicLookup)) {
+            if ($topic instanceof Topic) {
+                $this->topicLookup[(string) $topic] = $topic;
+            } else {
+                $this->topicLookup[$topic] = new Topic($topic);
+            }
         }
 
         return $this->topicLookup[$topic];

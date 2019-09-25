@@ -17,7 +17,7 @@ final class ClientEventListener implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @param ClientStorageInterface
+     * @var ClientStorageInterface
      */
     private $clientStorage;
 
@@ -58,7 +58,7 @@ final class ClientEventListener implements LoggerAwareInterface
 
                 $username = $token->getUsername();
 
-                if ($this->logger) {
+                if (null !== $this->logger) {
                     $this->logger->info(
                         sprintf('%s disconnected', $username),
                         array_merge(
@@ -69,7 +69,7 @@ final class ClientEventListener implements LoggerAwareInterface
                 }
             }
         } catch (ClientNotFoundException $e) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->info(
                     'User timed out',
                     array_merge(
@@ -79,7 +79,7 @@ final class ClientEventListener implements LoggerAwareInterface
                 );
             }
         } catch (StorageException $e) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->info(
                     'Error processing user in storage',
                     array_merge(
@@ -93,7 +93,7 @@ final class ClientEventListener implements LoggerAwareInterface
 
     public function onClientError(ClientErrorEvent $event): void
     {
-        if (!$this->logger) {
+        if (null === $this->logger) {
             return;
         }
 
@@ -122,7 +122,7 @@ final class ClientEventListener implements LoggerAwareInterface
 
     public function onClientRejected(ClientRejectedEvent $event): void
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->warning(
                 'Client rejected, bad origin',
                 [
