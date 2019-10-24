@@ -17,8 +17,6 @@ matrix:
     # Build ensuring minimum dependencies are valid
     - php: 7.2
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.2
-      env: SYMFONY_REQUIRE="4.2.*"
     - php: 7.3
       env: SYMFONY_REQUIRE="4.3.*"
     - php: 7.3
