@@ -4,6 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
 use Predis\ClientInterface;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 3.0. Predis will no longer be supported, use either doctrine/cache or symfony/cache and PHP\'s Redis extension instead.', PredisDriver::class), E_USER_DEPRECATED);
+
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
