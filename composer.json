@@ -23,14 +23,14 @@
         "ocramius/proxy-manager": "~0.4|^1.0|^2.0",
         "psr/log": "^1.1",
         "react/event-loop": "^1.0",
-        "symfony/config": "^3.4|^4.0",
-        "symfony/console": "^3.4|^4.0",
-        "symfony/dependency-injection": "^3.4|^4.0",
-        "symfony/event-dispatcher": "^3.4|^4.0",
-        "symfony/http-foundation": "^3.4|^4.0",
-        "symfony/http-kernel": "^3.4|^4.0",
-        "symfony/security-core": "^3.4|^4.0",
-        "symfony/serializer": "^3.4|^4.0"
+        "symfony/config": "^3.4|^4.0|^5.0",
+        "symfony/console": "^3.4|^4.0|^5.0",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+        "symfony/event-dispatcher": "^3.4|^4.0|^5.0",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0",
+        "symfony/http-kernel": "^3.4|^4.0|^5.0",
+        "symfony/security-core": "^3.4|^4.0|^5.0",
+        "symfony/serializer": "^3.4|^4.0|^5.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.8",
@@ -39,13 +39,13 @@
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "phpunit/phpunit": "^8.4",
         "predis/predis": "^1.1",
-        "symfony/cache": "^3.4|^4.0",
+        "symfony/cache": "^3.4|^4.0|^5.0",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/options-resolver": "^3.4|^4.0",
+        "symfony/options-resolver": "^3.4|^4.0|^5.0",
         "symfony/polyfill-php73": "^1.12",
-        "symfony/stopwatch": "^3.4|^4.0",
-        "symfony/twig-bundle": "^3.4|^4.0",
-        "symfony/web-profiler-bundle": "^3.4|^4.0"
+        "symfony/stopwatch": "^3.4|^4.0|^5.0",
+        "symfony/twig-bundle": "^3.4|^4.0|^5.0",
+        "symfony/web-profiler-bundle": "^3.4|^4.0|^5.0"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" },
@@ -63,11 +63,11 @@
         "doctrine/dbal": "^2.8 to use Doctrine ping services",
         "gos/react-amqp": "^0.3 to use the amqp server push handler",
         "predis/predis": "^1.1 to use Predis as a client driver",
-        "symfony/cache": "^3.4|^4.0 to use symfony/cache as a client driver",
-        "symfony/options-resolver": "^3.4|^4.0 to use the pushers",
+        "symfony/cache": "^3.4|^4.0|^5.0 to use symfony/cache as a client driver",
+        "symfony/options-resolver": "^3.4|^4.0|^5.0 to use the pushers",
         "symfony/polyfill-php73": "^1.11 if using PHP 7.2",
-        "symfony/serializer": "^3.4|^4.0 to use the pushers",
-        "symfony/stopwatch": "^3.4|^4.0 to use the data collectors"
+        "symfony/serializer": "^3.4|^4.0|^5.0 to use the pushers",
+        "symfony/stopwatch": "^3.4|^4.0|^5.0 to use the data collectors"
     },
     "extra": {
         "branch-alias": {
