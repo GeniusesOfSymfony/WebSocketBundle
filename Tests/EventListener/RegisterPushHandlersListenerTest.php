@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Event;
+namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener;
+use Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;

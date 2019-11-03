@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Event;
+namespace Gos\Bundle\WebSocketBundle\EventListener;
 
+use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerAwareInterface;

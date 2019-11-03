@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Event;
+namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicTimersListener;
+use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
@@ -27,7 +27,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
 
         $this->periodicRegistry = new PeriodicRegistry();
 
-        $this->listener = new RegisterPeriodicTimersListener($this->periodicRegistry);
+        $this->listener = new \Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener($this->periodicRegistry);
     }
 
     public function testThePeriodicTimersAreRegisteredToTheLoop()

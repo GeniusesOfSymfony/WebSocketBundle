@@ -93,7 +93,7 @@ services:
             - { name: kernel.event_listener, event: 'kernel.terminate', method: closeConnection }
 
     gos_web_socket.event_listener.register_periodic_memory_timer:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicMemoryTimerListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'
@@ -103,7 +103,7 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
 
     gos_web_socket.event_listener.register_periodic_timers:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPeriodicTimersListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'
@@ -113,7 +113,7 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
 
     gos_web_socket.event_listener.register_push_handlers:
-        class: Gos\Bundle\WebSocketBundle\Event\RegisterPushHandlersListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener
         public: false
         arguments:
             - '@gos_web_socket.registry.server_push_handler'
