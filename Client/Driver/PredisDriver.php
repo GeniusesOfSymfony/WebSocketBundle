@@ -8,6 +8,8 @@ use Predis\ClientInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
+ *
+ * @deprecated to be removed in 3.0. Predis will no longer be supported.
  */
 final class PredisDriver implements DriverInterface
 {
