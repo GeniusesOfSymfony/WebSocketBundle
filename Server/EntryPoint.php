@@ -20,7 +20,8 @@ final class EntryPoint implements ServerLauncherInterface
     }
 
     /**
-     * @throws \RuntimeException if unable to find a server to launch
+     * @throws \InvalidArgumentException if the given server name is not registered
+     * @throws \RuntimeException if there are no servers registered to launch
      */
     public function launch(?string $serverName, string $host, int $port, bool $profile): void
     {
@@ -35,7 +36,7 @@ final class EntryPoint implements ServerLauncherInterface
             $server = current($servers);
         } else {
             if (!$this->serverRegistry->hasServer($serverName)) {
-                throw new \RuntimeException(sprintf('Unknown server %s, available servers are [ %s ]', $serverName, implode(', ', array_keys($this->serverRegistry->getServers()))));
+                throw new \InvalidArgumentException(sprintf('Unknown server %s, available servers are [ %s ]', $serverName, implode(', ', array_keys($this->serverRegistry->getServers()))));
             }
 
             $server = $this->serverRegistry->getServer($serverName);

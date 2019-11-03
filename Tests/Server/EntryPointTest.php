@@ -85,7 +85,7 @@ class EntryPointTest extends TestCase
 
     public function testAServerIsNotLaunchedWhenTheNamedServerIsNotFound()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown server test, available servers are [ default ]');
 
         $host = 'localhost';
