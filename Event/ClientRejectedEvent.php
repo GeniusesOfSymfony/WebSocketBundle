@@ -3,12 +3,11 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Psr\Http\Message\RequestInterface;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientRejectedEvent extends Event
+class ClientRejectedEvent extends CompatibilityEvent
 {
     /**
      * @var string
