@@ -18,5 +18,6 @@ return PhpCsFixer\Config::create()
             ->notPath('vendor')
             ->in(__DIR__)
             ->append([__DIR__.'/GosWebSocketBundle.php', __FILE__])
+            ->append([__DIR__.'/GosWebSocketEvents.php', __FILE__])
     )
 ;

@@ -40,6 +40,7 @@ gos_web_socket:
     - The `getContext` and `setContext` methods have been removed
     - The `$tokenSeparator` argument of the `generate` and `match` methods has been removed
 - Moved all event listener classes to the `Gos\Bundle\WebSocketBundle\EventListener` namespace
+- The `Gos\Bundle\WebSocketBundle\Event\Events` class is deprecated, the `Gos\Bundle\WebSocketBundle\GosWebSocketEvents` class should be used instead
 - The `Gos\Bundle\WebSocketBundle\Event\ServerEvent` now requires a third argument, `$profile`, indicating if profiling is enabled (i.e. the `--profile` option from the `gos:websocket:server` command)
 - `Gos\Bundle\WebSocketBundle\Pusher\PusherInterface` now includes a `setName()` method
 - `Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry::addPusher()` and `Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry::addPushHandler()` no longer have a separate `$name` argument, the name from the injected object is used instead
