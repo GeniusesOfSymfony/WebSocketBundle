@@ -38,13 +38,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
     private function getStorageDriver(): DriverInterface
     {
         if (null === $this->driver) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Storage driver not set in "%s". Did you forget to call "%s::setStorageDriver()?',
-                    static::class,
-                    static::class
-                )
-            );
+            throw new \RuntimeException(sprintf('Storage driver not set in "%s". Did you forget to call "%s::setStorageDriver()?', static::class, static::class));
         }
 
         return $this->driver;

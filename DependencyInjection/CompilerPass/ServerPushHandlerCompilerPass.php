@@ -19,9 +19,7 @@ final class ServerPushHandlerCompilerPass implements CompilerPassInterface
 
             foreach ($container->findTaggedServiceIds('gos_web_socket.push_handler') as $id => $attributes) {
                 if (!isset($attributes[0]['alias'])) {
-                    throw new InvalidArgumentException(
-                        sprintf('Service "%s" must define the "alias" attribute on "gos_web_socket.push_handler" tags.', $id)
-                    );
+                    throw new InvalidArgumentException(sprintf('Service "%s" must define the "alias" attribute on "gos_web_socket.push_handler" tags.', $id));
                 }
 
                 $pusherDefinition = $container->getDefinition($id);

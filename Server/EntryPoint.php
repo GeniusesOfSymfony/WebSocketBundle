@@ -35,13 +35,7 @@ final class EntryPoint implements ServerLauncherInterface
             $server = current($servers);
         } else {
             if (!$this->serverRegistry->hasServer($serverName)) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'Unknown server %s, available servers are [ %s ]',
-                        $serverName,
-                        implode(', ', array_keys($this->serverRegistry->getServers()))
-                    )
-                );
+                throw new \RuntimeException(sprintf('Unknown server %s, available servers are [ %s ]', $serverName, implode(', ', array_keys($this->serverRegistry->getServers()))));
             }
 
             $server = $this->serverRegistry->getServer($serverName);

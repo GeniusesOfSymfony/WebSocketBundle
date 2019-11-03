@@ -63,11 +63,8 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     }
 
     /**
-     * @param ConnectionInterface $conn
-     * @param Topic|string        $topic
-     * @param string              $event
-     * @param array               $exclude
-     * @param array               $eligible
+     * @param Topic|string $topic
+     * @param string       $event
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
@@ -111,10 +108,8 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     }
 
     /**
-     * @param ConnectionInterface $conn
-     * @param string              $id
-     * @param Topic               $topic
-     * @param array               $params
+     * @param string $id
+     * @param Topic  $topic
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
     {
@@ -123,8 +118,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     }
 
     /**
-     * @param ConnectionInterface $conn
-     * @param Topic|string        $topic
+     * @param Topic|string $topic
      */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
@@ -149,8 +143,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     }
 
     /**
-     * @param ConnectionInterface $conn
-     * @param Topic|string        $topic
+     * @param Topic|string $topic
      */
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
@@ -174,18 +167,12 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     */
     public function onOpen(ConnectionInterface $conn)
     {
         $event = new ClientEvent($conn, ClientEvent::CONNECTED);
         $this->eventDispatcher->dispatch(Events::CLIENT_CONNECTED, $event);
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     */
     public function onClose(ConnectionInterface $conn)
     {
         foreach ($conn->WAMP->subscriptions as $topic) {
@@ -197,10 +184,6 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $this->eventDispatcher->dispatch(Events::CLIENT_DISCONNECTED, $event);
     }
 
-    /**
-     * @param ConnectionInterface $conn
-     * @param \Exception          $e
-     */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         $event = new ClientErrorEvent($conn, ClientEvent::ERROR);

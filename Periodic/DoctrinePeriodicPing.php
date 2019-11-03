@@ -30,14 +30,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
     public function __construct($connection)
     {
         if (!($connection instanceof Connection) && !($connection instanceof PingableConnection)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.',
-                    Connection::class,
-                    PingableConnection::class,
-                    \get_class($connection)
-                )
-            );
+            throw new \InvalidArgumentException(sprintf('The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.', Connection::class, PingableConnection::class, \get_class($connection)));
         }
 
         $this->connection = $connection;

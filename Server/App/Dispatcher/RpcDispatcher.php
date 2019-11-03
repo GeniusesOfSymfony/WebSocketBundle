@@ -27,14 +27,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
     public function dispatch(ConnectionInterface $conn, string $id, Topic $topic, WampRequest $request, array $params): void
     {
         if (!($conn instanceof WampConnection)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.',
-                    __METHOD__,
-                    WampConnection::class,
-                    \get_class($conn)
-                )
-            );
+            throw new \InvalidArgumentException(sprintf('Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.', __METHOD__, WampConnection::class, \get_class($conn)));
         }
 
         $callback = $request->getRoute()->getCallback();

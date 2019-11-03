@@ -26,9 +26,6 @@ class ClientRejectedEvent extends Event
         $this->request = $request;
     }
 
-    /**
-     * @return string
-     */
     public function getOrigin(): string
     {
         return $this->origin;

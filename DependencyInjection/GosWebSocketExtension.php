@@ -224,9 +224,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                         break;
 
                     default:
-                        throw new InvalidArgumentException(
-                            sprintf('Unsupported ping service type "%s"', $pingService['type'])
-                        );
+                        throw new InvalidArgumentException(sprintf('Unsupported ping service type "%s"', $pingService['type']));
                 }
             }
         }
