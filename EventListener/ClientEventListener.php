@@ -1,11 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Event;
+namespace Gos\Bundle\WebSocketBundle\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
+use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 

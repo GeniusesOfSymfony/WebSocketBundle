@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Event;
+namespace Gos\Bundle\WebSocketBundle\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Event;
+namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
@@ -8,7 +8,7 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
-use Gos\Bundle\WebSocketBundle\Event\ClientEventListener;
+use Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +34,7 @@ class ClientEventListenerTest extends TestCase
     private $logger;
 
     /**
-     * @var ClientEventListener
+     * @var \Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener
      */
     private $listener;
 
@@ -47,7 +47,7 @@ class ClientEventListenerTest extends TestCase
 
         $this->logger = new TestLogger();
 
-        $this->listener = new ClientEventListener($this->clientStorage, $this->authenticationProvider);
+        $this->listener = new \Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener($this->clientStorage, $this->authenticationProvider);
         $this->listener->setLogger($this->logger);
     }
 

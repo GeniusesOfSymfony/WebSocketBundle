@@ -71,7 +71,7 @@ services:
             - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.event_listener.client:
-        class: Gos\Bundle\WebSocketBundle\Event\ClientEventListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener
         public: false
         arguments:
             - '@gos_web_socket.client.storage'
@@ -85,7 +85,7 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
     gos_web_socket.event_listener.kernel_terminate:
-        class: Gos\Bundle\WebSocketBundle\Event\KernelTerminateListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener
         public: false
         arguments:
             - '@gos_web_socket.registry.pusher'
@@ -124,7 +124,7 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
 
     gos_web_socket.event_listener.start_server:
-        class: Gos\Bundle\WebSocketBundle\Event\StartServerListener
+        class: Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'

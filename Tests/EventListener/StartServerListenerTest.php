@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Event;
+namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
-use Gos\Bundle\WebSocketBundle\Event\StartServerListener;
+use Gos\Bundle\WebSocketBundle\EventListener\StartServerListener;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class StartServerListenerTest extends TestCase
     private $serverPushHandlerRegistry;
 
     /**
-     * @var StartServerListener
+     * @var \Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
      */
     private $listener;
 
