@@ -2,8 +2,8 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
 use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
     private $periodicRegistry;
 
     /**
-     * @var \Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener
+     * @var RegisterPeriodicMemoryTimerListener
      */
     private $listener;
 
@@ -25,7 +25,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 
         $this->periodicRegistry = new PeriodicRegistry();
 
-        $this->listener = new \Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener($this->periodicRegistry);
+        $this->listener = new RegisterPeriodicMemoryTimerListener($this->periodicRegistry);
     }
 
     public function testThePeriodicMemoryTimerIsRegisteredWhenTheServerHasProfilingEnabled()

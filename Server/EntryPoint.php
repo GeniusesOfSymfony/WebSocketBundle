@@ -21,7 +21,7 @@ final class EntryPoint implements ServerLauncherInterface
 
     /**
      * @throws \InvalidArgumentException if the given server name is not registered
-     * @throws \RuntimeException if there are no servers registered to launch
+     * @throws \RuntimeException         if there are no servers registered to launch
      */
     public function launch(?string $serverName, string $host, int $port, bool $profile): void
     {
