@@ -10,6 +10,7 @@ use Ratchet\Http\CloseResponseTrait;
 use Ratchet\Http\OriginCheck as BaseOriginCheck;
 use Ratchet\MessageComponentInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -31,7 +32,7 @@ class OriginCheck extends BaseOriginCheck
         MessageComponentInterface $component,
         array $allowed = []
     ) {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);;
 
         parent::__construct($component, $allowed);
     }

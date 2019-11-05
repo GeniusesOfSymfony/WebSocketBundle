@@ -15,6 +15,7 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -57,7 +58,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     ) {
         $this->rpcDispatcher = $rpcDispatcher;
         $this->topicDispatcher = $topicDispatcher;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
         $this->clientStorage = $clientStorage;
         $this->wampRouter = $wampRouter;
     }

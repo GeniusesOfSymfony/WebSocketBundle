@@ -11,6 +11,7 @@ use Ratchet\Server\IoServer;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -41,7 +42,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
     ) {
         $this->serverBuilder = $serverBuilder;
         $this->loop = $loop;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
     }
 
     public function launch(string $host, int $port, bool $profile): void

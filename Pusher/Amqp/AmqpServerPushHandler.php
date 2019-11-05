@@ -14,6 +14,7 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\Wamp\Topic;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
@@ -58,7 +59,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
     ) {
         $this->router = $router;
         $this->serializer = $serializer;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);;
         $this->connectionFactory = $connectionFactory;
     }
 
