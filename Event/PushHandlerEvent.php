@@ -3,8 +3,9 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class PushHandlerEvent extends CompatibilityEvent
+class PushHandlerEvent extends Event
 {
     /**
      * @var string

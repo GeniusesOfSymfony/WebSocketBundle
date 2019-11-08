@@ -3,11 +3,12 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Ratchet\ConnectionInterface;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientEvent extends CompatibilityEvent
+class ClientEvent extends Event
 {
     public const CONNECTED = 1;
     public const DISCONNECTED = 2;

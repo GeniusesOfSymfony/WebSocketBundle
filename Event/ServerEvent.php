@@ -4,8 +4,9 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class ServerEvent extends CompatibilityEvent
+class ServerEvent extends Event
 {
     /**
      * @var LoopInterface
