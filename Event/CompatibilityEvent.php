@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event as ComponentEvent;
+use Symfony\Components\EventDispatcher\Event as ComponentEvent;
 use Symfony\Contracts\EventDispatcher\Event as ContractEvent;
 
 if (class_exists(ContractEvent::class)) {
