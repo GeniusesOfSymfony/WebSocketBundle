@@ -2,6 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\Twig;
 
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
 @trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', GosWebSocketServerExtension::class), E_USER_DEPRECATED);
 
 /**
@@ -9,7 +13,7 @@ namespace Gos\Bundle\WebSocketBundle\Twig;
  *
  * @deprecated to be removed in 2.0
  */
-class GosWebSocketServerExtension extends \Twig_Extension
+class GosWebSocketServerExtension extends AbstractExtension
 {
     /**
      * @return string
@@ -25,14 +29,14 @@ class GosWebSocketServerExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'ws_client' => new \Twig_SimpleFunction(
+            'ws_client' => new TwigFunction(
                 'ws_client',
-                array($this, 'clientOutput'),
-                array(
-                    'is_safe' => array('html'),
+                [$this, 'clientOutput'],
+                [
+                    'is_safe' => ['html'],
                     'needs_environment' => true,
                     'deprecated' => true,
-                )
+                ]
             ),
         ];
     }
@@ -43,7 +47,7 @@ class GosWebSocketServerExtension extends \Twig_Extension
      * @throws \Exception
      * @throws \Twig_Error
      */
-    public function clientOutput(\Twig_Environment $twig)
+    public function clientOutput(Environment $twig)
     {
         return $twig->render('GosWebSocketBundle::client.html.twig');
     }
