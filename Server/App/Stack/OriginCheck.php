@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App\Stack;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
-use Gos\Bundle\WebSocketBundle\Event\Events;
+use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Psr\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\CloseResponseTrait;
@@ -47,7 +47,7 @@ class OriginCheck extends BaseOriginCheck
 
             if (!\in_array($origin, $this->allowedOrigins)) {
                 $this->eventDispatcher->dispatch(
-                    Events::CLIENT_REJECTED,
+                    GosWebSocketEvents::CLIENT_REJECTED,
                     new ClientRejectedEvent($origin, $request)
                 );
 
