@@ -115,7 +115,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
     {
         return preg_replace_callback(
             '/_([a-z])/',
-            function ($c): string {
+            static function ($c): string {
                 return strtoupper($c[1]);
             },
             $str

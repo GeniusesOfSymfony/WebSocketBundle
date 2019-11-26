@@ -32,7 +32,7 @@ class TopicPeriodicTimerTest extends TestCase
 
     public function testRetrieveTheNamedPeriodicTimerWhenActive()
     {
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);
@@ -58,7 +58,7 @@ class TopicPeriodicTimerTest extends TestCase
 
     public function testRetrieveThePeriodicTimersForATopic()
     {
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);
@@ -81,7 +81,7 @@ class TopicPeriodicTimerTest extends TestCase
 
         $this->assertFalse($this->topicPeriodicTimer->isRegistered($topic));
 
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
@@ -98,7 +98,7 @@ class TopicPeriodicTimerTest extends TestCase
 
     public function testCancelTheNamedPeriodicTimerWhenActive()
     {
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);

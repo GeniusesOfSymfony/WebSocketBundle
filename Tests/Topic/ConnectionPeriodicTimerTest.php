@@ -42,7 +42,7 @@ class ConnectionPeriodicTimerTest extends TestCase
 
     public function testRetrieveTheNamedPeriodicTimerWhenActive()
     {
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
@@ -64,7 +64,7 @@ class ConnectionPeriodicTimerTest extends TestCase
 
     public function testCancelTheNamedPeriodicTimerWhenActive()
     {
-        $callback = function () {};
+        $callback = static function () {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
