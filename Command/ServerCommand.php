@@ -32,6 +32,7 @@ class ServerCommand extends WebsocketServerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<error>This command is deprecated and will be removed in v2, use gos:websocket:server instead</error>');
-        parent::execute($input, $output);
+
+        return parent::execute($input, $output);
     }
 }
