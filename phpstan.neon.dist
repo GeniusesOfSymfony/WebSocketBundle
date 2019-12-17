@@ -14,4 +14,9 @@ parameters:
     - %currentWorkingDirectory%/Tests
     - %currentWorkingDirectory%/Topic
     - %currentWorkingDirectory%/GosWebSocketBundle.php
+  ignoreErrors:
+    # Class conditionally used, remove when dropping Symfony 4.3 support
+    -
+      message: '/Instantiated class Symfony\\Component\\Security\\Core\\Role\\Role not found./'
+      path: %currentWorkingDirectory%/Tests/Client/ClientManipulatorTest.php
   reportUnmatchedIgnoredErrors: false
