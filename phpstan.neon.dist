@@ -1,0 +1,17 @@
+parameters:
+  level: 0
+  paths:
+    - %currentWorkingDirectory%/Client
+    - %currentWorkingDirectory%/Command
+    - %currentWorkingDirectory%/DataCollector
+    - %currentWorkingDirectory%/DependencyInjection
+    - %currentWorkingDirectory%/Event
+    - %currentWorkingDirectory%/Periodic
+    - %currentWorkingDirectory%/Pusher
+    - %currentWorkingDirectory%/Router
+    - %currentWorkingDirectory%/RPC
+    - %currentWorkingDirectory%/Server
+    - %currentWorkingDirectory%/Tests
+    - %currentWorkingDirectory%/Topic
+    - %currentWorkingDirectory%/GosWebSocketBundle.php
+  reportUnmatchedIgnoredErrors: false
