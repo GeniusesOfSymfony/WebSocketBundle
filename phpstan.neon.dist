@@ -1,5 +1,5 @@
 parameters:
-  level: 0
+  level: 2
   paths:
     - %currentWorkingDirectory%/Client
     - %currentWorkingDirectory%/Command
@@ -15,8 +15,32 @@ parameters:
     - %currentWorkingDirectory%/Topic
     - %currentWorkingDirectory%/GosWebSocketBundle.php
   ignoreErrors:
-    # Class conditionally used, remove when dropping Symfony 4.3 support
+    # Method conditionally used, remove when dropping support for Symfony 4.3 and earlier
     -
-      message: '/Instantiated class Symfony\\Component\\Security\\Core\\Role\\Role not found./'
+      message: '/Call to an undefined method Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface::getRoles\(\)\./'
+      path: %currentWorkingDirectory%/Client/ClientManipulator.php
+
+    # Method conditionally used, remove when dropping support for Symfony 4.3 and earlier
+    -
+      message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\)\./'
+      path: %currentWorkingDirectory%/DependencyInjection/Configuration.php
+
+    # Class conditionally used, remove when dropping support for Symfony 4.3 and earlier
+    -
+      message: '/Instantiated class Symfony\\Component\\Security\\Core\\Role\\Role not found\./'
       path: %currentWorkingDirectory%/Tests/Client/ClientManipulatorTest.php
+
+    # Legacy event dispatcher signature used, remove when dropping support for Symfony 4.3 and earlier
+    - '/Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\./'
+    - '/Parameter #1 \$event of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects object, string given\./'
+
+    # Dynamic properties added throughout Ratchet
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject|Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
+    - '/Access to an undefined property Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
+
+    # Extra arguments added to Ratchet interface implementations
+    - '/Method Ratchet\\ComponentInterface::onOpen\(\) invoked with 2 parameters, 1 required\./'
+    - '/Method Ratchet\\ConnectionInterface::close\(\) invoked with 1 parameter, 0 required\./'
   reportUnmatchedIgnoredErrors: false

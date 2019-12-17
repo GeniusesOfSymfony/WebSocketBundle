@@ -33,7 +33,7 @@ final class TopicDispatcherTest extends TestCase
     private $topicRegistry;
 
     /**
-     * @var MockObject|WampRouter
+     * @var WampRouter
      */
     private $wampRouter;
 

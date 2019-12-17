@@ -42,7 +42,7 @@ class WampApplicationTest extends TestCase
     private $clientStorage;
 
     /**
-     * @var MockObject|WampRouter
+     * @var WampRouter
      */
     private $wampRouter;
 
