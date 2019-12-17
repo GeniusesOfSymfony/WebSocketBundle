@@ -30,7 +30,7 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return TokenInterface[]
+     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
      */
     public function findAllByUsername(Topic $topic, string $username): array
     {
@@ -53,7 +53,7 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return TokenInterface[]
+     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
      */
     public function findByRoles(Topic $topic, array $roles): array
     {
@@ -97,7 +97,7 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return TokenInterface[]|bool
+     * @return array{client: TokenInterface, connection: ConnectionInterface}|bool
      *
      * @deprecated to be removed in 3.0. Use findAllByUsername() instead.
      */
@@ -122,7 +122,7 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return TokenInterface[]
+     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
      */
     public function getAll(Topic $topic, bool $anonymous = false): array
     {
