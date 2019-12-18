@@ -28,7 +28,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
         $this->listener = new RegisterPeriodicMemoryTimerListener($this->periodicRegistry);
     }
 
-    public function testThePeriodicMemoryTimerIsRegisteredWhenTheServerHasProfilingEnabled()
+    public function testThePeriodicMemoryTimerIsRegisteredWhenTheServerHasProfilingEnabled(): void
     {
         $event = $this->createMock(ServerEvent::class);
         $event->expects($this->once())
@@ -40,7 +40,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
         $this->assertNotEmpty($this->periodicRegistry->getPeriodics());
     }
 
-    public function testThePeriodicMemoryTimerIsNotRegisteredWhenTheServerHasProfilingDisabled()
+    public function testThePeriodicMemoryTimerIsNotRegisteredWhenTheServerHasProfilingDisabled(): void
     {
         $event = $this->createMock(ServerEvent::class);
         $event->expects($this->once())

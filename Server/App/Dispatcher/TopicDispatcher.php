@@ -62,18 +62,18 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $this->topicManager = $topicManager;
     }
 
-    public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
+    public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
     {
         $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
     }
 
-    public function onPush(WampRequest $request, $data, string $provider)
+    public function onPush(WampRequest $request, $data, string $provider): void
     {
         $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
-    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request)
+    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
     {
         $this->dispatch(self::UNSUBSCRIPTION, $conn, $topic, $request);
     }
@@ -88,7 +88,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $event,
         array $exclude,
         array $eligible
-    ) {
+    ): void {
         if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
             $topic->broadcast($event);
         }

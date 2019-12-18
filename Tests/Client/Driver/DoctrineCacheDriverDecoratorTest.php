@@ -28,7 +28,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
         $this->driver = new DoctrineCacheDriverDecorator($this->cache);
     }
 
-    public function testDataIsRetrievedFromStorage()
+    public function testDataIsRetrievedFromStorage(): void
     {
         $this->cache->expects($this->at(0))
             ->method('fetch')
@@ -44,7 +44,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
         $this->assertFalse($this->driver->fetch('def'));
     }
 
-    public function testStorageContainsData()
+    public function testStorageContainsData(): void
     {
         $this->cache->expects($this->at(0))
             ->method('contains')
@@ -60,7 +60,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
         $this->assertFalse($this->driver->contains('def'));
     }
 
-    public function testDataIsSavedInStorage()
+    public function testDataIsSavedInStorage(): void
     {
         $this->cache->expects($this->at(0))
             ->method('save')
@@ -76,7 +76,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
         $this->assertTrue($this->driver->save('def', 'data', 60));
     }
 
-    public function testDataIsDeletedFromStorage()
+    public function testDataIsDeletedFromStorage(): void
     {
         $this->cache->expects($this->at(0))
             ->method('delete')

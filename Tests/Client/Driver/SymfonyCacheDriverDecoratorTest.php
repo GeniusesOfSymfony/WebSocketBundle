@@ -33,7 +33,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $this->driver = new SymfonyCacheDriverDecorator($this->cache);
     }
 
-    public function testDataIsRetrievedFromStorage()
+    public function testDataIsRetrievedFromStorage(): void
     {
         $hitCacheItem = $this->createMock(ItemInterface::class);
         $hitCacheItem->expects($this->once())
@@ -66,7 +66,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $this->assertFalse($this->driver->fetch('def'));
     }
 
-    public function testStorageContainsData()
+    public function testStorageContainsData(): void
     {
         $this->cache->expects($this->at(0))
             ->method('hasItem')
@@ -82,7 +82,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $this->assertFalse($this->driver->contains('def'));
     }
 
-    public function testDataIsSavedInStorage()
+    public function testDataIsSavedInStorage(): void
     {
         $noLifetimeCacheItem = $this->createMock(ItemInterface::class);
         $noLifetimeCacheItem->expects($this->once())
@@ -125,7 +125,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $this->assertTrue($this->driver->save('def', 'data', 60));
     }
 
-    public function testDataIsDeletedFromStorage()
+    public function testDataIsDeletedFromStorage(): void
     {
         $this->cache->expects($this->at(0))
             ->method('deleteItem')

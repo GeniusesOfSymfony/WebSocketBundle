@@ -52,7 +52,7 @@ class WampConnectionFactoryTest extends TestCase
     /**
      * @dataProvider dataValidConfiguration
      */
-    public function testTheFactoryIsCreatedWithAValidConfiguration(array $config)
+    public function testTheFactoryIsCreatedWithAValidConfiguration(array $config): void
     {
         $this->assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
     }
@@ -64,14 +64,14 @@ class WampConnectionFactoryTest extends TestCase
         array $config,
         string $exceptionClass,
         string $exceptionMessage
-    ) {
+    ): void {
         $this->expectException($exceptionClass);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
     }
 
-    public function testTheConnectionObjectIsCreated()
+    public function testTheConnectionObjectIsCreated(): void
     {
         $config = [
             'host' => 'localhost',

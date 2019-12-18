@@ -8,7 +8,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class WebsocketDataCollectorTest extends TestCase
 {
-    public function testCollectNoPushers()
+    public function testCollectNoPushers(): void
     {
         $collector = new WebsocketDataCollector();
         $collector->lateCollect();
@@ -18,7 +18,7 @@ class WebsocketDataCollectorTest extends TestCase
         $this->assertSame('websocket', $collector->getName());
     }
 
-    public function testCollectWithPushers()
+    public function testCollectWithPushers(): void
     {
         $collector = new WebsocketDataCollector();
 

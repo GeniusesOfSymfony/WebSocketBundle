@@ -20,7 +20,7 @@ class PeriodicRegistryTest extends TestCase
         $this->registry = new PeriodicRegistry();
     }
 
-    public function testPeriodicsAreAddedToTheRegistry()
+    public function testPeriodicsAreAddedToTheRegistry(): void
     {
         $periodic = new class() implements PeriodicInterface {
             public function tick(): void

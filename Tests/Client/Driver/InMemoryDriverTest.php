@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class InMemoryDriverTest extends TestCase
 {
-    public function testDataIsProcessedInStorage()
+    public function testDataIsProcessedInStorage(): void
     {
         $driver = new InMemoryDriver();
 

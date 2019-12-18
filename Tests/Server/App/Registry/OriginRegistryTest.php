@@ -19,7 +19,7 @@ class OriginRegistryTest extends TestCase
         $this->registry = new OriginRegistry();
     }
 
-    public function testOriginsAreAddedToTheRegistry()
+    public function testOriginsAreAddedToTheRegistry(): void
     {
         $origin = 'localhost';
 

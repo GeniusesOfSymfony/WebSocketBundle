@@ -66,7 +66,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      * @param Topic|string $topic
      * @param string       $event
      */
-    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
@@ -92,7 +92,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      * @param string|array $data
      * @param string       $provider
      */
-    public function onPush(WampRequest $request, $data, $provider)
+    public function onPush(WampRequest $request, $data, $provider): void
     {
         if (null !== $this->logger) {
             $this->logger->info(
@@ -111,7 +111,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      * @param string $id
      * @param Topic  $topic
      */
-    public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
+    public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
         $request = $this->wampRouter->match($topic);
         $this->rpcDispatcher->dispatch($conn, $id, $topic, $request, $params);
@@ -120,7 +120,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     /**
      * @param Topic|string $topic
      */
-    public function onSubscribe(ConnectionInterface $conn, $topic)
+    public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
@@ -145,7 +145,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     /**
      * @param Topic|string $topic
      */
-    public function onUnSubscribe(ConnectionInterface $conn, $topic)
+    public function onUnSubscribe(ConnectionInterface $conn, $topic): void
     {
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
@@ -167,13 +167,13 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
     }
 
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
         $event = new ClientEvent($conn, ClientEvent::CONNECTED);
         $this->eventDispatcher->dispatch(GosWebSocketEvents::CLIENT_CONNECTED, $event);
     }
 
-    public function onClose(ConnectionInterface $conn)
+    public function onClose(ConnectionInterface $conn): void
     {
         foreach ($conn->WAMP->subscriptions as $topic) {
             $wampRequest = $this->wampRouter->match($topic);
@@ -184,7 +184,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $this->eventDispatcher->dispatch(GosWebSocketEvents::CLIENT_DISCONNECTED, $event);
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e)
+    public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $event = new ClientErrorEvent($conn, ClientEvent::ERROR);
         $event->setException($e);

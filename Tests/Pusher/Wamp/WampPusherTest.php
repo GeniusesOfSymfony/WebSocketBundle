@@ -52,7 +52,7 @@ class WampPusherTest extends TestCase
         $this->pusher = new WampPusher($this->router, $this->serializer, $this->connectionFactory);
     }
 
-    public function testAMessageIsPushedAndTheConnectionClosed()
+    public function testAMessageIsPushedAndTheConnectionClosed(): void
     {
         $this->pubSubRouter->expects($this->once())
             ->method('generate')

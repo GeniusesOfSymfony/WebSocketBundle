@@ -9,7 +9,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class WebsocketServerCommandTest extends TestCase
 {
-    public function testCommandLaunchesWebSocketServer()
+    public function testCommandLaunchesWebSocketServer(): void
     {
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
         $entryPoint->expects($this->once())
@@ -22,7 +22,7 @@ class WebsocketServerCommandTest extends TestCase
         $commandTester->execute([]);
     }
 
-    public function testCommandLaunchesWebSocketServerWithConsoleArgumentsAndOptions()
+    public function testCommandLaunchesWebSocketServerWithConsoleArgumentsAndOptions(): void
     {
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
         $entryPoint->expects($this->once())

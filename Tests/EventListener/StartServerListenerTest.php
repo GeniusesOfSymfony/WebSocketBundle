@@ -40,7 +40,7 @@ class StartServerListenerTest extends TestCase
     /**
      * @requires extension pcntl
      */
-    public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched()
+    public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
     {
         $loop = $this->createMock(LoopInterface::class);
         $loop->expects($this->once())

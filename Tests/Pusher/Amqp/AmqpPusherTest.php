@@ -54,7 +54,7 @@ class AmqpPusherTest extends TestCase
         $this->pusher = new AmqpPusher($this->router, $this->serializer, $this->connectionFactory);
     }
 
-    public function testAMessageIsPushedAndTheConnectionClosed()
+    public function testAMessageIsPushedAndTheConnectionClosed(): void
     {
         $this->pubSubRouter->expects($this->once())
             ->method('generate')

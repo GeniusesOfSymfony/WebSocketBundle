@@ -20,7 +20,7 @@ class RpcRegistryTest extends TestCase
         $this->registry = new RpcRegistry();
     }
 
-    public function testRpcHandlersAreAddedToTheRegistry()
+    public function testRpcHandlersAreAddedToTheRegistry(): void
     {
         $handler = new class() implements RpcInterface {
             public function getName(): string
@@ -35,7 +35,7 @@ class RpcRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasRpc($handler->getName()));
     }
 
-    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist()
+    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A RPC handler named "main" has not been registered.');

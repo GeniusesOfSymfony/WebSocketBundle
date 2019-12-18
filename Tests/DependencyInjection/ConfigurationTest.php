@@ -9,14 +9,14 @@ use Symfony\Component\Config\Definition\Processor;
 
 final class ConfigurationTest extends TestCase
 {
-    public function testDefaultConfig()
+    public function testDefaultConfig(): void
     {
         $config = (new Processor())->processConfiguration(new Configuration(), []);
 
         $this->assertEquals(self::getBundleDefaultConfig(), $config);
     }
 
-    public function testConfigWithAServer()
+    public function testConfigWithAServer(): void
     {
         $extraConfig = [
             'server' => [
@@ -36,7 +36,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function testConfigWithAServerAndPubSubRouter()
+    public function testConfigWithAServerAndPubSubRouter(): void
     {
         $extraConfig = [
             'server' => [
@@ -61,7 +61,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function testConfigWithPingServices()
+    public function testConfigWithPingServices(): void
     {
         $extraConfig = [
             'ping' => [
@@ -86,7 +86,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function testConfigWithUnsupportedPingServiceType()
+    public function testConfigWithUnsupportedPingServiceType(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The value "no_support" is not allowed for path "gos_web_socket.ping.services.0.type". Permissible values: "doctrine", "pdo"');
@@ -105,7 +105,7 @@ final class ConfigurationTest extends TestCase
         (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
-    public function testConfigWithPushers()
+    public function testConfigWithPushers(): void
     {
         $extraConfig = [
             'pushers' => [

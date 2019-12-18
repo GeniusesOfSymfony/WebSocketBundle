@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ServerPushHandlerCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testServerPushHandlersAreAddedToTheRegistry()
+    public function testServerPushHandlersAreAddedToTheRegistry(): void
     {
         $this->registerService('gos_web_socket.registry.server_push_handler', ServerPushHandlerRegistry::class);
         $this->registerService('test.server_push_handler', ServerPushHandlerInterface::class)
@@ -28,7 +28,7 @@ class ServerPushHandlerCompilerPassTest extends AbstractCompilerPassTestCase
         );
     }
 
-    public function testServerPushHandlersAreNotAddedToTheRegistryWhenTheAliasIsNotDefined()
+    public function testServerPushHandlersAreNotAddedToTheRegistryWhenTheAliasIsNotDefined(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(

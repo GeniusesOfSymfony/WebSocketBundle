@@ -41,7 +41,7 @@ class OriginCheckTest extends TestCase
         $this->component->allowedOrigins[] = 'localhost';
     }
 
-    public function testARequestPassesTheOriginCheck()
+    public function testARequestPassesTheOriginCheck(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
@@ -58,7 +58,7 @@ class OriginCheckTest extends TestCase
         $this->component->onOpen($connection, $request);
     }
 
-    public function testARequestFailsTheOriginCheck()
+    public function testARequestFailsTheOriginCheck(): void
     {
         $this->component->allowedOrigins = ['socketo.me'];
 

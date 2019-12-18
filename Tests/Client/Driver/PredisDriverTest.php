@@ -28,7 +28,7 @@ class PredisDriverTest extends TestCase
         $this->driver = new PredisDriver($this->predis);
     }
 
-    public function testDataIsRetrievedFromStorage()
+    public function testDataIsRetrievedFromStorage(): void
     {
         $this->predis->expects($this->at(0))
             ->method('__call')
@@ -44,7 +44,7 @@ class PredisDriverTest extends TestCase
         $this->assertNull($this->driver->fetch('def'));
     }
 
-    public function testStorageContainsData()
+    public function testStorageContainsData(): void
     {
         $this->predis->expects($this->at(0))
             ->method('__call')
@@ -60,7 +60,7 @@ class PredisDriverTest extends TestCase
         $this->assertFalse($this->driver->contains('def'));
     }
 
-    public function testDataIsSavedInStorage()
+    public function testDataIsSavedInStorage(): void
     {
         $this->predis->expects($this->at(0))
             ->method('__call')
@@ -76,7 +76,7 @@ class PredisDriverTest extends TestCase
         $this->assertTrue($this->driver->save('def', 'data', 60));
     }
 
-    public function testDataIsDeletedFromStorage()
+    public function testDataIsDeletedFromStorage(): void
     {
         $this->predis->expects($this->at(0))
             ->method('__call')

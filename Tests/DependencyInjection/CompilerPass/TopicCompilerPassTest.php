@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class TopicCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testPeriodicHandlersAreAddedToTheRegistry()
+    public function testPeriodicHandlersAreAddedToTheRegistry(): void
     {
         $this->registerService('gos_web_socket.registry.topic', TopicRegistry::class);
         $this->registerService('test.topic', TopicInterface::class)

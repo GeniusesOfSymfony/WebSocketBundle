@@ -34,7 +34,7 @@ class ClientStorageTest extends TestCase
         $this->storage->setStorageDriver($this->driver);
     }
 
-    public function testTheClientIsRetrieved()
+    public function testTheClientIsRetrieved(): void
     {
         $clientId = '42';
         $token = new AnonymousToken('secret', 'anon');
@@ -47,7 +47,7 @@ class ClientStorageTest extends TestCase
         $this->assertEquals($token, $this->storage->getClient($clientId));
     }
 
-    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenFetchingAClient()
+    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenFetchingAClient(): void
     {
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
@@ -62,7 +62,7 @@ class ClientStorageTest extends TestCase
         $this->storage->getClient($clientId);
     }
 
-    public function testAnExceptionIsThrownIfTheClientIsNotFoundInStorage()
+    public function testAnExceptionIsThrownIfTheClientIsNotFoundInStorage(): void
     {
         $this->expectException(ClientNotFoundException::class);
         $this->expectExceptionMessage('Client 42 not found');
@@ -77,7 +77,7 @@ class ClientStorageTest extends TestCase
         $this->storage->getClient($clientId);
     }
 
-    public function testTheStorageIdentifierOfAConnectionIsRetrieved()
+    public function testTheStorageIdentifierOfAConnectionIsRetrieved(): void
     {
         $clientId = '42';
 
@@ -87,7 +87,7 @@ class ClientStorageTest extends TestCase
         $this->assertSame($clientId, $this->storage->getStorageId($connection));
     }
 
-    public function testTheClientIsAddedToStorage()
+    public function testTheClientIsAddedToStorage(): void
     {
         $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
@@ -99,7 +99,7 @@ class ClientStorageTest extends TestCase
         $this->storage->addClient($clientId, $token);
     }
 
-    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenStoringAClient()
+    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenStoringAClient(): void
     {
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
@@ -114,7 +114,7 @@ class ClientStorageTest extends TestCase
         $this->storage->addClient($clientId, $token);
     }
 
-    public function testAnExceptionIsThrownIfTheClientIsNotAddedToStorage()
+    public function testAnExceptionIsThrownIfTheClientIsNotAddedToStorage(): void
     {
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Unable to add client "user" to storage');
@@ -132,7 +132,7 @@ class ClientStorageTest extends TestCase
         $this->storage->addClient($clientId, $token);
     }
 
-    public function testTheStorageCanBeCheckedToDetermineIfAClientExists()
+    public function testTheStorageCanBeCheckedToDetermineIfAClientExists(): void
     {
         $clientId = '42';
 
@@ -143,7 +143,7 @@ class ClientStorageTest extends TestCase
         $this->assertTrue($this->storage->hasClient($clientId));
     }
 
-    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenCheckingForPresence()
+    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenCheckingForPresence(): void
     {
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
@@ -157,7 +157,7 @@ class ClientStorageTest extends TestCase
         $this->storage->hasClient($clientId);
     }
 
-    public function testAClientCanBeRemovedFromStorage()
+    public function testAClientCanBeRemovedFromStorage(): void
     {
         $clientId = '42';
 
@@ -168,7 +168,7 @@ class ClientStorageTest extends TestCase
         $this->assertTrue($this->storage->removeClient($clientId));
     }
 
-    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenRemovingAClient()
+    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenRemovingAClient(): void
     {
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');

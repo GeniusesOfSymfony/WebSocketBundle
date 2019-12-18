@@ -11,6 +11,7 @@ return PhpCsFixer\Config::create()
         'fopen_flags' => false,
         'ordered_imports' => true,
         'protected_to_private' => true,
+        'void_return' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder(

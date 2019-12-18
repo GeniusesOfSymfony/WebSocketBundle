@@ -63,7 +63,7 @@ class AmqpConnectionFactoryTest extends TestCase
     /**
      * @dataProvider dataValidConfiguration
      */
-    public function testTheFactoryIsCreatedWithAValidConfiguration(array $config)
+    public function testTheFactoryIsCreatedWithAValidConfiguration(array $config): void
     {
         $this->assertInstanceOf(AmqpConnectionFactory::class, new AmqpConnectionFactory($config));
     }
@@ -75,7 +75,7 @@ class AmqpConnectionFactoryTest extends TestCase
         array $config,
         string $exceptionClass,
         string $exceptionMessage
-    ) {
+    ): void {
         $this->expectException($exceptionClass);
         $this->expectExceptionMessage($exceptionMessage);
 
@@ -85,7 +85,7 @@ class AmqpConnectionFactoryTest extends TestCase
     /**
      * @requires extension amqp
      */
-    public function testTheConnectionObjectIsCreated()
+    public function testTheConnectionObjectIsCreated(): void
     {
         $config = [
             'host' => 'localhost',

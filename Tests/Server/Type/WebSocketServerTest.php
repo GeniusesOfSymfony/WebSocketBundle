@@ -47,7 +47,7 @@ class WebSocketServerTest extends TestCase
         );
     }
 
-    public function testTheServerIsLaunched()
+    public function testTheServerIsLaunched(): void
     {
         $this->serverBuilder->expects($this->once())
             ->method('buildMessageStack')

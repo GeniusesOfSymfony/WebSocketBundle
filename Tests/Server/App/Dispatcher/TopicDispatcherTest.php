@@ -72,22 +72,22 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->setLogger($this->logger);
     }
 
-    public function testAWebsocketSubscriptionIsDispatchedToItsHandler()
+    public function testAWebsocketSubscriptionIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 $this->called = true;
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -117,22 +117,22 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testAWebsocketPushIsDispatchedToItsHandler()
+    public function testAWebsocketPushIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface, PushableTopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -169,7 +169,7 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface()
+    public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface(): void
     {
         $this->expectException(PushUnsupportedException::class);
         $this->expectExceptionMessage('The "topic.handler" topic does not support push notifications');
@@ -177,17 +177,17 @@ final class TopicDispatcherTest extends TestCase
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -217,22 +217,22 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->onPush($request, 'test', 'provider');
     }
 
-    public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler()
+    public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 $this->called = true;
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -262,22 +262,22 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testAWebsocketPublishIsDispatchedToItsHandler()
+    public function testAWebsocketPublishIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 $this->called = true;
             }
@@ -307,7 +307,7 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testADispatchToASecuredTopicHandlerIsCompleted()
+    public function testADispatchToASecuredTopicHandlerIsCompleted(): void
     {
         $handler = new class() implements TopicInterface, SecuredTopicInterface {
             private $called = false;
@@ -318,17 +318,17 @@ final class TopicDispatcherTest extends TestCase
                 $this->secured = true;
             }
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 $this->called = true;
             }
@@ -364,7 +364,7 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasSecured());
     }
 
-    public function testADispatchToAnUnregisteredPeriodicTopicTimerIsCompleted()
+    public function testADispatchToAnUnregisteredPeriodicTopicTimerIsCompleted(): void
     {
         $handler = new class() implements TopicInterface, TopicPeriodicTimerInterface {
             use TopicPeriodicTimerTrait;
@@ -372,17 +372,17 @@ final class TopicDispatcherTest extends TestCase
             private $called = false;
             private $registered = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 $this->called = true;
             }
@@ -432,22 +432,22 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasRegistered());
     }
 
-    public function testPeriodicTimersAreClearedWhenAnEmptyTopicIsUnsubscribed()
+    public function testPeriodicTimersAreClearedWhenAnEmptyTopicIsUnsubscribed(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 $this->called = true;
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -485,22 +485,22 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry()
+    public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -530,7 +530,7 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($this->logger->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
     }
 
-    public function testTheConnectionIsClosedIfATopicCannotBeSecured()
+    public function testTheConnectionIsClosedIfATopicCannotBeSecured(): void
     {
         $handler = new class() implements TopicInterface, SecuredTopicInterface {
             private $called = false;
@@ -541,17 +541,17 @@ final class TopicDispatcherTest extends TestCase
                 throw new FirewallRejectionException('Access denied');
             }
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
@@ -598,22 +598,22 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($this->logger->hasErrorThatContains('Access denied'));
     }
 
-    public function testAnExceptionFromAHandlerIsCaughtAndProcessed()
+    public function testAnExceptionFromAHandlerIsCaughtAndProcessed(): void
     {
         $handler = new class() implements TopicInterface {
             private $called = false;
 
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 $this->called = true;
 

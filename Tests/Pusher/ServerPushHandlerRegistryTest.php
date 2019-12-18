@@ -22,7 +22,7 @@ class ServerPushHandlerRegistryTest extends TestCase
         $this->registry = new ServerPushHandlerRegistry();
     }
 
-    public function testPushHandlersAreAddedToTheRegistry()
+    public function testPushHandlersAreAddedToTheRegistry(): void
     {
         $handler = new class() implements ServerPushHandlerInterface {
             public function handle(LoopInterface $loop, PushableWampServerInterface $app): void
@@ -53,7 +53,7 @@ class ServerPushHandlerRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasPushHandler($handler->getName()));
     }
 
-    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist()
+    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A push handler named "main" has not been registered.');

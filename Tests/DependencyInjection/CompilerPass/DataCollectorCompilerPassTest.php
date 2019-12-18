@@ -24,7 +24,7 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $this->container->setParameter('kernel.debug', false);
     }
 
-    public function testPushersAreNotDecoratedInProductionMode()
+    public function testPushersAreNotDecoratedInProductionMode(): void
     {
         $wampPusher = new Definition(WampPusher::class);
         $wampPusher->addTag('gos_web_socket.pusher');
@@ -36,7 +36,7 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp', WampPusher::class);
     }
 
-    public function testPushersAreDecoratedInDebugMode()
+    public function testPushersAreDecoratedInDebugMode(): void
     {
         $this->container->setParameter('kernel.debug', true);
 

@@ -20,7 +20,7 @@ class PusherRegistryTest extends TestCase
         $this->registry = new PusherRegistry();
     }
 
-    public function testPushersAreAddedToTheRegistry()
+    public function testPushersAreAddedToTheRegistry(): void
     {
         $pusher = new class() implements PusherInterface {
             public function push($data, string $routeName, array $routeParameters = [], array $context = []): void
@@ -51,7 +51,7 @@ class PusherRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasPusher($pusher->getName()));
     }
 
-    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist()
+    public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A pusher named "main" has not been registered.');

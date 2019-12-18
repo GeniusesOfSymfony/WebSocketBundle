@@ -32,7 +32,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
         $conn->WAMP->subscriptions = new \SplObjectStorage();
         $this->app->onOpen($conn);
@@ -41,7 +41,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
+    public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
         $this->app->onCall($conn, $id, $this->getTopic($topic), $params);
     }
@@ -49,7 +49,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onSubscribe(ConnectionInterface $conn, $topic)
+    public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
         $topicObj = $this->getTopic($topic);
 
@@ -65,7 +65,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onUnsubscribe(ConnectionInterface $conn, $topic)
+    public function onUnsubscribe(ConnectionInterface $conn, $topic): void
     {
         $topicObj = $this->getTopic($topic);
 
@@ -81,7 +81,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
+    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
         $this->app->onPublish($conn, $this->getTopic($topic), $event, $exclude, $eligible);
     }
@@ -89,7 +89,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onClose(ConnectionInterface $conn)
+    public function onClose(ConnectionInterface $conn): void
     {
         $this->app->onClose($conn);
 
@@ -101,7 +101,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onError(ConnectionInterface $conn, \Exception $e)
+    public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $this->app->onError($conn, $e);
     }

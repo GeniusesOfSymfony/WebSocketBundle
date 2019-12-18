@@ -34,7 +34,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
         $this->provider = new WebsocketAuthenticationProvider($this->clientStorage, self::FIREWALLS);
     }
 
-    public function testAnAnonymousTokenIsCreatedAndAddedToStorageWhenAGuestUserConnects()
+    public function testAnAnonymousTokenIsCreatedAndAddedToStorageWhenAGuestUserConnects(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session->expects($this->once())
@@ -61,7 +61,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
         $this->assertInstanceOf(AnonymousToken::class, $this->provider->authenticate($connection));
     }
 
-    public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated()
+    public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated(): void
     {
         $token = new UsernamePasswordToken('user', 'password', 'main', ['ROLE_USER']);
 

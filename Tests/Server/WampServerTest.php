@@ -36,18 +36,18 @@ class WampServerTest extends TestCase
         $this->serv->onOpen($this->conn);
     }
 
-    public function testGetSubProtocols()
+    public function testGetSubProtocols(): void
     {
         $this->assertSame(['wamp'], $this->serv->getSubProtocols());
     }
 
-    public function testConnectionClosesOnInvalidJson()
+    public function testConnectionClosesOnInvalidJson(): void
     {
         $this->conn->expects($this->once())->method('close');
         $this->serv->onMessage($this->conn, 'invalid json');
     }
 
-    public function testConnectionClosesOnProtocolError()
+    public function testConnectionClosesOnProtocolError(): void
     {
         $this->conn->expects($this->once())->method('close');
         $this->serv->onMessage($this->conn, json_encode(['valid' => 'json', 'invalid' => 'protocol']));

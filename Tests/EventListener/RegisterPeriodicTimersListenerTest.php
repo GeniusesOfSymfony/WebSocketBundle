@@ -30,7 +30,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
         $this->listener = new RegisterPeriodicTimersListener($this->periodicRegistry);
     }
 
-    public function testThePeriodicTimersAreRegisteredToTheLoop()
+    public function testThePeriodicTimersAreRegisteredToTheLoop(): void
     {
         $handler = $this->createMock(PeriodicInterface::class);
         $handler->expects($this->once())

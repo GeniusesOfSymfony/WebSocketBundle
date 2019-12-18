@@ -10,7 +10,7 @@ use Psr\Log\Test\TestLogger;
 
 class DoctrinePeriodicPingTest extends TestCase
 {
-    public function testTheDatabaseIsPinged()
+    public function testTheDatabaseIsPinged(): void
     {
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
@@ -19,7 +19,7 @@ class DoctrinePeriodicPingTest extends TestCase
         (new DoctrinePeriodicPing($connection))->tick();
     }
 
-    public function testAValidObjectIsRequired()
+    public function testAValidObjectIsRequired(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The connection must be a subclass of Doctrine\DBAL\Connection or implement Doctrine\DBAL\Driver\PingableConnection, stdClass does not fulfill these requirements.');
@@ -27,7 +27,7 @@ class DoctrinePeriodicPingTest extends TestCase
         new DoctrinePeriodicPing(new \stdClass());
     }
 
-    public function testAConnectionErrorIsLogged()
+    public function testAConnectionErrorIsLogged(): void
     {
         $logger = new TestLogger();
 

@@ -34,7 +34,7 @@ class RpcDispatcherTest extends TestCase
         $this->dispatcher = new RpcDispatcher($this->rpcRegistry);
     }
 
-    public function testARpcCallIsDispatchedToItsHandler()
+    public function testARpcCallIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements RpcInterface {
             private $called = false;
@@ -77,7 +77,7 @@ class RpcDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry()
+    public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry(): void
     {
         $handler = new class() implements RpcInterface {
             private $called = false;
@@ -118,7 +118,7 @@ class RpcDispatcherTest extends TestCase
         $this->assertFalse($handler->wasCalled());
     }
 
-    public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler()
+    public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler(): void
     {
         $handler = new class() implements RpcInterface {
             private $called = false;
@@ -161,7 +161,7 @@ class RpcDispatcherTest extends TestCase
         $this->assertFalse($handler->wasCalled());
     }
 
-    public function testAThrowableFromAHandlerIsCaughtAndProcessed()
+    public function testAThrowableFromAHandlerIsCaughtAndProcessed(): void
     {
         $handler = new class() implements RpcInterface {
             public function getName(): string
@@ -193,7 +193,7 @@ class RpcDispatcherTest extends TestCase
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
     }
 
-    public function testANullReturnFromAHandlerIsProcessed()
+    public function testANullReturnFromAHandlerIsProcessed(): void
     {
         $handler = new class() implements RpcInterface {
             public function getName(): string

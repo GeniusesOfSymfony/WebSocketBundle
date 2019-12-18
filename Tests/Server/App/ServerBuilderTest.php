@@ -61,7 +61,7 @@ class ServerBuilderTest extends TestCase
         );
     }
 
-    public function testTheMessageStackIsBuiltWithoutOptionalDecorators()
+    public function testTheMessageStackIsBuiltWithoutOptionalDecorators(): void
     {
         $server = $this->builder->buildMessageStack();
 
@@ -78,7 +78,7 @@ class ServerBuilderTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testTheMessageStackIsBuiltWithTheSessionProviderDecorator()
+    public function testTheMessageStackIsBuiltWithTheSessionProviderDecorator(): void
     {
         $this->builder->setSessionHandler($this->createMock(\SessionHandlerInterface::class));
 
@@ -103,7 +103,7 @@ class ServerBuilderTest extends TestCase
         );
     }
 
-    public function testTheMessageStackIsBuiltWithTheOriginCheckDecorator()
+    public function testTheMessageStackIsBuiltWithTheOriginCheckDecorator(): void
     {
         $builder = new ServerBuilder(
             $this->loop,

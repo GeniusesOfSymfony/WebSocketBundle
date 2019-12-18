@@ -40,9 +40,9 @@ class ConnectionPeriodicTimerTest extends TestCase
         $this->connectionPeriodicTimer = new ConnectionPeriodicTimer($this->connection, $this->loop);
     }
 
-    public function testRetrieveTheNamedPeriodicTimerWhenActive()
+    public function testRetrieveTheNamedPeriodicTimerWhenActive(): void
     {
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
@@ -57,14 +57,14 @@ class ConnectionPeriodicTimerTest extends TestCase
         $this->assertSame($timer, $this->connectionPeriodicTimer->getPeriodicTimer('test'));
     }
 
-    public function testNoTimerIsReturnedWhenNotRegisteredAndActive()
+    public function testNoTimerIsReturnedWhenNotRegisteredAndActive(): void
     {
         $this->assertFalse($this->connectionPeriodicTimer->getPeriodicTimer('test'));
     }
 
-    public function testCancelTheNamedPeriodicTimerWhenActive()
+    public function testCancelTheNamedPeriodicTimerWhenActive(): void
     {
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
@@ -82,12 +82,12 @@ class ConnectionPeriodicTimerTest extends TestCase
         $this->connectionPeriodicTimer->cancelPeriodicTimer('test');
     }
 
-    public function testAnIteratorWithAllTimersIsReturned()
+    public function testAnIteratorWithAllTimersIsReturned(): void
     {
         $this->assertInstanceOf(\ArrayIterator::class, $this->connectionPeriodicTimer->getIterator());
     }
 
-    public function testTheTimerCanBeCounted()
+    public function testTheTimerCanBeCounted(): void
     {
         $this->assertCount(0, $this->connectionPeriodicTimer);
     }

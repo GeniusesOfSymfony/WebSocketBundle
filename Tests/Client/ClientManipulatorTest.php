@@ -41,7 +41,7 @@ class ClientManipulatorTest extends TestCase
         $this->manipulator = new ClientManipulator($this->clientStorage, $this->authenticationProvider);
     }
 
-    public function testGetClientForConnection()
+    public function testGetClientForConnection(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
@@ -60,7 +60,7 @@ class ClientManipulatorTest extends TestCase
         $this->assertSame($client, $this->manipulator->getClient($connection));
     }
 
-    public function testGetClientForConnectionAfterReauthenticating()
+    public function testGetClientForConnectionAfterReauthenticating(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
@@ -97,7 +97,7 @@ class ClientManipulatorTest extends TestCase
         $this->assertSame($client, $this->manipulator->getClient($connection));
     }
 
-    public function testAllConnectionsForAUserCanBeFoundByUsername()
+    public function testAllConnectionsForAUserCanBeFoundByUsername(): void
     {
         /** @var MockObject|ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
@@ -184,7 +184,7 @@ class ClientManipulatorTest extends TestCase
         );
     }
 
-    public function testAUserCanBeFoundByUsernameIfConnected()
+    public function testAUserCanBeFoundByUsernameIfConnected(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
@@ -216,7 +216,7 @@ class ClientManipulatorTest extends TestCase
         );
     }
 
-    public function testAUserCanNotBeFoundByUsernameIfNotConnected()
+    public function testAUserCanNotBeFoundByUsernameIfNotConnected(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
@@ -242,7 +242,7 @@ class ClientManipulatorTest extends TestCase
         $this->assertFalse($this->manipulator->findByUsername($topic, $username));
     }
 
-    public function testFetchingAllConnectionsByDefaultOnlyReturnsAuthenticatedUsers()
+    public function testFetchingAllConnectionsByDefaultOnlyReturnsAuthenticatedUsers(): void
     {
         $connection1 = $this->createMock(ConnectionInterface::class);
         $connection2 = $this->createMock(ConnectionInterface::class);
@@ -295,7 +295,7 @@ class ClientManipulatorTest extends TestCase
         );
     }
 
-    public function testFetchingAllConnectionsWithAnonymousFlagReturnsAllConnectedUsers()
+    public function testFetchingAllConnectionsWithAnonymousFlagReturnsAllConnectedUsers(): void
     {
         /** @var MockObject|ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
@@ -356,7 +356,7 @@ class ClientManipulatorTest extends TestCase
         );
     }
 
-    public function testFetchingAllUsersWithDefinedRolesOnlyReturnsMatchingUsers()
+    public function testFetchingAllUsersWithDefinedRolesOnlyReturnsMatchingUsers(): void
     {
         $connection1 = $this->createMock(ConnectionInterface::class);
         $connection2 = $this->createMock(ConnectionInterface::class);

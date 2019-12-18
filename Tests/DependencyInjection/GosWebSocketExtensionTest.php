@@ -19,7 +19,7 @@ use Twig\Environment;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 {
-    public function testContainerIsLoadedWithDefaultConfiguration()
+    public function testContainerIsLoadedWithDefaultConfiguration(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -35,7 +35,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.prefix');
     }
 
-    public function testContainerFailsToLoadWhenPubSubBundleIsMissing()
+    public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
@@ -50,7 +50,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load();
     }
 
-    public function testContainerIsLoadedWithTwigBundleIntegration()
+    public function testContainerIsLoadedWithTwigBundleIntegration(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -97,7 +97,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithEnvVars()
+    public function testContainerIsLoadedWithEnvVars(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -124,7 +124,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
     }
 
-    public function testContainerIsLoadedWithPubSubBundleIntegration()
+    public function testContainerIsLoadedWithPubSubBundleIntegration(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -167,7 +167,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithMonologBundleIntegration()
+    public function testContainerIsLoadedWithMonologBundleIntegration(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -208,7 +208,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithOriginsConfigured()
+    public function testContainerIsLoadedWithOriginsConfigured(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -235,7 +235,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithClientConfiguredWithoutCacheDecorator()
+    public function testContainerIsLoadedWithClientConfiguredWithoutCacheDecorator(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -277,7 +277,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithClientConfiguredWithCacheDecorator()
+    public function testContainerIsLoadedWithClientConfiguredWithCacheDecorator(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -320,7 +320,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithPingServicesConfigured()
+    public function testContainerIsLoadedWithPingServicesConfigured(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -357,7 +357,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
     }
 
-    public function testContainerIsLoadedWithWampPusherConfigured()
+    public function testContainerIsLoadedWithWampPusherConfigured(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -389,7 +389,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.pusher.wamp.connection_factory'));
     }
 
-    public function testContainerIsLoadedWithAmqpPusherConfigured()
+    public function testContainerIsLoadedWithAmqpPusherConfigured(): void
     {
         $this->container->setParameter(
             'kernel.bundles',

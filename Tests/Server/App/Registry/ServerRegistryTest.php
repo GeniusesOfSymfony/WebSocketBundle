@@ -20,10 +20,10 @@ class ServerRegistryTest extends TestCase
         $this->registry = new ServerRegistry();
     }
 
-    public function testServersAreAddedToTheRegistry()
+    public function testServersAreAddedToTheRegistry(): void
     {
         $server = new class() implements ServerInterface {
-            public function launch(string $host, int $port, bool $profile)
+            public function launch(string $host, int $port, bool $profile): void
             {
                 // no-op
             }
@@ -41,13 +41,13 @@ class ServerRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasServer($server->getName()));
     }
 
-    public function testRetrievingAServerFailsIfTheNamedServerDoesNotExist()
+    public function testRetrievingAServerFailsIfTheNamedServerDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A server named "main" has not been registered.');
 
         $server = new class() implements ServerInterface {
-            public function launch(string $host, int $port, bool $profile)
+            public function launch(string $host, int $port, bool $profile): void
             {
                 // no-op
             }

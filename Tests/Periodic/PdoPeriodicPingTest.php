@@ -11,7 +11,7 @@ class PdoPeriodicPingTest extends TestCase
     /**
      * @requires extension pdo
      */
-    public function testTheDatabaseIsPinged()
+    public function testTheDatabaseIsPinged(): void
     {
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
@@ -29,7 +29,7 @@ class PdoPeriodicPingTest extends TestCase
     /**
      * @requires extension pdo
      */
-    public function testTheDatabaseIsNotPingedForAPersistentConnection()
+    public function testTheDatabaseIsNotPingedForAPersistentConnection(): void
     {
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
@@ -46,7 +46,7 @@ class PdoPeriodicPingTest extends TestCase
     /**
      * @requires extension pdo
      */
-    public function testAConnectionErrorIsLogged()
+    public function testAConnectionErrorIsLogged(): void
     {
         $logger = new TestLogger();
 

@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class PeriodicCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testPeriodicHandlersAreAddedToTheRegistry()
+    public function testPeriodicHandlersAreAddedToTheRegistry(): void
     {
         $this->registerService('gos_web_socket.registry.periodic', PeriodicRegistry::class);
         $this->registerService('test.periodic.doctrine', DoctrinePeriodicPing::class)

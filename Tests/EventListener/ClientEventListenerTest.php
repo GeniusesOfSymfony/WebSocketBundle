@@ -51,7 +51,7 @@ class ClientEventListenerTest extends TestCase
         $this->listener->setLogger($this->logger);
     }
 
-    public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched()
+    public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
@@ -68,7 +68,7 @@ class ClientEventListenerTest extends TestCase
         $this->listener->onClientConnect($event);
     }
 
-    public function testTheUserIsRemovedFromStorageWhenTheClientDisconnectEventIsDispatched()
+    public function testTheUserIsRemovedFromStorageWhenTheClientDisconnectEventIsDispatched(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
@@ -112,7 +112,7 @@ class ClientEventListenerTest extends TestCase
     /**
      * @testdox A `ClientNotFoundException` is handled when attempting to remove the user from storage, this simulates a failure if the client is removed between the `hasClient` and `getClient` calls
      */
-    public function testTheClientNotFoundExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage()
+    public function testTheClientNotFoundExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
@@ -148,7 +148,7 @@ class ClientEventListenerTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('User timed out'));
     }
 
-    public function testTheStorageExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage()
+    public function testTheStorageExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
@@ -179,7 +179,7 @@ class ClientEventListenerTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
     }
 
-    public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent()
+    public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
         $event = $this->createMock(ClientErrorEvent::class);
         $event->expects($this->never())
@@ -188,7 +188,7 @@ class ClientEventListenerTest extends TestCase
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientError($event);
     }
 
-    public function testTheClientErrorIsLogged()
+    public function testTheClientErrorIsLogged(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
@@ -228,7 +228,7 @@ class ClientEventListenerTest extends TestCase
         $this->assertTrue($this->logger->hasErrorThatContains('Connection error'));
     }
 
-    public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent()
+    public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent(): void
     {
         $event = $this->createMock(ClientRejectedEvent::class);
         $event->expects($this->never())
@@ -237,7 +237,7 @@ class ClientEventListenerTest extends TestCase
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
     }
 
-    public function testTheClientRejectionIsLogged()
+    public function testTheClientRejectionIsLogged(): void
     {
         $event = $this->createMock(ClientRejectedEvent::class);
         $event->expects($this->once())

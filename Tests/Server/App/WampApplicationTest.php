@@ -84,7 +84,7 @@ class WampApplicationTest extends TestCase
         $this->application->setLogger($this->logger);
     }
 
-    public function testAMessageIsPublished()
+    public function testAMessageIsPublished(): void
     {
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
@@ -129,7 +129,7 @@ class WampApplicationTest extends TestCase
         $this->assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
     }
 
-    public function testAMessageIsPushed()
+    public function testAMessageIsPushed(): void
     {
         $request = new WampRequest(
             'channel_name',
@@ -149,7 +149,7 @@ class WampApplicationTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('Pusher test has pushed'));
     }
 
-    public function testARpcCallIsHandled()
+    public function testARpcCallIsHandled(): void
     {
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->atLeastOnce())
@@ -171,7 +171,7 @@ class WampApplicationTest extends TestCase
         $this->application->onCall($connection, $id, $topic, $params);
     }
 
-    public function testAClientSubscriptionIsHandled()
+    public function testAClientSubscriptionIsHandled(): void
     {
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
@@ -212,7 +212,7 @@ class WampApplicationTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('User user subscribed to channel/42'));
     }
 
-    public function testAClientUnsubscriptionIsHandled()
+    public function testAClientUnsubscriptionIsHandled(): void
     {
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
@@ -253,7 +253,7 @@ class WampApplicationTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('User user unsubscribed from channel/42'));
     }
 
-    public function testAConnectionIsOpened()
+    public function testAConnectionIsOpened(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
@@ -263,7 +263,7 @@ class WampApplicationTest extends TestCase
         $this->application->onOpen($connection);
     }
 
-    public function testAConnectionIsClosed()
+    public function testAConnectionIsClosed(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->WAMP = new \stdClass();
@@ -275,7 +275,7 @@ class WampApplicationTest extends TestCase
         $this->application->onClose($connection);
     }
 
-    public function testAnErrorIsHandled()
+    public function testAnErrorIsHandled(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
 

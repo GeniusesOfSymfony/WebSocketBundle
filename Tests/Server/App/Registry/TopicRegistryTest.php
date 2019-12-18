@@ -23,20 +23,20 @@ class TopicRegistryTest extends TestCase
         $this->registry = new TopicRegistry();
     }
 
-    public function testTopicsAreAddedToTheRegistry()
+    public function testTopicsAreAddedToTheRegistry(): void
     {
         $handler = new class() implements TopicInterface {
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 // no-op
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 // no-op
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 // no-op
             }
@@ -53,23 +53,23 @@ class TopicRegistryTest extends TestCase
         $this->assertTrue($this->registry->hasTopic($handler->getName()));
     }
 
-    public function testRetrievingATopicFailsIfTheNamedHandlerDoesNotExist()
+    public function testRetrievingATopicFailsIfTheNamedHandlerDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A topic named "main" has not been registered.');
 
         $handler = new class() implements TopicInterface {
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 // no-op
             }
 
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
             {
                 // no-op
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
             {
                 // no-op
             }

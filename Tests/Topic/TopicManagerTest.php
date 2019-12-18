@@ -39,7 +39,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onOpen($this->conn);
     }
 
-    public function testGetTopicReturnsTopicObject()
+    public function testGetTopicReturnsTopicObject(): void
     {
         $class = new \ReflectionClass(TopicManager::class);
         $method = $class->getMethod('getTopic');
@@ -50,7 +50,7 @@ class TopicManagerTest extends TestCase
         $this->assertInstanceOf(Topic::class, $topic);
     }
 
-    public function testGetTopicCreatesTopicWithSameName()
+    public function testGetTopicCreatesTopicWithSameName(): void
     {
         $name = 'The Topic';
 
@@ -63,7 +63,7 @@ class TopicManagerTest extends TestCase
         $this->assertEquals($name, $topic->getId());
     }
 
-    public function testGetTopicReturnsSameObject()
+    public function testGetTopicReturnsSameObject(): void
     {
         $class = new \ReflectionClass(TopicManager::class);
         $method = $class->getMethod('getTopic');
@@ -75,13 +75,13 @@ class TopicManagerTest extends TestCase
         $this->assertSame($topic, $again);
     }
 
-    public function testOnOpen()
+    public function testOnOpen(): void
     {
         $this->mock->expects($this->once())->method('onOpen');
         $this->mngr->onOpen($this->conn);
     }
 
-    public function testOnCall()
+    public function testOnCall(): void
     {
         $id = uniqid();
 
@@ -92,7 +92,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onCall($this->conn, $id, 'new topic', []);
     }
 
-    public function testOnSubscribeCreatesTopicObject()
+    public function testOnSubscribeCreatesTopicObject(): void
     {
         $this->mock->expects($this->once())
             ->method('onSubscribe')
@@ -101,7 +101,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onSubscribe($this->conn, 'new topic');
     }
 
-    public function testTopicIsInConnectionOnSubscribe()
+    public function testTopicIsInConnectionOnSubscribe(): void
     {
         $name = 'New Topic';
 
@@ -116,7 +116,7 @@ class TopicManagerTest extends TestCase
         $this->assertTrue($this->conn->WAMP->subscriptions->contains($topic));
     }
 
-    public function testDoubleSubscriptionFiresOnce()
+    public function testDoubleSubscriptionFiresOnce(): void
     {
         $this->mock->expects($this->exactly(1))->method('onSubscribe');
 
@@ -124,7 +124,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onSubscribe($this->conn, 'same topic');
     }
 
-    public function testUnsubscribeEvent()
+    public function testUnsubscribeEvent(): void
     {
         $name = 'in and out';
         $this->mock->expects($this->once())
@@ -135,7 +135,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onUnsubscribe($this->conn, $name);
     }
 
-    public function testUnsubscribeFiresOnce()
+    public function testUnsubscribeFiresOnce(): void
     {
         $name = 'getting sleepy';
         $this->mock->expects($this->once())
@@ -146,7 +146,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onUnsubscribe($this->conn, $name);
     }
 
-    public function testUnsubscribeRemovesTopicFromConnection()
+    public function testUnsubscribeRemovesTopicFromConnection(): void
     {
         $name = 'Bye Bye Topic';
 
@@ -162,7 +162,7 @@ class TopicManagerTest extends TestCase
         $this->assertFalse($this->conn->WAMP->subscriptions->contains($topic));
     }
 
-    public function testOnPublishBubbles()
+    public function testOnPublishBubbles(): void
     {
         $msg = 'Cover all the code!';
 
@@ -173,7 +173,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onPublish($this->conn, 'topic coverage', $msg, [], []);
     }
 
-    public function testOnCloseBubbles()
+    public function testOnCloseBubbles(): void
     {
         $this->mock->expects($this->once())->method('onClose')->with($this->conn);
         $this->mngr->onClose($this->conn);
@@ -193,7 +193,7 @@ class TopicManagerTest extends TestCase
         return [$topic, $attribute];
     }
 
-    public function testConnIsRemovedFromTopicOnClose()
+    public function testConnIsRemovedFromTopicOnClose(): void
     {
         $name = 'State Testing';
         list($topic, $attribute) = $this->topicProvider($name);
@@ -220,7 +220,7 @@ class TopicManagerTest extends TestCase
      *
      * @dataProvider topicConnExpectationProvider
      */
-    public function testTopicRetentionFromLeavingConnections($methodCall, $expectation)
+    public function testTopicRetentionFromLeavingConnections($methodCall, $expectation): void
     {
         $topicName = 'checkTopic';
         list($topic, $attribute) = $this->topicProvider($topicName);
@@ -231,7 +231,7 @@ class TopicManagerTest extends TestCase
         $this->assertCount($expectation, $attribute->getValue($this->mngr));
     }
 
-    public function testOnErrorBubbles()
+    public function testOnErrorBubbles(): void
     {
         $e = new \Exception('All work and no play makes Chris a dull boy');
         $this->mock->expects($this->once())->method('onError')->with($this->conn, $e);
@@ -239,12 +239,12 @@ class TopicManagerTest extends TestCase
         $this->mngr->onError($this->conn, $e);
     }
 
-    public function testGetSubProtocolsReturnsArray()
+    public function testGetSubProtocolsReturnsArray(): void
     {
         $this->assertSame([], $this->mngr->getSubProtocols());
     }
 
-    public function testGetSubProtocolsBubbles()
+    public function testGetSubProtocolsBubbles(): void
     {
         $subs = ['hello', 'world'];
         $app = $this->createMock(WsWampServerInterface::class);

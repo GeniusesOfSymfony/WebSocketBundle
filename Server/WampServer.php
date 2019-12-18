@@ -33,7 +33,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
         $this->wampProtocol->onOpen($conn);
     }
@@ -41,7 +41,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $conn, $msg)
+    public function onMessage(ConnectionInterface $conn, $msg): void
     {
         try {
             $this->wampProtocol->onMessage($conn, $msg);
@@ -53,7 +53,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onClose(ConnectionInterface $conn)
+    public function onClose(ConnectionInterface $conn): void
     {
         $this->wampProtocol->onClose($conn);
     }
@@ -61,7 +61,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onError(ConnectionInterface $conn, \Exception $e)
+    public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $this->wampProtocol->onError($conn, $e);
     }

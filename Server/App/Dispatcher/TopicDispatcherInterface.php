@@ -9,9 +9,9 @@ use Ratchet\Wamp\Topic;
 
 interface TopicDispatcherInterface
 {
-    public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request);
+    public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void;
 
-    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request);
+    public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void;
 
     /**
      * @param string|array $event
@@ -23,12 +23,12 @@ interface TopicDispatcherInterface
         $event,
         array $exclude,
         array $eligible
-    );
+    ): void;
 
     /**
      * @param string|array $data
      */
-    public function onPush(WampRequest $request, $data, string $provider);
+    public function onPush(WampRequest $request, $data, string $provider): void;
 
     /**
      * @param string|array $payload

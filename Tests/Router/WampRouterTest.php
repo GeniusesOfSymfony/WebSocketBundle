@@ -42,7 +42,7 @@ class WampRouterTest extends TestCase
         $this->router->setLogger($this->logger);
     }
 
-    public function testATopicIsRouted()
+    public function testATopicIsRouted(): void
     {
         $routeName = 'test';
         $route = $this->createMock(Route::class);
@@ -60,7 +60,7 @@ class WampRouterTest extends TestCase
         $this->assertInstanceOf(WampRequest::class, $this->router->match($topic));
     }
 
-    public function testAnExceptionIsThrownWhenATopicCannotBeRouted()
+    public function testAnExceptionIsThrownWhenATopicCannotBeRouted(): void
     {
         $this->expectException(ResourceNotFoundException::class);
 
@@ -80,7 +80,7 @@ class WampRouterTest extends TestCase
         $this->router->match($topic);
     }
 
-    public function testARouteIsGenerated()
+    public function testARouteIsGenerated(): void
     {
         $routeName = 'test';
         $parameters = [];
@@ -93,7 +93,7 @@ class WampRouterTest extends TestCase
         $this->assertSame('abc/123', $this->router->generate($routeName, $parameters));
     }
 
-    public function testTheRouteCollectionIsRetrieved()
+    public function testTheRouteCollectionIsRetrieved(): void
     {
         $collection = $this->createMock(RouteCollection::class);
 

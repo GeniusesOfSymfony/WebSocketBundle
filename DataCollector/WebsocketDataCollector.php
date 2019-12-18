@@ -11,7 +11,7 @@ final class WebsocketDataCollector extends WebsocketCompatibilityDataCollector
      */
     private $rawData = [];
 
-    public function lateCollect()
+    public function lateCollect(): void
     {
         $pusherCount = [];
         $totalPush = 0;

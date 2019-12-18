@@ -28,7 +28,7 @@ class EntryPointTest extends TestCase
         $this->entryPoint = new EntryPoint($this->serverRegistry);
     }
 
-    public function testTheFirstServerIsLaunchedWhenNoNameIsGiven()
+    public function testTheFirstServerIsLaunchedWhenNoNameIsGiven(): void
     {
         $serverName = 'default';
         $host = 'localhost';
@@ -49,7 +49,7 @@ class EntryPointTest extends TestCase
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
 
-    public function testTheNamedServerIsLaunched()
+    public function testTheNamedServerIsLaunched(): void
     {
         $serverName = 'default';
         $host = 'localhost';
@@ -70,7 +70,7 @@ class EntryPointTest extends TestCase
         $this->entryPoint->launch($serverName, $host, $port, $profile);
     }
 
-    public function testAServerIsNotLaunchedWhenTheRegistryIsEmpty()
+    public function testAServerIsNotLaunchedWhenTheRegistryIsEmpty(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('There are no servers registered to launch.');
@@ -83,7 +83,7 @@ class EntryPointTest extends TestCase
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
 
-    public function testAServerIsNotLaunchedWhenTheNamedServerIsNotFound()
+    public function testAServerIsNotLaunchedWhenTheNamedServerIsNotFound(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown server test, available servers are [ default ]');

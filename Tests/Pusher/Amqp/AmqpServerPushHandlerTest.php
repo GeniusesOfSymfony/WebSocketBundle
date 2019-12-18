@@ -83,7 +83,7 @@ class AmqpServerPushHandlerTest extends TestCase
         $this->pushHandler->setLogger($this->logger);
     }
 
-    public function testAMessageIsHandledAndTheConnectionClosed()
+    public function testAMessageIsHandledAndTheConnectionClosed(): void
     {
         $connection = $this->createMock(\AMQPConnection::class);
         $connection->expects($this->once())
@@ -152,7 +152,7 @@ class AmqpServerPushHandlerTest extends TestCase
         $this->pushHandler->close();
     }
 
-    public function testAnErrorHandlingAMessageIsCaught()
+    public function testAnErrorHandlingAMessageIsCaught(): void
     {
         $connection = $this->createMock(\AMQPConnection::class);
         $connection->expects($this->once())

@@ -30,9 +30,9 @@ class TopicPeriodicTimerTest extends TestCase
         $this->topicPeriodicTimer = new TopicPeriodicTimer($this->loop);
     }
 
-    public function testRetrieveTheNamedPeriodicTimerWhenActive()
+    public function testRetrieveTheNamedPeriodicTimerWhenActive(): void
     {
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);
@@ -49,16 +49,16 @@ class TopicPeriodicTimerTest extends TestCase
         $this->assertSame($timer, $this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
     }
 
-    public function testNoTimerIsReturnedWhenNotRegisteredAndActive()
+    public function testNoTimerIsReturnedWhenNotRegisteredAndActive(): void
     {
         $topic = $this->createMock(TopicInterface::class);
 
         $this->assertFalse($this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
     }
 
-    public function testRetrieveThePeriodicTimersForATopic()
+    public function testRetrieveThePeriodicTimersForATopic(): void
     {
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);
@@ -75,13 +75,13 @@ class TopicPeriodicTimerTest extends TestCase
         $this->assertSame(['test' => $timer], $this->topicPeriodicTimer->getPeriodicTimers($topic));
     }
 
-    public function testDetermineWhetherATopicHasBeenRegistered()
+    public function testDetermineWhetherATopicHasBeenRegistered(): void
     {
         $topic = $this->createMock(TopicInterface::class);
 
         $this->assertFalse($this->topicPeriodicTimer->isRegistered($topic));
 
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
@@ -96,9 +96,9 @@ class TopicPeriodicTimerTest extends TestCase
         $this->assertTrue($this->topicPeriodicTimer->isRegistered($topic));
     }
 
-    public function testCancelTheNamedPeriodicTimerWhenActive()
+    public function testCancelTheNamedPeriodicTimerWhenActive(): void
     {
-        $callback = static function () {};
+        $callback = static function (): void {};
         $timeout = 10;
 
         $topic = $this->createMock(TopicInterface::class);

@@ -38,7 +38,7 @@ class RegisterPushHandlersListenerTest extends TestCase
         $this->listener = new RegisterPushHandlersListener($this->pushHandlerRegistry, $this->wampServer);
     }
 
-    public function testThePushHandlersAreRegisteredToTheLoop()
+    public function testThePushHandlersAreRegisteredToTheLoop(): void
     {
         $loop = $this->createMock(LoopInterface::class);
 

@@ -43,7 +43,7 @@ class PusherDecoratorTest extends TestCase
         $this->decorator = new PusherDecorator($this->pusher, $this->stopwatch, $this->collector);
     }
 
-    public function testAPushIsProfiled()
+    public function testAPushIsProfiled(): void
     {
         $data = 'foo';
         $routeName = 'test.route';
@@ -76,7 +76,7 @@ class PusherDecoratorTest extends TestCase
         $this->decorator->push($data, $routeName, $routeParameters, $context);
     }
 
-    public function testClosingThePusherIsPropagatedToTheDecoratedPusher()
+    public function testClosingThePusherIsPropagatedToTheDecoratedPusher(): void
     {
         $this->pusher->expects($this->once())
             ->method('close');
@@ -84,7 +84,7 @@ class PusherDecoratorTest extends TestCase
         $this->decorator->close();
     }
 
-    public function testTheNameComesFromTheDecoratedPusher()
+    public function testTheNameComesFromTheDecoratedPusher(): void
     {
         $name = 'test';
 

@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class PusherCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testPushersAreAddedToTheRegistry()
+    public function testPushersAreAddedToTheRegistry(): void
     {
         $this->registerService('gos_web_socket.registry.pusher', PusherRegistry::class);
         $this->registerService('test.pusher', PusherInterface::class)
@@ -28,7 +28,7 @@ class PusherCompilerPassTest extends AbstractCompilerPassTestCase
         );
     }
 
-    public function testPushersAreNotAddedToTheRegistryWhenTheAliasIsNotDefined()
+    public function testPushersAreNotAddedToTheRegistryWhenTheAliasIsNotDefined(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Service "test.pusher" must define the "alias" attribute on "gos_web_socket.pusher" tags.');
