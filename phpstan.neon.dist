@@ -1,5 +1,5 @@
 parameters:
-  level: 2
+  level: 4
   paths:
     - %currentWorkingDirectory%/Client
     - %currentWorkingDirectory%/Command
@@ -14,16 +14,27 @@ parameters:
     - %currentWorkingDirectory%/Tests
     - %currentWorkingDirectory%/Topic
     - %currentWorkingDirectory%/GosWebSocketBundle.php
+    - %currentWorkingDirectory%/GosWebSocketEvents.php
   ignoreErrors:
     # Method conditionally used, remove when dropping support for Symfony 4.3 and earlier
     -
       message: '/Call to an undefined method Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface::getRoles\(\)\./'
       path: %currentWorkingDirectory%/Client/ClientManipulator.php
 
-    # Method conditionally used, remove when dropping support for Symfony 4.3 and earlier
+    # Conditional class for compatibility, remove when dropping support for Symfony 4.4 and earlier
+    -
+      message: '/Comparison operation ">=" between 4 and 5 is always false\./'
+      path: %currentWorkingDirectory%/DataCollector/WebsocketCompatibilityDataCollector.php
+
+    # Method conditionally used, remove when dropping support for Symfony 4.1 and earlier
     -
       message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\)\./'
       path: %currentWorkingDirectory%/DependencyInjection/Configuration.php
+
+    # Runtime check which matches doc block
+    -
+      message: '/Result of && is always false./'
+      path: %currentWorkingDirectory%/Periodic/DoctrinePeriodicPing.php
 
     # Class conditionally used, remove when dropping support for Symfony 4.3 and earlier
     -

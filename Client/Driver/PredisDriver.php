@@ -34,13 +34,7 @@ final class PredisDriver implements DriverInterface
      */
     public function fetch(string $id)
     {
-        $result = $this->client->get($this->prefix.$id);
-
-        if (null === $result) {
-            return false;
-        }
-
-        return $result;
+        return $this->client->get($this->prefix.$id);
     }
 
     public function contains(string $id): bool

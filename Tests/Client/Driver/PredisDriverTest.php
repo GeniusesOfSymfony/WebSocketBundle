@@ -41,7 +41,7 @@ class PredisDriverTest extends TestCase
             ->willReturn(null);
 
         $this->assertSame('foo', $this->driver->fetch('abc'));
-        $this->assertFalse($this->driver->fetch('def'));
+        $this->assertNull($this->driver->fetch('def'));
     }
 
     public function testStorageContainsData()

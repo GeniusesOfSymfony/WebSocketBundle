@@ -99,8 +99,13 @@ class ClientManipulatorTest extends TestCase
 
     public function testAllConnectionsForAUserCanBeFoundByUsername()
     {
+        /** @var MockObject|ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject|ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject|ConnectionInterface $connection3 */
         $connection3 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
@@ -110,16 +115,19 @@ class ClientManipulatorTest extends TestCase
         $username1 = 'user';
         $username2 = 'guest';
 
+        /** @var MockObject|TokenInterface $client1 */
         $client1 = $this->createMock(TokenInterface::class);
         $client1->expects($this->once())
             ->method('getUsername')
             ->willReturn($username1);
 
+        /** @var MockObject|TokenInterface $client2 */
         $client2 = $this->createMock(TokenInterface::class);
         $client2->expects($this->once())
             ->method('getUsername')
             ->willReturn($username1);
 
+        /** @var MockObject|TokenInterface $client3 */
         $client3 = $this->createMock(TokenInterface::class);
         $client3->expects($this->once())
             ->method('getUsername')
@@ -155,12 +163,13 @@ class ClientManipulatorTest extends TestCase
             ->with($storageId3)
             ->willReturn($client3);
 
+        /** @var MockObject|Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2, $connection3]));
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 [
                     'client' => $client1,
@@ -288,13 +297,19 @@ class ClientManipulatorTest extends TestCase
 
     public function testFetchingAllConnectionsWithAnonymousFlagReturnsAllConnectedUsers()
     {
+        /** @var MockObject|ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject|ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
         $storageId2 = 84;
 
+        /** @var MockObject|TokenInterface $authenticatedClient */
         $authenticatedClient = $this->createMock(TokenInterface::class);
+
+        /** @var MockObject|AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
         /*
@@ -326,12 +341,13 @@ class ClientManipulatorTest extends TestCase
             ->with($storageId2)
             ->willReturn($guestClient);
 
+        /** @var MockObject|Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2]));
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 ['client' => $authenticatedClient, 'connection' => $connection1],
                 ['client' => $guestClient, 'connection' => $connection2],
