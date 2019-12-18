@@ -8,7 +8,7 @@ use React\EventLoop\TimerInterface;
 class TopicPeriodicTimer implements \IteratorAggregate
 {
     /**
-     * @var TimerInterface[][]
+     * @var array<string, array<string, TimerInterface>>
      */
     protected $registry = [];
 
@@ -94,7 +94,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @return \ArrayIterator
+     * @return \ArrayIterator|array<string, array<string, TimerInterface>>
      */
     public function getIterator()
     {

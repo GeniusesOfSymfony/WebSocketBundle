@@ -179,7 +179,7 @@ class TopicManagerTest extends TestCase
         $this->mngr->onClose($this->conn);
     }
 
-    protected function topicProvider($name)
+    protected function topicProvider(string $name): array
     {
         $class = new \ReflectionClass(TopicManager::class);
         $method = $class->getMethod('getTopic');
@@ -206,21 +206,16 @@ class TopicManagerTest extends TestCase
         $this->assertFalse($topic->has($this->conn));
     }
 
-    public static function topicConnExpectationProvider()
+    public function topicConnExpectationProvider(): \Generator
     {
-        return [
-            ['onClose', 0],
-            ['onUnsubscribe', 0],
-        ];
+        yield ['onClose', 0];
+        yield ['onUnsubscribe', 0];
     }
 
     /**
-     * @param string $methodCall
-     * @param int    $expectation
-     *
      * @dataProvider topicConnExpectationProvider
      */
-    public function testTopicRetentionFromLeavingConnections($methodCall, $expectation): void
+    public function testTopicRetentionFromLeavingConnections(string $methodCall, int $expectation): void
     {
         $topicName = 'checkTopic';
         list($topic, $attribute) = $this->topicProvider($topicName);

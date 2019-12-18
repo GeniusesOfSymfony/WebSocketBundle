@@ -50,7 +50,7 @@ abstract class AbstractPusher implements PusherInterface
         return $this->connected;
     }
 
-    public function setConnected($bool = true): void
+    public function setConnected(bool $bool = true): void
     {
         $this->connected = $bool;
     }

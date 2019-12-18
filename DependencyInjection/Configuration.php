@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -140,7 +141,7 @@ final class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    private function addWampNode()
+    private function addWampNode(): NodeDefinition
     {
         $builder = new TreeBuilder('wamp');
 
@@ -175,7 +176,7 @@ final class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    private function addAmqpNode()
+    private function addAmqpNode(): NodeDefinition
     {
         $builder = new TreeBuilder('amqp');
 

@@ -137,7 +137,7 @@ final class TopicDispatcherTest extends TestCase
                 throw new \RuntimeException('Not expected to be called.');
             }
 
-            public function onPush(Topic $topic, WampRequest $request, $data, $provider): void
+            public function onPush(Topic $topic, WampRequest $request, $data, string $provider): void
             {
                 $this->called = true;
             }
