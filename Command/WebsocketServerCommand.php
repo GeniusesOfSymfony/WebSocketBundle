@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,12 +50,23 @@ final class WebsocketServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->serverLauncher->launch(
-            $input->getArgument('name'),
-            null === $input->getOption('host') ? $this->host : $input->getOption('host'),
-            null === $input->getOption('port') ? $this->port : $input->getOption('port'),
-            $input->getOption('profile')
-        );
+        /** @var string $name */
+        $name = $input->getArgument('name');
+
+        /** @var string $host */
+        $host = null === $input->getOption('host') ? $this->host : $input->getOption('host');
+
+        /** @var int $port */
+        $port = null === $input->getOption('port') ? $this->port : $input->getOption('port');
+
+        if (!is_numeric($port)) {
+            throw new InvalidArgumentException('The port option must be a numeric value.');
+        }
+
+        /** @var bool $profile */
+        $profile = $input->getOption('profile');
+
+        $this->serverLauncher->launch($name, $host, (int) $port, $profile);
 
         return 0;
     }

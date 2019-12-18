@@ -58,6 +58,8 @@ class WampConnectionFactoryTest extends TestCase
     }
 
     /**
+     * @param class-string<\Throwable> $exceptionClass
+     *
      * @dataProvider dataInvalidConfiguration
      */
     public function testTheFactoryIsNotCreatedWithAnInvalidConfiguration(

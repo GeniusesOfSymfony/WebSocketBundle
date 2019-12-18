@@ -32,6 +32,10 @@ final class RpcDispatcher implements RpcDispatcherInterface
 
         $callback = $request->getRoute()->getCallback();
 
+        if (!is_string($callback)) {
+            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
+        }
+
         if (!$this->rpcRegistry->hasRpc($callback)) {
             $conn->callError(
                 $id,
@@ -69,7 +73,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
         }
 
         try {
-            $result = \call_user_func([$procedure, $method], $conn, $request, $params);
+            $result = $procedure->$method($conn, $request, $params);
         } catch (\Exception $e) {
             $conn->callError(
                 $id,

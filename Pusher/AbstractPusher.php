@@ -40,6 +40,12 @@ abstract class AbstractPusher implements PusherInterface
     {
         $channel = $this->router->generate($routeName, $routeParameters);
 
+        if (is_string($data)) {
+            $data = [$data];
+        } elseif (!is_array($data)) {
+            throw new \InvalidArgumentException(sprintf('The $data argument of %s() must be a string or array, a %s was given.', __METHOD__, gettype($data)));
+        }
+
         $this->doPush(new Message($channel, $data), $context);
     }
 

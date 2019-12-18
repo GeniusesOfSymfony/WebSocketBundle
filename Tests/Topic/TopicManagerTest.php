@@ -221,7 +221,7 @@ class TopicManagerTest extends TestCase
         list($topic, $attribute) = $this->topicProvider($topicName);
 
         $this->mngr->onSubscribe($this->conn, $topicName);
-        \call_user_func_array([$this->mngr, $methodCall], [$this->conn, $topicName]);
+        $this->mngr->$methodCall($this->conn, $topicName);
 
         $this->assertCount($expectation, $attribute->getValue($this->mngr));
     }

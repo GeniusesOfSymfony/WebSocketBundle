@@ -1,5 +1,5 @@
 parameters:
-  level: 6
+  level: 7
   paths:
     - %currentWorkingDirectory%/Client
     - %currentWorkingDirectory%/Command
@@ -66,6 +66,11 @@ parameters:
       message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\Stack\\OriginCheck::onOpen\(\) has no return typehint specified\./'
       path: %currentWorkingDirectory%/Server/App/Stack/OriginCheck.php
 
+    # Type checks are not being detected
+    -
+      message: '/Parameter #1 \$object of function get_class expects object, string given\./'
+      path: %currentWorkingDirectory%/Server/App/WampApplication.php
+
     # Interfaces which lack return typehints, re-evaluate for 3.0
     -
       message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\PushableWampServerInterface::onPush\(\) has no return typehint specified\./'
@@ -93,6 +98,11 @@ parameters:
     -
       message: '/Property class@anonymous.* has no typehint specified\./'
       path: %currentWorkingDirectory%/Tests/*
+
+    # Ignore lack of json_* error checking in tests
+    -
+      message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string|false given\./'
+      path: %currentWorkingDirectory%/Tests/Server/WampServerTest.php
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false

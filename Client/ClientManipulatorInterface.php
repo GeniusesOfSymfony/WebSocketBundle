@@ -9,12 +9,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 interface ClientManipulatorInterface
 {
     /**
-     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
+     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
      */
     public function findAllByUsername(Topic $topic, string $username): array;
 
     /**
-     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
+     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
      */
     public function findByRoles(Topic $topic, array $roles): array;
 
@@ -26,7 +26,7 @@ interface ClientManipulatorInterface
     public function findByUsername(Topic $topic, string $username);
 
     /**
-     * @return array{array{client: TokenInterface, connection: ConnectionInterface}}
+     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
      */
     public function getAll(Topic $topic, bool $anonymous = false): array;
 

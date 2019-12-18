@@ -68,6 +68,10 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
+        if (!($topic instanceof Topic)) {
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, (gettype($topic) === 'object' ? 'an instance of '.get_class($topic) : 'a '.gettype($topic))));
+        }
+
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
@@ -113,6 +117,10 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
+        if (!($topic instanceof Topic)) {
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, (gettype($topic) === 'object' ? 'an instance of '.get_class($topic) : 'a '.gettype($topic))));
+        }
+
         $request = $this->wampRouter->match($topic);
         $this->rpcDispatcher->dispatch($conn, $id, $topic, $request, $params);
     }
@@ -122,6 +130,10 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
+        if (!($topic instanceof Topic)) {
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, (gettype($topic) === 'object' ? 'an instance of '.get_class($topic) : 'a '.gettype($topic))));
+        }
+
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
@@ -147,6 +159,10 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
      */
     public function onUnSubscribe(ConnectionInterface $conn, $topic): void
     {
+        if (!($topic instanceof Topic)) {
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, (gettype($topic) === 'object' ? 'an instance of '.get_class($topic) : 'a '.gettype($topic))));
+        }
+
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
