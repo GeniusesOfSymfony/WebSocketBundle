@@ -1,5 +1,5 @@
 parameters:
-  level: 4
+  level: 5
   paths:
     - %currentWorkingDirectory%/Client
     - %currentWorkingDirectory%/Command
@@ -54,4 +54,15 @@ parameters:
     # Extra arguments added to Ratchet interface implementations
     - '/Method Ratchet\\ComponentInterface::onOpen\(\) invoked with 2 parameters, 1 required\./'
     - '/Method Ratchet\\ConnectionInterface::close\(\) invoked with 1 parameter, 0 required\./'
+
+    # The param's doc block says this should be a string, however the code explicitly handles a Topic object too
+    - '/Parameter #2 \$errorUri of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string, Ratchet\\Wamp\\Topic given\./'
+
+    # The param's doc block says this should be a string, however it effectively supports arrays as well
+    - '/Parameter #4 \$details of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string\|null, .* given\./'
+
+    # Tests error handling for untyped argument
+    -
+      message: '/Parameter #1 \$connection of class Gos\\Bundle\\WebSocketBundle\\Periodic\\DoctrinePeriodicPing constructor expects Doctrine\\DBAL\\Connection\|Doctrine\\DBAL\\Driver\\PingableConnection, stdClass given\./'
+      path: %currentWorkingDirectory%/Tests/Periodic/DoctrinePeriodicPingTest.php
   reportUnmatchedIgnoredErrors: false
