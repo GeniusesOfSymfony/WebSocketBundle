@@ -67,6 +67,9 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
     }
 
+    /**
+     * @param string|array $data
+     */
     public function onPush(WampRequest $request, $data, string $provider): void
     {
         $topic = $this->topicManager->getTopic($request->getMatched());
