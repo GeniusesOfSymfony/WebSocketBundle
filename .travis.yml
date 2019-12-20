@@ -54,7 +54,7 @@ before_install:
 before_script:
   - composer global require --no-scripts --no-plugins symfony/flex
   - composer require --dev --no-update gos/react-amqp:^0.3
-  - composer remove --dev --no-update phpstan/phpstan
+  - composer remove --dev --no-update phpstan/*
   - composer update $COMPOSER_FLAGS
 
 script:
