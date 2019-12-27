@@ -6,11 +6,11 @@ use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class ServerEvent extends Event
+final class ServerEvent extends Event
 {
-    protected LoopInterface $loop;
-    protected ServerInterface $server;
-    protected bool $profile;
+    private LoopInterface $loop;
+    private ServerInterface $server;
+    private bool $profile;
 
     public function __construct(LoopInterface $loop, ServerInterface $server, bool $profile)
     {

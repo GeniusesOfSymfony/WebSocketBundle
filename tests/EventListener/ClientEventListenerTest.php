@@ -179,11 +179,12 @@ class ClientEventListenerTest extends TestCase
         $this->assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
-        $event = $this->createMock(ClientErrorEvent::class);
-        $event->expects($this->never())
-            ->method('getConnection');
+        $event = new ClientErrorEvent($this->createMock(ConnectionInterface::class), ClientEvent::ERROR);
 
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientError($event);
     }
@@ -196,14 +197,8 @@ class ClientEventListenerTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $event = $this->createMock(ClientErrorEvent::class);
-        $event->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
-
-        $event->expects($this->once())
-            ->method('getException')
-            ->willReturn(new \Exception('Testing'));
+        $event = new ClientErrorEvent($connection, ClientEvent::ERROR);
+        $event->setException(new \Exception('Testing'));
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -228,21 +223,19 @@ class ClientEventListenerTest extends TestCase
         $this->assertTrue($this->logger->hasErrorThatContains('Connection error'));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent(): void
     {
-        $event = $this->createMock(ClientRejectedEvent::class);
-        $event->expects($this->never())
-            ->method('getOrigin');
+        $event = new ClientRejectedEvent('localhost', null);
 
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
     }
 
     public function testTheClientRejectionIsLogged(): void
     {
-        $event = $this->createMock(ClientRejectedEvent::class);
-        $event->expects($this->once())
-            ->method('getOrigin')
-            ->willReturn('localhost');
+        $event = new ClientRejectedEvent('localhost', null);
 
         $this->listener->onClientRejected($event);
 

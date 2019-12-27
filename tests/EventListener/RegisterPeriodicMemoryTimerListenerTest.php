@@ -6,6 +6,8 @@ use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
+use React\EventLoop\LoopInterface;
+use React\Socket\ServerInterface;
 
 class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 {
@@ -30,10 +32,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 
     public function testThePeriodicMemoryTimerIsRegisteredWhenTheServerHasProfilingEnabled(): void
     {
-        $event = $this->createMock(ServerEvent::class);
-        $event->expects($this->once())
-            ->method('isProfiling')
-            ->willReturn(true);
+        $event = new ServerEvent($this->createMock(LoopInterface::class), $this->createMock(ServerInterface::class), true);
 
         $this->listener->registerPeriodicHandler($event);
 
@@ -42,10 +41,7 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 
     public function testThePeriodicMemoryTimerIsNotRegisteredWhenTheServerHasProfilingDisabled(): void
     {
-        $event = $this->createMock(ServerEvent::class);
-        $event->expects($this->once())
-            ->method('isProfiling')
-            ->willReturn(false);
+        $event = new ServerEvent($this->createMock(LoopInterface::class), $this->createMock(ServerInterface::class), false);
 
         $this->listener->registerPeriodicHandler($event);
 

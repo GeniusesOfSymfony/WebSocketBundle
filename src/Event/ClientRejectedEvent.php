@@ -8,10 +8,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientRejectedEvent extends Event
+final class ClientRejectedEvent extends Event
 {
-    protected string $origin;
-    protected ?RequestInterface $request;
+    private string $origin;
+    private ?RequestInterface $request;
 
     public function __construct(string $origin, ?RequestInterface $request = null)
     {

@@ -5,10 +5,10 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class PushHandlerEvent extends Event
+final class PushHandlerEvent extends Event
 {
-    protected string $message;
-    protected ServerPushHandlerInterface $pushHandler;
+    private string $message;
+    private ServerPushHandlerInterface $pushHandler;
 
     public function __construct(string $message, ServerPushHandlerInterface $pushHandler)
     {

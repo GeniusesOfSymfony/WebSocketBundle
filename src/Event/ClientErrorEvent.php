@@ -2,9 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle\Event;
 
-class ClientErrorEvent extends ClientEvent
+final class ClientErrorEvent extends ClientEvent
 {
-    protected \Exception $e;
+    private \Exception $e;
 
     public function setException(\Exception $e): void
     {

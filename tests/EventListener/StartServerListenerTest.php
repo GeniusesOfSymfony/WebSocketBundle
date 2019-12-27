@@ -46,14 +46,7 @@ class StartServerListenerTest extends TestCase
         $loop->expects($this->once())
             ->method('addSignal');
 
-        $event = $this->createMock(ServerEvent::class);
-        $event->expects($this->once())
-            ->method('getEventLoop')
-            ->willReturn($loop);
-
-        $event->expects($this->once())
-            ->method('getServer')
-            ->willReturn($this->createMock(ServerInterface::class));
+        $event = new ServerEvent($loop, $this->createMock(ServerInterface::class), false);
 
         $this->listener->bindPnctlEvent($event);
     }
