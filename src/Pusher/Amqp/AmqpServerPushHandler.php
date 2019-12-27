@@ -51,8 +51,8 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                 try {
                     /** @var Message $message */
                     $message = $this->serializer->deserialize($envelope->getBody(), Message::class, 'json');
-                    $request = $this->router->match(new Topic($message->getTopic()));
-                    $app->onPush($request, $message->getData(), $this->getName());
+                    $request = $this->router->match(new Topic($message->topic));
+                    $app->onPush($request, $message->data, $this->getName());
                     $queue->ack($envelope->getDeliveryTag());
                     $this->eventDispatcher->dispatch(
                         new PushHandlerEvent($envelope->getBody(), $this),
