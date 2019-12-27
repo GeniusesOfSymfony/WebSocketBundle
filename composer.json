@@ -45,7 +45,6 @@
         "symfony/cache": "^4.4 || ^5.0",
         "symfony/monolog-bundle": "^3.0",
         "symfony/options-resolver": "^4.4 || ^5.0",
-        "symfony/polyfill-php73": "^1.13",
         "symfony/stopwatch": "^4.4 || ^5.0",
         "symfony/twig-bundle": "^4.4 || ^5.0",
         "symfony/web-profiler-bundle": "^4.4 || ^5.0"
@@ -67,7 +66,6 @@
         "gos/react-amqp": "to use the amqp server push handler",
         "symfony/cache": "to use symfony/cache as a client driver",
         "symfony/options-resolver": "to use the pushers",
-        "symfony/polyfill-php73": "if using PHP 7.2",
         "symfony/serializer": "to use the pushers",
         "symfony/stopwatch": "to use the data collectors"
     },
