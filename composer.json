@@ -23,14 +23,14 @@
         "ocramius/proxy-manager": "~0.4 || ^1.0 || ^2.0",
         "psr/log": "^1.1",
         "react/event-loop": "^1.0",
-        "symfony/config": "^3.4 || ^4.4 || ^5.0",
-        "symfony/console": "^3.4 || ^4.4 || ^5.0",
-        "symfony/dependency-injection": "^3.4 || ^4.4 || ^5.0",
-        "symfony/event-dispatcher": "^3.4 || ^4.4",
-        "symfony/http-foundation": "^3.4 || ^4.4 || ^5.0",
-        "symfony/http-kernel": "^3.4 || ^4.4 || ^5.0",
-        "symfony/security-core": "^3.4 || ^4.4 || ^5.0",
-        "symfony/serializer": "^3.4 || ^4.4 || ^5.0"
+        "symfony/config": "^4.4 || ^5.0",
+        "symfony/console": "^4.4 || ^5.0",
+        "symfony/dependency-injection": "^4.4 || ^5.0",
+        "symfony/event-dispatcher": "^4.4",
+        "symfony/http-foundation": "^4.4 || ^5.0",
+        "symfony/http-kernel": "^4.4 || ^5.0",
+        "symfony/security-core": "^4.4 || ^5.0",
+        "symfony/serializer": "^4.4 || ^5.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.8",
@@ -43,13 +43,13 @@
         "phpstan/phpstan-symfony": "^0.12.1",
         "phpunit/phpunit": "^8.5",
         "predis/predis": "^1.1",
-        "symfony/cache": "^3.4 || ^4.4 || ^5.0",
+        "symfony/cache": "^4.4 || ^5.0",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/options-resolver": "^3.4 || ^4.4 || ^5.0",
+        "symfony/options-resolver": "^4.4 || ^5.0",
         "symfony/polyfill-php73": "^1.13",
-        "symfony/stopwatch": "^3.4 || ^4.4 || ^5.0",
-        "symfony/twig-bundle": "^3.4 || ^4.4 || ^5.0",
-        "symfony/web-profiler-bundle": "^3.4 || ^4.4 || ^5.0"
+        "symfony/stopwatch": "^4.4 || ^5.0",
+        "symfony/twig-bundle": "^4.4 || ^5.0",
+        "symfony/web-profiler-bundle": "^4.4 || ^5.0"
     },
     "conflict": {
         "gos/react-amqp": "<0.3"
