@@ -9,10 +9,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
  */
 final class EntryPoint implements ServerLauncherInterface
 {
-    /**
-     * @var ServerRegistry
-     */
-    private $serverRegistry;
+    private ServerRegistry $serverRegistry;
 
     public function __construct(ServerRegistry $serverRegistry)
     {

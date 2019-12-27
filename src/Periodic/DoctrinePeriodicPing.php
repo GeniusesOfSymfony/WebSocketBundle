@@ -17,10 +17,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
      */
     private $connection;
 
-    /**
-     * @var int
-     */
-    private $timeout = 20;
+    private int $timeout = 20;
 
     /**
      * @param Connection|PingableConnection $connection

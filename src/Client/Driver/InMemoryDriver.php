@@ -7,10 +7,7 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
  */
 final class InMemoryDriver implements DriverInterface
 {
-    /**
-     * @var array
-     */
-    private $elements = [];
+    private array $elements = [];
 
     /**
      * @return mixed

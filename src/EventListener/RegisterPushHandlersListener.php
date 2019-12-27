@@ -12,15 +12,8 @@ final class RegisterPushHandlersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ServerPushHandlerRegistry
-     */
-    private $pushHandlerRegistry;
-
-    /**
-     * @var PushableWampServerInterface
-     */
-    private $wampServer;
+    private ServerPushHandlerRegistry $pushHandlerRegistry;
+    private PushableWampServerInterface $wampServer;
 
     public function __construct(ServerPushHandlerRegistry $pushHandlerRegistry, PushableWampServerInterface $wampServer)
     {

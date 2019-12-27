@@ -11,10 +11,7 @@ final class WampConnectionFactory implements WampConnectionFactoryInterface, Log
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
     public function __construct(array $config)
     {

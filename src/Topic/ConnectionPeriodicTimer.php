@@ -11,17 +11,9 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     /**
      * @var TimerInterface[]
      */
-    protected $registry = [];
-
-    /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
+    protected array $registry = [];
+    protected ConnectionInterface $connection;
+    protected LoopInterface $loop;
 
     public function __construct(ConnectionInterface $connection, LoopInterface $loop)
     {

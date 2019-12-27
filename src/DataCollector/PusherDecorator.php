@@ -10,20 +10,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
  */
 final class PusherDecorator implements PusherInterface
 {
-    /**
-     * @var PusherInterface
-     */
-    private $pusher;
-
-    /**
-     * @var Stopwatch
-     */
-    private $stopwatch;
-
-    /**
-     * @var WebsocketDataCollector
-     */
-    private $dataCollector;
+    private PusherInterface $pusher;
+    private Stopwatch $stopwatch;
+    private WebsocketDataCollector $dataCollector;
 
     public function __construct(PusherInterface $pusher, Stopwatch $stopwatch, WebsocketDataCollector $dataCollector)
     {

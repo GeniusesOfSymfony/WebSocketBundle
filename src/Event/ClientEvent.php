@@ -15,15 +15,8 @@ class ClientEvent extends Event
     public const ERROR = 3;
     public const REJECTED = 4;
 
-    /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * @var int
-     */
-    protected $type;
+    protected ConnectionInterface $connection;
+    protected int $type;
 
     public function __construct(ConnectionInterface $connection, int $type)
     {

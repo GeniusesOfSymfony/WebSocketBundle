@@ -12,10 +12,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var PeriodicRegistry
-     */
-    private $periodicRegistry;
+    private PeriodicRegistry $periodicRegistry;
 
     public function __construct(PeriodicRegistry $periodicRegistry)
     {

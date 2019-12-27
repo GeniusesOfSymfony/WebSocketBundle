@@ -7,15 +7,8 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
  */
 final class Message
 {
-    /**
-     * @var string
-     */
-    private $topic;
-
-    /**
-     * @var array
-     */
-    private $data;
+    private string $topic;
+    private array $data;
 
     public function __construct(string $topic, array $data)
     {

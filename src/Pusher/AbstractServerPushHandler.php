@@ -4,10 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 
 abstract class AbstractServerPushHandler implements ServerPushHandlerInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name = '';
 
     public function setName(string $name): void
     {

@@ -7,15 +7,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PushHandlerEvent extends Event
 {
-    /**
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * @var ServerPushHandlerInterface
-     */
-    protected $pushHandler;
+    protected string $message;
+    protected ServerPushHandlerInterface $pushHandler;
 
     public function __construct(string $message, ServerPushHandlerInterface $pushHandler)
     {

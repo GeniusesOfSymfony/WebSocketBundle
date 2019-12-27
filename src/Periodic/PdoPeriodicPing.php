@@ -9,15 +9,8 @@ final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var \PDO
-     */
-    private $pdo;
-
-    /**
-     * @var int
-     */
-    private $timeout = 20;
+    private \PDO $pdo;
+    private int $timeout = 20;
 
     public function __construct(\PDO $pdo)
     {

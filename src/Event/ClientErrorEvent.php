@@ -4,10 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 class ClientErrorEvent extends ClientEvent
 {
-    /**
-     * @var \Exception
-     */
-    protected $e;
+    protected \Exception $e;
 
     public function setException(\Exception $e): void
     {

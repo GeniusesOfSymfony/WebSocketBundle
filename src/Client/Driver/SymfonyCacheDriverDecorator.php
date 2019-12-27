@@ -6,10 +6,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class SymfonyCacheDriverDecorator implements DriverInterface
 {
-    /**
-     * @var AdapterInterface
-     */
-    private $cache;
+    private AdapterInterface $cache;
 
     public function __construct(AdapterInterface $cache)
     {
@@ -35,6 +32,9 @@ final class SymfonyCacheDriverDecorator implements DriverInterface
         return $this->cache->hasItem((string) $id);
     }
 
+    /**
+     * @param mixed $data
+     */
     public function save(string $id, $data, int $lifeTime = 0): bool
     {
         $item = $this->cache->getItem((string) $id);

@@ -7,10 +7,7 @@ namespace Gos\Bundle\WebSocketBundle\RPC;
  */
 final class RpcResponse
 {
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data = [];
 
     /**
      * @param mixed $data

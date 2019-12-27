@@ -18,10 +18,7 @@ class OriginCheck extends BaseOriginCheck
 {
     use CloseResponseTrait;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @param string[] $allowed

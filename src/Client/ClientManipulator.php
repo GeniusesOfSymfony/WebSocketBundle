@@ -11,15 +11,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class ClientManipulator implements ClientManipulatorInterface
 {
-    /**
-     * @var ClientStorageInterface
-     */
-    private $clientStorage;
-
-    /**
-     * @var WebsocketAuthenticationProviderInterface
-     */
-    private $authenticationProvider;
+    private ClientStorageInterface $clientStorage;
+    private WebsocketAuthenticationProviderInterface $authenticationProvider;
 
     public function __construct(
         ClientStorageInterface $clientStorage,

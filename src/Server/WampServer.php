@@ -9,16 +9,11 @@ use Ratchet\Wamp\ServerProtocol;
 use Ratchet\WebSocket\WsServerInterface;
 
 /**
- * Class WampServer.
- *
  * @author Edu Salguero <edusalguero@gmail.com>
  */
 class WampServer implements MessageComponentInterface, WsServerInterface
 {
-    /**
-     * @var ServerProtocol
-     */
-    protected $wampProtocol;
+    protected ServerProtocol $wampProtocol;
 
     /**
      * This class just makes it 1 step easier to use Topic objects in WAMP

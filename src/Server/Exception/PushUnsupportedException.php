@@ -6,10 +6,7 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 
 class PushUnsupportedException extends \RuntimeException
 {
-    /**
-     * @var TopicInterface
-     */
-    private $topic;
+    private TopicInterface $topic;
 
     public function __construct(TopicInterface $topic)
     {

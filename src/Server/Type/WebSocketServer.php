@@ -19,20 +19,9 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ServerBuilderInterface
-     */
-    private $serverBuilder;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private ServerBuilderInterface $serverBuilder;
+    private LoopInterface $loop;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ServerBuilderInterface $serverBuilder,

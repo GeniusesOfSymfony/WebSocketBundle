@@ -10,20 +10,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class AmqpPusher extends AbstractPusher
 {
-    /**
-     * @var \AMQPConnection
-     */
-    private $connection;
-
-    /**
-     * @var \AMQPExchange
-     */
-    private $exchange;
-
-    /**
-     * @var AmqpConnectionFactoryInterface
-     */
-    private $connectionFactory;
+    private \AMQPConnection $connection;
+    private \AMQPExchange $exchange;
+    private AmqpConnectionFactoryInterface $connectionFactory;
 
     public function __construct(
         WampRouter $router,

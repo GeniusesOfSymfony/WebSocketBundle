@@ -8,20 +8,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ServerEvent extends Event
 {
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
-
-    /**
-     * @var ServerInterface
-     */
-    protected $server;
-
-    /**
-     * @var bool
-     */
-    protected $profile;
+    protected LoopInterface $loop;
+    protected ServerInterface $server;
+    protected bool $profile;
 
     public function __construct(LoopInterface $loop, ServerInterface $server, bool $profile)
     {

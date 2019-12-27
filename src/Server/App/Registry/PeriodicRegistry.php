@@ -12,7 +12,7 @@ final class PeriodicRegistry
     /**
      * @var PeriodicInterface[]
      */
-    private $periodics = [];
+    private array $periodics = [];
 
     public function addPeriodic(PeriodicInterface $periodic): void
     {

@@ -20,35 +20,12 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var WampRouter
-     */
-    private $router;
-
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var Consumer
-     */
-    private $consumer;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var AmqpConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
-    /**
-     * @var \AMQPConnection
-     */
-    private $connection;
+    private WampRouter $router;
+    private SerializerInterface $serializer;
+    private Consumer $consumer;
+    private EventDispatcherInterface $eventDispatcher;
+    private AmqpConnectionFactoryInterface $connectionFactory;
+    private \AMQPConnection $connection;
 
     public function __construct(
         WampRouter $router,

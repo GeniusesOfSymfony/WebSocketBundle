@@ -16,45 +16,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class ServerBuilder implements ServerBuilderInterface
 {
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
-
-    /**
-     * @var TopicManager
-     */
-    private $topicManager;
-
-    /**
-     * @var OriginRegistry
-     */
-    private $originRegistry;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var bool
-     */
-    private $originCheck = false;
-
-    /**
-     * @var bool
-     */
-    private $keepalivePing = false;
-
-    /**
-     * @var int
-     */
-    private $keepaliveInterval = 30;
-
-    /**
-     * @var \SessionHandlerInterface|null
-     */
-    private $sessionHandler;
+    private LoopInterface $loop;
+    private TopicManager $topicManager;
+    private OriginRegistry $originRegistry;
+    private EventDispatcherInterface $eventDispatcher;
+    private bool $originCheck = false;
+    private bool $keepalivePing = false;
+    private int $keepaliveInterval = 30;
+    private ?\SessionHandlerInterface $sessionHandler = null;
 
     public function __construct(
         LoopInterface $loop,

@@ -7,10 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class AmqpConnectionFactory implements AmqpConnectionFactoryInterface
 {
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
     public function __construct(array $config)
     {

@@ -30,25 +30,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     public const PUBLISH = 'onPublish';
     public const PUSH = 'onPush';
 
-    /**
-     * @var TopicRegistry
-     */
-    private $topicRegistry;
-
-    /**
-     * @var WampRouter
-     */
-    private $router;
-
-    /**
-     * @var TopicPeriodicTimer
-     */
-    private $topicPeriodicTimer;
-
-    /**
-     * @var TopicManager
-     */
-    private $topicManager;
+    private TopicRegistry $topicRegistry;
+    private WampRouter $router;
+    private TopicPeriodicTimer $topicPeriodicTimer;
+    private TopicManager $topicManager;
 
     public function __construct(
         TopicRegistry $topicRegistry,
@@ -115,7 +100,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     ): bool {
         $callback = $request->getRoute()->getCallback();
 
-        if (!is_string($callback)) {
+        if (!\is_string($callback)) {
             throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
         }
 

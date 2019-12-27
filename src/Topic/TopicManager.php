@@ -8,21 +8,12 @@ use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
 /**
- * Class TopicManager.
- *
  * @author Edu Salguero <edusalguero@gmail.com>
  */
 class TopicManager implements WsServerInterface, WampServerInterface
 {
-    /**
-     * @var WampServerInterface
-     */
-    protected $app;
-
-    /**
-     * @var array
-     */
-    protected $topicLookup = [];
+    protected ?WampServerInterface $app = null;
+    protected array $topicLookup = [];
 
     public function setWampApplication(WampServerInterface $app): void
     {

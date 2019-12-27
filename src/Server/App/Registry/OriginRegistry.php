@@ -10,7 +10,7 @@ final class OriginRegistry
     /**
      * @var string[]
      */
-    private $origins;
+    private array $origins;
 
     public function __construct()
     {

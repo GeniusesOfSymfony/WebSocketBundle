@@ -6,10 +6,7 @@ use Symfony\Component\Stopwatch\StopwatchEvent;
 
 final class WebsocketDataCollector extends WebsocketCompatibilityDataCollector
 {
-    /**
-     * @var array
-     */
-    private $rawData = [];
+    private array $rawData = [];
 
     public function lateCollect(): void
     {

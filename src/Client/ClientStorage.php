@@ -17,15 +17,8 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var DriverInterface
-     */
-    private $driver;
-
-    /**
-     * @var int
-     */
-    private $ttl;
+    private ?DriverInterface $driver = null;
+    private int $ttl;
 
     public function __construct(int $ttl)
     {

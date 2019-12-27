@@ -10,15 +10,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class WampPusher extends AbstractPusher
 {
-    /**
-     * @var Client
-     */
-    private $connection;
-
-    /**
-     * @var WampConnectionFactoryInterface
-     */
-    private $connectionFactory;
+    private Client $connection;
+    private WampConnectionFactoryInterface $connectionFactory;
 
     public function __construct(
         WampRouter $router,

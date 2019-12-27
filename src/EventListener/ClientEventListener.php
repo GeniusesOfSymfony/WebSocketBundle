@@ -19,15 +19,8 @@ final class ClientEventListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ClientStorageInterface
-     */
-    private $clientStorage;
-
-    /**
-     * @var WebsocketAuthenticationProviderInterface
-     */
-    private $authenticationProvider;
+    private ClientStorageInterface $clientStorage;
+    private WebsocketAuthenticationProviderInterface $authenticationProvider;
 
     public function __construct(
         ClientStorageInterface $clientStorage,

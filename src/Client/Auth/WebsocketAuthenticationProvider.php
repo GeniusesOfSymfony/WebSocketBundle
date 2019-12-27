@@ -13,15 +13,12 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ClientStorageInterface
-     */
-    private $clientStorage;
+    private ClientStorageInterface $clientStorage;
 
     /**
      * @var string[]
      */
-    private $firewalls = [];
+    private array $firewalls = [];
 
     /**
      * @param string[] $firewalls

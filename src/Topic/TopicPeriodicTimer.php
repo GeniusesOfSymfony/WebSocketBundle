@@ -10,12 +10,8 @@ class TopicPeriodicTimer implements \IteratorAggregate
     /**
      * @var array<string, array<string, TimerInterface>>
      */
-    protected $registry = [];
-
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
+    protected array $registry = [];
+    protected LoopInterface $loop;
 
     public function __construct(LoopInterface $loop)
     {

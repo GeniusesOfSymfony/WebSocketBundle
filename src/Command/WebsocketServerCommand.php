@@ -12,22 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class WebsocketServerCommand extends Command
 {
+    /**
+     * @var string|null
+     */
     protected static $defaultName = 'gos:websocket:server';
 
-    /**
-     * @var ServerLauncherInterface
-     */
-    private $serverLauncher;
+    private ServerLauncherInterface $serverLauncher;
 
-    /**
-     * @var string
-     */
-    private $host;
+    private string $host;
 
-    /**
-     * @var int
-     */
-    private $port;
+    private int $port;
 
     public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port)
     {
@@ -48,7 +42,7 @@ final class WebsocketServerCommand extends Command
             ->addOption('port', 'p', InputOption::VALUE_OPTIONAL, 'The port of the websocket server');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $name */
         $name = $input->getArgument('name');

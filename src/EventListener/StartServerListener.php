@@ -13,15 +13,8 @@ final class StartServerListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var PeriodicRegistry
-     */
-    private $periodicRegistry;
-
-    /**
-     * @var ServerPushHandlerRegistry
-     */
-    private $serverPushHandlerRegistry;
+    private PeriodicRegistry $periodicRegistry;
+    private ServerPushHandlerRegistry $serverPushHandlerRegistry;
 
     public function __construct(
         PeriodicRegistry $periodicRegistry,

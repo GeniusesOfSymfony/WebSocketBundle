@@ -7,7 +7,7 @@ final class PusherRegistry
     /**
      * @var PusherInterface[]
      */
-    private $pushers = [];
+    private array $pushers = [];
 
     public function addPusher(PusherInterface $pusher): void
     {

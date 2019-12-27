@@ -10,15 +10,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ClientRejectedEvent extends Event
 {
-    /**
-     * @var string
-     */
-    protected $origin;
-
-    /**
-     * @var RequestInterface|null
-     */
-    protected $request;
+    protected string $origin;
+    protected ?RequestInterface $request;
 
     public function __construct(string $origin, ?RequestInterface $request = null)
     {

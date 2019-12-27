@@ -7,10 +7,7 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 final class KernelTerminateListener
 {
-    /**
-     * @var PusherRegistry
-     */
-    private $pusherRegistry;
+    private PusherRegistry $pusherRegistry;
 
     public function __construct(PusherRegistry $pusherRegistry)
     {

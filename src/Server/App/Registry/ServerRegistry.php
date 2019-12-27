@@ -12,7 +12,7 @@ final class ServerRegistry
     /**
      * @var ServerInterface[]
      */
-    private $servers = [];
+    private array $servers = [];
 
     public function addServer(ServerInterface $server): void
     {

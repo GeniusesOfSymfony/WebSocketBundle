@@ -9,20 +9,10 @@ use Ratchet\WebSocket\WsServerInterface;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
-/**
- * Wrap WampServer nicely.
- */
 class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServerInterface
 {
-    /**
-     * @var MessageComponentInterface
-     */
-    protected $decorated;
-
-    /**
-     * @var LoopInterface
-     */
-    protected $loop;
+    protected MessageComponentInterface $decorated;
+    protected LoopInterface $loop;
 
     public function __construct(MessageComponentInterface $component, LoopInterface $loop)
     {

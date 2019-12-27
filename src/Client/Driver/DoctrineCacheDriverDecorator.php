@@ -9,10 +9,7 @@ use Doctrine\Common\Cache\Cache;
  */
 final class DoctrineCacheDriverDecorator implements DriverInterface
 {
-    /**
-     * @var Cache
-     */
-    private $cacheProvider;
+    private Cache $cacheProvider;
 
     public function __construct(Cache $cacheProvider)
     {

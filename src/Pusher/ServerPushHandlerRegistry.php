@@ -7,7 +7,7 @@ final class ServerPushHandlerRegistry
     /**
      * @var ServerPushHandlerInterface[]
      */
-    private $pushHandlers = [];
+    private array $pushHandlers = [];
 
     public function addPushHandler(ServerPushHandlerInterface $handler): void
     {
