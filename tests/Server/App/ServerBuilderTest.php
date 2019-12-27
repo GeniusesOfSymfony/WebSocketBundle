@@ -12,7 +12,7 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Session\SessionProvider;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ServerBuilderTest extends TestCase
 {

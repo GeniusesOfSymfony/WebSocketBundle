@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @requires extension amqp

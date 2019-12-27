@@ -9,7 +9,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Http\CloseResponseTrait;
 use Ratchet\Http\OriginCheck as BaseOriginCheck;
 use Ratchet\MessageComponentInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
