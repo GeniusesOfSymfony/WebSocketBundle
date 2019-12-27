@@ -29,47 +29,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * Map containing a list of deprecated service keys where the key is the deprecated alias and the value is the new service identifier.
-     */
-    private const DEPRECATED_SERVICE_ALIASES = [
-        'gos_web_socket.amqp.pusher' => 'gos_web_socket.pusher.amqp',
-        'gos_web_socket.amqp.server_push_handler' => 'gos_web_socket.pusher.amqp.push_handler',
-        'gos_web_socket.client_event.listener' => 'gos_web_socket.event_listener.client',
-        'gos_web_socket.client_storage' => 'gos_web_socket.client.storage',
-        'gos_web_socket.client_storage.doctrine.decorator' => 'gos_web_socket.client.driver.doctrine_cache',
-        'gos_web_socket.client_storage.symfony.decorator' => 'gos_web_socket.client.driver.symfony_cache',
-        'gos_web_socket.data_collector' => 'gos_web_socket.data_collector.websocket',
-        'gos_web_socket.entry_point' => 'gos_web_socket.server.entry_point',
-        'gos_web_socket.kernel_event.terminate' => 'gos_web_socket.event_listener.kernel_terminate',
-        'gos_web_socket.memory_usage.periodic' => 'gos_web_socket.periodic_ping.memory_usage',
-        'gos_web_socket.origins.registry' => 'gos_web_socket.registry.origins',
-        'gos_web_socket.pnctl_event.listener' => 'gos_web_socket.event_listener.start_server',
-        'gos_web_socket.periodic.registry' => 'gos_web_socket.registry.periodic',
-        'gos_web_socket.pusher_registry' => 'gos_web_socket.registry.pusher',
-        'gos_web_socket.rpc.dispatcher' => 'gos_web_socket.dispatcher.rpc',
-        'gos_web_socket.rpc.registry' => 'gos_web_socket.registry.rpc',
-        'gos_web_socket.server.in_memory.client_storage.driver' => 'gos_web_socket.client.driver.in_memory',
-        'gos_web_socket.server.registry' => 'gos_web_socket.registry.server',
-        'gos_web_socket.server_push_handler.registry' => 'gos_web_socket.registry.server_push_handler',
-        'gos_web_socket.topic.dispatcher' => 'gos_web_socket.dispatcher.topic',
-        'gos_web_socket.topic.registry' => 'gos_web_socket.registry.topic',
-        'gos_web_socket.wamp.pusher' => 'gos_web_socket.pusher.wamp',
-        'gos_web_socket.websocket_server.command' => 'gos_web_socket.command.websocket_server',
-        'gos_web_socket.ws.server' => 'gos_web_socket.server.websocket',
-        'gos_web_socket.ws.server_builder' => 'gos_web_socket.server.builder',
-        'gos_web_socket.websocket_authentification.provider' => 'gos_web_socket.client.authentication.websocket_provider',
-        'gos_web_socket.websocket.client_manipulator' => 'gos_web_socket.client.manipulator',
-        'gos_web_socket_server.wamp_application' => 'gos_web_socket.server.application.wamp',
-    ];
-
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
         $loader->load('services.yaml');
         $loader->load('aliases.yaml');
-        $loader->load('deprecated_aliases.yaml');
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
@@ -171,19 +136,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $this->loadPingServices($configs, $container);
         $this->loadPushers($configs, $container);
-
-        // Mark service aliases deprecated if able
-        if (method_exists(Alias::class, 'setDeprecated')) {
-            foreach (self::DEPRECATED_SERVICE_ALIASES as $deprecatedAlias => $newService) {
-                if ($container->hasAlias($deprecatedAlias)) {
-                    $container->getAlias($deprecatedAlias)
-                        ->setDeprecated(
-                            true,
-                            'The "%alias_id%" service alias is deprecated and will be removed in GosWebSocketBundle 3.0, you should use the "'.$newService.'" service instead.'
-                        );
-                }
-            }
-        }
     }
 
     /**
