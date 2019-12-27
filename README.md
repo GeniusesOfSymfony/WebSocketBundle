@@ -14,8 +14,13 @@ Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js)
 
 **[Demo project](https://github.com/GeniusesOfSymfony/WebsocketAppDemo)**
 
-To view the documentation for the 1.x versions of this bundle, please view the [1.x](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x) branch of this repository.
-To view the documentation for the 2.x versions of this bundle, please view the [master](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/master) branch of this repository.
+Support
+-------
+
+| Version | Status              | Symfony Versions          | Documentation                                                                             |
+| ------- | ------------------- | ------------------------- | ----------------------------------------------------------------------------------------- |
+| 1.x     | No Longer Supported | 2.3-2.8, 3.0-3.4, 4.0-4.4 | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x/Resources/docs) |
+| 2.x     | Actively Supported  | 3.4, 4.4, 5.0             | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/2.x/Resources/docs) |
 
 What can I do with this bundle?
 -------------------------------
