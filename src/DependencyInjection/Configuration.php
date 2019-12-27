@@ -25,14 +25,7 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('gos_web_socket');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('gos_web_socket');
-        }
-
-        $rootNode->children()
+        $treeBuilder->getRootNode()->children()
             ->arrayNode('client')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -145,12 +138,7 @@ final class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('wamp');
 
-        if (method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root('wamp');
-        }
+        $node = $builder->getRootNode();
 
         $node
             ->addDefaultsIfNotSet()
@@ -180,12 +168,7 @@ final class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('amqp');
 
-        if (method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root('amqp');
-        }
+        $node = $builder->getRootNode();
 
         $node
             ->addDefaultsIfNotSet()
