@@ -76,5 +76,7 @@ class WebsocketServerCommand extends Command
             $input->getOption('port') === null ? $this->port : $input->getOption('port'),
             $input->getOption('profile')
         );
+
+        return 0;
     }
 }
