@@ -2,10 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle;
 
-/**
- * @final
- */
-class GosWebSocketEvents
+final class GosWebSocketEvents
 {
     /**
      * The SERVER_LAUNCHED event occurs when a websocket server is launched.
