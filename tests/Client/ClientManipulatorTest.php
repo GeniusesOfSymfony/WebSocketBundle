@@ -12,7 +12,6 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 class ClientManipulatorTest extends TestCase
 {
@@ -366,28 +365,15 @@ class ClientManipulatorTest extends TestCase
         $storageId2 = 84;
         $storageId3 = 126;
 
-        // In Symfony 4.3 and newer, use `getRoleNames`, otherwise use the deprecated `getRoles`
-        if (method_exists(TokenInterface::class, 'getRoleNames')) {
-            $authenticatedClient1 = $this->createMock(TokenInterface::class);
-            $authenticatedClient1->expects($this->once())
-                ->method('getRoleNames')
-                ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
+        $authenticatedClient1 = $this->createMock(TokenInterface::class);
+        $authenticatedClient1->expects($this->once())
+            ->method('getRoleNames')
+            ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
 
-            $authenticatedClient2 = $this->createMock(TokenInterface::class);
-            $authenticatedClient2->expects($this->once())
-                ->method('getRoleNames')
-                ->willReturn(['ROLE_USER']);
-        } else {
-            $authenticatedClient1 = $this->createMock(TokenInterface::class);
-            $authenticatedClient1->expects($this->once())
-                ->method('getRoles')
-                ->willReturn([new Role('ROLE_USER'), new Role('ROLE_STAFF')]);
-
-            $authenticatedClient2 = $this->createMock(TokenInterface::class);
-            $authenticatedClient2->expects($this->once())
-                ->method('getRoles')
-                ->willReturn([new Role('ROLE_USER')]);
-        }
+        $authenticatedClient2 = $this->createMock(TokenInterface::class);
+        $authenticatedClient2->expects($this->once())
+            ->method('getRoleNames')
+            ->willReturn(['ROLE_USER']);
 
         $guestClient = $this->createMock(AnonymousToken::class);
 
