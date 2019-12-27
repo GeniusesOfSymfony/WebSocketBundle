@@ -44,8 +44,8 @@ class OriginCheck extends BaseOriginCheck
 
             if (!\in_array($origin, $this->allowedOrigins)) {
                 $this->eventDispatcher->dispatch(
-                    GosWebSocketEvents::CLIENT_REJECTED,
-                    new ClientRejectedEvent($origin, $request)
+                    new ClientRejectedEvent($origin, $request),
+                    GosWebSocketEvents::CLIENT_REJECTED
                 );
 
                 return $this->close($conn, 403);

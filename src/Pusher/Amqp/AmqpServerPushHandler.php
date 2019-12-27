@@ -54,7 +54,10 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
                     $queue->ack($envelope->getDeliveryTag());
-                    $this->eventDispatcher->dispatch(GosWebSocketEvents::PUSHER_SUCCESS, new PushHandlerEvent($envelope->getBody(), $this));
+                    $this->eventDispatcher->dispatch(
+                        new PushHandlerEvent($envelope->getBody(), $this),
+                        GosWebSocketEvents::PUSHER_SUCCESS
+                    );
                 } catch (\Exception $e) {
                     if (null !== $this->logger) {
                         $this->logger->error(
@@ -68,8 +71,8 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
 
                     $queue->reject($envelope->getDeliveryTag());
                     $this->eventDispatcher->dispatch(
-                        GosWebSocketEvents::PUSHER_FAIL,
-                        new PushHandlerEvent($envelope->getBody(), $this)
+                        new PushHandlerEvent($envelope->getBody(), $this),
+                        GosWebSocketEvents::PUSHER_FAIL
                     );
                 }
 

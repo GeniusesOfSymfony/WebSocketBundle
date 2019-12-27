@@ -48,8 +48,10 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
         );
 
         // Server Event Loop to add other services in the same loop.
-        $event = new ServerEvent($this->loop, $server, $profile);
-        $this->eventDispatcher->dispatch(GosWebSocketEvents::SERVER_LAUNCHED, $event);
+        $this->eventDispatcher->dispatch(
+            new ServerEvent($this->loop, $server, $profile),
+            GosWebSocketEvents::SERVER_LAUNCHED
+        );
 
         if (null !== $this->logger) {
             $this->logger->info(
