@@ -183,64 +183,6 @@ class ClientManipulatorTest extends TestCase
         );
     }
 
-    public function testAUserCanBeFoundByUsernameIfConnected(): void
-    {
-        $connection = $this->createMock(ConnectionInterface::class);
-        $storageId = 42;
-        $username = 'user';
-
-        $client = $this->createMock(TokenInterface::class);
-        $client->expects($this->once())
-            ->method('getUsername')
-            ->willReturn($username);
-
-        $this->clientStorage->expects($this->once())
-            ->method('getStorageId')
-            ->with($connection)
-            ->willReturn((string) $storageId);
-
-        $this->clientStorage->expects($this->once())
-            ->method('getClient')
-            ->with($storageId)
-            ->willReturn($client);
-
-        $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
-            ->method('getIterator')
-            ->willReturn(new \ArrayIterator([$connection]));
-
-        $this->assertSame(
-            ['client' => $client, 'connection' => $connection],
-            $this->manipulator->findByUsername($topic, $username)
-        );
-    }
-
-    public function testAUserCanNotBeFoundByUsernameIfNotConnected(): void
-    {
-        $connection = $this->createMock(ConnectionInterface::class);
-        $storageId = 42;
-        $username = 'user';
-
-        $client = $this->createMock(AnonymousToken::class);
-
-        $this->clientStorage->expects($this->once())
-            ->method('getStorageId')
-            ->with($connection)
-            ->willReturn((string) $storageId);
-
-        $this->clientStorage->expects($this->once())
-            ->method('getClient')
-            ->with($storageId)
-            ->willReturn($client);
-
-        $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
-            ->method('getIterator')
-            ->willReturn(new \ArrayIterator([$connection]));
-
-        $this->assertFalse($this->manipulator->findByUsername($topic, $username));
-    }
-
     public function testFetchingAllConnectionsByDefaultOnlyReturnsAuthenticatedUsers(): void
     {
         $connection1 = $this->createMock(ConnectionInterface::class);

@@ -9,3 +9,4 @@
 
 - Removed deprecated service IDs
 - Removed deprecated `Gos\Bundle\WebSocketBundle\Event\Events` class, use `Gos\Bundle\WebSocketBundle\GosWebSocketEvents` instead
+- Removed deprecated `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::findByUsername()` method, use `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::findAllByUsername()` instead

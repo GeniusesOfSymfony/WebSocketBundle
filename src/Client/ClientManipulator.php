@@ -83,31 +83,6 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return array{client: TokenInterface, connection: ConnectionInterface}|bool
-     *
-     * @deprecated to be removed in 3.0. Use findAllByUsername() instead.
-     */
-    public function findByUsername(Topic $topic, string $username)
-    {
-        @trigger_error(
-            sprintf(
-                'The %s() method is deprecated will be removed in 3.0. Use %s::findAllByUsername() instead.',
-                __METHOD__,
-                ClientManipulatorInterface::class
-            ),
-            E_USER_DEPRECATED
-        );
-
-        $connections = $this->findAllByUsername($topic, $username);
-
-        if (empty($connections)) {
-            return false;
-        }
-
-        return $connections[array_key_first($connections)];
-    }
-
-    /**
      * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
      */
     public function getAll(Topic $topic, bool $anonymous = false): array
