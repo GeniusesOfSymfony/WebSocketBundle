@@ -14,12 +14,10 @@ env:
 
 matrix:
   include:
-    - php: 7.2
-    # Build ensuring minimum dependencies are valid
-    - php: 7.2
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.3
     - php: 7.4
+    # Build ensuring minimum dependencies are valid
+    - php: 7.4
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.4
       env: SYMFONY_REQUIRE="5.0.*" COVERAGE="no"
     - php: 7.4
