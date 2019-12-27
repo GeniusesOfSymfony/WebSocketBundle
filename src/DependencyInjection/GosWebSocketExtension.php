@@ -65,14 +65,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new Loader\YamlFileLoader(
-            $container,
-            new FileLocator(__DIR__.'/../Resources/config/services')
-        );
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
-        $loader->load('services.yml');
-        $loader->load('aliases.yml');
-        $loader->load('deprecated_aliases.yml');
+        $loader->load('services.yaml');
+        $loader->load('aliases.yaml');
+        $loader->load('deprecated_aliases.yaml');
 
         $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 

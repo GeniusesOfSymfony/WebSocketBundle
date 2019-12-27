@@ -5,11 +5,11 @@ const uglify = require('gulp-uglify');
 const wrap = require('gulp-wrap');
 
 gulp.task('js', () => {
-    return gulp.src('js/websocket.js')
+    return gulp.src('assets/js/websocket.js')
         .pipe(babel({
             presets: ['@babel/preset-env']
         }))
-        .pipe(wrap({src: 'js/websocket.template.js'}))
+        .pipe(wrap({src: 'assets/js/websocket.template.js'}))
         .pipe(gulp.dest('public/js'))
         .pipe(rename({extname: '.min.js'}))
         .pipe(uglify())

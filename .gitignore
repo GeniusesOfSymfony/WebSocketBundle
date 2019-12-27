@@ -5,5 +5,5 @@ composer.lock
 .php_cs.cache
 /.php_cs
 /.phpstan.neon
-/Resources/node_modules/
-/Resources/package-lock.json
+/node_modules/
+/package-lock.json

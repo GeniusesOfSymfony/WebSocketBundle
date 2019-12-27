@@ -29,4 +29,9 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new DataCollectorCompilerPass())
         ;
     }
+
+    public function getPath(): string
+    {
+    	return \dirname(__DIR__);
+    }
 }
