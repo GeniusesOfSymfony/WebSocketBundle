@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\DataCollector;
+namespace Gos\Bundle\WebSocketBundle\Tests\Pusher;
 
-use Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator;
 use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
+use Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Stopwatch\StopwatchEvent;
 
-class PusherDecoratorTest extends TestCase
+class DataCollectingPusherDecoratorTest extends TestCase
 {
     /**
      * @var MockObject|PusherInterface
@@ -28,7 +28,7 @@ class PusherDecoratorTest extends TestCase
     private $collector;
 
     /**
-     * @var PusherDecorator
+     * @var DataCollectingPusherDecorator
      */
     private $decorator;
 
@@ -40,7 +40,7 @@ class PusherDecoratorTest extends TestCase
         $this->stopwatch = $this->createMock(Stopwatch::class);
         $this->collector = new WebsocketDataCollector();
 
-        $this->decorator = new PusherDecorator($this->pusher, $this->stopwatch, $this->collector);
+        $this->decorator = new DataCollectingPusherDecorator($this->pusher, $this->stopwatch, $this->collector);
     }
 
     public function testAPushIsProfiled(): void

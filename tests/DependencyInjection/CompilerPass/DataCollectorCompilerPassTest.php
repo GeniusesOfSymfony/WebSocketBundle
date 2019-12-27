@@ -2,9 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection\CompilerPass;
 
-use Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator;
 use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\DataCollectorCompilerPass;
+use Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
@@ -50,7 +50,7 @@ class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.data_collector', PusherDecorator::class);
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.data_collector', DataCollectingPusherDecorator::class);
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.pusher.wamp.data_collector',
             0,
