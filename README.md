@@ -17,10 +17,10 @@ Powered By [Ratchet](http://socketo.me) and [Autobahn JS](http://autobahn.ws/js)
 Support
 -------
 
-| Version | Status              | Symfony Versions          | Documentation                                                                             |
-| ------- | ------------------- | ------------------------- | ----------------------------------------------------------------------------------------- |
-| 1.x     | No Longer Supported | 2.3-2.8, 3.0-3.4, 4.0-4.4 | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x/Resources/docs) |
-| 2.x     | Actively Supported  | 3.4, 4.4, 5.0             | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/2.x/Resources/docs) |
+| Version | Status                       | Symfony Versions          | Documentation                                                                             |
+| ------- | ---------------------------- | ------------------------- | ----------------------------------------------------------------------------------------- |
+| 1.x     | Bug Fixes Until July 1, 2020 | 2.3-2.8, 3.0-3.4, 4.0-4.4 | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x/Resources/docs) |
+| 2.x     | Actively Supported           | 3.4, 4.4, 5.0             | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/2.x/Resources/docs) |
 
 What can I do with this bundle?
 -------------------------------
