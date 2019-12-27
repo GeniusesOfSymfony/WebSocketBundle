@@ -4,14 +4,13 @@ build:
       environment:
         php:
           version: 7.2
-          pecl_extensions:
-            - amqp
 
       services:
         rabbitmq: 3-management
 
       dependencies:
         before:
+          - pecl install amqp
           - composer require --dev --no-update gos/react-amqp:^0.3
 
       cache:
