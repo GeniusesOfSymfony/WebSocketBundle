@@ -1,16 +1,26 @@
-imports:
-  - php
-
 build:
   nodes:
     analysis:
+      environment:
+        php:
+          version: 7.2
+
+      cache:
+        disabled: false
+        directories:
+          - ~/.composer/cache
+
+      project_setup:
+        override: true
+
       tests:
         override:
           - php-scrutinizer-run
 
-filter:
-  excluded_paths:
-    - Tests/*
+before_commands:
+  - "composer install --no-dev --prefer-source -a"
 
 tools:
-  external_code_coverage: false
+  external_code_coverage:
+    timeout: 3000
+    runs: 4
