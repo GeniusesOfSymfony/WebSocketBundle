@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Ratchet\ConnectionInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>

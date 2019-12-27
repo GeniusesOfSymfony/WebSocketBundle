@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ServerEvent extends Event
 {

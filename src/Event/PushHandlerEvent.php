@@ -3,7 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Event;
 
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class PushHandlerEvent extends Event
 {
