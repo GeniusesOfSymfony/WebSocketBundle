@@ -36,7 +36,6 @@
         "doctrine/cache": "^1.8",
         "doctrine/dbal": "^2.9",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "gos/react-amqp": "^0.3",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
         "phpstan/extension-installer": "^1.0.3",
         "phpstan/phpstan": "^0.12.3",
