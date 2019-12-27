@@ -5,6 +5,13 @@ build:
         php:
           version: 7.2
 
+      services:
+        rabbitmq: 3-management
+
+      dependencies:
+        before:
+          - pecl install amqp
+
       cache:
         disabled: false
         directories:
@@ -18,6 +25,7 @@ build:
           - php-scrutinizer-run
 
 before_commands:
+  - "composer require --dev --no-update gos/react-amqp:^0.3"
   - "composer install --no-dev --prefer-source -a"
 
 tools:
