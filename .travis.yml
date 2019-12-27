@@ -8,7 +8,7 @@ addons:
 
 env:
   global:
-    - SYMFONY_REQUIRE="3.4.*"
+    - SYMFONY_REQUIRE="4.4.*"
     - COMPOSER_FLAGS="--prefer-stable"
     - COVERAGE="yes"
 
@@ -19,15 +19,13 @@ matrix:
     - php: 7.2
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.3
-      env: SYMFONY_REQUIRE="4.4.*"
     - php: 7.4
-      env: SYMFONY_REQUIRE="4.4.*"
     - php: 7.4
       env: SYMFONY_REQUIRE="5.0.*" COVERAGE="no"
     - php: 7.4
       env: SYMFONY_REQUIRE="5.1.*@dev" COVERAGE="no"
     - php: nightly
-      env: SYMFONY_REQUIRE="4.4.*" COVERAGE="no"
+      env: COVERAGE="no"
   allow_failures:
     # Allow failures with Symfony 5.0 until Ratchet is updated to support it
     - php: 7.4
@@ -36,7 +34,7 @@ matrix:
     - php: 7.4
       env: SYMFONY_REQUIRE="5.1.*@dev" COVERAGE="no"
     - php: nightly
-      env: SYMFONY_REQUIRE="4.4.*" COVERAGE="no"
+      env: COVERAGE="no"
 
 cache:
   directories:
