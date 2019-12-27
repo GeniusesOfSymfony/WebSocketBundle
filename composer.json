@@ -51,6 +51,9 @@
         "symfony/twig-bundle": "^3.4 || ^4.4 || ^5.0",
         "symfony/web-profiler-bundle": "^3.4 || ^4.4 || ^5.0"
     },
+    "conflict": {
+        "gos/react-amqp": "<0.3"
+    },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" },
         "exclude-from-classmap": [
