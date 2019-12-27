@@ -13,6 +13,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class ClientManipulatorTest extends TestCase
 {
@@ -302,12 +303,12 @@ class ClientManipulatorTest extends TestCase
         $storageId2 = 84;
         $storageId3 = 126;
 
-        $authenticatedClient1 = $this->createMock(TokenInterface::class);
+        $authenticatedClient1 = $this->createMock(UsernamePasswordToken::class);
         $authenticatedClient1->expects($this->once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
 
-        $authenticatedClient2 = $this->createMock(TokenInterface::class);
+        $authenticatedClient2 = $this->createMock(UsernamePasswordToken::class);
         $authenticatedClient2->expects($this->once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER']);
