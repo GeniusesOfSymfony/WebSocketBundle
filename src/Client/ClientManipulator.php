@@ -23,7 +23,7 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
+     * @return ClientConnection[]
      */
     public function findAllByUsername(Topic $topic, string $username): array
     {
@@ -38,7 +38,7 @@ final class ClientManipulator implements ClientManipulatorInterface
             }
 
             if ($client->getUsername() === $username) {
-                $result[] = ['client' => $client, 'connection' => $connection];
+                $result[] = new ClientConnection($client, $connection);
             }
         }
 
@@ -46,11 +46,11 @@ final class ClientManipulator implements ClientManipulatorInterface
     }
 
     /**
-     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
+     * @return ClientConnection[]
      */
     public function findByRoles(Topic $topic, array $roles): array
     {
-        $results = [];
+        $result = [];
 
         /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
@@ -62,25 +62,22 @@ final class ClientManipulator implements ClientManipulatorInterface
 
             foreach ($client->getRoleNames() as $role) {
                 if (\in_array($role, $roles)) {
-                    $results[] = [
-                        'client' => $client,
-                        'connection' => $connection,
-                    ];
+                    $result[] = new ClientConnection($client, $connection);
 
                     continue 1;
                 }
             }
         }
 
-        return $results;
+        return $result;
     }
 
     /**
-     * @return array<int, array{client: TokenInterface, connection: ConnectionInterface}>
+     * @return ClientConnection[]
      */
     public function getAll(Topic $topic, bool $anonymous = false): array
     {
-        $results = [];
+        $result = [];
 
         /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
@@ -90,13 +87,10 @@ final class ClientManipulator implements ClientManipulatorInterface
                 continue;
             }
 
-            $results[] = [
-                'client' => $client,
-                'connection' => $connection,
-            ];
+            $result[] = new ClientConnection($client, $connection);
         }
 
-        return $results;
+        return $result;
     }
 
     public function getClient(ConnectionInterface $connection): TokenInterface

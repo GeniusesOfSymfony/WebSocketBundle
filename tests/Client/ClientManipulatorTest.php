@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Client;
 
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientConnection;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulator;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
@@ -170,14 +171,8 @@ class ClientManipulatorTest extends TestCase
 
         $this->assertEquals(
             [
-                [
-                    'client' => $client1,
-                    'connection' => $connection1,
-                ],
-                [
-                    'client' => $client2,
-                    'connection' => $connection2,
-                ],
+                new ClientConnection($client1, $connection1),
+                new ClientConnection($client2, $connection2),
             ],
             $this->manipulator->findAllByUsername($topic, $username1)
         );
@@ -228,9 +223,9 @@ class ClientManipulatorTest extends TestCase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2]));
 
-        $this->assertSame(
+        $this->assertEquals(
             [
-                ['client' => $authenticatedClient, 'connection' => $connection1],
+                new ClientConnection($authenticatedClient, $connection1),
             ],
             $this->manipulator->getAll($topic)
         );
@@ -290,8 +285,8 @@ class ClientManipulatorTest extends TestCase
 
         $this->assertEquals(
             [
-                ['client' => $authenticatedClient, 'connection' => $connection1],
-                ['client' => $guestClient, 'connection' => $connection2],
+                new ClientConnection($authenticatedClient, $connection1),
+                new ClientConnection($guestClient, $connection2),
             ],
             $this->manipulator->getAll($topic, true)
         );
@@ -365,9 +360,9 @@ class ClientManipulatorTest extends TestCase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2, $connection3]));
 
-        $this->assertSame(
+        $this->assertEquals(
             [
-                ['client' => $authenticatedClient1, 'connection' => $connection1],
+                new ClientConnection($authenticatedClient1, $connection1),
             ],
             $this->manipulator->findByRoles($topic, ['ROLE_STAFF'])
         );
