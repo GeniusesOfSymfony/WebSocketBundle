@@ -27,17 +27,17 @@ final class RpcDispatcher implements RpcDispatcherInterface
             throw new \InvalidArgumentException(sprintf('Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.', __METHOD__, WampConnection::class, \get_class($conn)));
         }
 
-        $callback = $request->route->getCallback();
+        $callback = $request->getRoute()->getCallback();
 
         if (!\is_string($callback)) {
-            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->routeName));
+            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
         }
 
         if (!$this->rpcRegistry->hasRpc($callback)) {
             $conn->callError(
                 $id,
                 $topic,
-                sprintf('A RPC handler for the "%s" route has not been registered.', $request->routeName),
+                sprintf('A RPC handler for the "%s" route has not been registered.', $request->getRouteName()),
                 [
                     'code' => 404,
                     'rpc' => $topic,
@@ -51,7 +51,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
 
         $procedure = $this->rpcRegistry->getRpc($callback);
 
-        $method = $this->toCamelCase($request->attributes->get('method'));
+        $method = $this->toCamelCase($request->getAttributes()->get('method'));
 
         if (!method_exists($procedure, $method)) {
             $conn->callError(

@@ -186,7 +186,7 @@ class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
     public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
     {
         // Check input data to verify if connection must be blocked
-        if ($request->attributes->has('denied')) {
+        if ($request->getAttributes()->has('denied')) {
             throw new FirewallRejectionException('Access denied');
         }
 

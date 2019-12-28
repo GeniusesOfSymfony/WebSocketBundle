@@ -7,7 +7,6 @@
 - Renamed `Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator` to `Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator`
 - Made event classes final
 - The methods of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` now return an array containing instances of `Gos\Bundle\WebSocketBundle\Client\ClientConnection`, accessing the array properties is supported however deprecated and will be removed in 4.0.
-- The getter methods of `Gos\Bundle\WebSocketBundle\Router\WampRequest` are deprecated and will be removed in 4.0, access the class properties directly
 
 ## Removals
 

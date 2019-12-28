@@ -84,7 +84,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
                 sprintf('Pusher %s has pushed', $provider),
                 [
                     'provider' => $provider,
-                    'topic' => $request->matched,
+                    'topic' => $request->getMatched(),
                 ]
             );
         }

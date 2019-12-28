@@ -57,7 +57,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
      */
     public function onPush(WampRequest $request, $data, string $provider): void
     {
-        $topic = $this->topicManager->getTopic($request->matched);
+        $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
@@ -98,10 +98,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ?array $eligible = null,
         ?string $provider = null
     ): bool {
-        $callback = $request->route->getCallback();
+        $callback = $request->getRoute()->getCallback();
 
         if (!\is_string($callback)) {
-            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->routeName));
+            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
         }
 
         if (!$this->topicRegistry->hasTopic($callback)) {
