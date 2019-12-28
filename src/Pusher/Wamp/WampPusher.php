@@ -31,7 +31,7 @@ final class WampPusher extends AbstractPusher
             $this->setConnected();
         }
 
-        $this->connection->publish($message->topic, $this->serializer->serialize($message->data, 'json'));
+        $this->connection->publish($message->getTopic(), $this->serializer->serialize($message->getData(), 'json'));
     }
 
     public function close(): void
