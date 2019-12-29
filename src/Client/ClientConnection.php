@@ -7,8 +7,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class ClientConnection implements \ArrayAccess
 {
-    public TokenInterface $client;
-    public ConnectionInterface $connection;
+    private TokenInterface $client;
+    private ConnectionInterface $connection;
 
     public function __construct(TokenInterface $client, ConnectionInterface $connection)
     {
@@ -16,11 +16,21 @@ final class ClientConnection implements \ArrayAccess
         $this->connection = $connection;
     }
 
+    public function getClient(): TokenInterface
+    {
+        return $this->client;
+    }
+
+    public function getConnection(): ConnectionInterface
+    {
+        return $this->connection;
+    }
+
     public function offsetExists($offset): bool
     {
         @trigger_error(
             sprintf(
-                'Accessing properties from %s as an array is deprecated, access the class properties directly.',
+                'Accessing properties from %s as an array is deprecated, use the getters to access the properties.',
                 self::class
             ),
             E_USER_DEPRECATED
@@ -33,7 +43,7 @@ final class ClientConnection implements \ArrayAccess
     {
         @trigger_error(
             sprintf(
-                'Accessing properties from %s as an array is deprecated, access the class properties directly.',
+                'Accessing properties from %s as an array is deprecated, use the getters to access the properties.',
                 self::class
             ),
             E_USER_DEPRECATED
