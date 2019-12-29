@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\RPC\RpcResponse;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -103,9 +102,7 @@ final class RpcDispatcher implements RpcDispatcherInterface
             return;
         }
 
-        if ($result instanceof RpcResponse) {
-            $result = $result->getData();
-        } elseif (!\is_array($result)) {
+        if (!\is_array($result)) {
             $result = [$result];
         }
 

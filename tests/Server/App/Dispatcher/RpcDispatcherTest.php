@@ -5,7 +5,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
-use Gos\Bundle\WebSocketBundle\RPC\RpcResponse;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use PHPUnit\Framework\TestCase;
@@ -44,11 +43,11 @@ class RpcDispatcherTest extends TestCase
                 return '@rpc.handler';
             }
 
-            public function handleCallback(): RpcResponse
+            public function handleCallback(): array
             {
                 $this->called = true;
 
-                return new RpcResponse([]);
+                return [];
             }
 
             public function wasCalled(): bool
@@ -87,11 +86,11 @@ class RpcDispatcherTest extends TestCase
                 return '@rpc.handler';
             }
 
-            public function handleCallback(): RpcResponse
+            public function handleCallback(): array
             {
                 $this->called = true;
 
-                return new RpcResponse([]);
+                return [];
             }
 
             public function wasCalled(): bool
@@ -128,11 +127,11 @@ class RpcDispatcherTest extends TestCase
                 return '@rpc.handler';
             }
 
-            public function handleCallback(): RpcResponse
+            public function handleCallback(): array
             {
                 $this->called = true;
 
-                return new RpcResponse([]);
+                return [];
             }
 
             public function wasCalled(): bool
@@ -169,7 +168,7 @@ class RpcDispatcherTest extends TestCase
                 return '@rpc.handler';
             }
 
-            public function handleCallback(): RpcResponse
+            public function handleCallback(): void
             {
                 throw new \Exception('Testing');
             }
