@@ -2,17 +2,12 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server;
 
-use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\Wamp\ServerProtocol;
+use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
-/**
- * Class WampServer.
- *
- * @author Edu Salguero <edusalguero@gmail.com>
- */
 class WampServer implements MessageComponentInterface, WsServerInterface
 {
     /**
@@ -20,26 +15,18 @@ class WampServer implements MessageComponentInterface, WsServerInterface
      */
     protected $wampProtocol;
 
-    /**
-     * This class just makes it 1 step easier to use Topic objects in WAMP
-     * If you're looking at the source code, look in the __construct of this
-     * class and use that to make your application instead of using this.
-     */
-    public function __construct(TopicManager $topicManager)
+    public function __construct(WampServerInterface $serverComponent)
     {
-        $this->wampProtocol = new ServerProtocol($topicManager);
+        $this->wampProtocol = new ServerProtocol($serverComponent);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onOpen(ConnectionInterface $conn): void
     {
         $this->wampProtocol->onOpen($conn);
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $msg
      */
     public function onMessage(ConnectionInterface $conn, $msg): void
     {
@@ -50,26 +37,17 @@ class WampServer implements MessageComponentInterface, WsServerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onClose(ConnectionInterface $conn): void
     {
         $this->wampProtocol->onClose($conn);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $this->wampProtocol->onError($conn, $e);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSubProtocols()
+    public function getSubProtocols(): array
     {
         return $this->wampProtocol->getSubProtocols();
     }
