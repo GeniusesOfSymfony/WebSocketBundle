@@ -233,15 +233,13 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     private function loadPushers(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['pushers'])) {
-            // Untag all of the pushers
+            // Remove all of the pushers
             foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
-                $container->getDefinition($pusher)
-                    ->clearTag('gos_web_socket.pusher');
+                $container->removeDefinition($pusher);
             }
 
             foreach (['gos_web_socket.pusher.amqp.push_handler'] as $pusher) {
-                $container->getDefinition($pusher)
-                    ->clearTag('gos_web_socket.push_handler');
+                $container->removeDefinition($pusher);
             }
 
             return;
@@ -272,11 +270,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
                 ->setArgument(3, new Reference('gos_web_socket.pusher.amqp.connection_factory'));
         } else {
-            $container->getDefinition('gos_web_socket.pusher.amqp')
-                ->clearTag('gos_web_socket.pusher');
-
-            $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
-                ->clearTag('gos_web_socket.push_handler');
+            $container->removeDefinition('gos_web_socket.pusher.amqp');
+            $container->removeDefinition('gos_web_socket.pusher.amqp.push_handler');
         }
 
         if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
@@ -302,8 +297,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->getDefinition('gos_web_socket.pusher.wamp')
                 ->setArgument(2, new Reference('gos_web_socket.pusher.wamp.connection_factory'));
         } else {
-            $container->getDefinition('gos_web_socket.pusher.wamp')
-                ->clearTag('gos_web_socket.pusher');
+            $container->removeDefinition('gos_web_socket.pusher.wamp');
         }
     }
 
