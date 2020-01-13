@@ -33,6 +33,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.prefix');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.amqp');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.wamp');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.amqp.push_handler');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -384,6 +387,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp');
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.connection_factory');
 
         $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.pusher.wamp.connection_factory'));
@@ -419,6 +423,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load($bundleConfig);
 
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp');
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.push_handler');
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.connection_factory');
 
         $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.pusher.amqp.connection_factory'));
