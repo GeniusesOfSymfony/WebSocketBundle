@@ -6,6 +6,11 @@ use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
+@trigger_error(sprintf('The %s class is deprecated will be removed in 3.0. Use the %s class instead.', ServerEvent::class, ServerLaunchedEvent::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated to be removed in 3.0. Use the Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent class instead.
+ */
 class ServerEvent extends Event
 {
     /**

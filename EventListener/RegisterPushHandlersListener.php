@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -28,7 +28,7 @@ final class RegisterPushHandlersListener implements LoggerAwareInterface
         $this->wampServer = $wampServer;
     }
 
-    public function registerPushHandlers(ServerEvent $event): void
+    public function registerPushHandlers(ServerLaunchedEvent $event): void
     {
         $loop = $event->getEventLoop();
 

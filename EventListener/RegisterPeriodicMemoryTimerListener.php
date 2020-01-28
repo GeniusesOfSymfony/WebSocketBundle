@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
@@ -22,7 +22,7 @@ final class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
         $this->periodicRegistry = $periodicRegistry;
     }
 
-    public function registerPeriodicHandler(ServerEvent $event): void
+    public function registerPeriodicHandler(ServerLaunchedEvent $event): void
     {
         if (!$event->isProfiling()) {
             return;

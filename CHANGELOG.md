@@ -6,6 +6,7 @@
 - Add new subclasses of `Gos\Bundle\WebSocketBundle\Event\ClientEvent` for the `GosWebSocketEvents::CLIENT_CONNECTED` and `GosWebSocketEvents::CLIENT_DISCONNECTED` events
 - Deprecated `Gos\Bundle\WebSocketBundle\Event\ClientEvent::getType()`, the `$type` argument of the class' constructor, and the type constants within the class; check the event type based on the subclass instead
 - Add new subclasses of `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` for the `GosWebSocketEvents::PUSHER_SUCCESS` and `GosWebSocketEvents::PUSHER_FAIL` events
+- Deprecated `Gos\Bundle\WebSocketBundle\Event\ServerEvent`, use the `Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent` class instead
 
 ## 2.1.0 (2020-01-07)
 

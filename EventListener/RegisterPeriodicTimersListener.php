@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use ProxyManager\Proxy\ProxyInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -22,7 +22,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
         $this->periodicRegistry = $periodicRegistry;
     }
 
-    public function registerPeriodics(ServerEvent $event): void
+    public function registerPeriodics(ServerLaunchedEvent $event): void
     {
         $loop = $event->getEventLoop();
 

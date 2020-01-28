@@ -2,12 +2,13 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
+use React\Socket\ServerInterface;
 
 class RegisterPeriodicTimersListenerTest extends TestCase
 {
@@ -43,10 +44,11 @@ class RegisterPeriodicTimersListenerTest extends TestCase
         $loop->expects($this->once())
             ->method('addPeriodicTimer');
 
-        $event = $this->createMock(ServerEvent::class);
-        $event->expects($this->once())
-            ->method('getEventLoop')
-            ->willReturn($loop);
+        $event = new ServerLaunchedEvent(
+            $loop,
+            $this->createMock(ServerInterface::class),
+            false
+        );
 
         $this->listener->registerPeriodics($event);
     }

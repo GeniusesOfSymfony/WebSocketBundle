@@ -12,7 +12,7 @@ class GosWebSocketEvents
      *
      * This event allows you to add services to the event loop for the server.
      *
-     * @Event("Gos\Bundle\WebSocketBundle\Event\ServerEvent")
+     * @Event("Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent")
      */
     public const SERVER_LAUNCHED = 'gos_web_socket.server_launched';
 
