@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
-use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;

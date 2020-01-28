@@ -5,9 +5,6 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Ratchet\ConnectionInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @author Johann Saunier <johann_27@hotmail.fr>
- */
 abstract class ClientEvent extends Event
 {
     protected ConnectionInterface $connection;
