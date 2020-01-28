@@ -7,10 +7,7 @@
 - Renamed `Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator` to `Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator`
 - Made event classes final
 - The methods of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` now return an array containing instances of `Gos\Bundle\WebSocketBundle\Client\ClientConnection`, accessing the array properties is supported however deprecated and will be removed in 4.0.
-- All dispatched events now have separate event classes, the new client event classes extend from `Gos\Bundle\WebSocketBundle\Event\ClientEvent` so existing typehints will be compatible with the reorganization
 - The `Gos\Bundle\WebSocketBundle\Event\ClientEvent` and `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` classes are now abstract
-- Renamed event classes:
-    - `Gos\Bundle\WebSocketBundle\Event\ServerEvent` is now `Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent`
 
 ## Removals
 
@@ -20,3 +17,4 @@
 - Removed deprecated `Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver` class, use another supported storage driver
 - Removed deprecated `Gos\Bundle\WebSocketBundle\RPC\RpcResponse` class, return responses from RPC handlers as arrays or implement a custom dispatcher with support for DTOs
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientEvent::getType()`, the `$type` argument from the class' constructor, and the type constants in the class; each event type now has a distinct subclass
+- Removed deprecated `Gos\Bundle\WebSocketBundle\Event\ServerEvent` class, use `Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent` instead

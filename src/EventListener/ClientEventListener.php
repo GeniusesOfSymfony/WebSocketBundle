@@ -6,8 +6,9 @@ use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterf
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
+use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
-use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -30,12 +31,12 @@ final class ClientEventListener implements LoggerAwareInterface
         $this->authenticationProvider = $authenticationProvider;
     }
 
-    public function onClientConnect(ClientEvent $event): void
+    public function onClientConnect(ClientConnectedEvent $event): void
     {
         $this->authenticationProvider->authenticate($event->getConnection());
     }
 
-    public function onClientDisconnect(ClientEvent $event): void
+    public function onClientDisconnect(ClientDisconnectedEvent $event): void
     {
         $conn = $event->getConnection();
         $storageId = $this->clientStorage->getStorageId($conn);

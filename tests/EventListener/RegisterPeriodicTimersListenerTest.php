@@ -44,7 +44,11 @@ class RegisterPeriodicTimersListenerTest extends TestCase
         $loop->expects($this->once())
             ->method('addPeriodicTimer');
 
-        $event = new ServerLaunchedEvent($loop, $this->createMock(ServerInterface::class), false);
+        $event = new ServerLaunchedEvent(
+            $loop,
+            $this->createMock(ServerInterface::class),
+            false
+        );
 
         $this->listener->registerPeriodics($event);
     }

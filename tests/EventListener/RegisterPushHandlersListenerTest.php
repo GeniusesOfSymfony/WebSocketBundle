@@ -54,7 +54,11 @@ class RegisterPushHandlersListenerTest extends TestCase
 
         $this->pushHandlerRegistry->addPushHandler($handler);
 
-        $event = new ServerLaunchedEvent($loop, $this->createMock(ServerInterface::class), false);
+        $event = new ServerLaunchedEvent(
+            $loop,
+            $this->createMock(ServerInterface::class),
+            false
+        );
 
         $this->listener->registerPushHandlers($event);
     }

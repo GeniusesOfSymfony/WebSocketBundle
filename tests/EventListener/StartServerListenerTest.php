@@ -23,7 +23,7 @@ class StartServerListenerTest extends TestCase
     private $serverPushHandlerRegistry;
 
     /**
-     * @var \Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
+     * @var StartServerListener
      */
     private $listener;
 
@@ -46,7 +46,11 @@ class StartServerListenerTest extends TestCase
         $loop->expects($this->once())
             ->method('addSignal');
 
-        $event = new ServerLaunchedEvent($loop, $this->createMock(ServerInterface::class), false);
+        $event = new ServerLaunchedEvent(
+            $loop,
+            $this->createMock(ServerInterface::class),
+            false
+        );
 
         $this->listener->bindPnctlEvent($event);
     }
