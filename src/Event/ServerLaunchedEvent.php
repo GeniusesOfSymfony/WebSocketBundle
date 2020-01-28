@@ -6,7 +6,7 @@ use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final class ServerEvent extends Event
+final class ServerLaunchedEvent extends Event
 {
     private LoopInterface $loop;
     private ServerInterface $server;

@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\StartServerListener;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
@@ -46,7 +46,7 @@ class StartServerListenerTest extends TestCase
         $loop->expects($this->once())
             ->method('addSignal');
 
-        $event = new ServerEvent($loop, $this->createMock(ServerInterface::class), false);
+        $event = new ServerLaunchedEvent($loop, $this->createMock(ServerInterface::class), false);
 
         $this->listener->bindPnctlEvent($event);
     }

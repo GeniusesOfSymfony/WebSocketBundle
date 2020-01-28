@@ -8,29 +8,17 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class ClientEvent extends Event
+abstract class ClientEvent extends Event
 {
-    public const CONNECTED = 1;
-    public const DISCONNECTED = 2;
-    public const ERROR = 3;
-    public const REJECTED = 4;
-
     protected ConnectionInterface $connection;
-    protected int $type;
 
-    public function __construct(ConnectionInterface $connection, int $type)
+    public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
-        $this->type = $type;
     }
 
     public function getConnection(): ConnectionInterface
     {
         return $this->connection;
-    }
-
-    public function getType(): int
-    {
-        return $this->type;
     }
 }

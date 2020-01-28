@@ -6,8 +6,9 @@ use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterf
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
+use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
-use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,7 +35,7 @@ class ClientEventListenerTest extends TestCase
     private $logger;
 
     /**
-     * @var \Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener
+     * @var ClientEventListener
      */
     private $listener;
 
@@ -47,7 +48,7 @@ class ClientEventListenerTest extends TestCase
 
         $this->logger = new TestLogger();
 
-        $this->listener = new \Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener($this->clientStorage, $this->authenticationProvider);
+        $this->listener = new ClientEventListener($this->clientStorage, $this->authenticationProvider);
         $this->listener->setLogger($this->logger);
     }
 
@@ -55,10 +56,7 @@ class ClientEventListenerTest extends TestCase
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
-        $event = $this->createMock(ClientEvent::class);
-        $event->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
+        $event = new ClientConnectedEvent($connection);
 
         $this->authenticationProvider->expects($this->once())
             ->method('authenticate')
@@ -81,10 +79,7 @@ class ClientEventListenerTest extends TestCase
             ->method('getUsername')
             ->willReturn('username');
 
-        $event = $this->createMock(ClientEvent::class);
-        $event->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
+        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -120,10 +115,7 @@ class ClientEventListenerTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $event = $this->createMock(ClientEvent::class);
-        $event->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
+        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -156,10 +148,7 @@ class ClientEventListenerTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $event = $this->createMock(ClientEvent::class);
-        $event->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
+        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -184,7 +173,7 @@ class ClientEventListenerTest extends TestCase
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
-        $event = new ClientErrorEvent($this->createMock(ConnectionInterface::class), ClientEvent::ERROR);
+        $event = new ClientErrorEvent($this->createMock(ConnectionInterface::class));
 
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientError($event);
     }
@@ -197,7 +186,7 @@ class ClientEventListenerTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $event = new ClientErrorEvent($connection, ClientEvent::ERROR);
+        $event = new ClientErrorEvent($connection);
         $event->setException(new \Exception('Testing'));
 
         $this->clientStorage->expects($this->once())

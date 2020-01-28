@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final class PushHandlerEvent extends Event
+abstract class PushHandlerEvent extends Event
 {
     private string $message;
     private ServerPushHandlerInterface $pushHandler;

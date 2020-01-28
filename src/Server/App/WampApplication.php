@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App;
 
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
@@ -167,7 +169,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     public function onOpen(ConnectionInterface $conn): void
     {
         $this->eventDispatcher->dispatch(
-            new ClientEvent($conn, ClientEvent::CONNECTED),
+            new ClientConnectedEvent($conn),
             GosWebSocketEvents::CLIENT_CONNECTED
         );
     }
@@ -180,14 +182,14 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         }
 
         $this->eventDispatcher->dispatch(
-            new ClientEvent($conn, ClientEvent::DISCONNECTED),
+            new ClientDisconnectedEvent($conn),
             GosWebSocketEvents::CLIENT_DISCONNECTED
         );
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e): void
     {
-        $event = new ClientErrorEvent($conn, ClientEvent::ERROR);
+        $event = new ClientErrorEvent($conn);
         $event->setException($e);
 
         $this->eventDispatcher->dispatch($event, GosWebSocketEvents::CLIENT_ERROR);

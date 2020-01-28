@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
@@ -24,7 +24,7 @@ final class StartServerListener implements LoggerAwareInterface
         $this->serverPushHandlerRegistry = $serverPushHandlerRegistry;
     }
 
-    public function bindPnctlEvent(ServerEvent $event): void
+    public function bindPnctlEvent(ServerLaunchedEvent $event): void
     {
         if (\defined('SIGINT')) {
             $loop = $event->getEventLoop();

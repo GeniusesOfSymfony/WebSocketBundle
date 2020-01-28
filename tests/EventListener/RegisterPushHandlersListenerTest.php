@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
@@ -54,7 +54,7 @@ class RegisterPushHandlersListenerTest extends TestCase
 
         $this->pushHandlerRegistry->addPushHandler($handler);
 
-        $event = new ServerEvent($loop, $this->createMock(ServerInterface::class), false);
+        $event = new ServerLaunchedEvent($loop, $this->createMock(ServerInterface::class), false);
 
         $this->listener->registerPushHandlers($event);
     }

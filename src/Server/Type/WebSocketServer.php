@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\Type;
 
-use Gos\Bundle\WebSocketBundle\Event\ServerEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -49,7 +49,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 
         // Server Event Loop to add other services in the same loop.
         $this->eventDispatcher->dispatch(
-            new ServerEvent($this->loop, $server, $profile),
+            new ServerLaunchedEvent($this->loop, $server, $profile),
             GosWebSocketEvents::SERVER_LAUNCHED
         );
 
