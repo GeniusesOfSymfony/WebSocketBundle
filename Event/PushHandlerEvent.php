@@ -5,7 +5,10 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class PushHandlerEvent extends Event
+/**
+ * @abstract to be declared abstract in 3.0
+ */
+/*abstract*/ class PushHandlerEvent extends Event
 {
     /**
      * @var string

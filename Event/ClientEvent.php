@@ -6,13 +6,28 @@ use Ratchet\ConnectionInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @abstract to be declared abstract in 3.0
  */
-class ClientEvent extends Event
+/*abstract*/ class ClientEvent extends Event
 {
+    /**
+     * @deprecated to be removed in 3.0
+     */
     public const CONNECTED = 1;
+
+    /**
+     * @deprecated to be removed in 3.0
+     */
     public const DISCONNECTED = 2;
+
+    /**
+     * @deprecated to be removed in 3.0
+     */
     public const ERROR = 3;
+
+    /**
+     * @deprecated to be removed in 3.0
+     */
     public const REJECTED = 4;
 
     /**
@@ -25,6 +40,9 @@ class ClientEvent extends Event
      */
     protected $type;
 
+    /**
+     * @param int $type {@deprecated} to be removed in 3.0
+     */
     public function __construct(ConnectionInterface $connection, int $type)
     {
         $this->connection = $connection;
@@ -36,8 +54,19 @@ class ClientEvent extends Event
         return $this->connection;
     }
 
+    /**
+     * @deprecated to be removed in 3.0. Check the event type by the subclass instead
+     */
     public function getType(): int
     {
+        @trigger_error(
+            sprintf(
+                'The %s() method is deprecated will be removed in 3.0. Check the event type by the subclass instead.',
+                __METHOD__
+            ),
+            E_USER_DEPRECATED
+        );
+
         return $this->type;
     }
 }

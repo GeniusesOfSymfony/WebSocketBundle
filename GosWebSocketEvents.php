@@ -19,14 +19,14 @@ class GosWebSocketEvents
     /**
      * The CLIENT_CONNECTED event occurs when a client connects to a websocket server.
      *
-     * @Event("Gos\Bundle\WebSocketBundle\Event\ClientEvent")
+     * @Event("Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent")
      */
     public const CLIENT_CONNECTED = 'gos_web_socket.client_connected';
 
     /**
      * The CLIENT_DISCONNECTED event occurs when a client disconnects from a websocket server.
      *
-     * @Event("Gos\Bundle\WebSocketBundle\Event\ClientEvent")
+     * @Event("Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent")
      */
     public const CLIENT_DISCONNECTED = 'gos_web_socket.client_disconnected';
 
@@ -49,14 +49,14 @@ class GosWebSocketEvents
     /**
      * The PUSHER_FAIL event occurs when a push handler has an error pushing a message to a server.
      *
-     * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent")
+     * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent")
      */
     public const PUSHER_FAIL = 'gos_web_socket.push_fail';
 
     /**
      * The PUSHER_SUCCESS event occurs when a push handler succeeds in pushing a message to a server.
      *
-     * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent")
+     * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent")
      */
     public const PUSHER_SUCCESS = 'gos_web_socket.push_success';
 }

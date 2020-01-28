@@ -2,7 +2,8 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
-use Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent;
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
@@ -77,7 +78,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $request = $this->router->match(new Topic($message->getTopic()));
                     $app->onPush($request, $message->getData(), $this->getName());
                     $queue->ack($envelope->getDeliveryTag());
-                    $this->eventDispatcher->dispatch(GosWebSocketEvents::PUSHER_SUCCESS, new PushHandlerEvent($envelope->getBody(), $this));
+                    $this->eventDispatcher->dispatch(GosWebSocketEvents::PUSHER_SUCCESS, new PushHandlerSuccessEvent($envelope->getBody(), $this));
                 } catch (\Exception $e) {
                     if (null !== $this->logger) {
                         $this->logger->error(
@@ -92,7 +93,7 @@ final class AmqpServerPushHandler extends AbstractServerPushHandler implements L
                     $queue->reject($envelope->getDeliveryTag());
                     $this->eventDispatcher->dispatch(
                         GosWebSocketEvents::PUSHER_FAIL,
-                        new PushHandlerEvent($envelope->getBody(), $this)
+                        new PushHandlerFailEvent($envelope->getBody(), $this)
                     );
                 }
 
