@@ -101,7 +101,7 @@ parameters:
 
     # Ignore lack of json_* error checking in tests
     -
-      message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string|false given\./'
+      message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string\|false given\./'
       path: %currentWorkingDirectory%/Tests/Server/WampServerTest.php
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
