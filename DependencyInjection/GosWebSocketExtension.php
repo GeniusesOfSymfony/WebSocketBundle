@@ -81,99 +81,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $container->setParameter('gos_web_socket.client.storage.ttl', $configs['client']['storage']['ttl']);
-        $container->setParameter('gos_web_socket.client.storage.prefix', $configs['client']['storage']['prefix']);
-
-        if (isset($configs['server'])) {
-            if (isset($configs['server']['port'])) {
-                $container->setParameter('gos_web_socket.server.port', $container->resolveEnvPlaceholders($configs['server']['port']));
-            }
-
-            if (isset($configs['server']['host'])) {
-                $container->setParameter('gos_web_socket.server.host', $container->resolveEnvPlaceholders($configs['server']['host']));
-            }
-
-            if (isset($configs['server']['origin_check'])) {
-                $container->setParameter('gos_web_socket.server.origin_check', $configs['server']['origin_check']);
-            }
-
-            if (isset($configs['server']['keepalive_ping'])) {
-                $container->setParameter('gos_web_socket.server.keepalive_ping', $configs['server']['keepalive_ping']);
-            }
-
-            if (isset($configs['server']['keepalive_interval'])) {
-                $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
-            }
-
-            // Register Twig globals if Twig is available and shared_config is set
-            if ($configs['shared_config'] && $container->hasDefinition('twig')) {
-                $twigDef = $container->getDefinition('twig');
-
-                if ($container->hasParameter('gos_web_socket.server.host')) {
-                    $twigDef->addMethodCall(
-                        'addGlobal',
-                        [
-                            'gos_web_socket_server_host',
-                            new Parameter('gos_web_socket.server.host'),
-                        ]
-                    );
-                }
-
-                if ($container->hasParameter('gos_web_socket.server.port')) {
-                    $twigDef->addMethodCall(
-                        'addGlobal',
-                        [
-                            'gos_web_socket_server_port',
-                            new Parameter('gos_web_socket.server.port'),
-                        ]
-                    );
-                }
-            }
-        }
-
-        if (!empty($configs['origins'])) {
-            $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
-
-            foreach ($configs['origins'] as $origin) {
-                $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
-            }
-        }
-
-        if (isset($configs['client'])) {
-            $clientConf = $configs['client'];
-            $container->setParameter('gos_web_socket.firewall', (array) $clientConf['firewall']);
-
-            if (isset($clientConf['session_handler'])) {
-                $sessionHandler = ltrim($clientConf['session_handler'], '@');
-
-                $container->getDefinition('gos_web_socket.server.builder')
-                    ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
-
-                $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
-            }
-
-            if (isset($clientConf['storage']['driver'])) {
-                $driverRef = ltrim($clientConf['storage']['driver'], '@');
-                $storageDriver = $driverRef;
-
-                if (isset($clientConf['storage']['decorator'])) {
-                    $decoratorRef = ltrim($clientConf['storage']['decorator'], '@');
-                    $container->getDefinition($decoratorRef)
-                        ->addArgument(new Reference($driverRef));
-
-                    $storageDriver = $decoratorRef;
-                }
-
-                // Alias the DriverInterface in use
-                $container->setAlias(DriverInterface::class, new Alias($storageDriver));
-
-                $container->getDefinition('gos_web_socket.client.storage')
-                    ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
-            }
-        }
-
-        $this->loadPingServices($configs, $container);
-        $this->loadPushers($configs, $container);
+        $this->registerClientConfiguration($configs, $container);
+        $this->registerServerConfiguration($configs, $container);
+        $this->registerOriginsConfiguration($configs, $container);
+        $this->registerPingConfiguration($configs, $container);
+        $this->registerPushersConfiguration($configs, $container);
 
         // Mark service aliases deprecated if able
         if (method_exists(Alias::class, 'setDeprecated')) {
@@ -189,48 +101,146 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
+    private function registerClientConfiguration(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['client'])) {
+            return;
+        }
+
+        $container->setParameter('gos_web_socket.client.storage.ttl', $configs['client']['storage']['ttl']);
+        $container->setParameter('gos_web_socket.client.storage.prefix', $configs['client']['storage']['prefix']);
+        $container->setParameter('gos_web_socket.firewall', (array) $configs['client']['firewall']);
+
+        if (isset($configs['client']['session_handler'])) {
+            $sessionHandler = ltrim($configs['client']['session_handler'], '@');
+
+            $container->getDefinition('gos_web_socket.server.builder')
+                ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
+
+            $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
+        }
+
+        if (isset($configs['client']['storage']['driver'])) {
+            $driverRef = ltrim($configs['client']['storage']['driver'], '@');
+            $storageDriver = $driverRef;
+
+            if (isset($configs['client']['storage']['decorator'])) {
+                $decoratorRef = ltrim($configs['client']['storage']['decorator'], '@');
+                $container->getDefinition($decoratorRef)
+                    ->addArgument(new Reference($driverRef));
+
+                $storageDriver = $decoratorRef;
+            }
+
+            // Alias the DriverInterface in use for autowiring
+            $container->setAlias(DriverInterface::class, new Alias($storageDriver));
+
+            $container->getDefinition('gos_web_socket.client.storage')
+                ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
+        }
+    }
+
+    private function registerServerConfiguration(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['server'])) {
+            return;
+        }
+
+        if (isset($configs['server']['port'])) {
+            $container->setParameter('gos_web_socket.server.port', $container->resolveEnvPlaceholders($configs['server']['port']));
+        }
+
+        if (isset($configs['server']['host'])) {
+            $container->setParameter('gos_web_socket.server.host', $container->resolveEnvPlaceholders($configs['server']['host']));
+        }
+
+        if (isset($configs['server']['origin_check'])) {
+            $container->setParameter('gos_web_socket.server.origin_check', $configs['server']['origin_check']);
+        }
+
+        if (isset($configs['server']['keepalive_ping'])) {
+            $container->setParameter('gos_web_socket.server.keepalive_ping', $configs['server']['keepalive_ping']);
+        }
+
+        if (isset($configs['server']['keepalive_interval'])) {
+            $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
+        }
+
+        // Register Twig globals if Twig is available and shared_config is set
+        if ($configs['shared_config'] && $container->hasDefinition('twig')) {
+            $twigDef = $container->getDefinition('twig');
+
+            if ($container->hasParameter('gos_web_socket.server.host')) {
+                $twigDef->addMethodCall(
+                    'addGlobal',
+                    [
+                        'gos_web_socket_server_host',
+                        new Parameter('gos_web_socket.server.host'),
+                    ]
+                );
+            }
+
+            if ($container->hasParameter('gos_web_socket.server.port')) {
+                $twigDef->addMethodCall(
+                    'addGlobal',
+                    [
+                        'gos_web_socket_server_port',
+                        new Parameter('gos_web_socket.server.port'),
+                    ]
+                );
+            }
+        }
+    }
+
+    private function registerOriginsConfiguration(array $configs, ContainerBuilder $container): void
+    {
+        $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
+
+        foreach ($configs['origins'] as $origin) {
+            $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
+        }
+    }
+
     /**
      * @throws InvalidArgumentException if an unsupported ping service type is given
      */
-    private function loadPingServices(array $configs, ContainerBuilder $container): void
+    private function registerPingConfiguration(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['ping'])) {
             return;
         }
 
-        if (isset($configs['ping']['services'])) {
-            foreach ($configs['ping']['services'] as $pingService) {
-                switch ($pingService['type']) {
-                    case Configuration::PING_SERVICE_TYPE_DOCTRINE:
-                        $serviceRef = ltrim($pingService['name'], '@');
+        foreach ((array) $configs['ping']['services'] as $pingService) {
+            switch ($pingService['type']) {
+                case Configuration::PING_SERVICE_TYPE_DOCTRINE:
+                    $serviceRef = ltrim($pingService['name'], '@');
 
-                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                        $definition->addArgument(new Reference($serviceRef));
-                        $definition->addTag('gos_web_socket.periodic');
+                    $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
+                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->addTag('gos_web_socket.periodic');
 
-                        $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
 
-                        break;
+                    break;
 
-                    case Configuration::PING_SERVICE_TYPE_PDO:
-                        $serviceRef = ltrim($pingService['name'], '@');
+                case Configuration::PING_SERVICE_TYPE_PDO:
+                    $serviceRef = ltrim($pingService['name'], '@');
 
-                        $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                        $definition->addArgument(new Reference($serviceRef));
-                        $definition->addTag('gos_web_socket.periodic');
+                    $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
+                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->addTag('gos_web_socket.periodic');
 
-                        $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
 
-                        break;
+                    break;
 
-                    default:
-                        throw new InvalidArgumentException(sprintf('Unsupported ping service type "%s"', $pingService['type']));
-                }
+                default:
+                    throw new InvalidArgumentException(sprintf('Unsupported ping service type "%s"', $pingService['type']));
             }
         }
     }
 
-    private function loadPushers(array $configs, ContainerBuilder $container): void
+    private function registerPushersConfiguration(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['pushers'])) {
             // Remove all of the pushers
