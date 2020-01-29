@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0 (2020-??-??)
+## 2.2.0 (2020-01-29)
 
 - Remove pusher services from the container when pushers are not enabled
 - Add new subclasses of `Gos\Bundle\WebSocketBundle\Event\ClientEvent` for the `GosWebSocketEvents::CLIENT_CONNECTED` and `GosWebSocketEvents::CLIENT_DISCONNECTED` events
