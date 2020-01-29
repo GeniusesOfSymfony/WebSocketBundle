@@ -45,7 +45,7 @@ class GosSocket {
          * @type {ab.Session|null}
          * @private
          */
-        this._session = null
+        this._session = null;
 
         this._connect(uri, sessionConfig);
     }

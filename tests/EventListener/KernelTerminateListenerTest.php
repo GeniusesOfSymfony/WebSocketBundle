@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener;
-use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +19,7 @@ class KernelTerminateListenerTest extends TestCase
     private $pusherRegistry;
 
     /**
-     * @var RegisterPeriodicMemoryTimerListener
+     * @var KernelTerminateListener
      */
     private $listener;
 
