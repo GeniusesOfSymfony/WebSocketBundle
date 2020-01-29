@@ -255,7 +255,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             return;
         }
 
-        if (isset($configs['pushers']['amqp']) && $configs['pushers']['amqp']['enabled']) {
+        if (isset($configs['pushers']['amqp']) && $this->isConfigEnabled($container, $configs['pushers']['amqp'])) {
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['amqp'];
             unset($factoryConfig['enabled']);
@@ -284,7 +284,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->removeDefinition('gos_web_socket.pusher.amqp.push_handler');
         }
 
-        if (isset($configs['pushers']['wamp']) && $configs['pushers']['wamp']['enabled']) {
+        if (isset($configs['pushers']['wamp']) && $this->isConfigEnabled($container, $configs['pushers']['wamp'])) {
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['wamp'];
             unset($factoryConfig['enabled']);
