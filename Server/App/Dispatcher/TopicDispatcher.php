@@ -115,7 +115,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     ): bool {
         $callback = $request->getRoute()->getCallback();
 
-        if (!is_string($callback)) {
+        if (!\is_string($callback)) {
             throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
         }
 
