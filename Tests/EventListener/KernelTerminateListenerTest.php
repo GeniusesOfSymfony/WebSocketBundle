@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener;
-use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +20,7 @@ class KernelTerminateListenerTest extends TestCase
     private $pusherRegistry;
 
     /**
-     * @var RegisterPeriodicMemoryTimerListener
+     * @var KernelTerminateListener
      */
     private $listener;
 
@@ -62,7 +61,7 @@ class KernelTerminateListenerTest extends TestCase
     public function testPusherConnectionsAreClosedWhenTheKernelIsTerminated(): void
     {
         if (!class_exists(TerminateEvent::class)) {
-            $this->markTestSkipped(sprintf('Test only applies to legacy "%s".', TerminateEvent::class));
+            $this->markTestSkipped(sprintf('Test only applies to "%s".', TerminateEvent::class));
         }
 
         $pusher = $this->createMock(PusherInterface::class);
