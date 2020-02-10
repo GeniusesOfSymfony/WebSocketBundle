@@ -67,10 +67,9 @@ class ServerBuilderTest extends TestCase
 
         $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
-        $this->assertAttributeInstanceOf(
+        $this->assertInstanceOf(
             WsServer::class,
-            '_httpServer',
-            $server,
+            $this->getPropertyFromClassInstance($server, '_httpServer'),
             'The assembled message stack should decorate the correct class.'
         );
     }
@@ -86,19 +85,17 @@ class ServerBuilderTest extends TestCase
 
         $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
-        $this->assertAttributeInstanceOf(
+        $decoratedServer = $this->getPropertyFromClassInstance($server, '_httpServer');
+
+        $this->assertInstanceOf(
             SessionProvider::class,
-            '_httpServer',
-            $server,
+            $decoratedServer,
             'The assembled message stack should decorate the correct class.'
         );
 
-        $decoratedServer = $this->readAttribute($server, '_httpServer');
-
-        $this->assertAttributeInstanceOf(
+        $this->assertInstanceOf(
             WsServer::class,
-            '_app',
-            $decoratedServer,
+            $this->getPropertyFromClassInstance($decoratedServer, '_app'),
             'The assembled message stack should decorate the correct class.'
         );
     }
@@ -119,20 +116,37 @@ class ServerBuilderTest extends TestCase
 
         $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
-        $this->assertAttributeInstanceOf(
+        $decoratedServer = $this->getPropertyFromClassInstance($server, '_httpServer');
+
+        $this->assertInstanceOf(
             OriginCheck::class,
-            '_httpServer',
-            $server,
-            'The assembled message stack should decorate the correct class.'
-        );
-
-        $decoratedServer = $this->readAttribute($server, '_httpServer');
-
-        $this->assertAttributeInstanceOf(
-            WsServer::class,
-            '_component',
             $decoratedServer,
             'The assembled message stack should decorate the correct class.'
         );
+
+        $this->assertInstanceOf(
+            WsServer::class,
+            $this->getPropertyFromClassInstance($decoratedServer, '_component'),
+            'The assembled message stack should decorate the correct class.'
+        );
+    }
+
+    /**
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException if the requested property does not exist on the given class instance
+     */
+    private function getPropertyFromClassInstance(object $classInstance, string $property)
+    {
+        $reflClass = new \ReflectionClass($classInstance);
+
+        if (!$reflClass->hasProperty($property)) {
+            throw new \InvalidArgumentException(sprintf('The %s class does not have a property named "%s".', get_class($classInstance), $property));
+        }
+
+        $reflProperty = $reflClass->getProperty($property);
+        $reflProperty->setAccessible(true);
+
+        return $reflProperty->getValue($classInstance);
     }
 }
