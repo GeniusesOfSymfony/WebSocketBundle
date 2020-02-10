@@ -63,7 +63,7 @@ final class AcmeRpc implements RpcInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.rpc';
     }

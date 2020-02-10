@@ -64,7 +64,7 @@ gos_web_socket:
 
 services:
     app.websocket.client_storage.predis:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        class: App\WebSocket\Client\Driver\PredisDriver
         arguments:
             - '@Predis\Client'
             - '%web_socket_server.client_storage.prefix'
@@ -150,14 +150,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class AcmeRpc implements RpcInterface
 {
-    /**
-     * @var ClientManipulatorInterface
-     */
-    private $clientManipulator;
+    private ClientManipulatorInterface $clientManipulator;
 
-    /**
-     * @param ClientManipulatorInterface $clientManipulator
-     */
     public function __construct(ClientManipulatorInterface $clientManipulator)
     {
         $this->clientManipulator = $clientManipulator;
@@ -188,7 +182,7 @@ final class AcmeRpc implements RpcInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.rpc';
     }
@@ -204,6 +198,7 @@ You can use the `findAllByUsername` method of the client manipulator to find all
 
 namespace App\Websocket\Topic;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
@@ -211,14 +206,8 @@ use Ratchet\Wamp\Topic;
 
 final class AcmeTopic implements TopicInterface
 {
-    /**
-     * @var ClientManipulatorInterface
-     */
-    private $clientManipulator;
+    private ClientManipulatorInterface $clientManipulator;
 
-    /**
-     * @param ClientManipulatorInterface $clientManipulator
-     */
     public function __construct(ClientManipulatorInterface $clientManipulator)
     {
         $this->clientManipulator = $clientManipulator;
@@ -285,13 +274,13 @@ final class AcmeTopic implements TopicInterface
             return;
         }
 
-        $recipients = $this->clientManipulator->findAllByUsername($topic, $params['username']);
+        $recipients = $this->clientManipulator->findAllByUsername($topic, $event['username']);
 
         if (!empty($recipients)) {
             $recipientIds = [];
 
             foreach ($recipients as $recipient) {
-                $recipientIds[] = $userConnection['connection']->WAMP->sessionId;
+                $recipientIds[] = $recipient->getConnection()->WAMP->sessionId;
             }
 
             $topic->broadcast('message', [], $recipientIds);
@@ -303,7 +292,7 @@ final class AcmeTopic implements TopicInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.topic';
     }

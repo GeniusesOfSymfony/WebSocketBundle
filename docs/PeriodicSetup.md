@@ -18,7 +18,7 @@ class AcmePeriodic implements PeriodicInterface
     /**
      * This function is executed every 5 seconds, as specified by the `getTimeout()` method.
      */
-    public function tick()
+    public function tick(): void
     {
         echo "It has been 5 seconds since this was last run" . PHP_EOL;
     }
@@ -28,7 +28,7 @@ class AcmePeriodic implements PeriodicInterface
      *
      * @return int Time between "ticks" of this service, in seconds
      */
-    public function getTimeout()
+    public function getTimeout(): int
     {
         return 5;
     }

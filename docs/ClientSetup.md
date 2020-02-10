@@ -38,7 +38,7 @@ var websocket = WS.connect("ws://127.0.0.1:8080");
 If you are using Webpack and [Encore](https://symfony.com/doc/current/frontend.html) to manage your site's assets, you can include the bundle's script file in your own application's scripts.
 
 ```javascript
-import WS from '../../vendor/gos/web-socket-bundle/Resources/public/js/websocket.min.js';
+import WS from '../../vendor/gos/web-socket-bundle/public/js/websocket.min.js';
 ```
 
 # JavaScript API

@@ -102,7 +102,7 @@ class AcmeTopic implements TopicInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.topic';
     }
@@ -183,7 +183,7 @@ class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
      *
      * @return void
      */
-    public function secure(ConnectionInterface $conn = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    public function secure(?ConnectionInterface $conn, Topic $topic, WampRequest $request, $payload = null, ?array $exclude = [], ?array $eligible = null, ?string $provider = null): void
     {
         // Check input data to verify if connection must be blocked
         if ($request->getAttributes()->has('denied')) {
@@ -198,7 +198,7 @@ class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.secured.topic';
     }
@@ -237,12 +237,7 @@ class AcmePeriodicTopic extends AcmeTopic implements TopicPeriodicTimerInterface
 {
     use TopicPeriodicTimerTrait;
 
-    /**
-     * @param Topic $topic
-     *
-     * @return array
-     */
-    public function registerPeriodicTimer(Topic $topic)
+    public function registerPeriodicTimer(Topic $topic): void
     {
         // Adds the periodic timer the first time a client connects to the topic
         $this->periodicTimer->addPeriodicTimer(
@@ -266,7 +261,7 @@ class AcmePeriodicTopic extends AcmeTopic implements TopicPeriodicTimerInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.periodic.topic';
     }
@@ -350,7 +345,7 @@ class AcmeConnectionPeriodicTopic extends AcmeTopic
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'acme.connection_periodic.topic';
     }
