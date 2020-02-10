@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener;
+use Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class KernelTerminateListenerTest extends TestCase
+class ClosePusherConnectionsListenerTest extends TestCase
 {
     /**
      * @var PusherRegistry
@@ -19,7 +19,7 @@ class KernelTerminateListenerTest extends TestCase
     private $pusherRegistry;
 
     /**
-     * @var KernelTerminateListener
+     * @var ClosePusherConnectionsListener
      */
     private $listener;
 
@@ -29,7 +29,7 @@ class KernelTerminateListenerTest extends TestCase
 
         $this->pusherRegistry = new PusherRegistry();
 
-        $this->listener = new KernelTerminateListener($this->pusherRegistry);
+        $this->listener = new ClosePusherConnectionsListener($this->pusherRegistry);
     }
 
     public function testPusherConnectionsAreClosedWhenTheKernelIsTerminated(): void

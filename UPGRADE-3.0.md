@@ -5,6 +5,7 @@
 - The minimum supported PHP version is now 7.4
 - The minimum supported Symfony version is now 4.4
 - Renamed `Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator` to `Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator`
+- Renamed `Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener` (service ID `gos_web_socket.event_listener.kernel_terminate`) to `Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener` (service ID `gos_web_socket.event_listener.close_pusher_connections`)
 - Made event classes final
 - The methods of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface` now return an array containing instances of `Gos\Bundle\WebSocketBundle\Client\ClientConnection`, accessing the array properties is supported however deprecated and will be removed in 4.0.
 - The `Gos\Bundle\WebSocketBundle\Event\ClientEvent` and `Gos\Bundle\WebSocketBundle\Event\PushHandlerEvent` classes are now abstract

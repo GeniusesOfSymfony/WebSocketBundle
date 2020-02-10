@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\EventListener;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
-final class KernelTerminateListener
+final class ClosePusherConnectionsListener
 {
     private PusherRegistry $pusherRegistry;
 

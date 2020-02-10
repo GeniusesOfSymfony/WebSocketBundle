@@ -84,8 +84,8 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
 
-    gos_web_socket.event_listener.kernel_terminate:
-        class: Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener
+    gos_web_socket.event_listener.close_pusher_connections:
+        class: Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener
         public: false
         arguments:
             - '@gos_web_socket.registry.pusher'
