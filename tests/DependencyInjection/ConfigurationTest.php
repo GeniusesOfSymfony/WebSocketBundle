@@ -36,7 +36,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function testConfigWithAServerAndPubSubRouter(): void
+    public function testConfigWithAServerAndPubSubRouterWithoutArrayResources(): void
     {
         $extraConfig = [
             'server' => [
@@ -48,6 +48,52 @@ final class ConfigurationTest extends TestCase
                 'router' => [
                     'resources' => [
                         'example.yaml',
+                    ],
+                ],
+            ],
+        ];
+
+        $normalizedExtraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+                'router' => [
+                    'resources' => [
+                        [
+                            'resource' => 'example.yaml',
+                            'type' => null,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        $this->assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $normalizedExtraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithAServerAndPubSubRouterWithArrayResources(): void
+    {
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+                'router' => [
+                    'resources' => [
+                        [
+                            'resource' => 'example.yaml',
+                            'type' => null,
+                        ],
                     ],
                 ],
             ],
