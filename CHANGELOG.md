@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.0 (2020-??-??)
+
+- Add support for the new router configuration options available in GosPubSubRouterBundle 2.2
+
 ## 2.2.0 (2020-01-29)
 
 - Remove pusher services from the container when pushers are not enabled
