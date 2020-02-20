@@ -281,7 +281,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
             // Transform the configuration for the router resources if necessary
             if (isset($pubsubConfig['resources'])) {
-                // Make sure configuration is compatible with GosPubSubRouterBundle 2.2 and newer
                 $resourceFiles = [];
 
                 foreach ($pubsubConfig['resources'] as $resource) {
