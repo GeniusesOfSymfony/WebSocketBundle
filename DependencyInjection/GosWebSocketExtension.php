@@ -333,7 +333,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
             if (isset($pubsubConfig['resources'])) {
                 if (class_exists(XmlFileLoader::class)) {
-                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.1 and older
+                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.2 and newer
                     $resourceFiles = [];
 
                     foreach ($pubsubConfig['resources'] as $resource) {
