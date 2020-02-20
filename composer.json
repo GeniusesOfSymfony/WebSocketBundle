@@ -18,7 +18,7 @@
     "require": {
         "php": "^7.4",
         "cboden/ratchet": "^0.4.2",
-        "gos/pubsub-router-bundle": "^1.0 || ^2.0",
+        "gos/pubsub-router-bundle": "^2.2",
         "gos/websocket-client": "^0.3",
         "psr/log": "^1.1",
         "react/event-loop": "^1.0",

@@ -171,121 +171,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithPubSubBundleIntegrationAndLegacyConfiguration(): void
-    {
-        if (class_exists(XmlFileLoader::class)) {
-            $this->markTestSkipped('Test covers the configuration for GosPubSubRouterBundle 2.1 and earlier');
-        }
-
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'MonologBundle' => MonologBundle::class,
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', true);
-
-        $bundleConfig = [
-            'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
-                'router' => [
-                    'resources' => [
-                        'example.yaml',
-                    ],
-                ],
-            ],
-        ];
-
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
-        $this->load($bundleConfig);
-
-        $this->assertSame(
-            [
-                [
-                    'routers' => [
-                        'websocket' => [
-                            'resources' => [
-                                'example.yaml',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            $this->container->getExtensionConfig('gos_pubsub_router'),
-            'The GosPubSubRouterBundle should be configured when able.'
-        );
-    }
-
-    public function testContainerIsLoadedWithPubSubBundleIntegrationAndConvertingNewerConfigurationToLegacyConfiguration(): void
-    {
-        if (class_exists(XmlFileLoader::class)) {
-            $this->markTestSkipped('Test covers the configuration for GosPubSubRouterBundle 2.1 and earlier');
-        }
-
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'MonologBundle' => MonologBundle::class,
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', true);
-
-        $bundleConfig = [
-            'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
-                'router' => [
-                    'resources' => [
-                        [
-                            'resource' => 'example.yaml',
-                            'type' => null,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
-        $this->load($bundleConfig);
-
-        $this->assertSame(
-            [
-                [
-                    'routers' => [
-                        'websocket' => [
-                            'resources' => [
-                                'example.yaml',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            $this->container->getExtensionConfig('gos_pubsub_router'),
-            'The GosPubSubRouterBundle should be configured when able.'
-        );
-    }
-
     public function testContainerIsLoadedWithPubSubBundleIntegrationAndConvertingLegacyConfigurationToNewerConfiguration(): void
     {
-        if (!class_exists(XmlFileLoader::class)) {
-            $this->markTestSkipped('Test covers the configuration for GosPubSubRouterBundle 2.2 and later');
-        }
-
         $this->container->setParameter(
             'kernel.bundles',
             [
@@ -338,10 +225,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWithPubSubBundleIntegrationAndNewerConfiguration(): void
     {
-        if (!class_exists(XmlFileLoader::class)) {
-            $this->markTestSkipped('Test covers the configuration for GosPubSubRouterBundle 2.2 and later');
-        }
-
         $this->container->setParameter(
             'kernel.bundles',
             [

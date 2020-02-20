@@ -4,6 +4,7 @@
 
 - The minimum supported PHP version is now 7.4
 - The minimum supported Symfony version is now 4.4
+- The minimum supported version of GosPubSubRouterBundle is now 2.2
 - Renamed `Gos\Bundle\WebSocketBundle\DataCollector\PusherDecorator` to `Gos\Bundle\WebSocketBundle\Pusher\DataCollectingPusherDecorator`
 - Renamed `Gos\Bundle\WebSocketBundle\EventListener\KernelTerminateListener` (service ID `gos_web_socket.event_listener.kernel_terminate`) to `Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener` (service ID `gos_web_socket.event_listener.close_pusher_connections`)
 - Made event classes final
