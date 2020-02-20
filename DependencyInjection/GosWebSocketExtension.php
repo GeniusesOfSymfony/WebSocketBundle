@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\PubSubRouterBundle\Loader\XmlFileLoader;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
@@ -327,12 +328,47 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         // GosPubSubRouterBundle
         if (isset($config['server'])) {
             $pubsubConfig = $config['server']['router'] ?? [];
+            $routerConfig = $pubsubConfig;
+
+            // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
+            if (isset($pubsubConfig['resources'])) {
+                if (class_exists(XmlFileLoader::class)) {
+                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.1 and older
+                    $resourceFiles = [];
+
+                    foreach ($pubsubConfig['resources'] as $resource) {
+                        if (is_array($resource)) {
+                            $resourceFiles[] = $resource;
+                        } else {
+                            $resourceFiles[] = [
+                                'resource' => $resource,
+                                'type' => null,
+                            ];
+                        }
+                    }
+
+                    $routerConfig = ['resources' => $resourceFiles];
+                } else {
+                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.1 and older
+                    $resourceFiles = [];
+
+                    foreach ($pubsubConfig['resources'] as $resource) {
+                        if (is_array($resource)) {
+                            $resourceFiles[] = $resource['resource'];
+                        } else {
+                            $resourceFiles[] = $resource;
+                        }
+                    }
+
+                    $routerConfig = ['resources' => $resourceFiles];
+                }
+            }
 
             $container->prependExtensionConfig(
                 'gos_pubsub_router',
                 [
                     'routers' => [
-                        'websocket' => $pubsubConfig,
+                        'websocket' => $routerConfig,
                     ],
                 ]
             );
