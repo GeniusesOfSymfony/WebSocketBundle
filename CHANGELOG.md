@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.0 (2020-??-??)
+## 2.3.0 (2020-02-25)
 
 - Add support for the new router configuration options available in GosPubSubRouterBundle 2.2
 
