@@ -26,6 +26,11 @@ final class ClientConnection implements \ArrayAccess
         return $this->connection;
     }
 
+    /**
+     * @param int|string $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset): bool
     {
         @trigger_error(
@@ -39,6 +44,11 @@ final class ClientConnection implements \ArrayAccess
         return \in_array($offset, ['client', 'connection'], true);
     }
 
+    /**
+     * @param int|string $offset
+     *
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         @trigger_error(
@@ -71,11 +81,22 @@ final class ClientConnection implements \ArrayAccess
         }
     }
 
+    /**
+     * @param int|string $offset
+     * @param mixed $value
+     *
+     * @throws \BadMethodCallException as the object is immutable
+     */
     public function offsetSet($offset, $value): void
     {
         throw new \BadMethodCallException(sprintf('Properties of %s cannot be overwritten.', self::class));
     }
 
+    /**
+     * @param int|string $offset
+     *
+     * @throws \BadMethodCallException as the object is immutable
+     */
     public function offsetUnset($offset): void
     {
         throw new \BadMethodCallException(sprintf('Properties of %s cannot be unset.', self::class));
