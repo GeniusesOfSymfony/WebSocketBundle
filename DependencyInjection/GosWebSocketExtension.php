@@ -244,13 +244,21 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     private function registerPushersConfiguration(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['pushers'])) {
-            // Remove all of the pushers
+            // Remove all of the pushers and their aliases
             foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
                 $container->removeDefinition($pusher);
             }
 
+            foreach (['gos_web_socket.amqp.pusher', 'gos_web_socket.wamp.pusher'] as $pusher) {
+                $container->removeAlias($pusher);
+            }
+
             foreach (['gos_web_socket.pusher.amqp.push_handler'] as $pusher) {
                 $container->removeDefinition($pusher);
+            }
+
+            foreach (['gos_web_socket.amqp.server_push_handler'] as $pusher) {
+                $container->removeAlias($pusher);
             }
 
             return;
@@ -283,6 +291,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         } else {
             $container->removeDefinition('gos_web_socket.pusher.amqp');
             $container->removeDefinition('gos_web_socket.pusher.amqp.push_handler');
+            $container->removeAlias('gos_web_socket.amqp.pusher');
+            $container->removeAlias('gos_web_socket.amqp.server_push_handler');
         }
 
         if (isset($configs['pushers']['wamp']) && $this->isConfigEnabled($container, $configs['pushers']['wamp'])) {
@@ -309,6 +319,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ->setArgument(2, new Reference('gos_web_socket.pusher.wamp.connection_factory'));
         } else {
             $container->removeDefinition('gos_web_socket.pusher.wamp');
+            $container->removeAlias('gos_web_socket.wamp.pusher');
         }
     }
 
