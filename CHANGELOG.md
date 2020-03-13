@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1 (2020-03-13)
+
+- Remove the aliases for pusher services from the container when removing the real services (Fixes [#406](https://github.com/GeniusesOfSymfony/WebSocketBundle/issues/406))
+
 ## 2.3.0 (2020-02-25)
 
 - Add support for the new router configuration options available in GosPubSubRouterBundle 2.2
