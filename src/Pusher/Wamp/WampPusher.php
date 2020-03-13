@@ -5,12 +5,12 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
-use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class WampPusher extends AbstractPusher
 {
-    private Client $connection;
+    private ClientInterface $connection;
     private WampConnectionFactoryInterface $connectionFactory;
 
     public function __construct(

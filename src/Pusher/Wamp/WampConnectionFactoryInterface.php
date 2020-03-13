@@ -2,9 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
-use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 
 interface WampConnectionFactoryInterface
 {
-    public function createConnection(): Client;
+    public function createConnection(): ClientInterface;
 }
