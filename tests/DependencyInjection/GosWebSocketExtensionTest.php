@@ -37,6 +37,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.amqp');
         $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.wamp');
         $this->assertContainerBuilderNotHasService('gos_web_socket.pusher.amqp.push_handler');
+        $this->assertFalse($this->container->hasAlias('gos_web_socket.amqp.pusher'));
+        $this->assertFalse($this->container->hasAlias('gos_web_socket.wamp.pusher'));
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -497,6 +499,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp');
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.connection_factory');
+        $this->assertContainerBuilderHasAlias('gos_web_socket.wamp.pusher');
 
         $this->assertInstanceOf(WampConnectionFactory::class, $this->container->get('gos_web_socket.pusher.wamp.connection_factory'));
     }
@@ -534,6 +537,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp');
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.push_handler');
         $this->assertContainerBuilderHasService('gos_web_socket.pusher.amqp.connection_factory');
+        $this->assertContainerBuilderHasAlias('gos_web_socket.amqp.server_push_handler');
 
         $this->assertInstanceOf(AmqpConnectionFactory::class, $this->container->get('gos_web_socket.pusher.amqp.connection_factory'));
     }
