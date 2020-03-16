@@ -4,6 +4,10 @@
 
 - **Minor B/C Break** `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface` now typehints returning a `Gos\Component\WebSocketClient\Wamp\ClientInterface` implementation instead of the `Gos\Component\WebSocketClient\Wamp\Client` class, if you have created a custom connection factory you will need to update it
 
+## 2.3.2 (2020-03-16)
+
+- Correctly define the Twig global variables (Fixes [#407](https://github.com/GeniusesOfSymfony/WebSocketBundle/issues/407))
+
 ## 2.3.1 (2020-03-13)
 
 - Remove the aliases for pusher services from the container when removing the real services (Fixes [#406](https://github.com/GeniusesOfSymfony/WebSocketBundle/issues/406))
