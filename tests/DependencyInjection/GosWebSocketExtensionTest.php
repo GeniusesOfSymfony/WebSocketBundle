@@ -13,10 +13,10 @@ use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
-use Twig\Environment;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 {
@@ -59,14 +59,10 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
+                'TwigBundle' => TwigBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
-        );
-
-        $this->container->register(
-            'twig',
-            Environment::class
         );
 
         $bundleConfig = [
@@ -77,27 +73,26 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ],
         ];
 
+        // Prepend config now to allow the prepend pass to work
+        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
+
+        // Also load the bundle config so it is passed to the extension load method
         $this->load($bundleConfig);
 
         $this->assertContainerBuilderHasParameter('gos_web_socket.server.port');
         $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'twig',
-            'addGlobal',
+        $this->assertSame(
             [
-                'gos_web_socket_server_host',
-                new Parameter('gos_web_socket.server.host'),
-            ]
-        );
-
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'twig',
-            'addGlobal',
-            [
-                'gos_web_socket_server_port',
-                new Parameter('gos_web_socket.server.port'),
-            ]
+                [
+                    'globals' => [
+                        'gos_web_socket_server_host' => '127.0.0.1',
+                        'gos_web_socket_server_port' => 8080,
+                    ],
+                ],
+            ],
+            $this->container->getExtensionConfig('twig'),
+            'The TwigBundle should be configured when able.'
         );
     }
 

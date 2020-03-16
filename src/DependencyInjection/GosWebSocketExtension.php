@@ -272,7 +272,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             throw new RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
         }
 
-        $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         // GosPubSubRouterBundle
         if (isset($config['server'])) {
@@ -305,6 +306,25 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     ],
                 ]
             );
+        }
+
+        // TwigBundle
+        if (isset($bundles['TwigBundle'])) {
+            if (isset($config['shared_config'], $config['server']) && $config['shared_config']) {
+                $twigConfig = ['globals' => []];
+
+                if (isset($config['server']['host'])) {
+                    $twigConfig['globals']['gos_web_socket_server_host'] = $container->resolveEnvPlaceholders($config['server']['host']);
+                }
+
+                if (isset($config['server']['port'])) {
+                    $twigConfig['globals']['gos_web_socket_server_port'] = $container->resolveEnvPlaceholders($config['server']['port']);
+                }
+
+                if (!empty($twigConfig['globals'])) {
+                    $container->prependExtensionConfig('twig', $twigConfig);
+                }
+            }
         }
 
         // MonologBundle
