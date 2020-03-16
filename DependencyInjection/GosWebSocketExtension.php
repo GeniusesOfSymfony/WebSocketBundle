@@ -334,7 +334,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             throw new RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
         }
 
-        $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         // GosPubSubRouterBundle
         if (isset($config['server'])) {
