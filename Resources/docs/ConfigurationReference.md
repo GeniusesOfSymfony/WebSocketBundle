@@ -12,8 +12,8 @@ gos_web_socket:
             decorator:            ~
     shared_config:        true
     server:
-        port:                 ~ # Required, Example: 1337
         host:                 ~ # Required, Example: 127.0.0.1
+        port:                 ~ # Required, Example: 8080
         origin_check:         false # Example: true
 
         # Flag indicating a keepalive ping should be enabled on the server
