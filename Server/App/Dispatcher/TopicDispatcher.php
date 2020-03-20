@@ -171,10 +171,6 @@ class TopicDispatcher implements TopicDispatcherInterface
                     }
                 }
 
-                if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
-                    $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
-                }
-
                 if ($calledMethod === static::PUSH) {
                     if (!$appTopic instanceof PushableTopicInterface) {
                         throw new \Exception(sprintf('Topic %s doesn\'t support push feature', $appTopic->getName()));
@@ -191,6 +187,10 @@ class TopicDispatcher implements TopicDispatcherInterface
                         }
 
                         $dispatched = true;
+
+                        if ($calledMethod === static::UNSUBSCRIPTION && 0 === count($topic)) {
+                            $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+                        }
                     } catch (\Exception $e) {
                         $this->logger->error($e->getMessage(), [
                             'code' => $e->getCode(),
