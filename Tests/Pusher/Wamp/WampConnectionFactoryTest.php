@@ -18,7 +18,6 @@ class WampConnectionFactoryTest extends TestCase
                 'port' => 1337,
             ],
             InvalidOptionsException::class,
-            'The option "host" with value 42 is expected to be of type "string", but is of type "integer".',
         ];
 
         yield 'host missing' => [
@@ -65,10 +64,13 @@ class WampConnectionFactoryTest extends TestCase
     public function testTheFactoryIsNotCreatedWithAnInvalidConfiguration(
         array $config,
         string $exceptionClass,
-        string $exceptionMessage
+        ?string $exceptionMessage = null
     ): void {
         $this->expectException($exceptionClass);
-        $this->expectExceptionMessage($exceptionMessage);
+
+        if (null !== $exceptionMessage) {
+            $this->expectExceptionMessage($exceptionMessage);
+        }
 
         $this->assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
     }
