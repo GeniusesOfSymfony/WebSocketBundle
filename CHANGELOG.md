@@ -4,6 +4,7 @@
 
 - Add log messages for error conditions which send an error message back to the calling client to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher`
 - Add new log messages and extra error checks to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher`
+- Clear topic periodic timers after unsubscribing a user (Fixes [#369](https://github.com/GeniusesOfSymfony/WebSocketBundle/issues/369))
 
 ## 2.4.0 (2020-03-20)
 
