@@ -238,15 +238,15 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::UNSUBSCRIPTION:
-                    if (0 === \count($topic)) {
-                        $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
-                    }
-
                     if ($conn === null) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
                     $appTopic->onUnSubscribe($conn, $topic, $request);
+
+                    if (0 === \count($topic)) {
+                        $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+                    }
 
                     break;
 
