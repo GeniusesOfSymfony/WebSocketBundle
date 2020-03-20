@@ -35,6 +35,7 @@ interface TopicDispatcherInterface
      *
      * @throws PushUnsupportedException  if the topic does not support push requests
      * @throws \InvalidArgumentException if an unsupported request type is given
+     * @throws \RuntimeException         if the connection is missing for a method which requires it or if there is no payload for a push request
      */
     public function dispatch(
         string $calledMethod,

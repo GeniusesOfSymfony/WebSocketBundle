@@ -3,6 +3,7 @@
 ## 2.5.0 (????-??-??)
 
 - Add log messages for error conditions which send an error message back to the calling client to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher`
+- Add new log messages and extra error checks to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher`
 
 ## 2.4.0 (2020-03-20)
 
