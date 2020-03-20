@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0 (????-??-??)
+
+- Add log messages for error conditions which send an error message back to the calling client to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher`
+
 ## 2.4.0 (2020-03-20)
 
 - **Minor B/C Break** `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface` now typehints returning a `Gos\Component\WebSocketClient\Wamp\ClientInterface` implementation instead of the `Gos\Component\WebSocketClient\Wamp\Client` class, if you have created a custom connection factory you will need to update it

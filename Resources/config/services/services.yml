@@ -58,6 +58,8 @@ services:
         public: true
         arguments:
             - '@gos_web_socket.registry.rpc'
+        calls:
+            - [ setLogger, ['@?monolog.logger.websocket'] ]
 
     gos_web_socket.dispatcher.topic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
