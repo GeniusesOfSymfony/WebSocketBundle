@@ -120,9 +120,9 @@ The `callback` parameter is the subscriber to be added.
 
 If not connected to the websocket server, this function will throw an error.
 
-#### GosSocket.unsubscribeToChannel(uri, callback)
+#### GosSocket.unsubscribeFromChannel(uri, callback)
 
-The `GosSocket.unsubscribeToChannel()` function lets you remove a subscriber from a websocket channel.
+The `GosSocket.unsubscribeFromChannel()` function lets you remove a subscriber from a websocket channel.
 
 The `uri` parameter is the URI for the websocket topic to unsubscribe from, as defined in your route configuration.
 
