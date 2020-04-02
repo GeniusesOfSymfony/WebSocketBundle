@@ -49,33 +49,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load();
     }
 
-    public function testContainerIsLoadedWithEnvVars(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('env(GOS_WEB_SOCKET_SERVER_HOST)', '127.0.0.1');
-        $this->container->setParameter('env(GOS_WEB_SOCKET_SERVER_PORT)', 8080);
-
-        $bundleConfig = [
-            'server' => [
-                'host' => '%env(GOS_WEB_SOCKET_SERVER_HOST)%',
-                'port' => '%env(int:GOS_WEB_SOCKET_SERVER_PORT)%',
-                'origin_check' => false,
-            ],
-        ];
-
-        $this->load($bundleConfig);
-
-        $this->assertContainerBuilderHasParameter('gos_web_socket.server.port');
-        $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
-    }
-
     public function testContainerIsLoadedWithPubSubBundleIntegration(): void
     {
         $this->container->setParameter(
@@ -97,25 +70,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ],
         ];
 
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
         $this->load($bundleConfig);
 
-        $this->assertSame(
-            [
-                [
-                    'routers' => [
-                        'websocket' => [
-                            'resources' => [],
-                        ],
-                    ],
-                ],
-            ],
-            $this->container->getExtensionConfig('gos_pubsub_router'),
-            'The GosPubSubRouterBundle should be configured when able.'
-        );
+        $this->assertContainerBuilderHasParameter('gos_web_socket.router_resources', []);
     }
 
     public function testContainerIsLoadedWithPubSubBundleIntegrationAndConvertingLegacyConfigurationToNewerConfiguration(): void
@@ -143,29 +100,16 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ],
         ];
 
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
         $this->load($bundleConfig);
 
-        $this->assertSame(
+        $this->assertContainerBuilderHasParameter(
+            'gos_web_socket.router_resources',
             [
                 [
-                    'routers' => [
-                        'websocket' => [
-                            'resources' => [
-                                [
-                                    'resource' => 'example.yaml',
-                                    'type' => null,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'resource' => 'example.yaml',
+                    'type' => null,
                 ],
-            ],
-            $this->container->getExtensionConfig('gos_pubsub_router'),
-            'The GosPubSubRouterBundle should be configured when able.'
+            ]
         );
     }
 
@@ -197,29 +141,16 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ],
         ];
 
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
         $this->load($bundleConfig);
 
-        $this->assertSame(
+        $this->assertContainerBuilderHasParameter(
+            'gos_web_socket.router_resources',
             [
                 [
-                    'routers' => [
-                        'websocket' => [
-                            'resources' => [
-                                [
-                                    'resource' => 'example.yaml',
-                                    'type' => null,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'resource' => 'example.yaml',
+                    'type' => null,
                 ],
-            ],
-            $this->container->getExtensionConfig('gos_pubsub_router'),
-            'The GosPubSubRouterBundle should be configured when able.'
+            ]
         );
     }
 
@@ -382,15 +313,12 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ]
         );
 
-        $this->container->setParameter('env(GOS_WEB_SOCKET_WAMP_PUSHER_HOST)', '127.0.0.1');
-        $this->container->setParameter('env(GOS_WEB_SOCKET_WAMP_PUSHER_PORT)', 1337);
-
         $bundleConfig = [
             'pushers' => [
                 'wamp' => [
                     'enabled' => true,
-                    'host' => '%env(GOS_WEB_SOCKET_WAMP_PUSHER_HOST)%',
-                    'port' => '%env(int:GOS_WEB_SOCKET_WAMP_PUSHER_PORT)%',
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
                     'ssl' => false,
                     'origin' => null,
                 ],

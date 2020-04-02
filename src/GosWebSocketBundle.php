@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\DataCollectorCom
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PeriodicCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\PusherCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RegisterTwigGlobalsCompilerPass;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RegisterWebsocketRouterResourcesCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RpcCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerPushHandlerCompilerPass;
@@ -29,6 +30,7 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new ServerPushHandlerCompilerPass())
             ->addCompilerPass(new DataCollectorCompilerPass())
             ->addCompilerPass(new RegisterTwigGlobalsCompilerPass())
+            ->addCompilerPass(new RegisterWebsocketRouterResourcesCompilerPass())
         ;
     }
 
