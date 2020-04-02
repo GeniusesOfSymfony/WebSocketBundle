@@ -39,7 +39,7 @@ final class Configuration implements ConfigurationInterface
                     ->scalarNode('session_handler')
                         ->example('@session.handler.pdo')
                     ->end()
-                    ->scalarNode('firewall')
+                    ->variableNode('firewall')
                         ->example('secured_area')
                         ->defaultValue(static::DEFAULT_FIREWALL)
                     ->end()
