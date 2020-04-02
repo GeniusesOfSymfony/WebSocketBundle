@@ -20,7 +20,7 @@ Support
 | Version | Status                       | Symfony Versions          | Documentation                                                                              |
 | ------- | ---------------------------- | ------------------------- | ------------------------------------------------------------------------------------------ |
 | 1.x     | Bug Fixes Until July 1, 2020 | 2.3-2.8, 3.0-3.4, 4.0-4.4 | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/1.x/Resources/docs)  |
-| 2.x     | Actively Supported           | 3.4, 4.4, 5.0             | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/2.x/Resources/docs)  |
+| 2.x     | Actively Supported           | 3.4, 4.4                  | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/2.x/Resources/docs)  |
 | 3.x     | Actively Supported           | 4.4, 5.0                  | [View Docs](https://github.com/GeniusesOfSymfony/WebSocketBundle/tree/master/docs)         |
 
 What can I do with this bundle?
@@ -70,7 +70,9 @@ Installation Instructions
 
 ### Step 1: Install via Composer
 
-If your application requires support for Symfony versions before 3.4, use the 1.x releases of this bundle. For Symfony 3.4 or newer, use the 2.x releases.
+- If you are using Symfony 3.3 or older, you will need the 1.x version of this bundle
+- If you are using Symfony 3.4 or 4.4, you should use the 2.x version of this bundle (note Symfony 4.0 thru 4.3 are no longer supported)
+- If you are using Symfony 4.4 or 5.0, you should use the 3.x version of this bundle
 
 `composer require gos/web-socket-bundle`
 
