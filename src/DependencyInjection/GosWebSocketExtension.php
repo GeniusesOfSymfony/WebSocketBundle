@@ -97,11 +97,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         if (isset($configs['server']['port'])) {
-            $container->setParameter('gos_web_socket.server.port', $container->resolveEnvPlaceholders($configs['server']['port']));
+            $container->setParameter('gos_web_socket.server.port', $configs['server']['port']);
         }
 
         if (isset($configs['server']['host'])) {
-            $container->setParameter('gos_web_socket.server.host', $container->resolveEnvPlaceholders($configs['server']['host']));
+            $container->setParameter('gos_web_socket.server.host', $configs['server']['host']);
         }
 
         if (isset($configs['server']['origin_check'])) {
@@ -185,10 +185,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $factoryConfig = $configs['pushers']['amqp'];
             unset($factoryConfig['enabled']);
 
-            // Resolve placeholders for host and port
-            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
-            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
-
             $connectionFactoryDef = new Definition(
                 AmqpConnectionFactory::class,
                 [
@@ -213,10 +209,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             // Pull the 'enabled' field out of the pusher's config
             $factoryConfig = $configs['pushers']['wamp'];
             unset($factoryConfig['enabled']);
-
-            // Resolve placeholders for host and port
-            $factoryConfig['host'] = $container->resolveEnvPlaceholders($factoryConfig['host']);
-            $factoryConfig['port'] = $container->resolveEnvPlaceholders($factoryConfig['port']);
 
             $connectionFactoryDef = new Definition(
                 WampConnectionFactory::class,
