@@ -166,6 +166,38 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         if (isset($configs['server']['keepalive_interval'])) {
             $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
         }
+
+        if (isset($configs['server']['router'])) {
+            $routerConfig = [];
+
+            // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
+            if (isset($configs['server']['router']['resources'])) {
+                if (class_exists(XmlFileLoader::class)) {
+                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.2 and newer
+                    foreach ($configs['server']['router']['resources'] as $resource) {
+                        if (is_array($resource)) {
+                            $routerConfig[] = $resource;
+                        } else {
+                            $routerConfig[] = [
+                                'resource' => $resource,
+                                'type' => null,
+                            ];
+                        }
+                    }
+                } else {
+                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.1 and older
+                    foreach ($configs['server']['router']['resources'] as $resource) {
+                        if (is_array($resource)) {
+                            $routerConfig[] = $resource['resource'];
+                        } else {
+                            $routerConfig[] = $resource;
+                        }
+                    }
+                }
+            }
+
+            $container->setParameter('gos_web_socket.router_resources', $routerConfig);
+        }
     }
 
     private function registerOriginsConfiguration(array $configs, ContainerBuilder $container): void
@@ -302,56 +334,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             throw new RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
         }
 
-        $configs = $container->getExtensionConfig($this->getAlias());
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
-
-        // GosPubSubRouterBundle
-        if (isset($config['server'])) {
-            $pubsubConfig = $config['server']['router'] ?? [];
-            $routerConfig = $pubsubConfig;
-
-            // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
-            if (isset($pubsubConfig['resources'])) {
-                if (class_exists(XmlFileLoader::class)) {
-                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.2 and newer
-                    $resourceFiles = [];
-
-                    foreach ($pubsubConfig['resources'] as $resource) {
-                        if (is_array($resource)) {
-                            $resourceFiles[] = $resource;
-                        } else {
-                            $resourceFiles[] = [
-                                'resource' => $resource,
-                                'type' => null,
-                            ];
-                        }
-                    }
-
-                    $routerConfig = ['resources' => $resourceFiles];
-                } else {
-                    // Make sure configuration is compatible with GosPubSubRouterBundle 2.1 and older
-                    $resourceFiles = [];
-
-                    foreach ($pubsubConfig['resources'] as $resource) {
-                        if (is_array($resource)) {
-                            $resourceFiles[] = $resource['resource'];
-                        } else {
-                            $resourceFiles[] = $resource;
-                        }
-                    }
-
-                    $routerConfig = ['resources' => $resourceFiles];
-                }
-            }
-
-            $container->prependExtensionConfig(
-                'gos_pubsub_router',
-                [
-                    'routers' => [
-                        'websocket' => $routerConfig,
-                    ],
-                ]
-            );
-        }
+        // Prepend the websocket router now so the pubsub bundle creates the router service, we will inject the resources into the service with a compiler pass
+        $container->prependExtensionConfig(
+            'gos_pubsub_router',
+            [
+                'routers' => [
+                    'websocket' => [],
+                ],
+            ]
+        );
     }
 }

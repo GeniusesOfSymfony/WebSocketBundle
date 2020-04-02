@@ -8,6 +8,7 @@
 - Move Twig configuration to a compiler pass
 - Use the `monolog.logger` tag to set the correct logger for `LoggerAwareInterface` classes
     - Note, this results in the `monolog.logger.websocket` logger no longer being explicitly configured by this bundle (namely, the `monolog.handler.websocket` service which set some arbitrary defaults on where `websocket` channel messages would render is no longer created), you can tune the log configuration in your application if desired
+- Move the websocket router resource configuration out of the prepend step, this should allow parameters and env vars to be consistently used with the bundle's configuration now
 
 ## 2.4.0 (2020-03-20)
 
