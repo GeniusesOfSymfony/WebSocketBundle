@@ -22,7 +22,6 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -43,6 +42,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->registerForAutoconfiguration(RpcInterface::class)->addTag('gos_web_socket.rpc');
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
+
+        $container->setParameter('gos_web_socket.shared_config', $configs['shared_config']);
 
         $this->registerClientConfiguration($configs, $container);
         $this->registerServerConfiguration($configs, $container);
@@ -114,31 +115,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         if (isset($configs['server']['keepalive_interval'])) {
             $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
-        }
-
-        // Register Twig globals if Twig is available and shared_config is set
-        if ($configs['shared_config'] && $container->hasDefinition('twig')) {
-            $twigDef = $container->getDefinition('twig');
-
-            if ($container->hasParameter('gos_web_socket.server.host')) {
-                $twigDef->addMethodCall(
-                    'addGlobal',
-                    [
-                        'gos_web_socket_server_host',
-                        new Parameter('gos_web_socket.server.host'),
-                    ]
-                );
-            }
-
-            if ($container->hasParameter('gos_web_socket.server.port')) {
-                $twigDef->addMethodCall(
-                    'addGlobal',
-                    [
-                        'gos_web_socket_server_port',
-                        new Parameter('gos_web_socket.server.port'),
-                    ]
-                );
-            }
         }
     }
 
@@ -306,25 +282,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     ],
                 ]
             );
-        }
-
-        // TwigBundle
-        if (isset($bundles['TwigBundle'])) {
-            if (isset($config['shared_config'], $config['server']) && $config['shared_config']) {
-                $twigConfig = ['globals' => []];
-
-                if (isset($config['server']['host'])) {
-                    $twigConfig['globals']['gos_web_socket_server_host'] = $container->resolveEnvPlaceholders($config['server']['host']);
-                }
-
-                if (isset($config['server']['port'])) {
-                    $twigConfig['globals']['gos_web_socket_server_port'] = $container->resolveEnvPlaceholders($config['server']['port']);
-                }
-
-                if (!empty($twigConfig['globals'])) {
-                    $container->prependExtensionConfig('twig', $twigConfig);
-                }
-            }
         }
 
         // MonologBundle
