@@ -6,7 +6,9 @@ services:
             - '@gos_web_socket.client.storage'
             - '%gos_web_socket.firewall%'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.client.driver.doctrine_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
@@ -35,7 +37,9 @@ services:
         arguments:
             - '%gos_web_socket.client.storage.ttl%'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.command.websocket_server:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
@@ -59,7 +63,9 @@ services:
         arguments:
             - '@gos_web_socket.registry.rpc'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.dispatcher.topic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher
@@ -70,7 +76,9 @@ services:
             - '@gos_web_socket.topic.periodic_timer'
             - '@gos_web_socket.wamp.topic_manager'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.client:
         class: Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener
@@ -79,12 +87,13 @@ services:
             - '@gos_web_socket.client.storage'
             - '@gos_web_socket.client.authentication.websocket_provider'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.close_pusher_connections:
         class: Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener
@@ -100,9 +109,10 @@ services:
         arguments:
             - '@gos_web_socket.registry.periodic'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.register_periodic_timers:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener
@@ -110,9 +120,10 @@ services:
         arguments:
             - '@gos_web_socket.registry.periodic'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.register_push_handlers:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener
@@ -121,9 +132,10 @@ services:
             - '@gos_web_socket.registry.server_push_handler'
             - '@gos_web_socket.server.application.wamp'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.start_server:
         class: Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
@@ -132,9 +144,10 @@ services:
             - '@gos_web_socket.registry.periodic'
             - '@gos_web_socket.registry.server_push_handler'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.periodic_ping.doctrine:
         class: Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing
@@ -142,7 +155,9 @@ services:
         public: false
         # arguments are set by the container extension
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.periodic_ping.pdo:
         class: Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing
@@ -150,13 +165,17 @@ services:
         public: false
         # arguments are set by the container extension
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.periodic_ping.memory_usage:
         class: Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage
         public: false
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.pusher.amqp:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
@@ -174,11 +193,12 @@ services:
             - '@gos_web_socket.router.wamp'
             - '@serializer'
             - '@event_dispatcher'
-            - ~ # AmqpConnectionFactory dependency is set by the container extension
+            - ~ # connection factory argument is set by the container extension
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: gos_web_socket.push_handler, alias: amqp }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.pusher.wamp:
         class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
@@ -224,7 +244,9 @@ services:
         arguments:
             - '@gos_pubsub_router.router.websocket'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.server.application.wamp:
         class: Gos\Bundle\WebSocketBundle\Server\App\WampApplication
@@ -236,7 +258,9 @@ services:
             - '@gos_web_socket.client.storage'
             - '@gos_web_socket.router.wamp'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.server.builder:
         class: Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder
@@ -269,9 +293,10 @@ services:
             - '@gos_web_socket.server.event_loop'
             - '@event_dispatcher'
         calls:
-            - [ setLogger, ['@?monolog.logger.websocket'] ]
+            - [ setLogger, ['@logger'] ]
         tags:
             - { name: gos_web_socket.server }
+            - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.topic.periodic_timer:
         class: Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer
