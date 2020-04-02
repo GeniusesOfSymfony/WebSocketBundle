@@ -11,8 +11,6 @@ use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
-use Monolog\Logger;
-use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -86,7 +84,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
-                'MonologBundle' => MonologBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
@@ -133,7 +130,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
-                'MonologBundle' => MonologBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
@@ -186,7 +182,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
-                'MonologBundle' => MonologBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
@@ -242,7 +237,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
-                'MonologBundle' => MonologBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
@@ -298,7 +292,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter(
             'kernel.bundles',
             [
-                'MonologBundle' => MonologBundle::class,
                 'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
                 'GosWebSocketBundle' => GosWebSocketBundle::class,
             ]
@@ -345,47 +338,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ],
             $this->container->getExtensionConfig('gos_pubsub_router'),
             'The GosPubSubRouterBundle should be configured when able.'
-        );
-    }
-
-    public function testContainerIsLoadedWithMonologBundleIntegration(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'MonologBundle' => MonologBundle::class,
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', true);
-        $this->load();
-
-        $this->assertSame(
-            [
-                [
-                    'channels' => [
-                        'websocket',
-                    ],
-                    'handlers' => [
-                        'websocket' => [
-                            'type' => 'console',
-                            'verbosity_levels' => [
-                                'VERBOSITY_NORMAL' => Logger::DEBUG,
-                            ],
-                            'channels' => [
-                                'type' => 'inclusive',
-                                'elements' => [
-                                    'websocket',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            $this->container->getExtensionConfig('monolog'),
-            'The MonologBundle should be configured when able.'
         );
     }
 

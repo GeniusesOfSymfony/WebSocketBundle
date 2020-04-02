@@ -10,7 +10,6 @@ use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -287,7 +286,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 ]
             );
             $connectionFactoryDef->setPrivate(true);
-            $connectionFactoryDef->addMethodCall('setLogger', [new Reference('monolog.logger.websocket', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
+            $connectionFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
+            $connectionFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
 
             $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
 
@@ -360,27 +360,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     ],
                 ]
             );
-        }
-
-        // MonologBundle
-        if (isset($bundles['MonologBundle'])) {
-            $monologConfig = [
-                'channels' => ['websocket'],
-                'handlers' => [
-                    'websocket' => [
-                        'type' => 'console',
-                        'verbosity_levels' => [
-                            'VERBOSITY_NORMAL' => $container->getParameter('kernel.debug') ? Logger::DEBUG : Logger::INFO,
-                        ],
-                        'channels' => [
-                            'type' => 'inclusive',
-                            'elements' => ['websocket'],
-                        ],
-                    ],
-                ],
-            ];
-
-            $container->prependExtensionConfig('monolog', $monologConfig);
         }
     }
 }

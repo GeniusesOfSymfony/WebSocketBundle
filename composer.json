@@ -44,7 +44,6 @@
         "phpunit/phpunit": "^8.5|^9.0",
         "predis/predis": "^1.1",
         "symfony/cache": "^3.4 || ^4.4 || ^5.0",
-        "symfony/monolog-bundle": "^3.0",
         "symfony/options-resolver": "^3.4 || ^4.4 || ^5.0",
         "symfony/polyfill-php73": "^1.13",
         "symfony/stopwatch": "^3.4 || ^4.4 || ^5.0",
@@ -52,7 +51,8 @@
         "symfony/web-profiler-bundle": "^3.4 || ^4.4 || ^5.0"
     },
     "conflict": {
-        "gos/react-amqp": "<0.3"
+        "gos/react-amqp": "<0.3",
+        "symfony/monolog-bundle": "<3.0"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "" },

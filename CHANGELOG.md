@@ -6,6 +6,8 @@
 - Add new log messages and extra error checks to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher`
 - Clear topic periodic timers after unsubscribing a user (Fixes [#369](https://github.com/GeniusesOfSymfony/WebSocketBundle/issues/369))
 - Move Twig configuration to a compiler pass
+- Use the `monolog.logger` tag to set the correct logger for `LoggerAwareInterface` classes
+    - Note, this results in the `monolog.logger.websocket` logger no longer being explicitly configured by this bundle (namely, the `monolog.handler.websocket` service which set some arbitrary defaults on where `websocket` channel messages would render is no longer created), you can tune the log configuration in your application if desired
 
 ## 2.4.0 (2020-03-20)
 
