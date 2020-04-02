@@ -13,9 +13,7 @@ use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Monolog\Logger;
 use Symfony\Bundle\MonologBundle\MonologBundle;
-use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -54,48 +52,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
 
         $this->load();
-    }
-
-    public function testContainerIsLoadedWithTwigBundleIntegration(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'TwigBundle' => TwigBundle::class,
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $bundleConfig = [
-            'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
-            ],
-        ];
-
-        // Prepend config now to allow the prepend pass to work
-        $this->container->prependExtensionConfig('gos_web_socket', $bundleConfig);
-
-        // Also load the bundle config so it is passed to the extension load method
-        $this->load($bundleConfig);
-
-        $this->assertContainerBuilderHasParameter('gos_web_socket.server.port');
-        $this->assertContainerBuilderHasParameter('gos_web_socket.server.host');
-
-        $this->assertSame(
-            [
-                [
-                    'globals' => [
-                        'gos_web_socket_server_host' => '127.0.0.1',
-                        'gos_web_socket_server_port' => 8080,
-                    ],
-                ],
-            ],
-            $this->container->getExtensionConfig('twig'),
-            'The TwigBundle should be configured when able.'
-        );
     }
 
     public function testContainerIsLoadedWithEnvVars(): void
