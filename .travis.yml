@@ -25,9 +25,6 @@ matrix:
     - php: nightly
       env: COVERAGE="no"
   allow_failures:
-    # Allow failures with Symfony 5.0 until Ratchet is updated to support it
-    - php: 7.4
-      env: SYMFONY_REQUIRE="5.0.*" COVERAGE="no"
     # Allow failures on next Symfony minor, should always be tested on newest stable PHP branch
     - php: 7.4
       env: SYMFONY_REQUIRE="5.1.*@dev" COVERAGE="no"
