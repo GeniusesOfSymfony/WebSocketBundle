@@ -1,7 +1,7 @@
 GosWebSocketBundle
 ==================
 
-[![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v)](//packagist.org/packages/gos/web-socket-bundle) [![Latest Unstable Version](https://poser.pugx.org/gos/web-socket-bundle/v/unstable)](//packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads)](//packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license)](//packagist.org/packages/gos/web-socket-bundle) [![Build Status](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/build.png?b=1.x)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/build-status/1.x) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/?branch=1.x) [![Build Status](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle.svg?branch=1.x)](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle)
+[![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v)](//packagist.org/packages/gos/web-socket-bundle) [![Latest Unstable Version](https://poser.pugx.org/gos/web-socket-bundle/v/unstable)](//packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads)](//packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license)](//packagist.org/packages/gos/web-socket-bundle) [![Build Status](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle.svg?branch=1.x)](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle)
 
 About
 ------
