@@ -10,8 +10,8 @@ build:
 
       dependencies:
         before:
-          # - pecl install amqp
-          # - composer require --dev --no-update gos/react-amqp:^0.3
+          - pecl install amqp
+          - composer require --dev --no-update gos/react-amqp:^0.3
 
       cache:
         disabled: false
