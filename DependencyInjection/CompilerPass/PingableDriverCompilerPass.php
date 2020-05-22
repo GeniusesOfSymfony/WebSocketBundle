@@ -7,10 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
-@trigger_error(
-    sprintf('The %s class is deprecated will be removed in 2.0.', PingableDriverCompilerPass::class),
-    E_USER_DEPRECATED
-);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s class is deprecated will be removed in 2.0.', PingableDriverCompilerPass::class);
 
 /**
  * @deprecated to be removed in 2.0.

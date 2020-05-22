@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Zmq;
 
 use Gos\Bundle\WebSocketBundle\Pusher\AbstractPusher;
 
-@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', ZmqPusher::class), E_USER_DEPRECATED);
+trigger_deprecation('gos/web-socket-bundle', '1.10', 'The %s class is deprecated will be removed in 2.0.', ZmqPusher::class);
 
 /**
  * @deprecated to be removed in 2.0

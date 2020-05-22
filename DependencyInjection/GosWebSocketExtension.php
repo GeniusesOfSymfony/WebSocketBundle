@@ -2,6 +2,8 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
+use Gos\Bundle\WebSocketBundle\Client\WebSocketUserTrait;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -107,10 +109,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //rpc
         if (!empty($configs['rpc'])) {
-            @trigger_error(
-                'Configuring RPC handlers with the `gos_web_socket.rpc` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.rpc` tag to your service definitions instead.',
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'Configuring RPC handlers with the `gos_web_socket.rpc` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.rpc` tag to your service definitions instead.');
 
             $def = $container->getDefinition('gos_web_socket.rpc.registry');
 
@@ -123,10 +122,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //topic
         if (!empty($configs['topics'])) {
-            @trigger_error(
-                'Configuring topic handlers with the `gos_web_socket.topics` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.topic` tag to your service definitions instead.',
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'Configuring topic handlers with the `gos_web_socket.topics` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.topic` tag to your service definitions instead.');
 
             $def = $container->getDefinition('gos_web_socket.topic.registry');
 
@@ -139,10 +135,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //periodic
         if (!empty($configs['periodic'])) {
-            @trigger_error(
-                'Configuring periodic handlers with the `gos_web_socket.periodic` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.periodic` tag to your service definitions instead.',
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'Configuring periodic handlers with the `gos_web_socket.periodic` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.periodic` tag to your service definitions instead.');
 
             $def = $container->getDefinition('gos_web_socket.periodic.registry');
 
@@ -155,10 +148,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
         //server
         if (!empty($configs['servers'])) {
-            @trigger_error(
-                'Configuring servers with the `gos_web_socket.servers` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.server` tag to your service definitions instead.',
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'Configuring servers with the `gos_web_socket.servers` config node is deprecated and will be removed in 2.0. Add the `gos_web_socket.server` tag to your service definitions instead.');
 
             $def = $container->getDefinition('gos_web_socket.server.registry');
 
@@ -192,10 +182,7 @@ class GosWebSocketExtension extends Extension implements PrependExtensionInterfa
 
             // Deprecate ZMQ pusher
             if (isset($configs['pushers']['zmq'])) {
-                @trigger_error(
-                    'Support for the ZMQ pusher is deprecated and will be removed in 2.0.',
-                    E_USER_DEPRECATED
-                );
+                trigger_deprecation('gos/web-socket-bundle', '1.10', 'Support for the ZMQ pusher is deprecated and will be removed in 2.0.');
             }
         }
     }

@@ -15,10 +15,7 @@ class PusherRegistry
      */
     public function addPusher(PusherInterface $pusher, $name)
     {
-        @trigger_error(
-            sprintf('The $name argument of %s() is deprecated will be removed in 2.0. The name will be extracted from the $pusher instead.', __METHOD__),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '1.9', 'The $name argument of %s() is deprecated will be removed in 2.0. The name will be extracted from the pusher instead.', __METHOD__);
 
         $this->pushers[$name] = $pusher;
     }

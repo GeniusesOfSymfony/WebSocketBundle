@@ -18,7 +18,7 @@ use React\ZMQ\SocketWrapper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 
-@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', ZmqServerPushHandler::class), E_USER_DEPRECATED);
+trigger_deprecation('gos/web-socket-bundle', '1.10', 'The %s class is deprecated will be removed in 2.0.', ZmqServerPushHandler::class);
 
 /**
  * @deprecated to be removed in 2.0

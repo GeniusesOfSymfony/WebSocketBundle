@@ -5,10 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-@trigger_error(
-    sprintf('The %s class is deprecated will be removed in 2.0.', LoopFactoryCompilerPass::class),
-    E_USER_DEPRECATED
-);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s class is deprecated will be removed in 2.0.', LoopFactoryCompilerPass::class);
 
 /**
  * @deprecated to be removed in 2.0.

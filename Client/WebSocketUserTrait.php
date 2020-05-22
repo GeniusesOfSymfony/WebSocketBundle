@@ -4,10 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 
 use Ratchet\ConnectionInterface;
 
-@trigger_error(
-    sprintf('The %s trait is deprecated will be removed in 2.0. Inject a %s instance into your class instead.', WebSocketUserTrait::class, ClientManipulatorInterface::class),
-    E_USER_DEPRECATED
-);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s trait is deprecated will be removed in 2.0. Inject a %s instance into your class instead.', WebSocketUserTrait::class, ClientManipulatorInterface::class);
 
 /**
  * @deprecated to be removed in 2.0. Inject a ClientManipulatorInterface instance into your class instead.

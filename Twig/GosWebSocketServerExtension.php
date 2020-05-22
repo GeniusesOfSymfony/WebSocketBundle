@@ -6,7 +6,7 @@ use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-@trigger_error(sprintf('The %s class is deprecated will be removed in 2.0.', GosWebSocketServerExtension::class), E_USER_DEPRECATED);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s class is deprecated will be removed in 2.0.', GosWebSocketServerExtension::class);
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>

@@ -36,10 +36,7 @@ abstract class AbstractServerPushHandler implements ServerPushHandlerInterface
      */
     public function getConfig()
     {
-        @trigger_error(
-            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '1.10', 'The %s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__);
 
         return $this->config;
     }
@@ -49,10 +46,7 @@ abstract class AbstractServerPushHandler implements ServerPushHandlerInterface
      */
     public function setConfig(array $config)
     {
-        @trigger_error(
-            sprintf('%s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '1.10', 'The %s() method is deprecated will be removed in 2.0. Configuration will no longer be automatically injected in pushers.', __METHOD__);
 
         $this->config = $config;
     }

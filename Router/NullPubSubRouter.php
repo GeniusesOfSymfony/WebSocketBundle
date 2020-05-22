@@ -7,10 +7,7 @@ use Gos\Bundle\PubSubRouterBundle\Router\RouteInterface;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterContext;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 
-@trigger_error(
-    sprintf('The %s class is deprecated will be removed in 2.0.', NullPubSubRouter::class),
-    E_USER_DEPRECATED
-);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s class is deprecated will be removed in 2.0.', NullPubSubRouter::class);
 
 /**
  * @deprecated to be removed in 2.0.

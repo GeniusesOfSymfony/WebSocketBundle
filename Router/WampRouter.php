@@ -47,10 +47,7 @@ class WampRouter
      */
     public function setContext(RouterContext $context)
     {
-        @trigger_error(
-            sprintf('%s() method is deprecated will be removed in 2.0.', __METHOD__),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s() method is deprecated will be removed in 2.0.', __METHOD__);
 
         $this->pubSubRouter->setContext($context);
     }
@@ -62,10 +59,7 @@ class WampRouter
      */
     public function getContext()
     {
-        @trigger_error(
-            sprintf('%s() method is deprecated will be removed in 2.0.', __METHOD__),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s() method is deprecated will be removed in 2.0.', __METHOD__);
 
         return $this->pubSubRouter->getContext();
     }
@@ -82,10 +76,7 @@ class WampRouter
     public function match(Topic $topic, $tokenSeparator = null)
     {
         if ($tokenSeparator !== null) {
-            @trigger_error(
-                sprintf('The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__),
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__);
         }
 
         try {
@@ -119,10 +110,7 @@ class WampRouter
     public function generate($routeName, array $parameters = [], $tokenSeparator = null)
     {
         if ($tokenSeparator !== null) {
-            @trigger_error(
-                sprintf('The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__),
-                E_USER_DEPRECATED
-            );
+            trigger_deprecation('gos/web-socket-bundle', '1.9', 'The $tokenSeparator argument of %s() is deprecated will be removed in 2.0.', __METHOD__);
         }
 
         return $this->pubSubRouter->generate($routeName, $parameters, $tokenSeparator);

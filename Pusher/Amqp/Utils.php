@@ -2,10 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 
-@trigger_error(
-    sprintf('The %s class is deprecated will be removed in 2.0.', Utils::class),
-    E_USER_DEPRECATED
-);
+trigger_deprecation('gos/web-socket-bundle', '1.9', 'The %s class is deprecated will be removed in 2.0.', Utils::class);
 
 /**
  * @deprecated to be removed in 2.0.
