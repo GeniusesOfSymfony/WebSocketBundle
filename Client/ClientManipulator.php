@@ -103,14 +103,7 @@ final class ClientManipulator implements ClientManipulatorInterface
      */
     public function findByUsername(Topic $topic, string $username)
     {
-        @trigger_error(
-            sprintf(
-                'The %s() method is deprecated will be removed in 3.0. Use %s::findAllByUsername() instead.',
-                __METHOD__,
-                ClientManipulatorInterface::class
-            ),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '2.0', 'The %s() method is deprecated will be removed in 3.0. Use %s::findAllByUsername() instead.', __METHOD__, ClientManipulatorInterface::class);
 
         $connections = $this->findAllByUsername($topic, $username);
 

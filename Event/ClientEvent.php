@@ -59,13 +59,7 @@ use Symfony\Component\EventDispatcher\Event;
      */
     public function getType(): int
     {
-        @trigger_error(
-            sprintf(
-                'The %s() method is deprecated will be removed in 3.0. Check the event type by the subclass instead.',
-                __METHOD__
-            ),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '2.2', 'The %s() method is deprecated will be removed in 3.0. Check the event type by the subclass instead.', __METHOD__);
 
         return $this->type;
     }

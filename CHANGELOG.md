@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.1 (2020-??-??)
+
+- Use the `symfony/deprecation-contracts` package to trigger runtime deprecation notices
+
 ## 2.5.0 (2020-04-02)
 
 - Add log messages for error conditions which send an error message back to the calling client to `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher`

@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\RPC;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 
-@trigger_error(sprintf('The %s class is deprecated will be removed in 3.0. Return responses from RPC handlers as arrays or implement a custom %s with support for DTOs.', RpcResponse::class, RpcDispatcherInterface::class), E_USER_DEPRECATED);
+trigger_deprecation('gos/web-socket-bundle', '2.1', 'The %s class is deprecated will be removed in 3.0. Return responses from RPC handlers as arrays or implement a custom %s with support for DTOs.', RpcResponse::class, RpcDispatcherInterface::class);
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
