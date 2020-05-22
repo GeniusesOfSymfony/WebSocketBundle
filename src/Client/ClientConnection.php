@@ -33,13 +33,7 @@ final class ClientConnection implements \ArrayAccess
      */
     public function offsetExists($offset): bool
     {
-        @trigger_error(
-            sprintf(
-                'Accessing properties from %s as an array is deprecated, use the getters to access the properties.',
-                self::class
-            ),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '3.0', 'Accessing properties from %s as an array is deprecated and will be removed in 4.0, use the getters to access the properties.', self::class);
 
         return \in_array($offset, ['client', 'connection'], true);
     }
@@ -51,13 +45,7 @@ final class ClientConnection implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        @trigger_error(
-            sprintf(
-                'Accessing properties from %s as an array is deprecated, use the getters to access the properties.',
-                self::class
-            ),
-            E_USER_DEPRECATED
-        );
+        trigger_deprecation('gos/web-socket-bundle', '3.0', 'Accessing properties from %s as an array is deprecated and will be removed in 4.0, use the getters to access the properties.', self::class);
 
         switch ($offset) {
             case 'client':
