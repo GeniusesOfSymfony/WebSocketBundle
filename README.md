@@ -42,7 +42,6 @@ Built in features
 * User authentication
 * Periodic calls
 * Origin checker
-* Push (amqp)
 
 Resources
 ---------
@@ -56,7 +55,6 @@ Resources
 * [Server Events](Resources/docs/Events.md)
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
 * [Performance Bench](Resources/docs/Performance.md)
-* [Push integration](Resources/docs/Pusher.md)
 * [SSL configuration](Resources/docs/Ssl.md)
 
 Code Cookbook
