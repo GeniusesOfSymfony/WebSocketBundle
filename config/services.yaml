@@ -35,6 +35,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         public: false
         arguments:
+            - ~ # driver argument is set by the container extension
             - '%gos_web_socket.client.storage.ttl%'
         calls:
             - [ setLogger, ['@logger'] ]

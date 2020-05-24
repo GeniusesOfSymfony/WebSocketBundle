@@ -30,8 +30,7 @@ class ClientStorageTest extends TestCase
 
         $this->driver = $this->createMock(DriverInterface::class);
 
-        $this->storage = new ClientStorage(10);
-        $this->storage->setStorageDriver($this->driver);
+        $this->storage = new ClientStorage($this->driver, 10);
     }
 
     public function testTheClientIsRetrieved(): void

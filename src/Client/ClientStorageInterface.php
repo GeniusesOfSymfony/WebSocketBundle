@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client;
 
-use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
@@ -10,8 +9,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface ClientStorageInterface
 {
-    public function setStorageDriver(DriverInterface $driver): void;
-
     /**
      * @throws ClientNotFoundException if the specified client could not be found
      * @throws StorageException        if the client could not be read from storage

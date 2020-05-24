@@ -17,29 +17,13 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
 {
     use LoggerAwareTrait;
 
-    private ?DriverInterface $driver = null;
+    private DriverInterface $driver;
     private int $ttl;
 
-    public function __construct(int $ttl)
-    {
-        $this->ttl = $ttl;
-    }
-
-    /**
-     * @throws \RuntimeException if the client storage driver has not been set
-     */
-    private function getStorageDriver(): DriverInterface
-    {
-        if (null === $this->driver) {
-            throw new \RuntimeException(sprintf('Storage driver not set in "%s". Did you forget to call "%s::setStorageDriver()?', static::class, static::class));
-        }
-
-        return $this->driver;
-    }
-
-    public function setStorageDriver(DriverInterface $driver): void
+    public function __construct(DriverInterface $driver, int $ttl)
     {
         $this->driver = $driver;
+        $this->ttl = $ttl;
     }
 
     /**
@@ -49,7 +33,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
     public function getClient(string $identifier): TokenInterface
     {
         try {
-            $result = $this->getStorageDriver()->fetch($identifier);
+            $result = $this->driver->fetch($identifier);
         } catch (\Exception $e) {
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
@@ -87,7 +71,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         }
 
         try {
-            $result = $this->getStorageDriver()->save($identifier, $serializedUser, $this->ttl);
+            $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
         } catch (\Exception $e) {
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
@@ -103,7 +87,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
     public function hasClient(string $identifier): bool
     {
         try {
-            return $this->getStorageDriver()->contains($identifier);
+            return $this->driver->contains($identifier);
         } catch (\Exception $e) {
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
@@ -119,7 +103,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         }
 
         try {
-            return $this->getStorageDriver()->delete($identifier);
+            return $this->driver->delete($identifier);
         } catch (\Exception $e) {
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }

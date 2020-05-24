@@ -216,10 +216,10 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             [new Reference('session.handler.pdo')]
         );
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.client.storage',
-            'setStorageDriver',
-            [new Reference('gos_web_socket.client.driver.in_memory')]
+            0,
+            new Reference('gos_web_socket.client.driver.in_memory')
         );
     }
 
@@ -259,10 +259,10 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             [new Reference('session.handler.pdo')]
         );
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.client.storage',
-            'setStorageDriver',
-            [new Reference('gos_web_socket.client.driver.symfony_cache')]
+            0,
+            new Reference('gos_web_socket.client.driver.symfony_cache')
         );
     }
 

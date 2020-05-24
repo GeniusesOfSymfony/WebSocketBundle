@@ -85,7 +85,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setAlias(DriverInterface::class, new Alias($storageDriver));
 
             $container->getDefinition('gos_web_socket.client.storage')
-                ->addMethodCall('setStorageDriver', [new Reference($storageDriver)]);
+                ->replaceArgument(0, new Reference($storageDriver));
         }
     }
 
