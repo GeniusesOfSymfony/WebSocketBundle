@@ -12,7 +12,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 final class Configuration implements ConfigurationInterface
 {
     private const DEFAULT_TTL = 900;
-    private const DEFAULT_PREFIX = '';
     private const DEFAULT_CLIENT_STORAGE_SERVICE = 'gos_web_socket.client.driver.in_memory';
     private const DEFAULT_FIREWALL = 'ws_firewall';
     private const DEFAULT_ORIGIN_CHECKER = false;
@@ -20,6 +19,11 @@ final class Configuration implements ConfigurationInterface
     private const DEFAULT_KEEPALIVE_INTERVAL = 30;
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
+
+    /**
+     * @deprecated to be removed in 4.0
+     */
+    private const DEFAULT_PREFIX = '';
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
@@ -48,6 +52,7 @@ final class Configuration implements ConfigurationInterface
                                 ->example(3600)
                             ->end()
                             ->scalarNode('prefix')
+                                ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.')
                                 ->defaultValue(static::DEFAULT_PREFIX)
                                 ->example('client')
                             ->end()

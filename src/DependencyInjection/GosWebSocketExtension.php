@@ -57,8 +57,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         $container->setParameter('gos_web_socket.client.storage.ttl', $configs['client']['storage']['ttl']);
-        $container->setParameter('gos_web_socket.client.storage.prefix', $configs['client']['storage']['prefix']);
         $container->setParameter('gos_web_socket.firewall', (array) $configs['client']['firewall']);
+
+        // @deprecated to be removed in 4.0, parameter is unused
+        $container->setParameter('gos_web_socket.client.storage.prefix', $configs['client']['storage']['prefix']);
 
         if (isset($configs['client']['session_handler'])) {
             $sessionHandler = ltrim($configs['client']['session_handler'], '@');
