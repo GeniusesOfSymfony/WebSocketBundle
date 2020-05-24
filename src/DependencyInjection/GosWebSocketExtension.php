@@ -210,6 +210,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
+            $connectionFactoryDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $connectionFactoryDef->setPrivate(true);
 
             $container->setDefinition('gos_web_socket.pusher.amqp.connection_factory', $connectionFactoryDef);
@@ -235,6 +236,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
+            $connectionFactoryDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $connectionFactoryDef->setPrivate(true);
             $connectionFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
             $connectionFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);

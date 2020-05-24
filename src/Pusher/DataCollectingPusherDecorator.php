@@ -5,6 +5,11 @@ namespace Gos\Bundle\WebSocketBundle\Pusher;
 use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', DataCollectingPusherDecorator::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class DataCollectingPusherDecorator implements PusherInterface
 {
     private PusherInterface $pusher;

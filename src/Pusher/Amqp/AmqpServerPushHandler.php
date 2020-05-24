@@ -17,6 +17,11 @@ use React\EventLoop\LoopInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', AmqpServerPushHandler::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class AmqpServerPushHandler extends AbstractServerPushHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;

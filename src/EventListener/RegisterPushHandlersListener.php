@@ -8,6 +8,11 @@ use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', RegisterPushHandlersListener::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class RegisterPushHandlersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;

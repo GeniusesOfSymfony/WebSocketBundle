@@ -5,6 +5,11 @@ namespace Gos\Bundle\WebSocketBundle\Pusher\Amqp;
 use Gos\Bundle\WebSocketBundle\Pusher\Exception\PusherUnsupportedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', AmqpConnectionFactory::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class AmqpConnectionFactory implements AmqpConnectionFactoryInterface
 {
     private array $config;

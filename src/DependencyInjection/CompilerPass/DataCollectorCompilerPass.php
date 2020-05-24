@@ -8,6 +8,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', DataCollectorCompilerPass::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class DataCollectorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
@@ -29,6 +34,7 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
                     new Reference('gos_web_socket.data_collector.websocket'),
                 ]
             );
+            $collectingPusherDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $collectingPusherDef->setDecoratedService($id);
 
             $container->setDefinition($collectorId, $collectingPusherDef);

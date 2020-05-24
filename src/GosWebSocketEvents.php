@@ -47,6 +47,8 @@ final class GosWebSocketEvents
      * The PUSHER_FAIL event occurs when a push handler has an error pushing a message to a server.
      *
      * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent")
+     *
+     * @deprecated to be removed in 4.0
      */
     public const PUSHER_FAIL = 'gos_web_socket.push_fail';
 
@@ -54,6 +56,8 @@ final class GosWebSocketEvents
      * The PUSHER_SUCCESS event occurs when a push handler succeeds in pushing a message to a server.
      *
      * @Event("Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent")
+     *
+     * @deprecated to be removed in 4.0
      */
     public const PUSHER_SUCCESS = 'gos_web_socket.push_success';
 }

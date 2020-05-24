@@ -5,6 +5,11 @@ namespace Gos\Bundle\WebSocketBundle\EventListener;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', ClosePusherConnectionsListener::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ */
 final class ClosePusherConnectionsListener
 {
     private PusherRegistry $pusherRegistry;

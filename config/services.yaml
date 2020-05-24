@@ -54,6 +54,7 @@ services:
     gos_web_socket.data_collector.websocket:
         class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
         public: false
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
         tags:
             - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }
 
@@ -98,6 +99,7 @@ services:
     gos_web_socket.event_listener.close_pusher_connections:
         class: Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener
         public: false
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
         arguments:
             - '@gos_web_socket.registry.pusher'
         tags:
@@ -128,6 +130,7 @@ services:
     gos_web_socket.event_listener.register_push_handlers:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener
         public: false
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
         arguments:
             - '@gos_web_socket.registry.server_push_handler'
             - '@gos_web_socket.server.application.wamp'
@@ -180,6 +183,7 @@ services:
     gos_web_socket.pusher.amqp:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
         public: true
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
         arguments:
             - '@gos_web_socket.router.wamp'
             - '@serializer'
@@ -189,6 +193,7 @@ services:
 
     gos_web_socket.pusher.amqp.push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
         arguments:
             - '@gos_web_socket.router.wamp'
             - '@serializer'
@@ -203,6 +208,7 @@ services:
     gos_web_socket.pusher.wamp:
         class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
         public: true
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
         arguments:
             - '@gos_web_socket.router.wamp'
             - '@serializer'
@@ -221,6 +227,7 @@ services:
     gos_web_socket.registry.pusher:
         class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
         public: true
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
 
     gos_web_socket.registry.rpc:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
@@ -233,6 +240,7 @@ services:
     gos_web_socket.registry.server_push_handler:
         class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
         public: true
+        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
 
     gos_web_socket.registry.topic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
