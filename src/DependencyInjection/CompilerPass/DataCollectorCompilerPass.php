@@ -34,7 +34,7 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
                     new Reference('gos_web_socket.data_collector.websocket'),
                 ]
             );
-            $collectingPusherDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
+            $collectingPusherDef->setDeprecated(true, 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $collectingPusherDef->setDecoratedService($id);
 
             $container->setDefinition($collectorId, $collectingPusherDef);
