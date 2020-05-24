@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\StartServerListener;
-use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
@@ -18,11 +17,6 @@ class StartServerListenerTest extends TestCase
     private $periodicRegistry;
 
     /**
-     * @var ServerPushHandlerRegistry
-     */
-    private $serverPushHandlerRegistry;
-
-    /**
      * @var StartServerListener
      */
     private $listener;
@@ -32,9 +26,8 @@ class StartServerListenerTest extends TestCase
         parent::setUp();
 
         $this->periodicRegistry = new PeriodicRegistry();
-        $this->serverPushHandlerRegistry = new ServerPushHandlerRegistry();
 
-        $this->listener = new StartServerListener($this->periodicRegistry, $this->serverPushHandlerRegistry);
+        $this->listener = new StartServerListener($this->periodicRegistry);
     }
 
     /**

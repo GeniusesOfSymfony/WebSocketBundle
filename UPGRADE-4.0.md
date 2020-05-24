@@ -1,1 +1,5 @@
 # Upgrade from 3.x to 4.0
+
+## Removals
+
+- Removed the pusher and server push handler integrations, Symfony's Messenger component is the suggested replacement

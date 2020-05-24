@@ -4,8 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
-use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
-use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
@@ -13,8 +11,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -47,7 +43,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerServerConfiguration($configs, $container);
         $this->registerOriginsConfiguration($configs, $container);
         $this->registerPingConfiguration($configs, $container);
-        $this->registerPushersConfiguration($configs, $container);
     }
 
     private function registerClientConfiguration(array $configs, ContainerBuilder $container): void
@@ -183,72 +178,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 default:
                     throw new InvalidArgumentException(sprintf('Unsupported ping service type "%s"', $pingService['type']));
             }
-        }
-    }
-
-    private function registerPushersConfiguration(array $configs, ContainerBuilder $container): void
-    {
-        if (!isset($configs['pushers'])) {
-            // Remove all of the pushers
-            foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
-                $container->removeDefinition($pusher);
-            }
-
-            foreach (['gos_web_socket.pusher.amqp.push_handler'] as $pusher) {
-                $container->removeDefinition($pusher);
-            }
-
-            return;
-        }
-
-        if (isset($configs['pushers']['amqp']) && $this->isConfigEnabled($container, $configs['pushers']['amqp'])) {
-            // Pull the 'enabled' field out of the pusher's config
-            $factoryConfig = $configs['pushers']['amqp'];
-            unset($factoryConfig['enabled']);
-
-            $connectionFactoryDef = new Definition(
-                AmqpConnectionFactory::class,
-                [
-                    $factoryConfig,
-                ]
-            );
-            $connectionFactoryDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
-            $connectionFactoryDef->setPrivate(true);
-
-            $container->setDefinition('gos_web_socket.pusher.amqp.connection_factory', $connectionFactoryDef);
-
-            $container->getDefinition('gos_web_socket.pusher.amqp')
-                ->setArgument(2, new Reference('gos_web_socket.pusher.amqp.connection_factory'));
-
-            $container->getDefinition('gos_web_socket.pusher.amqp.push_handler')
-                ->setArgument(3, new Reference('gos_web_socket.pusher.amqp.connection_factory'));
-        } else {
-            $container->removeDefinition('gos_web_socket.pusher.amqp');
-            $container->removeDefinition('gos_web_socket.pusher.amqp.push_handler');
-        }
-
-        if (isset($configs['pushers']['wamp']) && $this->isConfigEnabled($container, $configs['pushers']['wamp'])) {
-            // Pull the 'enabled' field out of the pusher's config
-            $factoryConfig = $configs['pushers']['wamp'];
-            unset($factoryConfig['enabled']);
-
-            $connectionFactoryDef = new Definition(
-                WampConnectionFactory::class,
-                [
-                    $factoryConfig,
-                ]
-            );
-            $connectionFactoryDef->setDeprecated('The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
-            $connectionFactoryDef->setPrivate(true);
-            $connectionFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
-            $connectionFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
-
-            $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
-
-            $container->getDefinition('gos_web_socket.pusher.wamp')
-                ->setArgument(2, new Reference('gos_web_socket.pusher.wamp.connection_factory'));
-        } else {
-            $container->removeDefinition('gos_web_socket.pusher.wamp');
         }
     }
 

@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
-use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -14,14 +13,10 @@ final class StartServerListener implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     private PeriodicRegistry $periodicRegistry;
-    private ServerPushHandlerRegistry $serverPushHandlerRegistry;
 
-    public function __construct(
-        PeriodicRegistry $periodicRegistry,
-        ServerPushHandlerRegistry $serverPushHandlerRegistry
-    ) {
+    public function __construct(PeriodicRegistry $periodicRegistry)
+    {
         $this->periodicRegistry = $periodicRegistry;
-        $this->serverPushHandlerRegistry = $serverPushHandlerRegistry;
     }
 
     public function bindPnctlEvent(ServerLaunchedEvent $event): void
@@ -35,14 +30,6 @@ final class StartServerListener implements LoggerAwareInterface
                 function () use ($server, $loop): void {
                     if (null !== $this->logger) {
                         $this->logger->notice('Stopping server ...');
-                    }
-
-                    foreach ($this->serverPushHandlerRegistry->getPushers() as $handler) {
-                        $handler->close();
-
-                        if (null !== $this->logger) {
-                            $this->logger->info(sprintf('Stop %s push handler', $handler->getName()));
-                        }
                     }
 
                     $server->emit('end');

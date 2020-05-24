@@ -151,41 +151,6 @@ final class ConfigurationTest extends TestCase
         (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
-    public function testConfigWithPushers(): void
-    {
-        $extraConfig = [
-            'pushers' => [
-                'wamp' => [
-                    'enabled' => false,
-                    'host' => '127.0.0.1',
-                    'port' => 1337,
-                    'ssl' => false,
-                    'origin' => null,
-                ],
-                'amqp' => [
-                    'enabled' => false,
-                    'host' => '127.0.0.1',
-                    'port' => 5672,
-                    'login' => 'username',
-                    'password' => 'password',
-                    'vhost' => '/',
-                    'read_timeout' => 0,
-                    'write_timeout' => 0,
-                    'connect_timeout' => 0,
-                    'queue_name' => 'gos_websocket',
-                    'exchange_name' => 'gos_websocket_exchange',
-                ],
-            ],
-        ];
-
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
-
-        $this->assertEquals(
-            array_merge(self::getBundleDefaultConfig(), $extraConfig),
-            $config
-        );
-    }
-
     protected static function getBundleDefaultConfig(): array
     {
         return [

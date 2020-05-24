@@ -35,23 +35,4 @@ gos_web_socket:
 
                 # The type of the service to be pinged; valid options are "doctrine" and "pdo"
                 type:                 ~ # One of "doctrine"; "pdo", Required
-    pushers:
-        amqp:
-            enabled:              false
-            host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 5672
-            login:                ~ # Required
-            password:             ~ # Required
-            vhost:                /
-            read_timeout:         0
-            write_timeout:        0
-            connect_timeout:      0
-            queue_name:           gos_websocket
-            exchange_name:        gos_websocket_exchange
-        wamp:
-            enabled:              false
-            host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 1337
-            ssl:                  false
-            origin:               null
 ```

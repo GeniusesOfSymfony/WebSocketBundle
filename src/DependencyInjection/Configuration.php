@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -163,96 +162,8 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('pushers')
-                ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
-                ->append($this->addAmqpNode())
-                ->append($this->addWampNode())
-                ->end()
-            ->end()
         ->end();
 
         return $treeBuilder;
-    }
-
-    private function addWampNode(): NodeDefinition
-    {
-        $builder = new TreeBuilder('wamp');
-
-        $node = $builder->getRootNode();
-
-        $node
-            ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
-            ->addDefaultsIfNotSet()
-            ->canBeEnabled()
-            ->children()
-                ->scalarNode('host')
-                    ->example('127.0.0.1')
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('port')
-                    ->example(1337)
-                    ->isRequired()
-                ->end()
-                ->booleanNode('ssl')
-                    ->defaultFalse()
-                ->end()
-                ->scalarNode('origin')
-                    ->defaultNull()
-                ->end()
-            ->end();
-
-        return $node;
-    }
-
-    private function addAmqpNode(): NodeDefinition
-    {
-        $builder = new TreeBuilder('amqp');
-
-        $node = $builder->getRootNode();
-
-        $node
-            ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
-            ->addDefaultsIfNotSet()
-            ->canBeEnabled()
-            ->children()
-                ->scalarNode('host')
-                    ->example('127.0.0.1')
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('port')
-                    ->example(5672)
-                    ->isRequired()
-                ->end()
-                ->scalarNode('login')
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('password')
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('vhost')
-                    ->defaultValue('/')
-                ->end()
-                ->integerNode('read_timeout')
-                    ->defaultValue(0)
-                ->end()
-                ->integerNode('write_timeout')
-                    ->defaultValue(0)
-                ->end()
-                ->integerNode('connect_timeout')
-                    ->defaultValue(0)
-                ->end()
-                ->scalarNode('queue_name')
-                    ->defaultValue('gos_websocket')
-                ->end()
-                ->scalarNode('exchange_name')
-                    ->defaultValue('gos_websocket_exchange')
-                ->end()
-            ->end();
-
-        return $node;
     }
 }

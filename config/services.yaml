@@ -52,13 +52,6 @@ services:
         tags:
             - { name: console.command, command: gos:websocket:server }
 
-    gos_web_socket.data_collector.websocket:
-        class: Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector
-        public: false
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
-        tags:
-            - { name: data_collector, template: '@GosWebSocket/Collector/websocket.html.twig', id: 'websocket' }
-
     gos_web_socket.dispatcher.rpc:
         class: Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher
         public: true
@@ -97,15 +90,6 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.event_listener.close_pusher_connections:
-        class: Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener
-        public: false
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-        arguments:
-            - '@gos_web_socket.registry.pusher'
-        tags:
-            - { name: kernel.event_listener, event: 'kernel.terminate', method: closeConnection }
-
     gos_web_socket.event_listener.register_periodic_memory_timer:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener
         public: false
@@ -128,25 +112,11 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.event_listener.register_push_handlers:
-        class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener
-        public: false
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-        arguments:
-            - '@gos_web_socket.registry.server_push_handler'
-            - '@gos_web_socket.server.application.wamp'
-        calls:
-            - [ setLogger, ['@logger'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPushHandlers }
-            - { name: monolog.logger, channel: websocket }
-
     gos_web_socket.event_listener.start_server:
         class: Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'
-            - '@gos_web_socket.registry.server_push_handler'
         calls:
             - [ setLogger, ['@logger'] ]
         tags:
@@ -181,42 +151,6 @@ services:
         tags:
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.pusher.amqp:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpPusher
-        public: true
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - ~ # connection factory argument is set by the container extension
-        tags:
-            - { name: gos_web_socket.pusher, alias: amqp }
-
-    gos_web_socket.pusher.amqp.push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - '@event_dispatcher'
-            - ~ # connection factory argument is set by the container extension
-        calls:
-            - [ setLogger, ['@logger'] ]
-        tags:
-            - { name: gos_web_socket.push_handler, alias: amqp }
-            - { name: monolog.logger, channel: websocket }
-
-    gos_web_socket.pusher.wamp:
-        class: Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampPusher
-        public: true
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-        arguments:
-            - '@gos_web_socket.router.wamp'
-            - '@serializer'
-            - ~ # connection factory argument is set by the container extension
-        tags:
-            - { name: gos_web_socket.pusher, alias: wamp }
-
     gos_web_socket.registry.periodic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry
         public: true
@@ -225,11 +159,6 @@ services:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry
         public: true
 
-    gos_web_socket.registry.pusher:
-        class: Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry
-        public: true
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
-
     gos_web_socket.registry.rpc:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry
         public: true
@@ -237,11 +166,6 @@ services:
     gos_web_socket.registry.server:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry
         public: true
-
-    gos_web_socket.registry.server_push_handler:
-        class: Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry
-        public: true
-        deprecated: 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
 
     gos_web_socket.registry.topic:
         class: Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry
