@@ -8,7 +8,6 @@ gos_web_socket:
         storage:
             driver:               gos_web_socket.client.driver.in_memory # Example: gos_web_socket.client.driver.in_memory
             ttl:                  900 # Example: 3600
-            prefix:               '' # Example: client
             decorator:            ~
     shared_config:        true
     server:

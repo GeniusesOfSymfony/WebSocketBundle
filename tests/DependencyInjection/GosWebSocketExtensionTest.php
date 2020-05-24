@@ -26,7 +26,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
-        $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.prefix');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -196,7 +195,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                     'storage' => [
                         'driver' => 'gos_web_socket.client.driver.in_memory',
                         'ttl' => 900,
-                        'prefix' => '',
                     ],
                 ],
             ]
@@ -238,7 +236,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                     'storage' => [
                         'driver' => 'gos_web_socket.client.driver.in_memory',
                         'ttl' => 900,
-                        'prefix' => '',
                         'decorator' => 'gos_web_socket.client.driver.symfony_cache',
                     ],
                 ],

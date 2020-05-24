@@ -159,7 +159,6 @@ final class ConfigurationTest extends TestCase
                 'storage' => [
                     'driver' => 'gos_web_socket.client.driver.in_memory',
                     'ttl' => 900,
-                    'prefix' => '',
                 ],
             ],
             'shared_config' => true,

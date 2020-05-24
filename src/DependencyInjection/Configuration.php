@@ -19,11 +19,6 @@ final class Configuration implements ConfigurationInterface
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
-    /**
-     * @deprecated to be removed in 4.0
-     */
-    private const DEFAULT_PREFIX = '';
-
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('gos_web_socket');
@@ -49,11 +44,6 @@ final class Configuration implements ConfigurationInterface
                             ->integerNode('ttl')
                                 ->defaultValue(static::DEFAULT_TTL)
                                 ->example(3600)
-                            ->end()
-                            ->scalarNode('prefix')
-                                ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.')
-                                ->defaultValue(static::DEFAULT_PREFIX)
-                                ->example('client')
                             ->end()
                             ->scalarNode('decorator')->end()
                         ->end()
