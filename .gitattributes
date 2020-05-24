@@ -12,4 +12,4 @@
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /README.md export-ignore
-/UPGRADE-3.0.md export-ignore
+/UPGRADE-4.0.md export-ignore
