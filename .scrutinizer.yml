@@ -5,14 +5,6 @@ build:
         php:
           version: 7.4
 
-      services:
-        rabbitmq: 3-management
-
-      dependencies:
-        before:
-          - pecl install amqp
-          - composer require --dev --no-update gos/react-amqp:^0.3
-
       cache:
         disabled: false
         directories:
