@@ -1,7 +1,5 @@
 parameters:
   level: 7
-  excludes_analyse:
-    - %currentWorkingDirectory%/Event/Events.php
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
