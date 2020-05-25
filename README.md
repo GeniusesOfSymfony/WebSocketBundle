@@ -1,7 +1,7 @@
 GosWebSocketBundle
 ==================
 
-[![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v/stable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Latest Unstable Version](https://poser.pugx.org/gos/web-socket-bundle/v/unstable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Build Status](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle.svg?branch=1.x)](https://travis-ci.org/GeniusesOfSymfony/WebSocketBundle)
+[![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v/stable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Latest Unstable Version](https://poser.pugx.org/gos/web-socket-bundle/v/unstable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license.svg)](https://packagist.org/packages/gos/web-socket-bundle)
 
 About
 ------
