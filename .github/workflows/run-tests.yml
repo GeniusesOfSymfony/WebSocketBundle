@@ -43,7 +43,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: pecl
           extensions: curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip
           coverage: pcov
 
