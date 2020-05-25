@@ -4,19 +4,6 @@ parameters:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
   ignoreErrors:
-    # Conditionals for class for compatibility, remove when dropping support for Symfony 4.4 and earlier
-    -
-      message: '/Comparison operation ">=" between 4 and 5 is always false\./'
-      path: %currentWorkingDirectory%/src/DataCollector/WebsocketCompatibilityDataCollector.php
-
-    -
-      message: '/Comparison operation ">=" between 5 and 5 is always true\./'
-      path: %currentWorkingDirectory%/src/DataCollector/WebsocketCompatibilityDataCollector.php
-
-    -
-      message: '/Else branch is unreachable because previous condition is always true\./'
-      path: %currentWorkingDirectory%/src/DataCollector/WebsocketCompatibilityDataCollector.php
-
     # Ignore errors for Symfony config builder
     -
       message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\)\./'
