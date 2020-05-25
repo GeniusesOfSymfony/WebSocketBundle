@@ -1,9 +1,7 @@
 GosWebSocketBundle
 ==================
 
-<<<<<<< HEAD
 [![Latest Stable Version](https://poser.pugx.org/gos/web-socket-bundle/v/stable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Latest Unstable Version](https://poser.pugx.org/gos/web-socket-bundle/v/unstable.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Total Downloads](https://poser.pugx.org/gos/web-socket-bundle/downloads.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![License](https://poser.pugx.org/gos/web-socket-bundle/license.svg)](https://packagist.org/packages/gos/web-socket-bundle) [![Build Status](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GeniusesOfSymfony/WebSocketBundle/?branch=master) ![Run Tests](https://github.com/GeniusesOfSymfony/WebSocketBundle/workflows/Run%20Tests/badge.svg?branch=master)
->>>>>>> 3.x
 
 About
 ------
