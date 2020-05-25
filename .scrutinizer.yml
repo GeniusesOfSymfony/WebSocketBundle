@@ -31,4 +31,4 @@ before_commands:
 tools:
   external_code_coverage:
     timeout: 3000
-    runs: 2
+    runs: 5
