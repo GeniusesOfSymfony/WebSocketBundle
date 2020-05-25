@@ -32,9 +32,6 @@
         "symfony/http-kernel": "^2.3|^3.0|^4.0",
         "symfony/security-core": "^2.3|^3.0|^4.0"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^8.5|^9.0"
-    },
     "conflict": {
         "twig/twig": "<1.34|>=2.0,<2.4"
     },
