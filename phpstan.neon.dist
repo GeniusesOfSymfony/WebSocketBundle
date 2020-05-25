@@ -30,6 +30,9 @@ parameters:
     # The param's doc block says this should be a string, however it effectively supports arrays as well
     - '/Parameter #4 \$details of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string\|null, .* given\./'
 
+    # The param's doc block says this should be a subclass of the typehinted interface
+    - '/Parameter #1 \$conn of method Ratchet\\Wamp\\Topic::(add|remove)\(\) expects Ratchet\\Wamp\\WampConnection, Ratchet\\ConnectionInterface given\./'
+
     # Method has mixed return
     -
       message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\Stack\\OriginCheck::onOpen\(\) has no return typehint specified\./'
@@ -39,24 +42,6 @@ parameters:
     -
       message: '/Parameter #1 \$object of function get_class expects object, string given\./'
       path: %currentWorkingDirectory%/src/Server/App/WampApplication.php
-
-    # Interfaces which lack return typehints, re-evaluate for 3.0
-    -
-      message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\PushableWampServerInterface::onPush\(\) has no return typehint specified\./'
-      path: %currentWorkingDirectory%/src/Server/App/PushableWampServerInterface.php
-
-    -
-      message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\Type\\ServerInterface::launch\(\) has no return typehint specified\./'
-      path: %currentWorkingDirectory%/src/Server/Type/ServerInterface.php
-
-    -
-      message: '/Method Gos\\Bundle\\WebSocketBundle\\Topic\\TopicInterface::(onSubscribe|onUnSubscribe|onPublish)\(\) has no return typehint specified\./'
-      path: %currentWorkingDirectory%/src/Topic/TopicInterface.php
-
-    # Ignore missing typehints from parent interfaces
-    -
-      message: '/Method Gos\\Bundle\\WebSocketBundle\\Topic\\TopicManager::(getTopic|onUnsubscribe)\(\) has parameter \$topic with no typehint specified\./'
-      path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Tests error handling for untyped argument
     -

@@ -8,9 +8,9 @@ use Ratchet\Wamp\Topic;
 
 interface TopicInterface
 {
-    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request);
+    public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void;
 
-    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request);
+    public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void;
 
     /**
      * @param mixed $event The event data
@@ -22,7 +22,7 @@ interface TopicInterface
         $event,
         array $exclude,
         array $eligible
-    );
+    ): void;
 
     public function getName(): string;
 }

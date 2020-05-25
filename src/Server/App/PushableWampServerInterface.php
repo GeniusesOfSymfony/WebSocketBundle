@@ -11,5 +11,5 @@ interface PushableWampServerInterface extends WampServerInterface
      * @param string|array $data
      * @param string       $provider
      */
-    public function onPush(WampRequest $request, $data, $provider);
+    public function onPush(WampRequest $request, $data, $provider): void;
 }

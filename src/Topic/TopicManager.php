@@ -13,6 +13,10 @@ use Ratchet\WebSocket\WsServerInterface;
 class TopicManager implements WsServerInterface, WampServerInterface
 {
     protected ?WampServerInterface $app = null;
+
+    /**
+     * @var array<string, Topic>
+     */
     protected array $topicLookup = [];
 
     public function setWampApplication(WampServerInterface $app): void
@@ -20,9 +24,6 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app = $app;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onOpen(ConnectionInterface $conn): void
     {
         $conn->WAMP->subscriptions = new \SplObjectStorage();
@@ -30,7 +31,8 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string       $id The unique ID of the RPC, required to respond to
+     * @param string|Topic $topic
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
@@ -38,7 +40,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string|Topic $topic
      */
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
@@ -54,7 +56,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string|Topic $topic
      */
     public function onUnsubscribe(ConnectionInterface $conn, $topic): void
     {
@@ -70,16 +72,14 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string|Topic $topic
+     * @param string       $event
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
         $this->app->onPublish($conn, $this->getTopic($topic), $event, $exclude, $eligible);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onClose(ConnectionInterface $conn): void
     {
         $this->app->onClose($conn);
@@ -89,18 +89,12 @@ class TopicManager implements WsServerInterface, WampServerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $this->app->onError($conn, $e);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSubProtocols()
+    public function getSubProtocols(): array
     {
         if ($this->app instanceof WsServerInterface) {
             return $this->app->getSubProtocols();
@@ -109,6 +103,9 @@ class TopicManager implements WsServerInterface, WampServerInterface
         return [];
     }
 
+    /**
+     * @param string|Topic $topic
+     */
     public function getTopic($topic): Topic
     {
         if (!\array_key_exists((string) $topic, $this->topicLookup)) {
@@ -119,7 +116,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
             }
         }
 
-        return $this->topicLookup[$topic];
+        return $this->topicLookup[(string) $topic];
     }
 
     protected function cleanTopic(Topic $topic, ConnectionInterface $conn): void

@@ -1,5 +1,11 @@
 # Upgrade from 3.x to 4.0
 
+## Changes
+
+- Added return typehint to `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface::onPush()`
+- Added return typehint to `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface::launch()`
+- Added return typehints to `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
+
 ## Removals
 
 - Removed the pusher and server push handler integrations, Symfony's Messenger component is the suggested replacement
