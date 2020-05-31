@@ -117,7 +117,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             } else {
                 $service->setDeprecated(
                     true,
-                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
                 );
             }
         }
