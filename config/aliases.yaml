@@ -10,11 +10,11 @@ services:
 
     Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry:
         alias: gos_web_socket.registry.pusher
-        deprecated: 'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+        # deprecated alias, deprecation is set in the container extension
 
     Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry:
         alias: gos_web_socket.registry.server_push_handler
-        deprecated: 'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+        # deprecated alias, deprecation is set in the container extension
 
     Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface:
         alias: gos_web_socket.dispatcher.rpc

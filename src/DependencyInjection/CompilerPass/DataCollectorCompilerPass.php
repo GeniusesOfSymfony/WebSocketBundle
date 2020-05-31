@@ -23,6 +23,8 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
 
         $pushers = $container->findTaggedServiceIds('gos_web_socket.pusher');
 
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
+
         foreach ($pushers as $id => $attributes) {
             $collectorId = $id.'.data_collector';
 
@@ -34,8 +36,20 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
                     new Reference('gos_web_socket.data_collector.websocket'),
                 ]
             );
-            $collectingPusherDef->setDeprecated(true, 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $collectingPusherDef->setDecoratedService($id);
+
+            if ($usesSymfony51Api) {
+                $collectingPusherDef->setDeprecated(
+                    'gos/web-socket-bundle',
+                    '3.1',
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            } else {
+                $collectingPusherDef->setDeprecated(
+                    true,
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            }
 
             $container->setDefinition($collectorId, $collectingPusherDef);
         }

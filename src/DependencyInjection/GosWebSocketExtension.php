@@ -5,6 +5,8 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
+use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
+use Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry;
 use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
@@ -27,6 +29,22 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
+    private const DEPRECATED_ALISASES = [
+        PusherRegistry::class => '3.1',
+        ServerPushHandlerRegistry::class => '3.1',
+    ];
+
+    private const DEPRECATED_SERVICES = [
+        'gos_web_socket.data_collector.websocket' => '3.1',
+        'gos_web_socket.event_listener.close_pusher_connections' => '3.1',
+        'gos_web_socket.event_listener.register_push_handlers' => '3.1',
+        'gos_web_socket.pusher.amqp' => '3.1',
+        'gos_web_socket.pusher.amqp.push_handler' => '3.1',
+        'gos_web_socket.pusher.wamp' => '3.1',
+        'gos_web_socket.registry.pusher' => '3.1',
+        'gos_web_socket.registry.server_push_handler' => '3.1',
+    ];
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
@@ -48,6 +66,61 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerOriginsConfiguration($configs, $container);
         $this->registerPingConfiguration($configs, $container);
         $this->registerPushersConfiguration($configs, $container);
+
+        $this->markAliasesDeprecated($container);
+        $this->markServicesDeprecated($container);
+    }
+
+    private function markAliasesDeprecated(ContainerBuilder $container): void
+    {
+        $usesSymfony51Api = method_exists(Alias::class, 'getDeprecation');
+
+        foreach (self::DEPRECATED_ALISASES as $aliasId => $deprecatedSince) {
+            if (!$container->hasAlias($aliasId)) {
+                continue;
+            }
+
+            $alias = $container->getAlias($aliasId);
+
+            if ($usesSymfony51Api) {
+                $alias->setDeprecated(
+                    'gos/web-socket-bundle',
+                    $deprecatedSince,
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
+                );
+            } else {
+                $alias->setDeprecated(
+                    true,
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
+                );
+            }
+        }
+    }
+
+    private function markServicesDeprecated(ContainerBuilder $container): void
+    {
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
+
+        foreach (self::DEPRECATED_SERVICES as $serviceId => $deprecatedSince) {
+            if (!$container->hasDefinition($serviceId)) {
+                continue;
+            }
+
+            $service = $container->getDefinition($serviceId);
+
+            if ($usesSymfony51Api) {
+                $service->setDeprecated(
+                    'gos/web-socket-bundle',
+                    $deprecatedSince,
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
+                );
+            } else {
+                $service->setDeprecated(
+                    true,
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.'
+                );
+            }
+        }
     }
 
     private function registerClientConfiguration(array $configs, ContainerBuilder $container): void
@@ -188,6 +261,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerPushersConfiguration(array $configs, ContainerBuilder $container): void
     {
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
+
         if (!isset($configs['pushers'])) {
             // Remove all of the pushers
             foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
@@ -212,8 +287,20 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
-            $connectionFactoryDef->setDeprecated(true, 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $connectionFactoryDef->setPrivate(true);
+
+            if ($usesSymfony51Api) {
+                $connectionFactoryDef->setDeprecated(
+                    'gos/web-socket-bundle',
+                    '3.1',
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            } else {
+                $connectionFactoryDef->setDeprecated(
+                    true,
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            }
 
             $container->setDefinition('gos_web_socket.pusher.amqp.connection_factory', $connectionFactoryDef);
 
@@ -238,10 +325,22 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
-            $connectionFactoryDef->setDeprecated(true, 'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.');
             $connectionFactoryDef->setPrivate(true);
             $connectionFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
             $connectionFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
+
+            if ($usesSymfony51Api) {
+                $connectionFactoryDef->setDeprecated(
+                    'gos/web-socket-bundle',
+                    '3.1',
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            } else {
+                $connectionFactoryDef->setDeprecated(
+                    true,
+                    'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the symfony/messenger component instead.'
+                );
+            }
 
             $container->setDefinition('gos_web_socket.pusher.wamp.connection_factory', $connectionFactoryDef);
 
