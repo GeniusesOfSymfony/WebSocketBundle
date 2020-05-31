@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -52,7 +53,7 @@ final class Configuration implements ConfigurationInterface
                                 ->example(3600)
                             ->end()
                             ->scalarNode('prefix')
-                                ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.')
+                                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.1'))
                                 ->defaultValue(static::DEFAULT_PREFIX)
                                 ->example('client')
                             ->end()
@@ -164,7 +165,7 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->arrayNode('pushers')
-                ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
+                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
                 ->append($this->addAmqpNode())
                 ->append($this->addWampNode())
                 ->end()
@@ -181,7 +182,7 @@ final class Configuration implements ConfigurationInterface
         $node = $builder->getRootNode();
 
         $node
-            ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
+            ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
             ->addDefaultsIfNotSet()
             ->canBeEnabled()
             ->children()
@@ -212,7 +213,7 @@ final class Configuration implements ConfigurationInterface
         $node = $builder->getRootNode();
 
         $node
-            ->setDeprecated('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.')
+            ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
             ->addDefaultsIfNotSet()
             ->canBeEnabled()
             ->children()
@@ -254,5 +255,14 @@ final class Configuration implements ConfigurationInterface
             ->end();
 
         return $node;
+    }
+
+    private function getDeprecationParameters(string $message, string $version): array
+    {
+        if (method_exists(BaseNode::class, 'getDeprecation')) {
+            return ['gos/web-socket-bundle', $version, $message];
+        }
+
+        return [$message];
     }
 }
