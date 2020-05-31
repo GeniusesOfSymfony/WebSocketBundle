@@ -26,9 +26,9 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new RpcCompilerPass())
             ->addCompilerPass(new TopicCompilerPass())
             ->addCompilerPass(new PeriodicCompilerPass())
-            ->addCompilerPass(new PusherCompilerPass())
-            ->addCompilerPass(new ServerPushHandlerCompilerPass())
-            ->addCompilerPass(new DataCollectorCompilerPass())
+            ->addCompilerPass(new PusherCompilerPass(true))
+            ->addCompilerPass(new ServerPushHandlerCompilerPass(true))
+            ->addCompilerPass(new DataCollectorCompilerPass(true))
             ->addCompilerPass(new RegisterTwigGlobalsCompilerPass())
             ->addCompilerPass(new RegisterWebsocketRouterResourcesCompilerPass())
         ;

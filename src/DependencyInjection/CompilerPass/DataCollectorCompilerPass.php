@@ -8,15 +8,27 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', DataCollectorCompilerPass::class);
-
 /**
  * @deprecated to be removed in 4.0, use the symfony/messenger component instead
  */
 final class DataCollectorCompilerPass implements CompilerPassInterface
 {
+    private bool $internal;
+
+    /**
+     * @param bool $internal Flag indicating the pass was created by an internal bundle call (used to suppress runtime deprecations)
+     */
+    public function __construct(bool $internal = false)
+    {
+        $this->internal = $internal;
+    }
+
     public function process(ContainerBuilder $container): void
     {
+        if (!$this->internal) {
+            trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', DataCollectorCompilerPass::class);
+        }
+
         if (!$container->getParameter('kernel.debug') || !$container->hasDefinition('debug.stopwatch')) {
             return;
         }
