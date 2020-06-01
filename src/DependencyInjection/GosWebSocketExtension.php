@@ -19,7 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
-use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
@@ -226,14 +225,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     }
 
     /**
-     * @throws RuntimeException if required dependencies are missing
+     * @throws LogicException if required dependencies are missing
      */
     public function prepend(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 
         if (!isset($bundles['GosPubSubRouterBundle'])) {
-            throw new RuntimeException('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
+            throw new LogicException('The GosWebSocketBundle requires the GosPubSubRouterBundle, please run "composer require gos/pubsub-router-bundle".');
         }
 
         // Prepend the websocket router now so the pubsub bundle creates the router service, we will inject the resources into the service with a compiler pass

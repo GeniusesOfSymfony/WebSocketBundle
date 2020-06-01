@@ -10,7 +10,7 @@ use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Gos\Component\WebSocketClient\Wamp\Client;
 use Gos\Component\WebSocketClient\Wamp\ClientFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
-use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Reference;
 
 class GosWebSocketExtensionTest extends AbstractExtensionTestCase
@@ -34,8 +34,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('The GosWebSocketBundle requires the GosPubSubRouterBundle.');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The GosWebSocketBundle requires the GosPubSubRouterBundle, please run "composer require gos/pubsub-router-bundle".');
 
         $this->container->setParameter(
             'kernel.bundles',
