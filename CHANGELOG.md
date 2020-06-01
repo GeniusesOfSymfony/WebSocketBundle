@@ -3,6 +3,7 @@
 ## 3.2.0 (2020-06-01)
 
 - Extend `Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface` inside `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface`
+- Added new `gos_web_socket.websocket_client` configuration node to configure a `Gos\Component\WebSocketClient\Wamp\ClientInterface` instance
 
 ## 3.1.0 (2020-05-31)
 
