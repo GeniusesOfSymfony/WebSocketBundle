@@ -325,34 +325,6 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('gos_web_socket.websocket_client_factory', ClientFactory::class);
     }
 
-    public function testContainerIsLoadedWithWampPusherConfigured(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $bundleConfig = [
-            'pushers' => [
-                'wamp' => [
-                    'enabled' => true,
-                    'host' => '127.0.0.1',
-                    'port' => 1337,
-                    'ssl' => false,
-                    'origin' => null,
-                ],
-            ],
-        ];
-
-        $this->load($bundleConfig);
-
-        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp');
-        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.connection_factory', WampConnectionFactory::class);
-    }
-
     protected function getContainerExtensions(): array
     {
         return [
