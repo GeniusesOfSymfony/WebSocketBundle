@@ -186,6 +186,26 @@ final class ConfigurationTest extends TestCase
         );
     }
 
+    public function testConfigWithWebsocketClient(): void
+    {
+        $extraConfig = [
+            'websocket_client' => [
+                'enabled' => false,
+                'host' => '127.0.0.1',
+                'port' => 1337,
+                'ssl' => false,
+                'origin' => null,
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        $this->assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
     protected static function getBundleDefaultConfig(): array
     {
         return [
@@ -199,6 +219,11 @@ final class ConfigurationTest extends TestCase
             ],
             'shared_config' => true,
             'origins' => [],
+            'websocket_client' => [
+                'enabled' => false,
+                'ssl' => false,
+                'origin' => false,
+            ],
         ];
     }
 }

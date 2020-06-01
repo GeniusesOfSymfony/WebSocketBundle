@@ -11,6 +11,10 @@ use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
+use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientFactory;
+use Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface;
+use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -66,6 +70,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerOriginsConfiguration($configs, $container);
         $this->registerPingConfiguration($configs, $container);
         $this->registerPushersConfiguration($configs, $container);
+        $this->registerWebsocketClientConfiguration($configs, $container);
 
         $this->markAliasesDeprecated($container);
         $this->markServicesDeprecated($container);
@@ -349,6 +354,38 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         } else {
             $container->removeDefinition('gos_web_socket.pusher.wamp');
         }
+    }
+
+    private function registerWebsocketClientConfiguration(array $configs, ContainerBuilder $container): void
+    {
+        if (!isset($configs['websocket_client']) || !$configs['websocket_client']['enabled']) {
+            return;
+        }
+
+        // Pull the 'enabled' field out of the client's config
+        $factoryConfig = $configs['websocket_client'];
+        unset($factoryConfig['enabled']);
+
+        $clientFactoryDef = new Definition(
+            ClientFactory::class,
+            [
+                $factoryConfig,
+            ]
+        );
+        $clientFactoryDef->setPrivate(true);
+        $clientFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
+        $clientFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
+
+        $container->setDefinition('gos_web_socket.websocket_client_factory', $clientFactoryDef);
+        $container->setAlias(ClientFactory::class, 'gos_web_socket.websocket_client_factory');
+        $container->setAlias(ClientFactoryInterface::class, 'gos_web_socket.websocket_client_factory');
+
+        $clientDef = new Definition(Client::class);
+        $clientDef->setFactory([new Reference('gos_web_socket.websocket_client_factory'), 'createConnection']);
+
+        $container->setDefinition('gos_web_socket.websocket_client', $clientDef);
+        $container->setAlias(Client::class, 'gos_web_socket.websocket_client');
+        $container->setAlias(ClientInterface::class, 'gos_web_socket.websocket_client');
     }
 
     /**
