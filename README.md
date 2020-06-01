@@ -58,6 +58,7 @@ Resources
 * [Performance Bench](Resources/docs/Performance.md)
 * [Push integration](Resources/docs/Pusher.md)
 * [SSL configuration](Resources/docs/Ssl.md)
+* [Websocket Client](Resources/docs/WebsocketClient.md)
 
 Code Cookbook
 -------------
