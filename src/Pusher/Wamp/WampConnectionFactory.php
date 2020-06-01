@@ -3,15 +3,16 @@
 namespace Gos\Bundle\WebSocketBundle\Pusher\Wamp;
 
 use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientFactory;
 use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', WampConnectionFactory::class);
+trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use "%s" instead.', WampConnectionFactory::class, ClientFactory::class);
 
 /**
- * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+ * @deprecated to be removed in 4.0, use Gos\Component\WebSocketClient\Wamp\ClientFactory from the gos/websocket-client package instead
  */
 final class WampConnectionFactory implements WampConnectionFactoryInterface, LoggerAwareInterface
 {
