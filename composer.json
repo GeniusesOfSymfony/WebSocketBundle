@@ -19,7 +19,6 @@
         "php": "^7.4",
         "cboden/ratchet": "^0.4.2",
         "gos/pubsub-router-bundle": "^2.2",
-        "gos/websocket-client": "^1.1",
         "psr/log": "^1.1",
         "react/event-loop": "^1.0",
         "symfony/config": "^4.4 || ^5.0",
@@ -35,6 +34,7 @@
         "doctrine/cache": "^1.8",
         "doctrine/dbal": "^2.9",
         "friendsofphp/php-cs-fixer": "^2.16",
+        "gos/websocket-client": "^1.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
         "phpstan/extension-installer": "^1.0.3",
         "phpstan/phpstan": "^0.12.25",
@@ -45,6 +45,7 @@
         "symfony/twig-bundle": "^4.4 || ^5.0"
     },
     "conflict": {
+        "gos/websocket-client": "<1.1",
         "symfony/monolog-bundle": "<3.0"
     },
     "autoload": {

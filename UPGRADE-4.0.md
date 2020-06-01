@@ -5,6 +5,7 @@
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface::onPush()`
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface::launch()`
 - Added return typehints to `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
+- The `gos/websocket-client` is no longer always installed with this bundle, explicitly require it in your application if you are using the websocket client
 
 ## Removals
 

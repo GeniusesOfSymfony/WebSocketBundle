@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -189,6 +190,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         if (!isset($configs['websocket_client']) || !$configs['websocket_client']['enabled']) {
             return;
+        }
+
+        if (!class_exists(Client::class)) {
+            throw new LogicException('The websocket client cannot be enabled because the required package is not installed, please run "composer require gos/websocket-client".');
         }
 
         // Pull the 'enabled' field out of the client's config
