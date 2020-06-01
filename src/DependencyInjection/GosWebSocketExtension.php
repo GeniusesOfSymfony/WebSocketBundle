@@ -186,6 +186,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
+    /**
+     * @throws LogicException if required dependencies are missing
+     */
     private function registerWebsocketClientConfiguration(array $configs, ContainerBuilder $container): void
     {
         if (!isset($configs['websocket_client']) || !$configs['websocket_client']['enabled']) {
