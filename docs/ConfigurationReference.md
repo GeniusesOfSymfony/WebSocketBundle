@@ -21,7 +21,12 @@ gos_web_socket:
         # The time in seconds between each keepalive ping
         keepalive_interval:   30 # Example: 30
         router:
-            resources:            []
+            resources:
+
+                # Prototype
+                -
+                    resource:             ~ # Required
+                    type:                 null # One of "closure"; "container"; "glob"; "php"; "xml"; "yaml"; null
     origins:              []
     ping:
         services:
@@ -34,4 +39,10 @@ gos_web_socket:
 
                 # The type of the service to be pinged; valid options are "doctrine" and "pdo"
                 type:                 ~ # One of "doctrine"; "pdo", Required
+    websocket_client:
+        enabled:              false
+        host:                 ~ # Required, Example: 127.0.0.1
+        port:                 ~ # Required, Example: 1337
+        ssl:                  false
+        origin:               null
 ```

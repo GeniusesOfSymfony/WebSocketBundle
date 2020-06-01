@@ -7,6 +7,8 @@ use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
+use Gos\Component\WebSocketClient\Wamp\Client;
+use Gos\Component\WebSocketClient\Wamp\ClientFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,6 +28,8 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.websocket_client_factory');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.websocket_client');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -293,6 +297,60 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.doctrine.database_connection', 'gos_web_socket.periodic');
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
+    }
+
+    public function testContainerIsLoadedWithWebsocketClientConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'websocket_client' => [
+                'enabled' => true,
+                'host' => '127.0.0.1',
+                'port' => 1337,
+                'ssl' => false,
+                'origin' => null,
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.websocket_client', Client::class);
+        $this->assertContainerBuilderHasService('gos_web_socket.websocket_client_factory', ClientFactory::class);
+    }
+
+    public function testContainerIsLoadedWithWampPusherConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'pushers' => [
+                'wamp' => [
+                    'enabled' => true,
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                    'ssl' => false,
+                    'origin' => null,
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp');
+        $this->assertContainerBuilderHasService('gos_web_socket.pusher.wamp.connection_factory', WampConnectionFactory::class);
     }
 
     protected function getContainerExtensions(): array

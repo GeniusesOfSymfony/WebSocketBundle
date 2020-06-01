@@ -56,6 +56,7 @@ Resources
 * [Configuration Reference](Resources/docs/ConfigurationReference.md)
 * [Performance Bench](Resources/docs/Performance.md)
 * [SSL configuration](Resources/docs/Ssl.md)
+* [Websocket Client](Resources/docs/WebsocketClient.md)
 
 Code Cookbook
 -------------
