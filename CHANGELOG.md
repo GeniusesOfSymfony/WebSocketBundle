@@ -1,8 +1,9 @@
 # Changelog
 
-## 2.5.1 (2020-??-??)
+## 2.6.0 (2020-??-??)
 
 - Use the `symfony/deprecation-contracts` package to trigger runtime deprecation notices
+- Extend `Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface` inside `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface`
 
 ## 2.5.0 (2020-04-02)
 
