@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.1 (????-??-??)
+
+- Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`
+
 ## 2.6.0 (2020-06-01)
 
 - Use the `symfony/deprecation-contracts` package to trigger runtime deprecation notices
