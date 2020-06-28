@@ -1,8 +1,9 @@
 # Changelog
 
-## 3.2.1 (????-??-??)
+## 3.3.0 (????-??-??)
 
 - Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`
+- Deprecate support for `Doctrine\DBAL\Driver\PingableConnection` implementations in `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing`, in 4.0 `Doctrine\DBAL\Connection` instances will be required
 
 ## 3.2.0 (2020-06-01)
 
