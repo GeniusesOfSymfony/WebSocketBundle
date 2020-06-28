@@ -30,6 +30,16 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
             throw new \InvalidArgumentException(sprintf('The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.', Connection::class, PingableConnection::class, \get_class($connection)));
         }
 
+        if ($connection instanceof PingableConnection && !($connection instanceof Connection)) {
+            trigger_deprecation(
+                'gos/web-socket-bundle',
+                '3.3',
+                'Support for "%s" instances which are not an instance of "%s" is deprecated and will be removed in 4.0.',
+                PingableConnection::class,
+                Connection::class
+            );
+        }
+
         $this->connection = $connection;
     }
 
@@ -37,7 +47,13 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
     {
         try {
             $startTime = microtime(true);
-            $this->connection->ping();
+
+            if ($this->connection instanceof PingableConnection) {
+                $this->connection->ping();
+            } else {
+                $this->connection->query($this->connection->getDatabasePlatform()->getDummySelectSQL());
+            }
+
             $endTime = microtime(true);
 
             if (null !== $this->logger) {
