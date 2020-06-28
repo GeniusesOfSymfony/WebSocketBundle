@@ -4,7 +4,6 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Driver\PingableConnection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\TestCase;
@@ -37,29 +36,6 @@ class DoctrinePeriodicPingTest extends TestCase
         $ping->tick();
 
         $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
-    }
-
-    public function testTheDatabaseIsPingedWithAPingableConnection(): void
-    {
-        $logger = new TestLogger();
-
-        $connection = $this->createMock(PingableConnection::class);
-        $connection->expects($this->once())
-            ->method('ping');
-
-        $ping = new DoctrinePeriodicPing($connection);
-        $ping->setLogger($logger);
-        $ping->tick();
-
-        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
-    }
-
-    public function testAValidObjectIsRequired(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The connection must be a subclass of Doctrine\DBAL\Connection or implement Doctrine\DBAL\Driver\PingableConnection, stdClass does not fulfill these requirements.');
-
-        new DoctrinePeriodicPing(new \stdClass());
     }
 
     public function testAConnectionErrorIsLogged(): void
