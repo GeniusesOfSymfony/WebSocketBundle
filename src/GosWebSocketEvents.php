@@ -2,6 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle;
 
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
+
 final class GosWebSocketEvents
 {
     /**
@@ -60,4 +63,19 @@ final class GosWebSocketEvents
      * @deprecated to be removed in 4.0
      */
     public const PUSHER_SUCCESS = 'gos_web_socket.push_success';
+
+    /**
+     * Event aliases.
+     *
+     * These aliases are consumed by RegisterListenersPass.
+     */
+    public const ALIASES = [
+        ServerLaunchedEvent::class => self::SERVER_LAUNCHED,
+        ClientConnectedEvent::class => self::CLIENT_CONNECTED,
+        ClientDisconnectedEvent::class => self::CLIENT_DISCONNECTED,
+        ClientErrorEvent::class => self::CLIENT_ERROR,
+        ClientRejectedEvent::class => self::CLIENT_REJECTED,
+        PushHandlerFailEvent::class => self::PUSHER_FAIL,
+        PushHandlerSuccessEvent::class => self::PUSHER_SUCCESS,
+    ];
 }

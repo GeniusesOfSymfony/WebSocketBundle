@@ -12,6 +12,7 @@ use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerCompilerPa
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\ServerPushHandlerCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\TopicCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\EventDispatcher\DependencyInjection\AddEventAliasesPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -22,6 +23,7 @@ class GosWebSocketBundle extends Bundle
     public function build(ContainerBuilder $container): void
     {
         $container
+            ->addCompilerPass(new AddEventAliasesPass(GosWebSocketEvents::ALIASES))
             ->addCompilerPass(new ServerCompilerPass())
             ->addCompilerPass(new RpcCompilerPass())
             ->addCompilerPass(new TopicCompilerPass())
