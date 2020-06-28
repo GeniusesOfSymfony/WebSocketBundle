@@ -36,9 +36,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * @param {String} uri The URI that has been published to
  * @param {Object} payload The data payload for the publish event
  */
-var GosSocket =
-/*#__PURE__*/
-function () {
+var GosSocket = /*#__PURE__*/function () {
   /**
    * Create a new GosSocket instance
    *
@@ -300,9 +298,7 @@ function () {
   return GosSocket;
 }();
 
-var WS =
-/*#__PURE__*/
-function () {
+var WS = /*#__PURE__*/function () {
   function WS() {
     _classCallCheck(this, WS);
   }
