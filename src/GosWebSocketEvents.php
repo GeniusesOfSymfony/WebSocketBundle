@@ -2,8 +2,13 @@
 
 namespace Gos\Bundle\WebSocketBundle;
 
+use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
+use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 
 final class GosWebSocketEvents
 {
