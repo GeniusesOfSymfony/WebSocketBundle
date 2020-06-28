@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1 (????-??-??)
+
+- Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`
+
 ## 3.2.0 (2020-06-01)
 
 - Extend `Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface` inside `Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactoryInterface`

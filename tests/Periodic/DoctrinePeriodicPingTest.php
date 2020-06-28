@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
@@ -12,11 +13,29 @@ class DoctrinePeriodicPingTest extends TestCase
 {
     public function testTheDatabaseIsPinged(): void
     {
+        $logger = new TestLogger();
+
+        $query = 'SELECT 1';
+
+        $platform = $this->createMock(AbstractPlatform::class);
+        $platform->expects($this->once())
+            ->method('getDummySelectSQL')
+            ->willReturn($query);
+
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
-            ->method('ping');
+            ->method('getDatabasePlatform')
+            ->willReturn($platform);
 
-        (new DoctrinePeriodicPing($connection))->tick();
+        $connection->expects($this->once())
+            ->method('query')
+            ->with($query);
+
+        $ping = new DoctrinePeriodicPing($connection);
+        $ping->setLogger($logger);
+        $ping->tick();
+
+        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testAValidObjectIsRequired(): void
@@ -33,7 +52,7 @@ class DoctrinePeriodicPingTest extends TestCase
 
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
-            ->method('ping')
+            ->method('getDatabasePlatform')
             ->willThrowException(new DBALException('Testing'));
 
         $ping = new DoctrinePeriodicPing($connection);
