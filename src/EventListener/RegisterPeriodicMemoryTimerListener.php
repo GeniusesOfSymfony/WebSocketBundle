@@ -19,7 +19,7 @@ final class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
         $this->periodicRegistry = $periodicRegistry;
     }
 
-    public function registerPeriodicHandler(ServerLaunchedEvent $event): void
+    public function __invoke(ServerLaunchedEvent $event): void
     {
         if (!$event->isProfiling()) {
             return;

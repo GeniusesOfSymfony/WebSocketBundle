@@ -19,7 +19,7 @@ final class StartServerListener implements LoggerAwareInterface
         $this->periodicRegistry = $periodicRegistry;
     }
 
-    public function bindPnctlEvent(ServerLaunchedEvent $event): void
+    public function __invoke(ServerLaunchedEvent $event): void
     {
         if (\defined('SIGINT')) {
             $loop = $event->getEventLoop();

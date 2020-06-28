@@ -38,7 +38,8 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
             true
         );
 
-        $this->listener->registerPeriodicHandler($event);
+        $listener = $this->listener;
+        $listener($event);
 
         $this->assertNotEmpty($this->periodicRegistry->getPeriodics());
     }
@@ -51,7 +52,8 @@ class RegisterPeriodicMemoryTimerListenerTest extends TestCase
             false
         );
 
-        $this->listener->registerPeriodicHandler($event);
+        $listener = $this->listener;
+        $listener($event);
 
         $this->assertEmpty($this->periodicRegistry->getPeriodics());
     }

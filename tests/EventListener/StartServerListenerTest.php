@@ -45,6 +45,7 @@ class StartServerListenerTest extends TestCase
             false
         );
 
-        $this->listener->bindPnctlEvent($event);
+        $listener = $this->listener;
+        $listener($event);
     }
 }

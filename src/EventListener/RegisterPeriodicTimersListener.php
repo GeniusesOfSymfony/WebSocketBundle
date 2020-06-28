@@ -18,7 +18,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
         $this->periodicRegistry = $periodicRegistry;
     }
 
-    public function registerPeriodics(ServerLaunchedEvent $event): void
+    public function __invoke(ServerLaunchedEvent $event): void
     {
         $loop = $event->getEventLoop();
 

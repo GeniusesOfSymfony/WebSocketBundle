@@ -75,21 +75,6 @@ services:
         tags:
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.event_listener.client:
-        class: Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener
-        public: false
-        arguments:
-            - '@gos_web_socket.client.storage'
-            - '@gos_web_socket.client.authentication.websocket_provider'
-        calls:
-            - [ setLogger, ['@logger'] ]
-        tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.client_connected', method: onClientConnect }
-            - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
-            - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
-            - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
-            - { name: monolog.logger, channel: websocket }
-
     gos_web_socket.event_listener.register_periodic_memory_timer:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener
         public: false
@@ -98,7 +83,7 @@ services:
         calls:
             - [ setLogger, ['@logger'] ]
         tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodicHandler, priority: 255 }
+            - { name: kernel.event_listener, priority: 255 }
             - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.register_periodic_timers:
@@ -109,7 +94,7 @@ services:
         calls:
             - [ setLogger, ['@logger'] ]
         tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: registerPeriodics }
+            - { name: kernel.event_listener }
             - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.start_server:
@@ -120,7 +105,19 @@ services:
         calls:
             - [ setLogger, ['@logger'] ]
         tags:
-            - { name: kernel.event_listener, event: 'gos_web_socket.server_launched', method: bindPnctlEvent }
+            - { name: kernel.event_listener }
+            - { name: monolog.logger, channel: websocket }
+
+    gos_web_socket.event_subscriber.client:
+        class: Gos\Bundle\WebSocketBundle\EventListener\WebsocketClientEventSubscriber
+        public: false
+        arguments:
+            - '@gos_web_socket.client.storage'
+            - '@gos_web_socket.client.authentication.websocket_provider'
+        calls:
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: kernel.event_subscriber }
             - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.periodic_ping.doctrine:

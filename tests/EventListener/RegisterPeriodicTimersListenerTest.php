@@ -50,6 +50,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
             false
         );
 
-        $this->listener->registerPeriodics($event);
+        $listener = $this->listener;
+        $listener($event);
     }
 }

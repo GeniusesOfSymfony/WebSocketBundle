@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Stack;
 
+use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -76,7 +77,8 @@ class OriginCheckTest extends TestCase
             ->willReturn('localhost');
 
         $this->eventDispatcher->expects($this->once())
-            ->method('dispatch');
+            ->method('dispatch')
+            ->with($this->isInstanceOf(ClientRejectedEvent::class));
 
         $this->decoratedComponent->expects($this->never())
             ->method('onOpen');

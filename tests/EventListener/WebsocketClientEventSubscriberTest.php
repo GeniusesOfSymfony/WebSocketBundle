@@ -10,14 +10,14 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
-use Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener;
+use Gos\Bundle\WebSocketBundle\EventListener\WebsocketClientEventSubscriber;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ClientEventListenerTest extends TestCase
+class WebsocketClientEventSubscriberTest extends TestCase
 {
     /**
      * @var MockObject|ClientStorageInterface
@@ -35,7 +35,7 @@ class ClientEventListenerTest extends TestCase
     private $logger;
 
     /**
-     * @var ClientEventListener
+     * @var WebsocketClientEventSubscriber
      */
     private $listener;
 
@@ -48,7 +48,7 @@ class ClientEventListenerTest extends TestCase
 
         $this->logger = new TestLogger();
 
-        $this->listener = new ClientEventListener($this->clientStorage, $this->authenticationProvider);
+        $this->listener = new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider);
         $this->listener->setLogger($this->logger);
     }
 
@@ -175,7 +175,7 @@ class ClientEventListenerTest extends TestCase
     {
         $event = new ClientErrorEvent($this->createMock(ConnectionInterface::class));
 
-        (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientError($event);
+        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))->onClientError($event);
     }
 
     public function testTheClientErrorIsLogged(): void
@@ -219,7 +219,7 @@ class ClientEventListenerTest extends TestCase
     {
         $event = new ClientRejectedEvent('localhost', null);
 
-        (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
+        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
     }
 
     public function testTheClientRejectionIsLogged(): void

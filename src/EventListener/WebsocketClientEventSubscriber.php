@@ -12,11 +12,12 @@ use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-final class ClientEventListener implements LoggerAwareInterface
+final class WebsocketClientEventSubscriber implements EventSubscriberInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -29,6 +30,16 @@ final class ClientEventListener implements LoggerAwareInterface
     ) {
         $this->clientStorage = $clientStorage;
         $this->authenticationProvider = $authenticationProvider;
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            ClientConnectedEvent::class => 'onClientConnect',
+            ClientDisconnectedEvent::class => 'onClientDisconnect',
+            ClientErrorEvent::class => 'onClientError',
+            ClientRejectedEvent::class => 'onClientRejected',
+        ];
     }
 
     public function onClientConnect(ClientConnectedEvent $event): void
