@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\PingableConnection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,7 @@ use Psr\Log\Test\TestLogger;
 
 class DoctrinePeriodicPingTest extends TestCase
 {
-    public function testTheDatabaseIsPinged(): void
+    public function testTheDatabaseIsPingedWithAConnection(): void
     {
         $logger = new TestLogger();
 
@@ -30,6 +31,21 @@ class DoctrinePeriodicPingTest extends TestCase
         $connection->expects($this->once())
             ->method('query')
             ->with($query);
+
+        $ping = new DoctrinePeriodicPing($connection);
+        $ping->setLogger($logger);
+        $ping->tick();
+
+        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
+    }
+
+    public function testTheDatabaseIsPingedWithAPingableConnection(): void
+    {
+        $logger = new TestLogger();
+
+        $connection = $this->createMock(PingableConnection::class);
+        $connection->expects($this->once())
+            ->method('ping');
 
         $ping = new DoctrinePeriodicPing($connection);
         $ping->setLogger($logger);

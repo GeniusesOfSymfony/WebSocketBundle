@@ -40,7 +40,13 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
     {
         try {
             $startTime = microtime(true);
-            $this->connection->query($this->connection->getDatabasePlatform()->getDummySelectSQL());
+
+            if ($this->connection instanceof PingableConnection) {
+                $this->connection->ping();
+            } else {
+                $this->connection->query($this->connection->getDatabasePlatform()->getDummySelectSQL());
+            }
+
             $endTime = microtime(true);
 
             if (null !== $this->logger) {
