@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\Type;
 
+use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -54,7 +55,8 @@ class WebSocketServerTest extends TestCase
             ->willReturn($this->createMock(MessageComponentInterface::class));
 
         $this->eventDispatcher->expects($this->once())
-            ->method('dispatch');
+            ->method('dispatch')
+            ->with($this->isInstanceOf(ServerLaunchedEvent::class));
 
         $this->loop->expects($this->once())
             ->method('run');

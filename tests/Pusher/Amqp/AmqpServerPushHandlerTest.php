@@ -4,6 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Pusher\Amqp;
 
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
+use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
@@ -145,7 +147,8 @@ class AmqpServerPushHandlerTest extends TestCase
             ->willReturn(['test_channel', $this->createMock(Route::class), []]);
 
         $this->eventDispatcher->expects($this->once())
-            ->method('dispatch');
+            ->method('dispatch')
+            ->with($this->isInstanceOf(PushHandlerSuccessEvent::class));
 
         $consumer();
 
@@ -215,7 +218,8 @@ class AmqpServerPushHandlerTest extends TestCase
             ->willReturn(['test_channel', $this->createMock(Route::class), []]);
 
         $this->eventDispatcher->expects($this->once())
-            ->method('dispatch');
+            ->method('dispatch')
+            ->with($this->isInstanceOf(PushHandlerFailEvent::class));
 
         $consumer();
 

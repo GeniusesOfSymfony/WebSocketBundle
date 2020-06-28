@@ -167,10 +167,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        $this->eventDispatcher->dispatch(
-            new ClientConnectedEvent($conn),
-            GosWebSocketEvents::CLIENT_CONNECTED
-        );
+        $this->eventDispatcher->dispatch(new ClientConnectedEvent($conn));
     }
 
     public function onClose(ConnectionInterface $conn): void
@@ -180,10 +177,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
             $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
         }
 
-        $this->eventDispatcher->dispatch(
-            new ClientDisconnectedEvent($conn),
-            GosWebSocketEvents::CLIENT_DISCONNECTED
-        );
+        $this->eventDispatcher->dispatch(new ClientDisconnectedEvent($conn));
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e): void
@@ -191,6 +185,6 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $event = new ClientErrorEvent($conn);
         $event->setException($e);
 
-        $this->eventDispatcher->dispatch($event, GosWebSocketEvents::CLIENT_ERROR);
+        $this->eventDispatcher->dispatch($event);
     }
 }
