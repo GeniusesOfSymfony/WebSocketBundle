@@ -75,6 +75,17 @@ services:
         tags:
             - { name: monolog.logger, channel: websocket }
 
+    gos_web_socket.event_listener.bind_sigint_signal_to_websocket_server:
+        class: Gos\Bundle\WebSocketBundle\EventListener\BindSigintSignalToWebsocketServerEventListener
+        public: false
+        arguments:
+            - '@gos_web_socket.registry.periodic'
+        calls:
+            - [ setLogger, ['@logger'] ]
+        tags:
+            - { name: kernel.event_listener }
+            - { name: monolog.logger, channel: websocket }
+
     gos_web_socket.event_listener.register_periodic_memory_timer:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener
         public: false
@@ -88,17 +99,6 @@ services:
 
     gos_web_socket.event_listener.register_periodic_timers:
         class: Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener
-        public: false
-        arguments:
-            - '@gos_web_socket.registry.periodic'
-        calls:
-            - [ setLogger, ['@logger'] ]
-        tags:
-            - { name: kernel.event_listener }
-            - { name: monolog.logger, channel: websocket }
-
-    gos_web_socket.event_listener.start_server:
-        class: Gos\Bundle\WebSocketBundle\EventListener\StartServerListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'

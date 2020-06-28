@@ -8,7 +8,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use React\EventLoop\TimerInterface;
 
-final class StartServerListener implements LoggerAwareInterface
+final class BindSigintSignalToWebsocketServerEventListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
