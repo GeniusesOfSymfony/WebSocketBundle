@@ -6,6 +6,7 @@ use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
+use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpServerPushHandler;
 use Gos\Bundle\WebSocketBundle\Pusher\Message;
@@ -148,7 +149,7 @@ class AmqpServerPushHandlerTest extends TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(PushHandlerSuccessEvent::class));
+            ->with($this->isInstanceOf(PushHandlerSuccessEvent::class), GosWebSocketEvents::PUSHER_SUCCESS);
 
         $consumer();
 
@@ -219,7 +220,7 @@ class AmqpServerPushHandlerTest extends TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(PushHandlerFailEvent::class));
+            ->with($this->isInstanceOf(PushHandlerFailEvent::class), GosWebSocketEvents::PUSHER_FAIL);
 
         $consumer();
 
