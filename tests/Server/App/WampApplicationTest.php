@@ -8,6 +8,7 @@ use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
+use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
@@ -262,7 +263,7 @@ class WampApplicationTest extends TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientConnectedEvent::class));
+            ->with($this->isInstanceOf(ClientConnectedEvent::class), GosWebSocketEvents::CLIENT_CONNECTED);
 
         $this->application->onOpen($connection);
     }
@@ -275,7 +276,7 @@ class WampApplicationTest extends TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientDisconnectedEvent::class));
+            ->with($this->isInstanceOf(ClientDisconnectedEvent::class), GosWebSocketEvents::CLIENT_DISCONNECTED);
 
         $this->application->onClose($connection);
     }
@@ -286,7 +287,7 @@ class WampApplicationTest extends TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientErrorEvent::class));
+            ->with($this->isInstanceOf(ClientErrorEvent::class), GosWebSocketEvents::CLIENT_ERROR);
 
         $this->application->onError($connection, new \Exception('Testing'));
     }
