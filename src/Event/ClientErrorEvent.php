@@ -4,15 +4,43 @@ namespace Gos\Bundle\WebSocketBundle\Event;
 
 final class ClientErrorEvent extends ClientEvent
 {
-    private \Exception $e;
+    private \Throwable $throwable;
 
-    public function setException(\Exception $e): void
+    /**
+     * @deprecated to be removed in 4.0, the Throwable will be a required constructor argument
+     */
+    public function setException(\Throwable $exception): void
     {
-        $this->e = $e;
+        trigger_deprecation(
+            'gos/web-socket-bundle',
+            '3.3',
+            '%s() is deprecated and will be removed in 4.0, the Throwable will be a required constructor argument.',
+            __METHOD__
+        );
+
+        $this->throwable = $exception;
     }
 
-    public function getException(): \Exception
+    /**
+     * @return \Throwable
+     *
+     * @deprecated to be removed in 4.0, use `getThrowable()` instead
+     */
+    public function getException()
     {
-        return $this->e;
+        trigger_deprecation(
+            'gos/web-socket-bundle',
+            '3.3',
+            '%s() is deprecated and will be removed in 4.0, use %s::getThrowable() instead.',
+            __METHOD__,
+            self::class
+        );
+
+        return $this->getThrowable();
+    }
+
+    public function getThrowable(): \Throwable
+    {
+        return $this->throwable;
     }
 }

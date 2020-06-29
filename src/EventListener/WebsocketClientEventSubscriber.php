@@ -106,12 +106,12 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
         }
 
         $conn = $event->getConnection();
-        $e = $event->getException();
+        $throwable = $event->getThrowable();
 
         $loggerContext = [
             'connection_id' => $conn->resourceId,
             'session_id' => $conn->WAMP->sessionId,
-            'exception' => $e,
+            'exception' => $throwable,
         ];
 
         $storageId = $this->clientStorage->getStorageId($conn);
