@@ -21,3 +21,5 @@
 - Removed unused `gos_web_socket.client.storage.prefix` configuration node and container parameter
 - Removed `ArrayAccess` support from `Gos\Bundle\WebSocketBundle\Client\ClientConnection`
 - Removed support for `Doctrine\DBAL\Driver\PingableConnection` implementations in `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing`, only `Doctrine\DBAL\Connection` instances are supported
+- Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::setException()`, a `Throwable` instance is now a required constructor argument
+- Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getException()`, use `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getThrowable()` instead

@@ -182,9 +182,6 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
 
     public function onError(ConnectionInterface $conn, \Exception $e): void
     {
-        $event = new ClientErrorEvent($conn);
-        $event->setException($e);
-
-        $this->eventDispatcher->dispatch($event, GosWebSocketEvents::CLIENT_ERROR);
+        $this->eventDispatcher->dispatch(new ClientErrorEvent($e, $conn), GosWebSocketEvents::CLIENT_ERROR);
     }
 }

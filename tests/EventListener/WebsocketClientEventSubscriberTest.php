@@ -56,14 +56,12 @@ class WebsocketClientEventSubscriberTest extends TestCase
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
-        $event = new ClientConnectedEvent($connection);
-
         $this->authenticationProvider->expects($this->once())
             ->method('authenticate')
             ->with($connection)
             ->willReturn($this->createMock(TokenInterface::class));
 
-        $this->listener->onClientConnect($event);
+        $this->listener->onClientConnect(new ClientConnectedEvent($connection));
     }
 
     public function testTheUserIsRemovedFromStorageWhenTheClientDisconnectEventIsDispatched(): void
@@ -78,8 +76,6 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $token->expects($this->once())
             ->method('getUsername')
             ->willReturn('username');
-
-        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -101,7 +97,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
             ->with($connection->resourceId)
             ->willReturn(true);
 
-        $this->listener->onClientDisconnect($event);
+        $this->listener->onClientDisconnect(new ClientDisconnectedEvent($connection));
     }
 
     /**
@@ -114,8 +110,6 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $connection->WAMP = (object) [
             'sessionId' => 'session',
         ];
-
-        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -135,7 +129,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $this->clientStorage->expects($this->never())
             ->method('removeClient');
 
-        $this->listener->onClientDisconnect($event);
+        $this->listener->onClientDisconnect(new ClientDisconnectedEvent($connection));
 
         $this->assertTrue($this->logger->hasInfoThatContains('User timed out'));
     }
@@ -147,8 +141,6 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $connection->WAMP = (object) [
             'sessionId' => 'session',
         ];
-
-        $event = new ClientDisconnectedEvent($connection);
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -163,7 +155,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $this->clientStorage->expects($this->never())
             ->method('removeClient');
 
-        $this->listener->onClientDisconnect($event);
+        $this->listener->onClientDisconnect(new ClientDisconnectedEvent($connection));
 
         $this->assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
     }
@@ -173,9 +165,8 @@ class WebsocketClientEventSubscriberTest extends TestCase
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
-        $event = new ClientErrorEvent($this->createMock(ConnectionInterface::class));
-
-        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))->onClientError($event);
+        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))
+            ->onClientError(new ClientErrorEvent(new \Exception('Testing'), $this->createMock(ConnectionInterface::class)));
     }
 
     public function testTheClientErrorIsLogged(): void
@@ -185,9 +176,6 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $connection->WAMP = (object) [
             'sessionId' => 'session',
         ];
-
-        $event = new ClientErrorEvent($connection);
-        $event->setException(new \Exception('Testing'));
 
         $this->clientStorage->expects($this->once())
             ->method('getStorageId')
@@ -207,7 +195,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
         $this->clientStorage->expects($this->never())
             ->method('removeClient');
 
-        $this->listener->onClientError($event);
+        $this->listener->onClientError(new ClientErrorEvent(new \Exception('Testing'), $connection));
 
         $this->assertTrue($this->logger->hasErrorThatContains('Connection error'));
     }
@@ -217,16 +205,13 @@ class WebsocketClientEventSubscriberTest extends TestCase
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent(): void
     {
-        $event = new ClientRejectedEvent('localhost', null);
-
-        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
+        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))
+            ->onClientRejected(new ClientRejectedEvent('localhost', null));
     }
 
     public function testTheClientRejectionIsLogged(): void
     {
-        $event = new ClientRejectedEvent('localhost', null);
-
-        $this->listener->onClientRejected($event);
+        $this->listener->onClientRejected(new ClientRejectedEvent('localhost', null));
 
         $this->assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
     }
