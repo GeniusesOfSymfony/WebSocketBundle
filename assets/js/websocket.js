@@ -16,6 +16,27 @@
 
 class GosSocket {
     /**
+     * Reference to the AutobahnJS API
+     *
+     * @type {ab}
+     */
+    #autobahn;
+
+    /**
+     * Collection of listeners to trigger as callbacks for events
+     *
+     * @type {Object.GosSocketListener[]}
+     */
+    #listeners = {};
+
+    /**
+     * Reference to the current AutobahnJS session
+     *
+     * @type {ab.Session|null}
+     */
+    #session = null;
+
+    /**
      * Create a new GosSocket instance
      *
      * @param {ab} autobahn AutobahnJS API object
@@ -23,31 +44,9 @@ class GosSocket {
      * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
      */
     constructor(autobahn, uri, sessionConfig) {
-        /**
-         * Reference to the AutobahnJS API
-         *
-         * @type {ab}
-         * @private
-         */
-        this._autobahn = autobahn;
+        this.#autobahn = autobahn;
 
-        /**
-         * Collection of listeners to trigger as callbacks for events
-         *
-         * @type {Object.GosSocketListener[]}
-         * @private
-         */
-        this._listeners = {};
-
-        /**
-         * Reference to the current AutobahnJS session
-         *
-         * @type {ab.Session|null}
-         * @private
-         */
-        this._session = null;
-
-        this._connect(uri, sessionConfig);
+        this.#connect(uri, sessionConfig);
     }
 
     /**
@@ -56,7 +55,7 @@ class GosSocket {
      * @returns {ab}
      */
     get autobahn() {
-        return this._autobahn;
+        return this.#autobahn;
     }
 
     /**
@@ -65,7 +64,7 @@ class GosSocket {
      * @returns {ab.Session|null}
      */
     get session() {
-        return this._session;
+        return this.#session;
     }
 
     /**
@@ -74,7 +73,7 @@ class GosSocket {
      * @returns {Boolean}
      */
     isConnected() {
-        return this._session !== null;
+        return this.#session !== null;
     }
 
     /**
@@ -84,12 +83,12 @@ class GosSocket {
      * @param {GosSocketListener} listener The callback to be removed
      */
     off(event, listener) {
-        if (!(this._listeners[event] instanceof Array)) {
+        if (!(this.#listeners[event] instanceof Array)) {
             return;
         }
 
         let i,
-            listeners = this._listeners[event],
+            listeners = this.#listeners[event],
             totalListeners = listeners.length;
 
         for (i = 0; i < totalListeners; i++) {
@@ -107,11 +106,11 @@ class GosSocket {
      * @param {GosSocketListener} listener The callback to be executed
      */
     on(event, listener) {
-        if (typeof this._listeners[event] === 'undefined') {
-            this._listeners[event] = [];
+        if (typeof this.#listeners[event] === 'undefined') {
+            this.#listeners[event] = [];
         }
 
-        this._listeners[event].push(listener);
+        this.#listeners[event].push(listener);
     }
 
     /**
@@ -126,7 +125,7 @@ class GosSocket {
             throw new Error('Websocket session is not active, cannot publish to URI');
         }
 
-        this._session.publish(uri, data);
+        this.#session.publish(uri, data);
     }
 
     /**
@@ -142,7 +141,7 @@ class GosSocket {
             throw new Error('Websocket session is not active, cannot perform RPC call');
         }
 
-        return this._session.call(uri, data);
+        return this.#session.call(uri, data);
     }
 
     /**
@@ -158,7 +157,7 @@ class GosSocket {
         }
 
         try {
-            this._session.subscribe(uri, callback);
+            this.#session.subscribe(uri, callback);
         } catch (ex) {
             // Absorb errors related to already being subscribed to a channel
             // 'callback ${callback} already subscribed for topic ${resolveduri}'
@@ -183,7 +182,7 @@ class GosSocket {
         }
 
         try {
-            this._session.unsubscribe(uri, callback);
+            this.#session.unsubscribe(uri, callback);
         } catch (ex) {
             // Absorb errors related to not being subscribed to a channel or the callback not being subscribed on this channel
             // 'not subscribed to topic ${resolveduri}'
@@ -201,20 +200,19 @@ class GosSocket {
      *
      * @param {String} uri URI to open the connection to
      * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
-     * @private
      */
-    _connect(uri, sessionConfig = null) {
-        this._autobahn.connect(
+    #connect(uri, sessionConfig = null) {
+        this.#autobahn.connect(
             uri,
             (session) => {
-                this._session = session;
+                this.#session = session;
 
-                this._fire('socket/connect', session);
+                this.#fire('socket/connect', session);
             },
             (code, reason, detail) => {
-                this._session = null;
+                this.#session = null;
 
-                this._fire('socket/disconnect', {code: code, reason: reason});
+                this.#fire('socket/disconnect', {code: code, reason: reason});
             },
             sessionConfig
         );
@@ -225,15 +223,14 @@ class GosSocket {
      *
      * @param {String} event The name of the event to be called
      * @param {*} data The data to pass to the event
-     * @private
      */
-    _fire(event, data = null) {
-        if (!(this._listeners[event] instanceof Array)) {
+    #fire(event, data = null) {
+        if (!(this.#listeners[event] instanceof Array)) {
             return;
         }
 
         let i,
-            listeners = this._listeners[event],
+            listeners = this.#listeners[event],
             totalListeners = listeners.length;
 
         for (i = 0; i < totalListeners; i++) {

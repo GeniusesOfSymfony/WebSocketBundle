@@ -21,6 +21,22 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to set private field on non-instance"); } if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } return value; }
+
+var _autobahn = new WeakMap();
+
+var _listeners = new WeakMap();
+
+var _session = new WeakMap();
+
+var _connect = new WeakSet();
+
+var _fire = new WeakSet();
+
 /**
  * Prototype for the listener callbacks
  *
@@ -38,40 +54,55 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  */
 var GosSocket = /*#__PURE__*/function () {
   /**
+   * Reference to the AutobahnJS API
+   *
+   * @type {ab}
+   */
+
+  /**
+   * Collection of listeners to trigger as callbacks for events
+   *
+   * @type {Object.GosSocketListener[]}
+   */
+
+  /**
+   * Reference to the current AutobahnJS session
+   *
+   * @type {ab.Session|null}
+   */
+
+  /**
    * Create a new GosSocket instance
    *
    * @param {ab} autobahn AutobahnJS API object
    * @param {String} uri URI to open the connection to
    * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
    */
-  function GosSocket(autobahn, uri, sessionConfig) {
+  function GosSocket(autobahn, _uri, _sessionConfig) {
     _classCallCheck(this, GosSocket);
 
-    /**
-     * Reference to the AutobahnJS API
-     *
-     * @type {ab}
-     * @private
-     */
-    this._autobahn = autobahn;
-    /**
-     * Collection of listeners to trigger as callbacks for events
-     *
-     * @type {Object.GosSocketListener[]}
-     * @private
-     */
+    _fire.add(this);
 
-    this._listeners = {};
-    /**
-     * Reference to the current AutobahnJS session
-     *
-     * @type {ab.Session|null}
-     * @private
-     */
+    _connect.add(this);
 
-    this._session = null;
+    _autobahn.set(this, {
+      writable: true,
+      value: void 0
+    });
 
-    this._connect(uri, sessionConfig);
+    _listeners.set(this, {
+      writable: true,
+      value: {}
+    });
+
+    _session.set(this, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldSet(this, _autobahn, autobahn);
+
+    _classPrivateMethodGet(this, _connect, _connect2).call(this, _uri, _sessionConfig);
   }
   /**
    * Retrieve the AutobahnJS API object
@@ -89,7 +120,7 @@ var GosSocket = /*#__PURE__*/function () {
      * @returns {Boolean}
      */
     value: function isConnected() {
-      return this._session !== null;
+      return _classPrivateFieldGet(this, _session) !== null;
     }
     /**
      * Remove a listener for an event
@@ -101,12 +132,12 @@ var GosSocket = /*#__PURE__*/function () {
   }, {
     key: "off",
     value: function off(event, listener) {
-      if (!(this._listeners[event] instanceof Array)) {
+      if (!(_classPrivateFieldGet(this, _listeners)[event] instanceof Array)) {
         return;
       }
 
       var i,
-          listeners = this._listeners[event],
+          listeners = _classPrivateFieldGet(this, _listeners)[event],
           totalListeners = listeners.length;
 
       for (i = 0; i < totalListeners; i++) {
@@ -126,11 +157,11 @@ var GosSocket = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on(event, listener) {
-      if (typeof this._listeners[event] === 'undefined') {
-        this._listeners[event] = [];
+      if (typeof _classPrivateFieldGet(this, _listeners)[event] === 'undefined') {
+        _classPrivateFieldGet(this, _listeners)[event] = [];
       }
 
-      this._listeners[event].push(listener);
+      _classPrivateFieldGet(this, _listeners)[event].push(listener);
     }
     /**
      * Publishes a message to a websocket topic
@@ -149,7 +180,7 @@ var GosSocket = /*#__PURE__*/function () {
         throw new Error('Websocket session is not active, cannot publish to URI');
       }
 
-      this._session.publish(uri, data);
+      _classPrivateFieldGet(this, _session).publish(uri, data);
     }
     /**
      * Calls a RPC handler
@@ -169,7 +200,7 @@ var GosSocket = /*#__PURE__*/function () {
         throw new Error('Websocket session is not active, cannot perform RPC call');
       }
 
-      return this._session.call(uri, data);
+      return _classPrivateFieldGet(this, _session).call(uri, data);
     }
     /**
      * Add a subscriber for events on a websocket channel
@@ -187,7 +218,7 @@ var GosSocket = /*#__PURE__*/function () {
       }
 
       try {
-        this._session.subscribe(uri, callback);
+        _classPrivateFieldGet(this, _session).subscribe(uri, callback);
       } catch (ex) {
         // Absorb errors related to already being subscribed to a channel
         // 'callback ${callback} already subscribed for topic ${resolveduri}'
@@ -213,7 +244,7 @@ var GosSocket = /*#__PURE__*/function () {
       }
 
       try {
-        this._session.unsubscribe(uri, callback);
+        _classPrivateFieldGet(this, _session).unsubscribe(uri, callback);
       } catch (ex) {
         // Absorb errors related to not being subscribed to a channel or the callback not being subscribed on this channel
         // 'not subscribed to topic ${resolveduri}'
@@ -229,58 +260,12 @@ var GosSocket = /*#__PURE__*/function () {
      *
      * @param {String} uri URI to open the connection to
      * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
-     * @private
      */
 
-  }, {
-    key: "_connect",
-    value: function _connect(uri) {
-      var _this = this;
-
-      var sessionConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      this._autobahn.connect(uri, function (session) {
-        _this._session = session;
-
-        _this._fire('socket/connect', session);
-      }, function (code, reason, detail) {
-        _this._session = null;
-
-        _this._fire('socket/disconnect', {
-          code: code,
-          reason: reason
-        });
-      }, sessionConfig);
-    }
-    /**
-     * Call all listeners for an event
-     *
-     * @param {String} event The name of the event to be called
-     * @param {*} data The data to pass to the event
-     * @private
-     */
-
-  }, {
-    key: "_fire",
-    value: function _fire(event) {
-      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      if (!(this._listeners[event] instanceof Array)) {
-        return;
-      }
-
-      var i,
-          listeners = this._listeners[event],
-          totalListeners = listeners.length;
-
-      for (i = 0; i < totalListeners; i++) {
-        listeners[i].call(this, data);
-      }
-    }
   }, {
     key: "autobahn",
     get: function get() {
-      return this._autobahn;
+      return _classPrivateFieldGet(this, _autobahn);
     }
     /**
      * Retrieve the current AutobahnJS session object
@@ -291,12 +276,47 @@ var GosSocket = /*#__PURE__*/function () {
   }, {
     key: "session",
     get: function get() {
-      return this._session;
+      return _classPrivateFieldGet(this, _session);
     }
   }]);
 
   return GosSocket;
 }();
+
+var _connect2 = function _connect2(uri) {
+  var _this = this;
+
+  var sessionConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+  _classPrivateFieldGet(this, _autobahn).connect(uri, function (session) {
+    _classPrivateFieldSet(_this, _session, session);
+
+    _classPrivateMethodGet(_this, _fire, _fire2).call(_this, 'socket/connect', session);
+  }, function (code, reason, detail) {
+    _classPrivateFieldSet(_this, _session, null);
+
+    _classPrivateMethodGet(_this, _fire, _fire2).call(_this, 'socket/disconnect', {
+      code: code,
+      reason: reason
+    });
+  }, sessionConfig);
+};
+
+var _fire2 = function _fire2(event) {
+  var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+  if (!(_classPrivateFieldGet(this, _listeners)[event] instanceof Array)) {
+    return;
+  }
+
+  var i,
+      listeners = _classPrivateFieldGet(this, _listeners)[event],
+      totalListeners = listeners.length;
+
+  for (i = 0; i < totalListeners; i++) {
+    listeners[i].call(this, data);
+  }
+};
 
 var WS = /*#__PURE__*/function () {
   function WS() {

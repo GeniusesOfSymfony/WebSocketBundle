@@ -7,7 +7,12 @@ const wrap = require('gulp-wrap');
 gulp.task('js', () => {
     return gulp.src('assets/js/websocket.js')
         .pipe(babel({
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-env'],
+            plugins: [
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-proposal-private-methods',
+                '@babel/plugin-syntax-class-properties',
+            ],
         }))
         .pipe(wrap({src: 'assets/js/websocket.template.js'}))
         .pipe(gulp.dest('public/js'))
