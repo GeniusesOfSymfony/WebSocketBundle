@@ -7,7 +7,7 @@
 - Add aliases to bundle events to allow registering listeners using the FQCN
 - Deprecated `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::setException()`, in 4.0 a `Throwable` instance will be a required constructor argument
 - Deprecated `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getException()`, use `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getThrowable()` instead
-- Remove call to Topic::broadcast() if the dispatch method fails, see [the security advisory](https://github.com/GeniusesOfSymfony/WebSocketBundle/security/advisories/GHSA-wwgf-3xp7-cxj4) for additional details
+- Remove call to `Ratchet\Wamp\Topic::broadcast()` if the dispatch method fails, see [the security advisory](https://github.com/GeniusesOfSymfony/WebSocketBundle/security/advisories/GHSA-wwgf-3xp7-cxj4) for additional details
 
 ## 3.2.0 (2020-06-01)
 
