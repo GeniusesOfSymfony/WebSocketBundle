@@ -1,8 +1,9 @@
 # Changelog
 
-## 2.6.1 (????-??-??)
+## 2.6.1 (2020-07-06)
 
 - Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`
+- Remove call to Topic::broadcast() if the dispatch method fails, see [the security advisory](https://github.com/GeniusesOfSymfony/WebSocketBundle/security/advisories/GHSA-wwgf-3xp7-cxj4) for additional details
 
 ## 2.6.0 (2020-06-01)
 
