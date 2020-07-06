@@ -113,12 +113,7 @@ class TopicDispatcher implements TopicDispatcherInterface
      */
     public function onPublish(ConnectionInterface $conn, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
-        if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
-            //default behaviour is to broadcast to all.
-            $topic->broadcast($event);
-
-            return;
-        }
+        $this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible);
     }
 
     /**
