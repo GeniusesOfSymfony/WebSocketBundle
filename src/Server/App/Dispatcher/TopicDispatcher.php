@@ -77,9 +77,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         array $exclude,
         array $eligible
     ): void {
-        if (!$this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible)) {
-            $topic->broadcast($event);
-        }
+        $this->dispatch(self::PUBLISH, $conn, $topic, $request, $event, $exclude, $eligible);
     }
 
     /**
