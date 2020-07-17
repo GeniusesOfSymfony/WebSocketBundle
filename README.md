@@ -48,22 +48,22 @@ Resources
 ---------
 
 * [Installation Instructions](#installation-instructions)
-* [Client Setup](Resources/docs/ClientSetup.md)
-* [RPC Handlers](Resources/docs/RPCSetup.md)
-* [PubSub Topic Handlers](Resources/docs/TopicSetup.md)
-* [Periodic Services](Resources/docs/PeriodicSetup.md)
-* [Session Management & User authentication](Resources/docs/SessionSetup.md)
-* [Server Events](Resources/docs/Events.md)
-* [Configuration Reference](Resources/docs/ConfigurationReference.md)
-* [Performance Bench](Resources/docs/Performance.md)
-* [Push integration](Resources/docs/Pusher.md)
-* [SSL configuration](Resources/docs/Ssl.md)
-* [Websocket Client](Resources/docs/WebsocketClient.md)
+* [Client Setup](docs/ClientSetup.md)
+* [RPC Handlers](docs/RPCSetup.md)
+* [PubSub Topic Handlers](docs/TopicSetup.md)
+* [Periodic Services](docs/PeriodicSetup.md)
+* [Session Management & User authentication](docs/SessionSetup.md)
+* [Server Events](docs/Events.md)
+* [Configuration Reference](docs/ConfigurationReference.md)
+* [Performance Bench](docs/Performance.md)
+* [Push integration](docs/Pusher.md)
+* [SSL configuration](docs/Ssl.md)
+* [Websocket Client](docs/WebsocketClient.md)
 
 Code Cookbook
 -------------
 
-* [Sharing Config between Server and Client](Resources/docs/code/SharingConfig.md)
+* [Sharing Config between Server and Client](docs/code/SharingConfig.md)
 
 Installation Instructions
 -------------------------
