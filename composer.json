@@ -77,10 +77,5 @@
         "symfony/serializer": "to use the pushers",
         "symfony/stopwatch": "to use the data collectors"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-2.x": "2.x-dev"
-        }
-    },
     "minimum-stability": "dev"
 }
