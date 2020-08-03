@@ -81,6 +81,7 @@ class ClientManipulatorTest extends TestCase
             ->with($connection)
             ->willReturn((string) $storageId);
 
+        // TODO - The mocks for `$this->clientStorage` need to be updated to not use the `at()` matcher
         $this->clientStorage->expects($this->at(1))
             ->method('getClient')
             ->with($storageId)
@@ -134,35 +135,31 @@ class ClientManipulatorTest extends TestCase
             ->method('getUsername')
             ->willReturn($username2);
 
-        $this->clientStorage->expects($this->at(0))
+        $this->clientStorage->expects($this->exactly(3))
             ->method('getStorageId')
-            ->with($connection1)
-            ->willReturn((string) $storageId1);
+            ->withConsecutive(
+                [$connection1],
+                [$connection2],
+                [$connection3]
+            )
+            ->willReturnOnConsecutiveCalls(
+                (string) $storageId1,
+                (string) $storageId2,
+                (string) $storageId3
+            );
 
-        $this->clientStorage->expects($this->at(1))
+        $this->clientStorage->expects($this->exactly(3))
             ->method('getClient')
-            ->with($storageId1)
-            ->willReturn($client1);
-
-        $this->clientStorage->expects($this->at(2))
-            ->method('getStorageId')
-            ->with($connection2)
-            ->willReturn((string) $storageId2);
-
-        $this->clientStorage->expects($this->at(3))
-            ->method('getClient')
-            ->with($storageId2)
-            ->willReturn($client2);
-
-        $this->clientStorage->expects($this->at(4))
-            ->method('getStorageId')
-            ->with($connection3)
-            ->willReturn((string) $storageId3);
-
-        $this->clientStorage->expects($this->at(5))
-            ->method('getClient')
-            ->with($storageId3)
-            ->willReturn($client3);
+            ->withConsecutive(
+                [$storageId1],
+                [$storageId2],
+                [$storageId3]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $client1,
+                $client2,
+                $client3
+            );
 
         /** @var MockObject|Topic $topic */
         $topic = $this->createMock(Topic::class);
@@ -190,34 +187,27 @@ class ClientManipulatorTest extends TestCase
         $authenticatedClient = $this->createMock(TokenInterface::class);
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        /*
-         * $this->at() uses the index of all calls to the mocked object, the indexing is:
-         *
-         * 0: getStorageId
-         * 1: getClient
-         * 2: getStorageId
-         * 3: getClient
-         */
-
-        $this->clientStorage->expects($this->at(0))
+        $this->clientStorage->expects($this->exactly(2))
             ->method('getStorageId')
-            ->with($connection1)
-            ->willReturn((string) $storageId1);
+            ->withConsecutive(
+                [$connection1],
+                [$connection2]
+            )
+            ->willReturnOnConsecutiveCalls(
+                (string) $storageId1,
+                (string) $storageId2
+            );
 
-        $this->clientStorage->expects($this->at(1))
+        $this->clientStorage->expects($this->exactly(2))
             ->method('getClient')
-            ->with($storageId1)
-            ->willReturn($authenticatedClient);
-
-        $this->clientStorage->expects($this->at(2))
-            ->method('getStorageId')
-            ->with($connection2)
-            ->willReturn((string) $storageId2);
-
-        $this->clientStorage->expects($this->at(3))
-            ->method('getClient')
-            ->with($storageId2)
-            ->willReturn($guestClient);
+            ->withConsecutive(
+                [$storageId1],
+                [$storageId2]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $authenticatedClient,
+                $guestClient
+            );
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
@@ -249,34 +239,27 @@ class ClientManipulatorTest extends TestCase
         /** @var MockObject|AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        /*
-         * $this->at() uses the index of all calls to the mocked object, the indexing is:
-         *
-         * 0: getStorageId
-         * 1: getClient
-         * 2: getStorageId
-         * 3: getClient
-         */
-
-        $this->clientStorage->expects($this->at(0))
+        $this->clientStorage->expects($this->exactly(2))
             ->method('getStorageId')
-            ->with($connection1)
-            ->willReturn((string) $storageId1);
+            ->withConsecutive(
+                [$connection1],
+                [$connection2]
+            )
+            ->willReturnOnConsecutiveCalls(
+                (string) $storageId1,
+                (string) $storageId2
+            );
 
-        $this->clientStorage->expects($this->at(1))
+        $this->clientStorage->expects($this->exactly(2))
             ->method('getClient')
-            ->with($storageId1)
-            ->willReturn($authenticatedClient);
-
-        $this->clientStorage->expects($this->at(2))
-            ->method('getStorageId')
-            ->with($connection2)
-            ->willReturn((string) $storageId2);
-
-        $this->clientStorage->expects($this->at(3))
-            ->method('getClient')
-            ->with($storageId2)
-            ->willReturn($guestClient);
+            ->withConsecutive(
+                [$storageId1],
+                [$storageId2]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $authenticatedClient,
+                $guestClient
+            );
 
         /** @var MockObject|Topic $topic */
         $topic = $this->createMock(Topic::class);
@@ -315,46 +298,31 @@ class ClientManipulatorTest extends TestCase
 
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        /*
-         * $this->at() uses the index of all calls to the mocked object, the indexing is:
-         *
-         * 0: getStorageId
-         * 1: getClient
-         * 2: getStorageId
-         * 3: getClient
-         * 4: getStorageId
-         * 5: getClient
-         */
-
-        $this->clientStorage->expects($this->at(0))
+        $this->clientStorage->expects($this->exactly(3))
             ->method('getStorageId')
-            ->with($connection1)
-            ->willReturn((string) $storageId1);
+            ->withConsecutive(
+                [$connection1],
+                [$connection2],
+                [$connection3]
+            )
+            ->willReturnOnConsecutiveCalls(
+                (string) $storageId1,
+                (string) $storageId2,
+                (string) $storageId3
+            );
 
-        $this->clientStorage->expects($this->at(1))
+        $this->clientStorage->expects($this->exactly(3))
             ->method('getClient')
-            ->with($storageId1)
-            ->willReturn($authenticatedClient1);
-
-        $this->clientStorage->expects($this->at(2))
-            ->method('getStorageId')
-            ->with($connection2)
-            ->willReturn((string) $storageId2);
-
-        $this->clientStorage->expects($this->at(3))
-            ->method('getClient')
-            ->with($storageId2)
-            ->willReturn($authenticatedClient2);
-
-        $this->clientStorage->expects($this->at(4))
-            ->method('getStorageId')
-            ->with($connection3)
-            ->willReturn((string) $storageId3);
-
-        $this->clientStorage->expects($this->at(5))
-            ->method('getClient')
-            ->with($storageId3)
-            ->willReturn($guestClient);
+            ->withConsecutive(
+                [$storageId1],
+                [$storageId2],
+                [$storageId3]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $authenticatedClient1,
+                $authenticatedClient2,
+                $guestClient
+            );
 
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
