@@ -30,15 +30,10 @@ class PredisDriverTest extends TestCase
 
     public function testDataIsRetrievedFromStorage(): void
     {
-        $this->predis->expects($this->at(0))
+        $this->predis->expects($this->exactly(2))
             ->method('__call')
-            ->with('get', ['abc'])
-            ->willReturn('foo');
-
-        $this->predis->expects($this->at(1))
-            ->method('__call')
-            ->with('get', ['def'])
-            ->willReturn(null);
+            ->withConsecutive(['get', ['abc']], ['get', ['def']])
+            ->willReturnOnConsecutiveCalls('foo', null);
 
         $this->assertSame('foo', $this->driver->fetch('abc'));
         $this->assertNull($this->driver->fetch('def'));
@@ -46,15 +41,10 @@ class PredisDriverTest extends TestCase
 
     public function testStorageContainsData(): void
     {
-        $this->predis->expects($this->at(0))
+        $this->predis->expects($this->exactly(2))
             ->method('__call')
-            ->with('exists', ['abc'])
-            ->willReturn(1);
-
-        $this->predis->expects($this->at(1))
-            ->method('__call')
-            ->with('exists', ['def'])
-            ->willReturn(0);
+            ->withConsecutive(['exists', ['abc']], ['exists', ['def']])
+            ->willReturnOnConsecutiveCalls(1, 0);
 
         $this->assertTrue($this->driver->contains('abc'));
         $this->assertFalse($this->driver->contains('def'));
@@ -62,15 +52,10 @@ class PredisDriverTest extends TestCase
 
     public function testDataIsSavedInStorage(): void
     {
-        $this->predis->expects($this->at(0))
+        $this->predis->expects($this->exactly(2))
             ->method('__call')
-            ->with('set', ['abc', 'data'])
-            ->willReturn(true);
-
-        $this->predis->expects($this->at(1))
-            ->method('__call')
-            ->with('setex', ['def', 60, 'data'])
-            ->willReturn(true);
+            ->withConsecutive(['set', ['abc', 'data']], ['setex', ['def', 60, 'data']])
+            ->willReturnOnConsecutiveCalls(true, true);
 
         $this->assertTrue($this->driver->save('abc', 'data', 0));
         $this->assertTrue($this->driver->save('def', 'data', 60));
@@ -78,7 +63,7 @@ class PredisDriverTest extends TestCase
 
     public function testDataIsDeletedFromStorage(): void
     {
-        $this->predis->expects($this->at(0))
+        $this->predis->expects($this->once())
             ->method('__call')
             ->with('del', [['abc']])
             ->willReturn(true);

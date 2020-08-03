@@ -30,15 +30,10 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsRetrievedFromStorage(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->exactly(2))
             ->method('fetch')
-            ->with('abc')
-            ->willReturn('foo');
-
-        $this->cache->expects($this->at(1))
-            ->method('fetch')
-            ->with('def')
-            ->willReturn(false);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls('foo', false);
 
         $this->assertSame('foo', $this->driver->fetch('abc'));
         $this->assertFalse($this->driver->fetch('def'));
@@ -46,15 +41,10 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
     public function testStorageContainsData(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->exactly(2))
             ->method('contains')
-            ->with('abc')
-            ->willReturn(true);
-
-        $this->cache->expects($this->at(1))
-            ->method('contains')
-            ->with('def')
-            ->willReturn(false);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls(true, false);
 
         $this->assertTrue($this->driver->contains('abc'));
         $this->assertFalse($this->driver->contains('def'));
@@ -62,15 +52,10 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsSavedInStorage(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->exactly(2))
             ->method('save')
-            ->with('abc')
-            ->willReturn(true);
-
-        $this->cache->expects($this->at(1))
-            ->method('save')
-            ->with('def')
-            ->willReturn(true);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls(true, true);
 
         $this->assertTrue($this->driver->save('abc', 'data', 0));
         $this->assertTrue($this->driver->save('def', 'data', 60));
@@ -78,7 +63,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->once())
             ->method('delete')
             ->with('abc')
             ->willReturn(true);
