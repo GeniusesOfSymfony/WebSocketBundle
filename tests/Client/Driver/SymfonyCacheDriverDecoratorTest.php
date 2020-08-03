@@ -44,11 +44,6 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
             ->method('get')
             ->willReturn('foo');
 
-        $this->cache->expects($this->at(0))
-            ->method('getItem')
-            ->with('abc')
-            ->willReturn($hitCacheItem);
-
         $missedCacheItem = $this->createMock(ItemInterface::class);
         $missedCacheItem->expects($this->once())
             ->method('isHit')
@@ -57,10 +52,10 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $missedCacheItem->expects($this->never())
             ->method('get');
 
-        $this->cache->expects($this->at(1))
+        $this->cache->expects($this->exactly(2))
             ->method('getItem')
-            ->with('def')
-            ->willReturn($missedCacheItem);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls($hitCacheItem, $missedCacheItem);
 
         $this->assertSame('foo', $this->driver->fetch('abc'));
         $this->assertFalse($this->driver->fetch('def'));
@@ -68,15 +63,10 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
     public function testStorageContainsData(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->exactly(2))
             ->method('hasItem')
-            ->with('abc')
-            ->willReturn(true);
-
-        $this->cache->expects($this->at(1))
-            ->method('hasItem')
-            ->with('def')
-            ->willReturn(false);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls(true, false);
 
         $this->assertTrue($this->driver->contains('abc'));
         $this->assertFalse($this->driver->contains('def'));
@@ -92,16 +82,6 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
         $noLifetimeCacheItem->expects($this->never())
             ->method('expiresAfter');
 
-        $this->cache->expects($this->at(0))
-            ->method('getItem')
-            ->with('abc')
-            ->willReturn($noLifetimeCacheItem);
-
-        $this->cache->expects($this->at(1))
-            ->method('save')
-            ->with($noLifetimeCacheItem)
-            ->willReturn(true);
-
         $lifetimeCacheItem = $this->createMock(ItemInterface::class);
         $lifetimeCacheItem->expects($this->once())
             ->method('set')
@@ -111,15 +91,15 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
             ->method('expiresAfter')
             ->with(60);
 
-        $this->cache->expects($this->at(2))
+        $this->cache->expects($this->exactly(2))
             ->method('getItem')
-            ->with('def')
-            ->willReturn($lifetimeCacheItem);
+            ->withConsecutive(['abc'], ['def'])
+            ->willReturnOnConsecutiveCalls($noLifetimeCacheItem, $lifetimeCacheItem);
 
-        $this->cache->expects($this->at(3))
+        $this->cache->expects($this->exactly(2))
             ->method('save')
-            ->with($noLifetimeCacheItem)
-            ->willReturn(true);
+            ->withConsecutive([$noLifetimeCacheItem], [$lifetimeCacheItem])
+            ->willReturnOnConsecutiveCalls(true, true);
 
         $this->assertTrue($this->driver->save('abc', 'data', 0));
         $this->assertTrue($this->driver->save('def', 'data', 60));
@@ -127,7 +107,7 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->at(0))
+        $this->cache->expects($this->once())
             ->method('deleteItem')
             ->with('abc')
             ->willReturn(true);
