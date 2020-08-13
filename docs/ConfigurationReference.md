@@ -39,7 +39,7 @@ gos_web_socket:
 
                 # The type of the service to be pinged; valid options are "doctrine" and "pdo"
                 type:                 ~ # One of "doctrine"; "pdo", Required
-    websocket_client:
+    websocket_client:     # Deprecated (The "websocket_client" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.)
         enabled:              false
         host:                 ~ # Required, Example: 127.0.0.1
         port:                 ~ # Required, Example: 1337
