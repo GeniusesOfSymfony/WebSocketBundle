@@ -39,6 +39,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     ];
 
     private const DEPRECATED_SERVICES = [
+        'gos_web_socket.client.driver.doctrine_cache' => '3.4',
         'gos_web_socket.data_collector.websocket' => '3.1',
         'gos_web_socket.event_listener.close_pusher_connections' => '3.1',
         'gos_web_socket.event_listener.register_push_handlers' => '3.1',
