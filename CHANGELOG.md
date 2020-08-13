@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0 (2020-??-??)
+
+- Deprecated support for the `gos/websocket-client` package, use `ratchet/pawl` instead
+
 ## 3.3.0 (2020-07-06)
 
 - Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`

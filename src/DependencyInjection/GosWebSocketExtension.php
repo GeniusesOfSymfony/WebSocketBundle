@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
-    private const DEPRECATED_ALISASES = [
+    private const DEPRECATED_ALIASES = [
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
     ];
@@ -80,7 +80,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         $usesSymfony51Api = method_exists(Alias::class, 'getDeprecation');
 
-        foreach (self::DEPRECATED_ALISASES as $aliasId => $deprecatedSince) {
+        foreach (self::DEPRECATED_ALIASES as $aliasId => $deprecatedSince) {
             if (!$container->hasAlias($aliasId)) {
                 continue;
             }
@@ -358,6 +358,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerWebsocketClientConfiguration(array $configs, ContainerBuilder $container): void
     {
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
+
         if (!isset($configs['websocket_client']) || !$configs['websocket_client']['enabled']) {
             return;
         }
@@ -376,16 +378,76 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $clientFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
         $clientFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
 
+        if ($usesSymfony51Api) {
+            $clientFactoryDef->setDeprecated(
+                'gos/web-socket-bundle',
+                '3.4',
+                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+            );
+        } else {
+            $clientFactoryDef->setDeprecated(
+                true,
+                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+            );
+        }
+
         $container->setDefinition('gos_web_socket.websocket_client_factory', $clientFactoryDef);
-        $container->setAlias(ClientFactory::class, 'gos_web_socket.websocket_client_factory');
-        $container->setAlias(ClientFactoryInterface::class, 'gos_web_socket.websocket_client_factory');
+
+        foreach ([ClientFactory::class, ClientFactoryInterface::class] as $aliasedObject) {
+            $alias = new Alias('gos_web_socket.websocket_client_factory');
+
+            if ($usesSymfony51Api) {
+                $alias->setDeprecated(
+                    'gos/web-socket-bundle',
+                    '3.4',
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+                );
+            } else {
+                $alias->setDeprecated(
+                    true,
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+                );
+            }
+
+            $container->setAlias($aliasedObject, $alias);
+        }
 
         $clientDef = new Definition(Client::class);
         $clientDef->setFactory([new Reference('gos_web_socket.websocket_client_factory'), 'createConnection']);
 
+        if ($usesSymfony51Api) {
+            $clientDef->setDeprecated(
+                'gos/web-socket-bundle',
+                '3.4',
+                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+            );
+        } else {
+            $clientDef->setDeprecated(
+                true,
+                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+            );
+        }
+
         $container->setDefinition('gos_web_socket.websocket_client', $clientDef);
-        $container->setAlias(Client::class, 'gos_web_socket.websocket_client');
-        $container->setAlias(ClientInterface::class, 'gos_web_socket.websocket_client');
+
+        foreach ([Client::class, ClientInterface::class] as $aliasedObject) {
+            $alias = new Alias('gos_web_socket.websocket_client_factory');
+
+            if ($usesSymfony51Api) {
+                $alias->setDeprecated(
+                    'gos/web-socket-bundle',
+                    '3.4',
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+                );
+            } else {
+                $alias->setDeprecated(
+                    true,
+                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
+                );
+            }
+
+            $container->setAlias($aliasedObject, $alias);
+        }
     }
 
     /**

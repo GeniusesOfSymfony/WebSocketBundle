@@ -165,6 +165,7 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->arrayNode('websocket_client')
+                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.', '3.4'))
                 ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
