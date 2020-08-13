@@ -67,34 +67,22 @@ class ClientManipulatorTest extends TestCase
         $storageId = 42;
         $client = $this->createMock(TokenInterface::class);
 
-        /*
-         * $this->at() uses the index of all calls to the mocked object, the indexing is:
-         *
-         * 0: getStorageId
-         * 1: getClient
-         * 2: getStorageId
-         * 3: getClient
-         */
-
         $this->clientStorage->expects($this->exactly(2))
             ->method('getStorageId')
             ->with($connection)
             ->willReturn((string) $storageId);
 
-        // TODO - The mocks for `$this->clientStorage` need to be updated to not use the `at()` matcher
-        $this->clientStorage->expects($this->at(1))
+        $this->clientStorage->expects($this->exactly(2))
             ->method('getClient')
             ->with($storageId)
-            ->willThrowException(new ClientNotFoundException());
+            ->willReturnOnConsecutiveCalls(
+                $this->throwException(new ClientNotFoundException()),
+                $client
+            );
 
         $this->authenticationProvider->expects($this->once())
             ->method('authenticate')
             ->with($connection);
-
-        $this->clientStorage->expects($this->at(3))
-            ->method('getClient')
-            ->with($storageId)
-            ->willReturn($client);
 
         $this->assertSame($client, $this->manipulator->getClient($connection));
     }
