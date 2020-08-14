@@ -5,7 +5,6 @@
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface::onPush()`
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface::launch()`
 - Added return typehints to `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
-- The `gos/websocket-client` is no longer always installed with this bundle, explicitly require it in your application if you are using the websocket client
 - Renamed the `gos_web_socket.event_listener.client` service to `gos_web_socket.event_subscriber.client`
 - Renamed the `Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener` class to `Gos\Bundle\WebSocketBundle\EventListener\WebsocketClientEventSubscriber`
 - Renamed the `gos_web_socket.event_listener.start_server` service to `gos_web_socket.event_listener.bind_sigint_signal_to_websocket_server`
@@ -24,3 +23,4 @@
 - Removed support for `Doctrine\DBAL\Driver\PingableConnection` implementations in `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing`, only `Doctrine\DBAL\Connection` instances are supported
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::setException()`, a `Throwable` instance is now a required constructor argument
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getException()`, use `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getThrowable()` instead
+- Removed support for the `gos/websocket-client` package, use `ratchet/pawl` instead

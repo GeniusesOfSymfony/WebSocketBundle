@@ -7,16 +7,10 @@ use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Gos\Component\WebSocketClient\Wamp\Client;
-use Gos\Component\WebSocketClient\Wamp\ClientFactory;
-use Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface;
-use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -49,7 +43,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerServerConfiguration($configs, $container);
         $this->registerOriginsConfiguration($configs, $container);
         $this->registerPingConfiguration($configs, $container);
-        $this->registerWebsocketClientConfiguration($configs, $container);
     }
 
     private function registerClientConfiguration(array $configs, ContainerBuilder $container): void
@@ -182,107 +175,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 default:
                     throw new InvalidArgumentException(sprintf('Unsupported ping service type "%s"', $pingService['type']));
             }
-        }
-    }
-
-    /**
-     * @throws LogicException if required dependencies are missing
-     */
-    private function registerWebsocketClientConfiguration(array $configs, ContainerBuilder $container): void
-    {
-        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
-
-        if (!isset($configs['websocket_client']) || !$configs['websocket_client']['enabled']) {
-            return;
-        }
-
-        if (!class_exists(Client::class)) {
-            throw new LogicException('The websocket client cannot be enabled because the required package is not installed, please run "composer require gos/websocket-client".');
-        }
-
-        // Pull the 'enabled' field out of the client's config
-        $factoryConfig = $configs['websocket_client'];
-        unset($factoryConfig['enabled']);
-
-        $clientFactoryDef = new Definition(
-            ClientFactory::class,
-            [
-                $factoryConfig,
-            ]
-        );
-        $clientFactoryDef->setPrivate(true);
-        $clientFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
-        $clientFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
-
-        if ($usesSymfony51Api) {
-            $clientFactoryDef->setDeprecated(
-                'gos/web-socket-bundle',
-                '3.4',
-                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-            );
-        } else {
-            $clientFactoryDef->setDeprecated(
-                true,
-                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-            );
-        }
-
-        $container->setDefinition('gos_web_socket.websocket_client_factory', $clientFactoryDef);
-
-        foreach ([ClientFactory::class, ClientFactoryInterface::class] as $aliasedObject) {
-            $alias = new Alias('gos_web_socket.websocket_client_factory');
-
-            if ($usesSymfony51Api) {
-                $alias->setDeprecated(
-                    'gos/web-socket-bundle',
-                    '3.4',
-                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-                );
-            } else {
-                $alias->setDeprecated(
-                    true,
-                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-                );
-            }
-
-            $container->setAlias($aliasedObject, $alias);
-        }
-
-        $clientDef = new Definition(Client::class);
-        $clientDef->setFactory([new Reference('gos_web_socket.websocket_client_factory'), 'createConnection']);
-
-        if ($usesSymfony51Api) {
-            $clientDef->setDeprecated(
-                'gos/web-socket-bundle',
-                '3.4',
-                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-            );
-        } else {
-            $clientDef->setDeprecated(
-                true,
-                'The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-            );
-        }
-
-        $container->setDefinition('gos_web_socket.websocket_client', $clientDef);
-
-        foreach ([Client::class, ClientInterface::class] as $aliasedObject) {
-            $alias = new Alias('gos_web_socket.websocket_client_factory');
-
-            if ($usesSymfony51Api) {
-                $alias->setDeprecated(
-                    'gos/web-socket-bundle',
-                    '3.4',
-                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-                );
-            } else {
-                $alias->setDeprecated(
-                    true,
-                    'The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0, use the ratchet/pawl package instead.'
-                );
-            }
-
-            $container->setAlias($aliasedObject, $alias);
         }
     }
 
