@@ -72,37 +72,6 @@ services:
 
 In this example, the storage has been changed to a service defined in your application to use a Predis Client as the storage driver.
 
-### Using `doctrine/cache` as a client storage driver
-
-A decorator is provided which allows for cache drivers from [Doctrine's Cache Library](https://www.doctrine-project.org/projects/cache.html) to be used as the client storage driver.
-
-The below example is used to create a Redis cache provider:
-
-```yaml
-doctrine_cache:
-    providers:
-        redis_cache:
-            redis:
-                host: 127.0.0.1
-                port: 6379
-                database: 3
-        websocket_cache_client:
-            type: redis
-            alias: app.doctrine_cache.websocket
-```
-
-You can now use it as the driver for the client storage layer.
-
-```yaml
-gos_web_socket:
-    client:
-        firewall: main
-        session_handler: 'session.handler.pdo'
-        storage:
-            driver: 'app.doctrine_cache.websocket' # The service which should be decorated
-            decorator: 'gos_web_socket.client.driver.doctrine_cache' # The decorator to apply to the driver
-```
-
 ### Using `symfony/cache` as a client storage driver
 
 A decorator is provided which allows for cache drivers from [Symfony's Cache Component](https://symfony.com/doc/current/components/cache.html) to be used as the client storage driver.

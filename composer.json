@@ -31,7 +31,6 @@
         "symfony/security-core": "^4.4 || ^5.0"
     },
     "require-dev": {
-        "doctrine/cache": "^1.8",
         "doctrine/dbal": "^2.9",
         "friendsofphp/php-cs-fixer": "^2.16",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",

@@ -10,11 +10,6 @@ services:
         tags:
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.client.driver.doctrine_cache:
-        class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
-        public: false
-        # arguments are set by the container extension
-
     gos_web_socket.client.driver.symfony_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false

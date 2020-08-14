@@ -24,3 +24,4 @@
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::setException()`, a `Throwable` instance is now a required constructor argument
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getException()`, use `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent::getThrowable()` instead
 - Removed support for the `gos/websocket-client` package, use `ratchet/pawl` instead
+- Removed `Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator`, if using the `doctrine/cache` package a `Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator` using a `Symfony\Component\Cache\DoctrineProvider` instance can be used
