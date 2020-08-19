@@ -38,7 +38,7 @@
         "phpstan/phpstan": "^0.12.25",
         "phpstan/phpstan-phpunit": "^0.12.8",
         "phpstan/phpstan-symfony": "^0.12.6",
-        "phpunit/phpunit": "^8.5 || ^9.0",
+        "phpunit/phpunit": "^9.3",
         "symfony/cache": "^4.4 || ^5.0",
         "symfony/twig-bundle": "^4.4 || ^5.0"
     },
