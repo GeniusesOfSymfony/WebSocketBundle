@@ -114,10 +114,6 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
      */
     public function removeAllClients(): void
     {
-        if (!method_exists($this->driver, 'clear')) {
-            return;
-        }
-
         if (null !== $this->logger) {
             $this->logger->debug('REMOVE ALL CLIENTS');
         }
