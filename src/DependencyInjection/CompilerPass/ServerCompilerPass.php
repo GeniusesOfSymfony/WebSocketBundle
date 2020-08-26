@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @internal
  */
 final class ServerCompilerPass implements CompilerPassInterface
 {

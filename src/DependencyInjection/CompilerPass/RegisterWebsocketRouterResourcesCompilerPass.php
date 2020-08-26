@@ -6,6 +6,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Parameter;
 
+/**
+ * @internal
+ */
 final class RegisterWebsocketRouterResourcesCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

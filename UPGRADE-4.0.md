@@ -13,6 +13,7 @@
 - Added `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface::removeAllClients()`
 - Added `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface::clear()`
 - `Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener` will now clear the client storage when a shutdown signal is received
+- The compiler passes are now internal, they are not intended for direct use by bundle users and B/C will no longer be guaranteed on them
 
 ## Deprecations
 
