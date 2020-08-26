@@ -96,6 +96,8 @@ gos_web_socket:
             decorator: 'gos_web_socket.client.driver.symfony_cache' # The decorator to apply to the driver
 ```
 
+**Note:** It is recommended to use a dedicated cache store for the client storage since the client storage can clear all entries in the backend storage
+
 ### Create your own driver
 
 If need be, you can also create your own storage driver. All drivers must implement `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface`.

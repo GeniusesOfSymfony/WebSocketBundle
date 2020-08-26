@@ -7,6 +7,9 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+/**
+ * @method void removeAllClients()
+ */
 interface ClientStorageInterface
 {
     /**

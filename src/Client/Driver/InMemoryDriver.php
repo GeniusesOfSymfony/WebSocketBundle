@@ -42,4 +42,9 @@ final class InMemoryDriver implements DriverInterface
 
         return true;
     }
+
+    public function clear(): void
+    {
+        $this->elements = [];
+    }
 }

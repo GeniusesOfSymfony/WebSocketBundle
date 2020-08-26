@@ -51,4 +51,9 @@ final class SymfonyCacheDriverDecorator implements DriverInterface
     {
         return $this->cache->deleteItem((string) $id);
     }
+
+    public function clear(): void
+    {
+        $this->cache->clear();
+    }
 }

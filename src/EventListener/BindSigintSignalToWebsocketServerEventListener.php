@@ -21,33 +21,36 @@ final class BindSigintSignalToWebsocketServerEventListener implements LoggerAwar
 
     public function __invoke(ServerLaunchedEvent $event): void
     {
-        if (\defined('SIGINT')) {
-            $loop = $event->getEventLoop();
-            $server = $event->getServer();
+        $loop = $event->getEventLoop();
+        $server = $event->getServer();
 
-            $loop->addSignal(
-                SIGINT,
-                function () use ($server, $loop): void {
-                    if (null !== $this->logger) {
-                        $this->logger->notice('Stopping server ...');
-                    }
+        $closer = function () use ($server, $loop): void {
+            if (null !== $this->logger) {
+                $this->logger->notice('Stopping server ...');
+            }
 
-                    $server->emit('end');
-                    $server->close();
+            $server->emit('end');
+            $server->close();
 
-                    foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-                        if ($periodic instanceof TimerInterface) {
-                            $loop->cancelTimer($periodic);
-                        }
-                    }
-
-                    $loop->stop();
-
-                    if (null !== $this->logger) {
-                        $this->logger->notice('Server stopped!');
-                    }
+            foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
+                if ($periodic instanceof TimerInterface) {
+                    $loop->cancelTimer($periodic);
                 }
-            );
+            }
+
+            $loop->stop();
+
+            if (null !== $this->logger) {
+                $this->logger->notice('Server stopped!');
+            }
+        };
+
+        if (\defined('SIGINT')) {
+            $loop->addSignal(SIGINT, $closer);
+        }
+
+        if (\defined('SIGTERM')) {
+            $loop->addSignal(SIGTERM, $closer);
         }
     }
 }
