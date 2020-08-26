@@ -70,8 +70,8 @@ services:
         tags:
             - { name: monolog.logger, channel: websocket }
 
-    gos_web_socket.event_listener.bind_sigint_signal_to_websocket_server:
-        class: Gos\Bundle\WebSocketBundle\EventListener\BindSigintSignalToWebsocketServerEventListener
+    gos_web_socket.event_listener.bind_signals_to_websocket_server:
+        class: Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'

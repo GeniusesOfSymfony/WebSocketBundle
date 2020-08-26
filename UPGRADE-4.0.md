@@ -7,8 +7,8 @@
 - Added return typehints to `Gos\Bundle\WebSocketBundle\Topic\TopicInterface`
 - Renamed the `gos_web_socket.event_listener.client` service to `gos_web_socket.event_subscriber.client`
 - Renamed the `Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener` class to `Gos\Bundle\WebSocketBundle\EventListener\WebsocketClientEventSubscriber`
-- Renamed the `gos_web_socket.event_listener.start_server` service to `gos_web_socket.event_listener.bind_sigint_signal_to_websocket_server`
-- Renamed the `Gos\Bundle\WebSocketBundle\EventListener\StartServerListener` class to `Gos\Bundle\WebSocketBundle\EventListener\BindSigintSignalToWebsocketServerEventListener`
+- Renamed the `gos_web_socket.event_listener.start_server` service to `gos_web_socket.event_listener.bind_signals_to_websocket_server`
+- Renamed the `Gos\Bundle\WebSocketBundle\EventListener\StartServerListener` class to `Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener`
 - Made private members of the `GosSocket` JavaScript class private using the class fields and private method proposals
 - Added `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface::removeAllClients()`
 - Added `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface::clear()`

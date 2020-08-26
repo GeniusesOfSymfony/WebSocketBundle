@@ -3,13 +3,13 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
-use Gos\Bundle\WebSocketBundle\EventListener\BindSigintSignalToWebsocketServerEventListener;
+use Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 
-class BindSigintSignalToWebsocketServerEventListenerTest extends TestCase
+class BindSignalsToWebsocketServerEventListenerTest extends TestCase
 {
     /**
      * @var PeriodicRegistry
@@ -17,7 +17,7 @@ class BindSigintSignalToWebsocketServerEventListenerTest extends TestCase
     private $periodicRegistry;
 
     /**
-     * @var BindSigintSignalToWebsocketServerEventListener
+     * @var BindSignalsToWebsocketServerEventListener
      */
     private $listener;
 
@@ -27,7 +27,7 @@ class BindSigintSignalToWebsocketServerEventListenerTest extends TestCase
 
         $this->periodicRegistry = new PeriodicRegistry();
 
-        $this->listener = new BindSigintSignalToWebsocketServerEventListener($this->periodicRegistry);
+        $this->listener = new BindSignalsToWebsocketServerEventListener($this->periodicRegistry);
     }
 
     /**
