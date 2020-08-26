@@ -12,6 +12,7 @@
 - Made private members of the `GosSocket` JavaScript class private using the class fields and private method proposals
 - Added `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface::removeAllClients()`
 - Added `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface::clear()`
+- `Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener` will now clear the client storage when a shutdown signal is received
 
 ## Deprecations
 

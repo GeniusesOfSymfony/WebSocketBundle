@@ -2,9 +2,11 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
@@ -17,6 +19,11 @@ class BindSignalsToWebsocketServerEventListenerTest extends TestCase
     private $periodicRegistry;
 
     /**
+     * @var MockObject&ClientStorageInterface
+     */
+    private $clientStorage;
+
+    /**
      * @var BindSignalsToWebsocketServerEventListener
      */
     private $listener;
@@ -26,8 +33,9 @@ class BindSignalsToWebsocketServerEventListenerTest extends TestCase
         parent::setUp();
 
         $this->periodicRegistry = new PeriodicRegistry();
+        $this->clientStorage = $this->createMock(ClientStorageInterface::class);
 
-        $this->listener = new BindSignalsToWebsocketServerEventListener($this->periodicRegistry);
+        $this->listener = new BindSignalsToWebsocketServerEventListener($this->periodicRegistry, $this->clientStorage);
     }
 
     /**

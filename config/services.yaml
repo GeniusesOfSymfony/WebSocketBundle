@@ -75,6 +75,7 @@ services:
         public: false
         arguments:
             - '@gos_web_socket.registry.periodic'
+            - '@gos_web_socket.client.storage'
         calls:
             - [ setLogger, ['@logger'] ]
         tags:

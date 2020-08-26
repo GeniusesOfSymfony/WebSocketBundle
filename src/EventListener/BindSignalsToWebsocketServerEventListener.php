@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\EventListener;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
@@ -13,10 +14,12 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
     use LoggerAwareTrait;
 
     private PeriodicRegistry $periodicRegistry;
+    private ClientStorageInterface $clientStorage;
 
-    public function __construct(PeriodicRegistry $periodicRegistry)
+    public function __construct(PeriodicRegistry $periodicRegistry, ClientStorageInterface $clientStorage)
     {
         $this->periodicRegistry = $periodicRegistry;
+        $this->clientStorage = $clientStorage;
     }
 
     public function __invoke(ServerLaunchedEvent $event): void
@@ -39,6 +42,8 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
             }
 
             $loop->stop();
+
+            $this->clientStorage->removeAllClients();
 
             if (null !== $this->logger) {
                 $this->logger->notice('Server stopped!');
