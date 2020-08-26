@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.4.0 (2020-??-??)
+## 3.4.0 (2020-08-26)
 
 - Deprecated support for the `gos/websocket-client` package, use `ratchet/pawl` instead
 - Deprecated the `Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator`, if using the `doctrine/cache` package a `Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator` using a `Symfony\Component\Cache\DoctrineProvider` instance can be used
