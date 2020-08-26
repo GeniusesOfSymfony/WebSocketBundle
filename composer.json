@@ -66,6 +66,7 @@
     },
     "suggest": {
         "ext-amqp": "* to use the amqp pusher",
+        "ext-pcntl": "* to handle process signals",
         "ext-pdo": "* to use PDO ping services",
         "doctrine/cache": "to use doctrine/cache as a client driver",
         "doctrine/dbal": "to use Doctrine ping services",
