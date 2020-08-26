@@ -7,9 +7,6 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-/**
- * @method void removeAllClients()
- */
 interface ClientStorageInterface
 {
     /**
@@ -34,4 +31,9 @@ interface ClientStorageInterface
      * @throws StorageException if there was an error removing the client from storage
      */
     public function removeClient(string $identifier): bool;
+
+    /**
+     * @throws StorageException if there was an error removing the clients from storage
+     */
+    public function removeAllClients(): void;
 }

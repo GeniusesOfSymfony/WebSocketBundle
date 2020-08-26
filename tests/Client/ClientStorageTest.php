@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ClientStorageTest extends TestCase
 {
     /**
-     * @var MockObject|ClearableDriverInterface
+     * @var MockObject|DriverInterface
      */
     private $driver;
 
@@ -28,7 +28,7 @@ class ClientStorageTest extends TestCase
     {
         parent::setUp();
 
-        $this->driver = $this->createMock(ClearableDriverInterface::class);
+        $this->driver = $this->createMock(DriverInterface::class);
 
         $this->storage = new ClientStorage($this->driver, 10);
     }
@@ -200,9 +200,4 @@ class ClientStorageTest extends TestCase
 
         $this->storage->removeAllClients();
     }
-}
-
-interface ClearableDriverInterface extends DriverInterface
-{
-    public function clear(): void;
 }

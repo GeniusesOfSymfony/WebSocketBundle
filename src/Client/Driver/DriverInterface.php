@@ -2,9 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
-/**
- * @method void clear()
- */
 interface DriverInterface
 {
     /**
@@ -20,4 +17,6 @@ interface DriverInterface
     public function save(string $id, $data, int $lifeTime = 0): bool;
 
     public function delete(string $id): bool;
+
+    public function clear(): void;
 }
