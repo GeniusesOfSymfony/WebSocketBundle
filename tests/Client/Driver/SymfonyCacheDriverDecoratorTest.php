@@ -114,4 +114,13 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
         $this->assertTrue($this->driver->delete('abc'));
     }
+
+    public function testAllDataIsDeletedFromStorage(): void
+    {
+        $this->cache->expects($this->once())
+            ->method('clear')
+            ->willReturn(true);
+
+        $this->driver->clear();
+    }
 }

@@ -103,6 +103,8 @@ gos_web_socket:
             decorator: 'gos_web_socket.client.driver.doctrine_cache' # The decorator to apply to the driver
 ```
 
+**Note:** It is recommended to use a dedicated cache store for the client storage since the client storage can clear all entries in the backend storage
+
 ### Using `symfony/cache` as a client storage driver
 
 A decorator is provided which allows for cache drivers from [Symfony's Cache Component](https://symfony.com/doc/current/components/cache.html) to be used as the client storage driver.
@@ -126,6 +128,8 @@ gos_web_socket:
             driver: 'cache.adapter.redis' # The service which should be decorated
             decorator: 'gos_web_socket.client.driver.symfony_cache' # The decorator to apply to the driver
 ```
+
+**Note:** It is recommended to use a dedicated cache store for the client storage since the client storage can clear all entries in the backend storage
 
 ### Create your own driver
 

@@ -4,6 +4,8 @@
 
 - Deprecated support for the `gos/websocket-client` package, use `ratchet/pawl` instead
 - Deprecated the `Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator`, if using the `doctrine/cache` package a `Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator` using a `Symfony\Component\Cache\DoctrineProvider` instance can be used
+- Introduced `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface::removeAllClients()`, if implemented a client store can remove all clients from storage; in 4.0, this method will be required on all interface implementations
+- Introduced `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface::clear()`, if implemented a driver can remove all data from storage; in 4.0, this method will be required on all interface implementations
 
 ## 3.3.0 (2020-07-06)
 

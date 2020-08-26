@@ -2,6 +2,9 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
+/**
+ * @method void clear()
+ */
 interface DriverInterface
 {
     /**

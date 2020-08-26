@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Client\Driver;
 
 use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\ClearableCache;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -10,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class DoctrineCacheDriverDecoratorTest extends TestCase
 {
     /**
-     * @var MockObject|Cache
+     * @var MockObject|DoctrineCache
      */
     private $cache;
 
@@ -23,7 +24,7 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->cache = $this->createMock(Cache::class);
+        $this->cache = $this->createMock(DoctrineCache::class);
 
         $this->driver = new DoctrineCacheDriverDecorator($this->cache);
     }
@@ -70,4 +71,17 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
         $this->assertTrue($this->driver->delete('abc'));
     }
+
+    public function testAllDataIsDeletedFromStorage(): void
+    {
+        $this->cache->expects($this->once())
+            ->method('deleteAll')
+            ->willReturn(true);
+
+        $this->driver->clear();
+    }
+}
+
+interface DoctrineCache extends Cache, ClearableCache
+{
 }

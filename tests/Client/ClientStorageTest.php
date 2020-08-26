@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ClientStorageTest extends TestCase
 {
     /**
-     * @var MockObject|DriverInterface
+     * @var MockObject|ClearableDriverInterface
      */
     private $driver;
 
@@ -28,7 +28,7 @@ class ClientStorageTest extends TestCase
     {
         parent::setUp();
 
-        $this->driver = $this->createMock(DriverInterface::class);
+        $this->driver = $this->createMock(ClearableDriverInterface::class);
 
         $this->storage = new ClientStorage($this->driver, 10);
     }
@@ -180,4 +180,29 @@ class ClientStorageTest extends TestCase
 
         $this->storage->removeClient($clientId);
     }
+
+    public function testAllClientsCanBeRemovedFromStorage(): void
+    {
+        $this->driver->expects($this->once())
+            ->method('clear');
+
+        $this->storage->removeAllClients();
+    }
+
+    public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenRemovingAllClients(): void
+    {
+        $this->expectException(StorageException::class);
+        $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
+
+        $this->driver->expects($this->once())
+            ->method('clear')
+            ->willThrowException(new \Exception('Testing'));
+
+        $this->storage->removeAllClients();
+    }
+}
+
+interface ClearableDriverInterface extends DriverInterface
+{
+    public function clear(): void;
 }

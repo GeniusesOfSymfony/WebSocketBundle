@@ -108,4 +108,24 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
     }
+
+    /**
+     * @throws StorageException if there was an error removing the clients from storage
+     */
+    public function removeAllClients(): void
+    {
+        if (!method_exists($this->driver, 'clear')) {
+            return;
+        }
+
+        if (null !== $this->logger) {
+            $this->logger->debug('REMOVE ALL CLIENTS');
+        }
+
+        try {
+            $this->driver->clear();
+        } catch (\Exception $e) {
+            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+        }
+    }
 }
