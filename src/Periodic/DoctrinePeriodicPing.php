@@ -3,7 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Periodic;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\DBALException as LegacyDBALException;
+use Doctrine\DBAL\Exception as NewDBALException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -33,7 +34,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
                     sprintf('Successfully pinged database server (~%s ms)', round(($endTime - $startTime) * 100000, 2))
                 );
             }
-        } catch (DBALException $e) {
+        } catch (LegacyDBALException | NewDBALException $e) {
             if (null !== $this->logger) {
                 $this->logger->emergency(
                     'Could not ping database server',
