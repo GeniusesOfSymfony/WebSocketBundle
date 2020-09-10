@@ -3,7 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\DBALException as LegacyDBALException;
+use Doctrine\DBAL\Exception as NewDBALException;
 use Doctrine\DBAL\Driver\PingableConnection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
@@ -66,10 +67,12 @@ class DoctrinePeriodicPingTest extends TestCase
     {
         $logger = new TestLogger();
 
+        $exceptionClass = class_exists(NewDBALException::class) ? NewDBALException::class : LegacyDBALException::class;
+
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
             ->method('getDatabasePlatform')
-            ->willThrowException(new DBALException('Testing'));
+            ->willThrowException(new $exceptionClass('Testing'));
 
         $ping = new DoctrinePeriodicPing($connection);
         $ping->setLogger($logger);
@@ -77,8 +80,8 @@ class DoctrinePeriodicPingTest extends TestCase
         try {
             $ping->tick();
 
-            $this->fail(sprintf('A %s should have been thrown.', DBALException::class));
-        } catch (DBALException $exception) {
+            $this->fail(sprintf('A %s should have been thrown.', $exceptionClass));
+        } catch (LegacyDBALException | NewDBALException $exception) {
             $this->assertSame('Testing', $exception->getMessage());
 
             $this->assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
