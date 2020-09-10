@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cache dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.composer/cache/files
           key: dependencies-symfony-${{ matrix.symfony }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}-flags-${{ matrix.composer-flags }}
@@ -40,13 +40,14 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip
+          tools: composer:v2
           coverage: pcov
 
       - name: Install dependencies
         run: |
           composer global require --no-scripts --no-plugins symfony/flex
           composer remove --dev --no-update phpstan/*
-          composer update ${{ matrix.composer-flags }} --prefer-dist --no-suggest
+          SYMFONY_REQUIRE=${{ matrix.symfony }} composer update ${{ matrix.composer-flags }} --prefer-dist --no-suggest
 
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover clover.xml
