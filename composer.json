@@ -43,7 +43,6 @@
         "symfony/twig-bundle": "^4.4 || ^5.0"
     },
     "conflict": {
-        "gos/websocket-client": "<1.1",
         "symfony/monolog-bundle": "<3.0"
     },
     "autoload": {
