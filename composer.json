@@ -31,7 +31,7 @@
         "symfony/security-core": "^4.4 || ^5.0"
     },
     "require-dev": {
-        "doctrine/dbal": "^2.9",
+        "doctrine/dbal": "^2.11",
         "friendsofphp/php-cs-fixer": "^2.16",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
         "phpstan/extension-installer": "^1.0.3",
