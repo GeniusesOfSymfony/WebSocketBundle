@@ -29,7 +29,7 @@ class DoctrinePeriodicPingTest extends TestCase
             ->willReturn($platform);
 
         $connection->expects($this->once())
-            ->method('query')
+            ->method(method_exists(Connection::class, 'executeQuery') ? 'executeQuery' : 'query')
             ->with($query);
 
         $ping = new DoctrinePeriodicPing($connection);
