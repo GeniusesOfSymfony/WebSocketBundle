@@ -5,23 +5,35 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.next-symfony }}
+    continue-on-error: ${{ matrix.can-fail }}
     strategy:
       fail-fast: true
       matrix:
         php: [7.4]
-        symfony: [4.4.*, 5.0.*, 5.1.*]
+        symfony: [4.4.*, 5.1.*]
         composer-flags: ['--prefer-stable']
-        next-symfony: [false]
+        phpunit-flags: ['--coverage-clover clover.xml']
+        can-fail: [false]
+        extensions: ['amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip']
         include:
           - php: 7.4
             symfony: 4.4.*
             composer-flags: '--prefer-stable --prefer-lowest'
-            next-symfony: false
+            phpunit-flags: '--coverage-clover clover.xml'
+            can-fail: false
+            extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 7.4
             symfony: 5.2.*@dev
             composer-flags: '--prefer-stable'
-            next-symfony: true
+            phpunit-flags: '--coverage-clover clover.xml'
+            can-fail: true
+            extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
+          - php: 8.0
+            symfony: 5.1.*
+            composer-flags: '--ignore-platform-req=php'
+            phpunit-flags: ''
+            can-fail: true
+            extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
 
     name: PHP ${{ matrix.php }} - Symfony ${{ matrix.symfony }} - Composer ${{ matrix.composer-flags }}
 
@@ -39,8 +51,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip
           tools: composer:v2
+          extensions: curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip
           coverage: pcov
 
       - name: Install dependencies
@@ -50,9 +62,10 @@ jobs:
           SYMFONY_REQUIRE=${{ matrix.symfony }} composer update ${{ matrix.composer-flags }} --prefer-dist --no-suggest
 
       - name: Execute tests
-        run: vendor/bin/phpunit --coverage-clover clover.xml
+        run: vendor/bin/phpunit ${{ matrix.phpunit-flags }}
 
       - name: Upload coverage
+        if: matrix.php != '8.0'
         run: |
           wget https://github.com/scrutinizer-ci/ocular/releases/download/1.6.0/ocular.phar
           php ocular.phar code-coverage:upload --format=php-clover clover.xml
