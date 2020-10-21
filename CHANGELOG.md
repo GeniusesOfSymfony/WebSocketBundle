@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.0 (????-??-??)
+
+- Drop support for Symfony 5.0 (Branch is EOL)
+
 ## 3.4.0 (2020-08-26)
 
 - Deprecated support for the `gos/websocket-client` package, use `ratchet/pawl` instead
