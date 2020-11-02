@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^7.4 || ^8.0",
         "cboden/ratchet": "^0.4.2",
         "gos/pubsub-router-bundle": "^2.2",
         "gos/websocket-client": "^1.1",

@@ -1,8 +1,10 @@
 # Changelog
 
-## 3.5.0 (????-??-??)
+## 3.5.0 (2020-11-02)
 
 - Drop support for Symfony 5.0 (Branch is EOL)
+- Allow install on PHP 8
+- Updates for changes introduced in `doctrine/dbal` 2.11
 
 ## 3.4.0 (2020-08-26)
 
