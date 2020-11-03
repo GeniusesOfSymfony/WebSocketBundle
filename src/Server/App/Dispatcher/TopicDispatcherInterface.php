@@ -29,24 +29,4 @@ interface TopicDispatcherInterface
      * @param string|array $data
      */
     public function onPush(WampRequest $request, $data, string $provider): void;
-
-    /**
-     * @param string|array $payload
-     *
-     * @throws PushUnsupportedException  if the topic does not support push requests
-     * @throws \InvalidArgumentException if an unsupported request type is given
-     * @throws \RuntimeException         if the connection is missing for a method which requires it or if there is no payload for a push request
-     *
-     * @deprecated method will no longer be required on this interface as of 4.0
-     */
-    public function dispatch(
-        string $calledMethod,
-        ?ConnectionInterface $conn,
-        Topic $topic,
-        WampRequest $request,
-        $payload = null,
-        ?array $exclude = null,
-        ?array $eligible = null,
-        ?string $provider = null
-    ): bool;
 }

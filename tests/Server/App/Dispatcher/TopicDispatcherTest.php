@@ -262,6 +262,59 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
+    public function testAWebsocketUnsubscriptionIsDispatchedToItsHandlerAndPeriodicTimersAreClearedIfTheTopicNoLongerHasSubscribers(): void
+    {
+        $handler = new class() implements TopicInterface {
+            private $called = false;
+
+            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
+            {
+                $this->called = true;
+            }
+
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
+            {
+                throw new \RuntimeException('Not expected to be called.');
+            }
+
+            public function getName(): string
+            {
+                return 'topic.handler';
+            }
+
+            public function wasCalled(): bool
+            {
+                return $this->called;
+            }
+        };
+
+        $this->topicRegistry->addTopic($handler);
+
+        $route = new Route('hello/world', 'topic.handler');
+
+        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
+
+        $connection = $this->createMock(WampConnection::class);
+
+        $topic = $this->createMock(Topic::class);
+        $topic->expects($this->once())
+            ->method('count')
+            ->willReturn(0);
+
+        $this->topicPeriodicTimer->expects($this->once())
+            ->method('clearPeriodicTimer')
+            ->with($handler);
+
+        $this->dispatcher->onUnSubscribe($connection, $topic, $request);
+
+        $this->assertTrue($handler->wasCalled());
+    }
+
     public function testAWebsocketPublishIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface {
@@ -307,7 +360,7 @@ final class TopicDispatcherTest extends TestCase
         $this->assertTrue($handler->wasCalled());
     }
 
-    public function testADispatchToASecuredTopicHandlerIsCompleted(): void
+    public function testAWebsocketPublishIsDispatchedToASecuredHandler(): void
     {
         $handler = new class() implements TopicInterface, SecuredTopicInterface {
             private $called = false;
@@ -358,13 +411,13 @@ final class TopicDispatcherTest extends TestCase
         $connection = $this->createMock(WampConnection::class);
         $topic = $this->createMock(Topic::class);
 
-        $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
+        $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
         $this->assertTrue($handler->wasCalled());
         $this->assertTrue($handler->wasSecured());
     }
 
-    public function testADispatchToAnUnregisteredPeriodicTopicTimerIsCompleted(): void
+    public function testAWebsocketPublishIsDispatchedToAHandlerThatIsNotYetRegisteredAsAPeriodicTopicTimer(): void
     {
         $handler = new class() implements TopicInterface, TopicPeriodicTimerInterface {
             use TopicPeriodicTimerTrait;
@@ -426,63 +479,10 @@ final class TopicDispatcherTest extends TestCase
             ->with($handler)
             ->willReturn(false);
 
-        $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
+        $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
         $this->assertTrue($handler->wasCalled());
         $this->assertTrue($handler->wasRegistered());
-    }
-
-    public function testPeriodicTimersAreClearedWhenAnEmptyTopicIsUnsubscribed(): void
-    {
-        $handler = new class() implements TopicInterface {
-            private $called = false;
-
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                $this->called = true;
-            }
-
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function getName(): string
-            {
-                return 'topic.handler';
-            }
-
-            public function wasCalled(): bool
-            {
-                return $this->called;
-            }
-        };
-
-        $this->topicRegistry->addTopic($handler);
-
-        $route = new Route('hello/world', 'topic.handler');
-
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
-
-        $connection = $this->createMock(WampConnection::class);
-
-        $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
-            ->method('count')
-            ->willReturn(0);
-
-        $this->topicPeriodicTimer->expects($this->once())
-            ->method('clearPeriodicTimer')
-            ->with($handler);
-
-        $this->dispatcher->dispatch(TopicDispatcher::UNSUBSCRIPTION, $connection, $topic, $request);
-
-        $this->assertTrue($handler->wasCalled());
     }
 
     public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry(): void
@@ -590,7 +590,7 @@ final class TopicDispatcherTest extends TestCase
             ->method('getId')
             ->willReturn('topic');
 
-        $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
+        $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
         $this->assertFalse($handler->wasCalled());
         $this->assertFalse($handler->wasSecured());
@@ -646,7 +646,7 @@ final class TopicDispatcherTest extends TestCase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator());
 
-        $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
+        $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
         $this->assertTrue($handler->wasCalled());
 

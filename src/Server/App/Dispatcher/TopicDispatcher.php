@@ -25,10 +25,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 {
     use LoggerAwareTrait;
 
-    public const SUBSCRIPTION = 'onSubscribe';
-    public const UNSUBSCRIPTION = 'onUnSubscribe';
-    public const PUBLISH = 'onPublish';
-    public const PUSH = 'onPush';
+    private const SUBSCRIBE = 'subscribe';
+    private const UNSUBSCRIBE = 'unsubscribe';
+    private const PUBLISH = 'publish';
+    private const PUSH = 'push';
 
     private TopicRegistry $topicRegistry;
     private WampRouter $router;
@@ -49,7 +49,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
     {
-        $this->dispatch(self::SUBSCRIPTION, $conn, $topic, $request);
+        $this->dispatch(self::SUBSCRIBE, $conn, $topic, $request);
     }
 
     /**
@@ -63,7 +63,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
     {
-        $this->dispatch(self::UNSUBSCRIPTION, $conn, $topic, $request);
+        $this->dispatch(self::UNSUBSCRIBE, $conn, $topic, $request);
     }
 
     /**
@@ -87,7 +87,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
      * @throws \InvalidArgumentException if an unsupported request type is given
      * @throws \RuntimeException         if the connection is missing for a method which requires it or if there is no payload for a push request
      */
-    public function dispatch(
+    private function dispatch(
         string $calledMethod,
         ?ConnectionInterface $conn,
         Topic $topic,
@@ -211,7 +211,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
                     break;
 
-                case self::SUBSCRIPTION:
+                case self::SUBSCRIBE:
                     if ($conn === null) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
@@ -220,7 +220,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
                     break;
 
-                case self::UNSUBSCRIPTION:
+                case self::UNSUBSCRIBE:
                     if ($conn === null) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
