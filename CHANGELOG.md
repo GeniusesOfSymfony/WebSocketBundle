@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.0 (????-??-??)
+
+- Deprecated the requirement to implement `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface::dispatch()`, the method will be removed from the interface in 4.0
+
 ## 3.5.0 (2020-11-02)
 
 - Drop support for Symfony 5.0 (Branch is EOL)
