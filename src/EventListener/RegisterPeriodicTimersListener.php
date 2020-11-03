@@ -7,6 +7,9 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
+/**
+ * @internal
+ */
 final class RegisterPeriodicTimersListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;

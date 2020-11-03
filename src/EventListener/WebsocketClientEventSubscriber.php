@@ -15,7 +15,7 @@ use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @internal
  */
 final class WebsocketClientEventSubscriber implements EventSubscriberInterface, LoggerAwareInterface
 {
