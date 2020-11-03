@@ -10,12 +10,7 @@ final class OriginRegistry
     /**
      * @var string[]
      */
-    private $origins;
-
-    public function __construct()
-    {
-        $this->origins = [];
-    }
+    private $origins = [];
 
     public function addOrigin(string $origin): void
     {
