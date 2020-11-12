@@ -13,6 +13,10 @@ use Ratchet\WebSocket\WsServerInterface;
 class TopicManager implements WsServerInterface, WampServerInterface
 {
     protected ?WampServerInterface $app = null;
+
+    /**
+     * @var array<string, Topic>
+     */
     protected array $topicLookup = [];
 
     public function setWampApplication(WampServerInterface $app): void
@@ -109,17 +113,28 @@ class TopicManager implements WsServerInterface, WampServerInterface
         return [];
     }
 
+    /**
+     * @param Topic|string $topic
+     *
+     * @throws \InvalidArgumentException if the $topic argument is not a supported type
+     */
     public function getTopic($topic): Topic
     {
-        if (!\array_key_exists((string) $topic, $this->topicLookup)) {
+        if (!($topic instanceof Topic) && !\is_string($topic)) {
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s or a string, a %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? \get_class($topic) : \gettype($topic))));
+        }
+
+        $key = $topic instanceof Topic ? $topic->getId() : $topic;
+
+        if (!\array_key_exists($key, $this->topicLookup)) {
             if ($topic instanceof Topic) {
-                $this->topicLookup[(string) $topic] = $topic;
+                $this->topicLookup[$key] = $topic;
             } else {
-                $this->topicLookup[$topic] = new Topic($topic);
+                $this->topicLookup[$key] = new Topic($topic);
             }
         }
 
-        return $this->topicLookup[$topic];
+        return $this->topicLookup[$key];
     }
 
     protected function cleanTopic(Topic $topic, ConnectionInterface $conn): void

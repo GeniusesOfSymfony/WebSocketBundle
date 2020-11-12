@@ -10,10 +10,10 @@ use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
-class TopicManagerTest extends TestCase
+final class TopicManagerTest extends TestCase
 {
     /**
-     * @var MockObject|WampServerInterface
+     * @var MockObject&WampServerInterface
      */
     private $mock;
 
@@ -23,7 +23,7 @@ class TopicManagerTest extends TestCase
     private $mngr;
 
     /**
-     * @var MockObject|ConnectionInterface
+     * @var MockObject&ConnectionInterface
      */
     private $conn;
 
@@ -41,38 +41,31 @@ class TopicManagerTest extends TestCase
 
     public function testGetTopicReturnsTopicObject(): void
     {
-        $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
-
-        $topic = $method->invokeArgs($this->mngr, ['The Topic']);
-
-        $this->assertInstanceOf(Topic::class, $topic);
+        $this->assertInstanceOf(Topic::class, $this->mngr->getTopic('The Topic'));
     }
 
     public function testGetTopicCreatesTopicWithSameName(): void
     {
         $name = 'The Topic';
 
-        $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
-
-        $topic = $method->invokeArgs($this->mngr, [$name]);
+        $topic = $this->mngr->getTopic($name);
 
         $this->assertEquals($name, $topic->getId());
     }
 
     public function testGetTopicReturnsSameObject(): void
     {
-        $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
+        $this->assertSame(
+            $this->mngr->getTopic('The Topic'),
+            $this->mngr->getTopic('The Topic')
+        );
+    }
 
-        $topic = $method->invokeArgs($this->mngr, ['No copy']);
-        $again = $method->invokeArgs($this->mngr, ['No copy']);
+    public function testGetTopicRejectsInvalidTopicArguments(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-        $this->assertSame($topic, $again);
+        $this->mngr->getTopic(null);
     }
 
     public function testOnOpen(): void
@@ -105,11 +98,7 @@ class TopicManagerTest extends TestCase
     {
         $name = 'New Topic';
 
-        $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
-
-        $topic = $method->invokeArgs($this->mngr, [$name]);
+        $topic = $this->mngr->getTopic($name);
 
         $this->mngr->onSubscribe($this->conn, $name);
 
@@ -150,11 +139,7 @@ class TopicManagerTest extends TestCase
     {
         $name = 'Bye Bye Topic';
 
-        $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
-
-        $topic = $method->invokeArgs($this->mngr, [$name]);
+        $topic = $this->mngr->getTopic($name);
 
         $this->mngr->onSubscribe($this->conn, $name);
         $this->mngr->onUnsubscribe($this->conn, $name);
@@ -182,13 +167,10 @@ class TopicManagerTest extends TestCase
     protected function topicProvider(string $name): array
     {
         $class = new \ReflectionClass(TopicManager::class);
-        $method = $class->getMethod('getTopic');
-        $method->setAccessible(true);
-
         $attribute = $class->getProperty('topicLookup');
         $attribute->setAccessible(true);
 
-        $topic = $method->invokeArgs($this->mngr, [$name]);
+        $topic = $this->mngr->getTopic($name);
 
         return [$topic, $attribute];
     }
