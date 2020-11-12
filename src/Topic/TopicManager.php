@@ -121,7 +121,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     public function getTopic($topic): Topic
     {
         if (!($topic instanceof Topic) && !\is_string($topic)) {
-            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s or a string, a %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? \get_class($topic) : \gettype($topic))));
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s or a string, %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? 'an instance of '.\get_class($topic) : 'a '.\gettype($topic))));
         }
 
         $key = $topic instanceof Topic ? $topic->getId() : $topic;
