@@ -293,7 +293,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
-            $connectionFactoryDef->setPrivate(true);
+            $connectionFactoryDef->setPublic(false);
 
             if ($usesSymfony51Api) {
                 $connectionFactoryDef->setDeprecated(
@@ -331,7 +331,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $factoryConfig,
                 ]
             );
-            $connectionFactoryDef->setPrivate(true);
+            $connectionFactoryDef->setPublic(false);
             $connectionFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
             $connectionFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
 
@@ -375,7 +375,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 $factoryConfig,
             ]
         );
-        $clientFactoryDef->setPrivate(true);
+        $clientFactoryDef->setPublic(false);
         $clientFactoryDef->addTag('monolog.logger', ['channel' => 'websocket']);
         $clientFactoryDef->addMethodCall('setLogger', [new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]);
 
