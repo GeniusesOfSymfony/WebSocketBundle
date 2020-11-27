@@ -11,7 +11,7 @@ build:
       dependencies:
         before:
           - pecl install amqp
-          - composer require --dev --no-update gos/react-amqp:^0.3
+          - composer require --no-update gos/react-amqp:^0.3
 
       cache:
         disabled: false
@@ -26,7 +26,7 @@ build:
           - php-scrutinizer-run
 
 before_commands:
-  - "composer install --no-dev --prefer-source -a"
+  - "composer update --no-dev --prefer-stable --prefer-source --classmap-authoritative"
 
 tools:
   external_code_coverage:
