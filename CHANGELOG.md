@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.6.0 (????-??-??)
+## 3.6.0 (2020-11-27)
 
 - Deprecated the requirement to implement `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface::dispatch()`, the method will be removed from the interface in 4.0
 - [MINOR B/C BREAK] Added type checks to the `$topic` argument of `Gos\Bundle\WebSocketBundle\Topic\TopicManager::getTopic()`, an `InvalidArgumentException` will now be thrown if a non-supported type is provided
