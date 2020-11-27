@@ -34,8 +34,7 @@
     },
     "require-dev": {
         "doctrine/cache": "^1.8",
-        "doctrine/dbal": "^2.9",
-        "friendsofphp/php-cs-fixer": "^2.16",
+        "doctrine/dbal": "^2.9 || ^3.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
         "phpstan/extension-installer": "^1.0.5",
         "phpstan/phpstan": "^0.12.50",

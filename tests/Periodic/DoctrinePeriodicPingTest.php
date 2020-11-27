@@ -4,8 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException as LegacyDBALException;
-use Doctrine\DBAL\Exception as NewDBALException;
 use Doctrine\DBAL\Driver\PingableConnection;
+use Doctrine\DBAL\Exception as NewDBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\TestCase;
@@ -42,6 +42,10 @@ class DoctrinePeriodicPingTest extends TestCase
 
     public function testTheDatabaseIsPingedWithAPingableConnection(): void
     {
+        if (!interface_exists(PingableConnection::class)) {
+            $this->markTestSkipped('Test applies to doctrine/dbal 2.x');
+        }
+
         $logger = new TestLogger();
 
         $connection = $this->createMock(PingableConnection::class);
