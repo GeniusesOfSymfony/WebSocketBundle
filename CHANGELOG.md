@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.0 (2020-11-27)
+
+Note, this is the last scheduled release for the 2.x branch; support for this version of the bundle ended on December 1, 2020.
+
+- Doctrine DBAL 3.0 support
+
 ## 2.6.1 (2020-07-06)
 
 - Change `Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing` to address the deprecation of `Doctrine\DBAL\Driver\PingableConnection`
