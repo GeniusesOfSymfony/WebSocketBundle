@@ -119,7 +119,7 @@ class WampApplicationTest extends TestCase
         $this->decoratedRouter->expects($this->once())
             ->method('match')
             ->with('channel/42')
-            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
+            ->willReturn(['channel_name', new Route('channel/{id}', 'strlen', [], ['id' => '\d+']), []]);
 
         $event = 'foo';
         $exclude = [];
@@ -137,7 +137,7 @@ class WampApplicationTest extends TestCase
     {
         $request = new WampRequest(
             'channel_name',
-            $this->createMock(Route::class),
+            new Route('channel/{id}', 'strlen', [], ['id' => '\d+']),
             $this->createMock(ParameterBag::class),
             'channel/42'
         );
@@ -163,7 +163,7 @@ class WampApplicationTest extends TestCase
         $this->decoratedRouter->expects($this->once())
             ->method('match')
             ->with('channel/42')
-            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
+            ->willReturn(['channel_name', new Route('channel/{id}', 'strlen', [], ['id' => '\d+']), []]);
 
         $connection = $this->createMock(ConnectionInterface::class);
         $id = '42';
@@ -206,7 +206,7 @@ class WampApplicationTest extends TestCase
         $this->decoratedRouter->expects($this->once())
             ->method('match')
             ->with('channel/42')
-            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
+            ->willReturn(['channel_name', new Route('channel/{id}', 'strlen', [], ['id' => '\d+']), []]);
 
         $this->topicDispatcher->expects($this->once())
             ->method('onSubscribe');
@@ -247,7 +247,7 @@ class WampApplicationTest extends TestCase
         $this->decoratedRouter->expects($this->once())
             ->method('match')
             ->with('channel/42')
-            ->willReturn(['channel_name', $this->createMock(Route::class), []]);
+            ->willReturn(['channel_name', new Route('channel/{id}', 'strlen', [], ['id' => '\d+']), []]);
 
         $this->topicDispatcher->expects($this->once())
             ->method('onUnSubscribe');
