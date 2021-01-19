@@ -86,7 +86,6 @@ class TopicManager implements WsServerInterface, WampServerInterface
 
         foreach ($this->topicLookup as $topic) {
             $this->cleanTopic($topic, $conn);
-            $this->app->onUnsubscribe($conn, $topic);
         }
     }
 
