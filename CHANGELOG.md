@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.2 (2021-01-18)
+
+- Reverted the change in 3.6.1
+
 ## 3.6.1 (2021-01-12)
 
 - [#422](https://github.com/GeniusesOfSymfony/WebSocketBundle/pull/422) Periodic timer becomes broken when all topic subscribers closed their connections
