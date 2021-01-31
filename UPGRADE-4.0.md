@@ -12,6 +12,7 @@
 - Renamed the `gos_web_socket.event_listener.start_server` service to `gos_web_socket.event_listener.bind_signals_to_websocket_server`
 - Renamed the `Gos\Bundle\WebSocketBundle\EventListener\StartServerListener` class to `Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener`
 - Made private members of the `GosSocket` JavaScript class private using the class fields and private method proposals
+- Reworked the `websocket.js` file so that the provided public resource only supports modern browsers, the `assets/js/websocket.js` file can be included in your project's build tools and transpiled to support the browsers your project needs if the provided file does not work
 - Added `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface::removeAllClients()`
 - Added `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface::clear()`
 - `Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener` will now clear the client storage when a shutdown signal is received

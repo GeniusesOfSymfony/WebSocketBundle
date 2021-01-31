@@ -50,6 +50,22 @@ class GosSocket {
     }
 
     /**
+     * Create a new connection
+     *
+     * @param {String} uri URI to open the connection to
+     * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
+     * @returns {GosSocket}
+     * @throws {Error} If AutobahnJS is not loaded
+     */
+    static connect(uri, sessionConfig = null) {
+        if (typeof global.ab === 'undefined') {
+            throw new Error('GosSocket requires AutobahnJS to be loaded.');
+        }
+
+        return new GosSocket(global.ab, uri, sessionConfig);
+    }
+
+    /**
      * Retrieve the AutobahnJS API object
      *
      * @returns {ab}
@@ -239,36 +255,4 @@ class GosSocket {
     }
 }
 
-class WS {
-    /**
-     * Create a new connection
-     *
-     * @param {String} uri URI to open the connection to
-     * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
-     * @returns {GosSocket}
-     * @throws {Error} If AutobahnJS is not loaded
-     */
-    connect(uri, sessionConfig = null) {
-        if (typeof global.ab === 'undefined') {
-            throw new Error('GosSocket requires AutobahnJS to be loaded.');
-        }
-
-        return new GosSocket(global.ab, uri, sessionConfig);
-    }
-
-    /**
-     * Get the singleton instance of this object
-     *
-     * @returns {WS}
-     */
-    static get instance() {
-        return Socket;
-    }
-}
-
-/**
- * Singleton instance of the WS object
- *
- * @type {WS}
- */
-const Socket = new WS();
+export default GosSocket;
