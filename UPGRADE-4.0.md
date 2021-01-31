@@ -2,6 +2,7 @@
 
 ## Changes
 
+- Minimum required Ratchet version is now 0.5
 - Added support for `gos/pubsub-router-bundle` 3.0
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface::onPush()`
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface::launch()`

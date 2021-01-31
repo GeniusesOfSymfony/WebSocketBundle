@@ -89,7 +89,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
         }
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e): void
+    public function onError(ConnectionInterface $conn, \Throwable $e): void
     {
         $this->app->onError($conn, $e);
     }

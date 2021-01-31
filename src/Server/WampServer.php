@@ -39,7 +39,7 @@ class WampServer implements MessageComponentInterface, WsServerInterface
         $this->wampProtocol->onClose($conn);
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e): void
+    public function onError(ConnectionInterface $conn, \Throwable $e): void
     {
         $this->wampProtocol->onError($conn, $e);
     }

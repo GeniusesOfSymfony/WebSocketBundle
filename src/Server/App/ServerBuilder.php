@@ -9,6 +9,7 @@ use Gos\Bundle\WebSocketBundle\Server\WampServer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Ratchet\Http\HttpServer;
 use Ratchet\MessageComponentInterface;
+use Ratchet\Session\IniOptionsHandler;
 use Ratchet\Session\SessionProvider;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
@@ -58,9 +59,13 @@ final class ServerBuilder implements ServerBuilderInterface
         }
 
         if ($this->sessionHandler) {
+            // TODO - Remove extra args after https://github.com/ratchetphp/Ratchet/pull/859 is merged
             $serverComponent = new SessionProvider(
                 $serverComponent,
-                $this->sessionHandler
+                $this->sessionHandler,
+                [],
+                null,
+                new IniOptionsHandler()
             );
         }
 

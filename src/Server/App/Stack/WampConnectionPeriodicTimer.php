@@ -46,7 +46,7 @@ class WampConnectionPeriodicTimer implements MessageComponentInterface, WsServer
     /**
      * @return mixed
      */
-    public function onError(ConnectionInterface $connection, \Exception $e)
+    public function onError(ConnectionInterface $connection, \Throwable $e)
     {
         return $this->decorated->onError($connection, $e);
     }
