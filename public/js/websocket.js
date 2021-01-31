@@ -74,9 +74,12 @@ var GosSocket = /*#__PURE__*/function () {
     this._connect(uri, sessionConfig);
   }
   /**
-   * Retrieve the AutobahnJS API object
+   * Create a new connection
    *
-   * @returns {ab}
+   * @param {String} uri URI to open the connection to
+   * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
+   * @returns {GosSocket}
+   * @throws {Error} If AutobahnJS is not loaded
    */
 
 
@@ -279,6 +282,12 @@ var GosSocket = /*#__PURE__*/function () {
     }
   }, {
     key: "autobahn",
+
+    /**
+     * Retrieve the AutobahnJS API object
+     *
+     * @returns {ab}
+     */
     get: function get() {
       return this._autobahn;
     }
@@ -293,10 +302,25 @@ var GosSocket = /*#__PURE__*/function () {
     get: function get() {
       return this._session;
     }
+  }], [{
+    key: "connect",
+    value: function connect(uri) {
+      var sessionConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (typeof global.ab === 'undefined') {
+        throw new Error('GosSocket requires AutobahnJS to be loaded.');
+      }
+
+      return new GosSocket(global.ab, uri, sessionConfig);
+    }
   }]);
 
   return GosSocket;
 }();
+/**
+ * @deprecated
+ */
+
 
 var WS = /*#__PURE__*/function () {
   function WS() {
@@ -313,20 +337,17 @@ var WS = /*#__PURE__*/function () {
      * @param {{retryDelay: Number, maxRetries: Number, skipSubprotocolCheck: Boolean, skipSubprotocolAnnounce: Boolean}} sessionConfig Configuration object to forward to the Autobahn connect method
      * @returns {GosSocket}
      * @throws {Error} If AutobahnJS is not loaded
+     * @deprecated Use `GosSocket.connect()` instead
      */
     value: function connect(uri) {
       var sessionConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      if (typeof global.ab === 'undefined') {
-        throw new Error('GosSocket requires AutobahnJS to be loaded.');
-      }
-
-      return new GosSocket(global.ab, uri, sessionConfig);
+      return GosSocket.connect(uri, sessionConfig);
     }
     /**
      * Get the singleton instance of this object
      *
      * @returns {WS}
+     * @deprecated
      */
 
   }], [{
@@ -342,6 +363,7 @@ var WS = /*#__PURE__*/function () {
  * Singleton instance of the WS object
  *
  * @type {WS}
+ * @deprecated
  */
 
 

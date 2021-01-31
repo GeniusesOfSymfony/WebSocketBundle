@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.7.0 (2021-??-??)
+
+- Deprecated the `WS` class and `Socket` global variable in the `websocket.js` file, use the new static `GosSocket.connect()` method as a replacement for `WS.connect()` and store the singleton within your application if necessary
+
 ## 3.6.2 (2021-01-18)
 
 - Reverted the change in 3.6.1
