@@ -23,7 +23,7 @@ jobs:
             can-fail: false
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 7.4
-            symfony: 5.3.*@dev
+            symfony: 5.*@dev
             composer-flags: '--prefer-stable'
             phpunit-flags: '--coverage-clover clover.xml'
             can-fail: true
