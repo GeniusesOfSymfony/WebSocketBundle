@@ -96,7 +96,7 @@ return static function (ContainerConfigurator $container): void {
         ->set('gos_web_socket.command.websocket_server', WebsocketServerCommand::class)
             ->args(
                 [
-                    service('gos_web_socket.server.entry_point'),
+                    service('gos_web_socket.server.server_launcher'),
                     param('gos_web_socket.server.host'),
                     param('gos_web_socket.server.port'),
                 ]
