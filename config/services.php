@@ -32,6 +32,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
+use Gos\Bundle\WebSocketBundle\Server\ServerLauncher;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
@@ -305,7 +306,15 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.registry.server'),
                 ]
             )
-        ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.entry_point')
+
+        ->set('gos_web_socket.server.server_launcher', ServerLauncher::class)
+            ->public()
+            ->args(
+                [
+                    service('gos_web_socket.registry.server'),
+                ]
+            )
+        ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.server_launcher')
 
         ->set('gos_web_socket.server.event_loop', LoopInterface::class)
             ->public()

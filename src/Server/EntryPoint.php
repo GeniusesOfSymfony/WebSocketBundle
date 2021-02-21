@@ -2,43 +2,11 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server;
 
-use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
+trigger_deprecation('gos/web-socket-bundle', '3.7', 'The "%s" class is deprecated and will be removed in 4.0, use the "%s" class instead.', EntryPoint::class, ServerLauncher::class);
 
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @deprecated to be removed in 4.0, use the `Gos\Bundle\WebSocketBundle\Server\ServerLauncher` class instead
  */
-final class EntryPoint implements ServerLauncherInterface
+final class EntryPoint extends ServerLauncher
 {
-    private ServerRegistry $serverRegistry;
-
-    public function __construct(ServerRegistry $serverRegistry)
-    {
-        $this->serverRegistry = $serverRegistry;
-    }
-
-    /**
-     * @throws \InvalidArgumentException if the given server name is not registered
-     * @throws \RuntimeException         if there are no servers registered to launch
-     */
-    public function launch(?string $serverName, string $host, int $port, bool $profile): void
-    {
-        if (null === $serverName) {
-            $servers = $this->serverRegistry->getServers();
-
-            if (empty($servers)) {
-                throw new \RuntimeException('There are no servers registered to launch.');
-            }
-
-            reset($servers);
-            $server = current($servers);
-        } else {
-            if (!$this->serverRegistry->hasServer($serverName)) {
-                throw new \InvalidArgumentException(sprintf('Unknown server %s, available servers are [ %s ]', $serverName, implode(', ', array_keys($this->serverRegistry->getServers()))));
-            }
-
-            $server = $this->serverRegistry->getServer($serverName);
-        }
-
-        $server->launch($host, $port, $profile);
-    }
 }
