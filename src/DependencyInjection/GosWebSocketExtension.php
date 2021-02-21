@@ -25,37 +25,36 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
+        $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
-        $loader->load('services.yaml');
-        $loader->load('aliases.yaml');
+        $loader->load('services.php');
 
-        $configs = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
+        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         $container->registerForAutoconfiguration(PeriodicInterface::class)->addTag('gos_web_socket.periodic');
         $container->registerForAutoconfiguration(RpcInterface::class)->addTag('gos_web_socket.rpc');
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $container->setParameter('gos_web_socket.shared_config', $configs['shared_config']);
+        $container->setParameter('gos_web_socket.shared_config', $config['shared_config']);
 
-        $this->registerClientConfiguration($configs, $container);
-        $this->registerServerConfiguration($configs, $container);
-        $this->registerOriginsConfiguration($configs, $container);
-        $this->registerPingConfiguration($configs, $container);
+        $this->registerClientConfiguration($config, $container);
+        $this->registerServerConfiguration($config, $container);
+        $this->registerOriginsConfiguration($config, $container);
+        $this->registerPingConfiguration($config, $container);
     }
 
-    private function registerClientConfiguration(array $configs, ContainerBuilder $container): void
+    private function registerClientConfiguration(array $config, ContainerBuilder $container): void
     {
-        if (!isset($configs['client'])) {
+        if (!isset($config['client'])) {
             return;
         }
 
-        $container->setParameter('gos_web_socket.client.storage.ttl', $configs['client']['storage']['ttl']);
-        $container->setParameter('gos_web_socket.firewall', (array) $configs['client']['firewall']);
+        $container->setParameter('gos_web_socket.client.storage.ttl', $config['client']['storage']['ttl']);
+        $container->setParameter('gos_web_socket.firewall', (array) $config['client']['firewall']);
 
-        if (isset($configs['client']['session_handler'])) {
-            $sessionHandler = ltrim($configs['client']['session_handler'], '@');
+        if (isset($config['client']['session_handler'])) {
+            $sessionHandler = ltrim($config['client']['session_handler'], '@');
 
             $container->getDefinition('gos_web_socket.server.builder')
                 ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
@@ -63,14 +62,14 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
         }
 
-        if (isset($configs['client']['storage']['driver'])) {
-            $driverRef = ltrim($configs['client']['storage']['driver'], '@');
+        if (isset($config['client']['storage']['driver'])) {
+            $driverRef = ltrim($config['client']['storage']['driver'], '@');
             $storageDriver = $driverRef;
 
-            if (isset($configs['client']['storage']['decorator'])) {
-                $decoratorRef = ltrim($configs['client']['storage']['decorator'], '@');
+            if (isset($config['client']['storage']['decorator'])) {
+                $decoratorRef = ltrim($config['client']['storage']['decorator'], '@');
                 $container->getDefinition($decoratorRef)
-                    ->addArgument(new Reference($driverRef));
+                    ->setArgument(0, new Reference($driverRef));
 
                 $storageDriver = $decoratorRef;
             }
@@ -83,38 +82,38 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function registerServerConfiguration(array $configs, ContainerBuilder $container): void
+    private function registerServerConfiguration(array $config, ContainerBuilder $container): void
     {
-        if (!isset($configs['server'])) {
+        if (!isset($config['server'])) {
             return;
         }
 
-        if (isset($configs['server']['port'])) {
-            $container->setParameter('gos_web_socket.server.port', $configs['server']['port']);
+        if (isset($config['server']['port'])) {
+            $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
         }
 
-        if (isset($configs['server']['host'])) {
-            $container->setParameter('gos_web_socket.server.host', $configs['server']['host']);
+        if (isset($config['server']['host'])) {
+            $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
         }
 
-        if (isset($configs['server']['origin_check'])) {
-            $container->setParameter('gos_web_socket.server.origin_check', $configs['server']['origin_check']);
+        if (isset($config['server']['origin_check'])) {
+            $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
         }
 
-        if (isset($configs['server']['keepalive_ping'])) {
-            $container->setParameter('gos_web_socket.server.keepalive_ping', $configs['server']['keepalive_ping']);
+        if (isset($config['server']['keepalive_ping'])) {
+            $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
         }
 
-        if (isset($configs['server']['keepalive_interval'])) {
-            $container->setParameter('gos_web_socket.server.keepalive_interval', $configs['server']['keepalive_interval']);
+        if (isset($config['server']['keepalive_interval'])) {
+            $container->setParameter('gos_web_socket.server.keepalive_interval', $config['server']['keepalive_interval']);
         }
 
-        if (isset($configs['server']['router'])) {
+        if (isset($config['server']['router'])) {
             $routerConfig = [];
 
             // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
-            if (isset($configs['server']['router']['resources'])) {
-                foreach ($configs['server']['router']['resources'] as $resource) {
+            if (isset($config['server']['router']['resources'])) {
+                foreach ($config['server']['router']['resources'] as $resource) {
                     if (is_array($resource)) {
                         $routerConfig[] = $resource;
                     } else {
@@ -130,11 +129,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function registerOriginsConfiguration(array $configs, ContainerBuilder $container): void
+    private function registerOriginsConfiguration(array $config, ContainerBuilder $container): void
     {
         $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
 
-        foreach ($configs['origins'] as $origin) {
+        foreach ($config['origins'] as $origin) {
             $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
         }
     }
@@ -142,19 +141,19 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     /**
      * @throws InvalidArgumentException if an unsupported ping service type is given
      */
-    private function registerPingConfiguration(array $configs, ContainerBuilder $container): void
+    private function registerPingConfiguration(array $config, ContainerBuilder $container): void
     {
-        if (!isset($configs['ping'])) {
+        if (!isset($config['ping'])) {
             return;
         }
 
-        foreach ((array) $configs['ping']['services'] as $pingService) {
+        foreach ((array) $config['ping']['services'] as $pingService) {
             switch ($pingService['type']) {
                 case Configuration::PING_SERVICE_TYPE_DOCTRINE:
                     $serviceRef = ltrim($pingService['name'], '@');
 
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->replaceArgument(0, new Reference($serviceRef));
                     $definition->addTag('gos_web_socket.periodic');
 
                     $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
@@ -165,7 +164,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                     $serviceRef = ltrim($pingService['name'], '@');
 
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->replaceArgument(0, new Reference($serviceRef));
                     $definition->addTag('gos_web_socket.periodic');
 
                     $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
