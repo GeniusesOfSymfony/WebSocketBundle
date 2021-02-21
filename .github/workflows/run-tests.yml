@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: [7.4]
-        symfony: [4.4.*, 5.1.*]
+        symfony: [4.4.*, 5.2.*]
         composer-flags: ['--prefer-stable']
         phpunit-flags: ['--coverage-clover clover.xml']
         can-fail: [false]
@@ -23,13 +23,13 @@ jobs:
             can-fail: false
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 7.4
-            symfony: 5.2.*@dev
+            symfony: 5.3.*@dev
             composer-flags: '--prefer-stable'
             phpunit-flags: '--coverage-clover clover.xml'
             can-fail: true
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 8.0
-            symfony: 5.1.*
+            symfony: 5.2.*
             composer-flags: '--ignore-platform-req=php'
             phpunit-flags: ''
             can-fail: true

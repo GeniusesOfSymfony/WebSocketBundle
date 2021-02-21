@@ -2,6 +2,7 @@
 
 ## 3.7.0 (2021-??-??)
 
+- Drop support for Symfony 5.1 (Branch is EOL)
 - Deprecated the `WS` class and `Socket` global variable in the `websocket.js` file, use the new static `GosSocket.connect()` method as a replacement for `WS.connect()` and store the singleton within your application if necessary
 
 ## 3.6.2 (2021-01-18)
