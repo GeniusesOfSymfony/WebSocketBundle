@@ -299,14 +299,6 @@ return static function (ContainerConfigurator $container): void {
             )
         ->alias(ServerBuilderInterface::class, 'gos_web_socket.server.builder')
 
-        ->set('gos_web_socket.server.entry_point', EntryPoint::class)
-            ->public()
-            ->args(
-                [
-                    service('gos_web_socket.registry.server'),
-                ]
-            )
-
         ->set('gos_web_socket.server.server_launcher', ServerLauncher::class)
             ->public()
             ->args(

@@ -4,10 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Server;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 
-/**
- * @final
- */
-/* final */ class ServerLauncher implements ServerLauncherInterface
+final class ServerLauncher implements ServerLauncherInterface
 {
     private ServerRegistry $serverRegistry;
 
