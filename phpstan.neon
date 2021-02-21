@@ -38,25 +38,16 @@ parameters:
       message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\Stack\\OriginCheck::onOpen\(\) has no return typehint specified\./'
       path: %currentWorkingDirectory%/src/Server/App/Stack/OriginCheck.php
 
-    # Type checks are not being detected
-    -
-      message: '/Parameter #1 \$object of function get_class expects object, string given\./'
-      path: %currentWorkingDirectory%/src/Server/App/WampApplication.php
-
     # Tests error handling for untyped argument
     -
       message: '/Parameter #1 \$connection of class Gos\\Bundle\\WebSocketBundle\\Periodic\\DoctrinePeriodicPing constructor expects Doctrine\\DBAL\\Connection\|Doctrine\\DBAL\\Driver\\PingableConnection, stdClass given\./'
       path: %currentWorkingDirectory%/tests/Periodic/DoctrinePeriodicPingTest.php
 
-    # Properties in test stubs don't have typehinted properties, ignore for now
     -
-      message: '/Property class@anonymous.* has no typehint specified\./'
-      path: %currentWorkingDirectory%/tests/*
+      message: '/Parameter #1 \$topic of method Gos\\Bundle\\WebSocketBundle\\Topic\\TopicManager::getTopic\(\) expects Ratchet\\Wamp\\Topic\|string, null given\./'
+      path: %currentWorkingDirectory%/tests/Topic/TopicManagerTest.php
 
-    # Ignore lack of json_* error checking in tests
-    -
-      message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string\|false given\./'
-      path: %currentWorkingDirectory%/tests/Server/WampServerTest.php
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false
+  treatPhpDocTypesAsCertain: false

@@ -51,7 +51,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
         if (!($topic instanceof Topic)) {
-            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? 'an instance of '.\get_class($topic) : 'a '.\gettype($topic))));
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, get_debug_type($topic)));
         }
 
         if (null !== $this->logger) {
@@ -96,7 +96,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
         if (!($topic instanceof Topic)) {
-            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? 'an instance of '.\get_class($topic) : 'a '.\gettype($topic))));
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, get_debug_type($topic)));
         }
 
         $request = $this->wampRouter->match($topic);
@@ -109,7 +109,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
         if (!($topic instanceof Topic)) {
-            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? 'an instance of '.\get_class($topic) : 'a '.\gettype($topic))));
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, get_debug_type($topic)));
         }
 
         if (null !== $this->logger) {
@@ -138,7 +138,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
     public function onUnSubscribe(ConnectionInterface $conn, $topic): void
     {
         if (!($topic instanceof Topic)) {
-            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, ('object' === \gettype($topic) ? 'an instance of '.\get_class($topic) : 'a '.\gettype($topic))));
+            throw new \InvalidArgumentException(sprintf('The $topic argument of %s() must be an instance of %s, %s was given.', __METHOD__, Topic::class, get_debug_type($topic)));
         }
 
         if (null !== $this->logger) {
