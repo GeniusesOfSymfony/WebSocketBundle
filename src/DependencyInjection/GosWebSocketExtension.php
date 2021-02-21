@@ -36,6 +36,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     private const DEPRECATED_ALIASES = [
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
+        'gos_web_socket.server.entry_point' => '3.7',
     ];
 
     private const DEPRECATED_SERVICES = [

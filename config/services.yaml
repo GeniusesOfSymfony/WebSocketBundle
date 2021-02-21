@@ -286,6 +286,13 @@ services:
     gos_web_socket.server.entry_point:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
         public: true
+        # deprecated service, deprecation is set in the container extension
+        arguments:
+            - '@gos_web_socket.registry.server'
+
+    gos_web_socket.server.launcher:
+        class: Gos\Bundle\WebSocketBundle\Server\ServerLauncher
+        public: true
         arguments:
             - '@gos_web_socket.registry.server'
 
