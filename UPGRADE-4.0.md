@@ -22,6 +22,7 @@
 - The compiler passes and event listeners are now internal, they are not intended for direct use by bundle users and B/C will no longer be guaranteed on them
 - Made `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher::dispatch()` a private method
 - Made the class constants from `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher` private
+- Changed the return type of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::getUser()` to match the return type of `Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getUser()`
 
 ## Deprecations
 

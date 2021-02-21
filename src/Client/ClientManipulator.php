@@ -8,6 +8,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ClientManipulator implements ClientManipulatorInterface
 {
@@ -64,7 +65,7 @@ final class ClientManipulator implements ClientManipulatorInterface
                 if (\in_array($role, $roles)) {
                     $result[] = new ClientConnection($client, $connection);
 
-                    continue 1;
+                    continue;
                 }
             }
         }
@@ -107,10 +108,7 @@ final class ClientManipulator implements ClientManipulatorInterface
         }
     }
 
-    /**
-     * @return string|object
-     */
-    public function getUser(ConnectionInterface $connection)
+    public function getUser(ConnectionInterface $connection): string | \Stringable | UserInterface
     {
         return $this->getClient($connection)->getUser();
     }
