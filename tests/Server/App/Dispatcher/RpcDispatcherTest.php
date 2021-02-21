@@ -7,12 +7,13 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampConnection;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class RpcDispatcherTest extends TestCase
+final class RpcDispatcherTest extends TestCase
 {
     /**
      * @var RpcRegistry
@@ -36,7 +37,7 @@ class RpcDispatcherTest extends TestCase
     public function testARpcCallIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements RpcInterface {
-            private $called = false;
+            private bool $called = false;
 
             public function getName(): string
             {
@@ -65,10 +66,12 @@ class RpcDispatcherTest extends TestCase
 
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
+        /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
             ->method('callResult');
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
@@ -79,7 +82,7 @@ class RpcDispatcherTest extends TestCase
     public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry(): void
     {
         $handler = new class() implements RpcInterface {
-            private $called = false;
+            private bool $called = false;
 
             public function getName(): string
             {
@@ -106,10 +109,12 @@ class RpcDispatcherTest extends TestCase
 
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
+        /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
             ->method('callError');
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
@@ -120,7 +125,7 @@ class RpcDispatcherTest extends TestCase
     public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler(): void
     {
         $handler = new class() implements RpcInterface {
-            private $called = false;
+            private bool $called = false;
 
             public function getName(): string
             {
@@ -149,10 +154,12 @@ class RpcDispatcherTest extends TestCase
 
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
+        /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
             ->method('callError');
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
@@ -183,10 +190,12 @@ class RpcDispatcherTest extends TestCase
 
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
+        /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
             ->method('callError');
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
@@ -215,10 +224,12 @@ class RpcDispatcherTest extends TestCase
 
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
+        /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
         $connection->expects($this->once())
             ->method('callError');
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);

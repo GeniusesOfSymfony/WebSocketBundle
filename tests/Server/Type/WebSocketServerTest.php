@@ -12,20 +12,20 @@ use Ratchet\MessageComponentInterface;
 use React\EventLoop\LoopInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class WebSocketServerTest extends TestCase
+final class WebSocketServerTest extends TestCase
 {
     /**
-     * @var MockObject|ServerBuilderInterface
+     * @var MockObject&ServerBuilderInterface
      */
     private $serverBuilder;
 
     /**
-     * @var MockObject|LoopInterface
+     * @var MockObject&LoopInterface
      */
     private $loop;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private $eventDispatcher;
 

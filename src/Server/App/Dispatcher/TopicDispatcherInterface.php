@@ -13,20 +13,14 @@ interface TopicDispatcherInterface
 
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void;
 
-    /**
-     * @param string|array $event
-     */
     public function onPublish(
         ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        $event,
+        string | array $event,
         array $exclude,
         array $eligible
     ): void;
 
-    /**
-     * @param string|array $data
-     */
-    public function onPush(WampRequest $request, $data, string $provider): void;
+    public function onPush(WampRequest $request, string | array $data, string $provider): void;
 }

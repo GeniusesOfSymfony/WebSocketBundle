@@ -74,11 +74,7 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
     }
 
-    /**
-     * @param string|array $data
-     * @param string       $provider
-     */
-    public function onPush(WampRequest $request, $data, $provider): void
+    public function onPush(WampRequest $request, string | array $data, string $provider): void
     {
         if (null !== $this->logger) {
             $this->logger->info(

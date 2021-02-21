@@ -54,11 +54,11 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
         };
 
         if (\defined('SIGINT')) {
-            $loop->addSignal(SIGINT, $closer);
+            $loop->addSignal(\SIGINT, $closer);
         }
 
         if (\defined('SIGTERM')) {
-            $loop->addSignal(SIGTERM, $closer);
+            $loop->addSignal(\SIGTERM, $closer);
         }
     }
 }

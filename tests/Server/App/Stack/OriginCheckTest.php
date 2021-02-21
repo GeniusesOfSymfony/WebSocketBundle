@@ -12,15 +12,15 @@ use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class OriginCheckTest extends TestCase
+final class OriginCheckTest extends TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private $eventDispatcher;
 
     /**
-     * @var MockObject|MessageComponentInterface
+     * @var MockObject&MessageComponentInterface
      */
     private $decoratedComponent;
 
@@ -45,8 +45,10 @@ class OriginCheckTest extends TestCase
 
     public function testARequestPassesTheOriginCheck(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
+        /** @var MockObject&RequestInterface $request */
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())
             ->method('getHeaderLine')
@@ -64,6 +66,7 @@ class OriginCheckTest extends TestCase
     {
         $this->component->allowedOrigins = ['socketo.me'];
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->expects($this->once())
             ->method('send');
@@ -71,6 +74,7 @@ class OriginCheckTest extends TestCase
         $connection->expects($this->once())
             ->method('close');
 
+        /** @var MockObject&RequestInterface $request */
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())
             ->method('getHeaderLine')

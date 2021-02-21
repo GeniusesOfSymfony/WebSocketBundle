@@ -40,7 +40,7 @@ class OriginCheck extends BaseOriginCheck
     {
         if ($request) {
             $header = (string) $request->getHeaderLine('Origin');
-            $origin = parse_url($header, PHP_URL_HOST) ?: $header;
+            $origin = parse_url($header, \PHP_URL_HOST) ?: $header;
 
             if (!\in_array($origin, $this->allowedOrigins)) {
                 $this->eventDispatcher->dispatch(new ClientRejectedEvent($origin, $request), GosWebSocketEvents::CLIENT_REJECTED);

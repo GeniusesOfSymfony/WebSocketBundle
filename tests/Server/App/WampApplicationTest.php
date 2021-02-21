@@ -23,25 +23,25 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class WampApplicationTest extends TestCase
+final class WampApplicationTest extends TestCase
 {
     /**
-     * @var MockObject|RpcDispatcherInterface
+     * @var MockObject&RpcDispatcherInterface
      */
     private $rpcDispatcher;
 
     /**
-     * @var MockObject|TopicDispatcherInterface
+     * @var MockObject&TopicDispatcherInterface
      */
     private $topicDispatcher;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private $eventDispatcher;
 
     /**
-     * @var MockObject|ClientStorageInterface
+     * @var MockObject&ClientStorageInterface
      */
     private $clientStorage;
 
@@ -51,7 +51,7 @@ class WampApplicationTest extends TestCase
     private $wampRouter;
 
     /**
-     * @var MockObject|RouterInterface
+     * @var MockObject&RouterInterface
      */
     private $decoratedRouter;
 
@@ -90,11 +90,13 @@ class WampApplicationTest extends TestCase
 
     public function testAMessageIsPublished(): void
     {
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
             ->willReturn('user');
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
@@ -111,6 +113,7 @@ class WampApplicationTest extends TestCase
             ->method('getClient')
             ->willReturn($token);
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->atLeastOnce())
             ->method('getId')
@@ -155,6 +158,7 @@ class WampApplicationTest extends TestCase
 
     public function testARpcCallIsHandled(): void
     {
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->atLeastOnce())
             ->method('getId')
@@ -165,6 +169,7 @@ class WampApplicationTest extends TestCase
             ->with('channel/42')
             ->willReturn(['channel_name', new Route('channel/{id}', 'strlen', [], ['id' => '\d+']), []]);
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $id = '42';
         $params = [];
@@ -177,11 +182,13 @@ class WampApplicationTest extends TestCase
 
     public function testAClientSubscriptionIsHandled(): void
     {
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
             ->willReturn('user');
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
@@ -198,6 +205,7 @@ class WampApplicationTest extends TestCase
             ->method('getClient')
             ->willReturn($token);
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->atLeastOnce())
             ->method('getId')
@@ -218,11 +226,13 @@ class WampApplicationTest extends TestCase
 
     public function testAClientUnsubscriptionIsHandled(): void
     {
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
             ->willReturn('user');
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
@@ -239,6 +249,7 @@ class WampApplicationTest extends TestCase
             ->method('getClient')
             ->willReturn($token);
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->atLeastOnce())
             ->method('getId')
@@ -259,6 +270,7 @@ class WampApplicationTest extends TestCase
 
     public function testAConnectionIsOpened(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
         $this->eventDispatcher->expects($this->once())
@@ -270,6 +282,7 @@ class WampApplicationTest extends TestCase
 
     public function testAConnectionIsClosed(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->WAMP = new \stdClass();
         $connection->WAMP->subscriptions = [];
@@ -283,6 +296,7 @@ class WampApplicationTest extends TestCase
 
     public function testAnErrorIsHandled(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
         $this->eventDispatcher->expects($this->once())

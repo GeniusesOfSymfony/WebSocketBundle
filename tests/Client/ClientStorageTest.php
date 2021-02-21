@@ -12,10 +12,10 @@ use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ClientStorageTest extends TestCase
+final class ClientStorageTest extends TestCase
 {
     /**
-     * @var MockObject|DriverInterface
+     * @var MockObject&DriverInterface
      */
     private $driver;
 
@@ -89,6 +89,8 @@ class ClientStorageTest extends TestCase
     public function testTheClientIsAddedToStorage(): void
     {
         $clientId = '42';
+
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
@@ -104,6 +106,8 @@ class ClientStorageTest extends TestCase
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
         $clientId = '42';
+
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
 
         $this->driver->expects($this->once())
@@ -119,6 +123,8 @@ class ClientStorageTest extends TestCase
         $this->expectExceptionMessage('Unable to add client "user" to storage');
 
         $clientId = '42';
+
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')

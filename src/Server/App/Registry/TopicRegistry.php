@@ -10,7 +10,7 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 final class TopicRegistry
 {
     /**
-     * @var TopicInterface[]
+     * @var array<string, TopicInterface>
      */
     private array $topics = [];
 

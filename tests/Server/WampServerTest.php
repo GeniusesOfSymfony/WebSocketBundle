@@ -8,10 +8,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 
-class WampServerTest extends TestCase
+final class WampServerTest extends TestCase
 {
     /**
-     * @var MockObject|TopicManager
+     * @var MockObject&TopicManager
      */
     private $topicManager;
 
@@ -21,7 +21,7 @@ class WampServerTest extends TestCase
     private $serv;
 
     /**
-     * @var MockObject|ConnectionInterface
+     * @var MockObject&ConnectionInterface
      */
     private $conn;
 
@@ -50,6 +50,6 @@ class WampServerTest extends TestCase
     public function testConnectionClosesOnProtocolError(): void
     {
         $this->conn->expects($this->once())->method('close');
-        $this->serv->onMessage($this->conn, json_encode(['valid' => 'json', 'invalid' => 'protocol']));
+        $this->serv->onMessage($this->conn, json_encode(['valid' => 'json', 'invalid' => 'protocol'], \JSON_THROW_ON_ERROR));
     }
 }

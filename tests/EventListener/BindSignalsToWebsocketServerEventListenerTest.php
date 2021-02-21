@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 
-class BindSignalsToWebsocketServerEventListenerTest extends TestCase
+final class BindSignalsToWebsocketServerEventListenerTest extends TestCase
 {
     /**
      * @var PeriodicRegistry
@@ -43,12 +43,13 @@ class BindSignalsToWebsocketServerEventListenerTest extends TestCase
      */
     public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
     {
+        /** @var MockObject&LoopInterface $loop */
         $loop = $this->createMock(LoopInterface::class);
         $loop->expects($this->exactly(2))
             ->method('addSignal')
             ->withConsecutive(
-                [SIGINT, $this->isInstanceOf(\Closure::class)],
-                [SIGTERM, $this->isInstanceOf(\Closure::class)]
+                [\SIGINT, $this->isInstanceOf(\Closure::class)],
+                [\SIGTERM, $this->isInstanceOf(\Closure::class)]
             );
 
         $event = new ServerLaunchedEvent(

@@ -18,7 +18,7 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
     /**
      * @var string[]
      */
-    private array $firewalls = [];
+    private array $firewalls;
 
     /**
      * @param string[] $firewalls

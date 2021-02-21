@@ -9,10 +9,10 @@ use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
-class TopicPeriodicTimerTest extends TestCase
+final class TopicPeriodicTimerTest extends TestCase
 {
     /**
-     * @var MockObject|LoopInterface
+     * @var MockObject&LoopInterface
      */
     private $loop;
 
@@ -35,8 +35,10 @@ class TopicPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TopicInterface $topic */
         $topic = $this->createMock(TopicInterface::class);
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())
@@ -51,6 +53,7 @@ class TopicPeriodicTimerTest extends TestCase
 
     public function testNoTimerIsReturnedWhenNotRegisteredAndActive(): void
     {
+        /** @var MockObject&TopicInterface $topic */
         $topic = $this->createMock(TopicInterface::class);
 
         $this->assertFalse($this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
@@ -61,8 +64,10 @@ class TopicPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TopicInterface $topic */
         $topic = $this->createMock(TopicInterface::class);
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())
@@ -77,6 +82,7 @@ class TopicPeriodicTimerTest extends TestCase
 
     public function testDetermineWhetherATopicHasBeenRegistered(): void
     {
+        /** @var MockObject&TopicInterface $topic */
         $topic = $this->createMock(TopicInterface::class);
 
         $this->assertFalse($this->topicPeriodicTimer->isRegistered($topic));
@@ -84,6 +90,7 @@ class TopicPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())
@@ -101,8 +108,10 @@ class TopicPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TopicInterface $topic */
         $topic = $this->createMock(TopicInterface::class);
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())

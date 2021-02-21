@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
 use PHPUnit\Framework\TestCase;
 
-class PeriodicRegistryTest extends TestCase
+final class PeriodicRegistryTest extends TestCase
 {
     /**
      * @var PeriodicRegistry

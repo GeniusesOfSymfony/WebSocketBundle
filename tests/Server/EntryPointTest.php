@@ -5,9 +5,10 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class EntryPointTest extends TestCase
+final class EntryPointTest extends TestCase
 {
     /**
      * @var ServerRegistry
@@ -35,16 +36,27 @@ class EntryPointTest extends TestCase
         $port = 8080;
         $profile = false;
 
-        $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        /** @var MockObject&ServerInterface $server1 */
+        $server1 = $this->createMock(ServerInterface::class);
+        $server1->expects($this->once())
             ->method('getName')
             ->willReturn($serverName);
 
-        $server->expects($this->once())
+        $server1->expects($this->once())
             ->method('launch')
             ->with($host, $port, $profile);
 
-        $this->serverRegistry->addServer($server);
+        /** @var MockObject&ServerInterface $server2 */
+        $server2 = $this->createMock(ServerInterface::class);
+        $server2->expects($this->once())
+            ->method('getName')
+            ->willReturn('alternate');
+
+        $server2->expects($this->never())
+            ->method('launch');
+
+        $this->serverRegistry->addServer($server1);
+        $this->serverRegistry->addServer($server2);
 
         $this->entryPoint->launch(null, $host, $port, $profile);
     }
@@ -56,6 +68,7 @@ class EntryPointTest extends TestCase
         $port = 8080;
         $profile = false;
 
+        /** @var MockObject&ServerInterface $server */
         $server = $this->createMock(ServerInterface::class);
         $server->expects($this->once())
             ->method('getName')
@@ -75,12 +88,7 @@ class EntryPointTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('There are no servers registered to launch.');
 
-        $serverName = 'default';
-        $host = 'localhost';
-        $port = 8080;
-        $profile = false;
-
-        $this->entryPoint->launch(null, $host, $port, $profile);
+        $this->entryPoint->launch(null, 'localhost', 8080, false);
     }
 
     public function testAServerIsNotLaunchedWhenTheNamedServerIsNotFound(): void
@@ -88,10 +96,7 @@ class EntryPointTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown server test, available servers are [ default ]');
 
-        $host = 'localhost';
-        $port = 8080;
-        $profile = false;
-
+        /** @var MockObject&ServerInterface $server */
         $server = $this->createMock(ServerInterface::class);
         $server->expects($this->once())
             ->method('getName')
@@ -99,6 +104,6 @@ class EntryPointTest extends TestCase
 
         $this->serverRegistry->addServer($server);
 
-        $this->entryPoint->launch('test', $host, $port, $profile);
+        $this->entryPoint->launch('test', 'localhost', 8080, false);
     }
 }

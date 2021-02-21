@@ -10,7 +10,7 @@ use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 final class RpcRegistry
 {
     /**
-     * @var RpcInterface[]
+     * @var array<string, RpcInterface>
      */
     private array $rpcHandlers = [];
 

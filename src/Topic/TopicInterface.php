@@ -12,14 +12,11 @@ interface TopicInterface
 
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void;
 
-    /**
-     * @param mixed $event The event data
-     */
     public function onPublish(
         ConnectionInterface $connection,
         Topic $topic,
         WampRequest $request,
-        $event,
+        mixed $event,
         array $exclude,
         array $eligible
     ): void;

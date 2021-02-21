@@ -18,10 +18,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
         $this->loop = $loop;
     }
 
-    /**
-     * @return TimerInterface|bool
-     */
-    public function getAllPeriodicTimers(TopicInterface $topic, string $name)
+    public function getAllPeriodicTimers(TopicInterface $topic, string $name): TimerInterface | bool
     {
         if (!$this->isPeriodicTimerActive($topic, $name)) {
             return false;
@@ -33,7 +30,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @return TimerInterface[]
+     * @return array<string, TimerInterface>
      */
     public function getPeriodicTimers(TopicInterface $topic): array
     {
@@ -42,10 +39,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
         return $this->registry[$namespace] ?? [];
     }
 
-    /**
-     * @param int|float $timeout
-     */
-    public function addPeriodicTimer(TopicInterface $topic, string $name, $timeout, callable $callback): void
+    public function addPeriodicTimer(TopicInterface $topic, string $name, int | float $timeout, callable $callback): void
     {
         $namespace = $this->getTopicNamespace($topic);
 
@@ -90,9 +84,9 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @return \ArrayIterator|array<string, array<string, TimerInterface>>
+     * @return \ArrayIterator<string, array<string, TimerInterface>>
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->registry);
     }

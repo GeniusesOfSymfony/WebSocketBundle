@@ -17,15 +17,15 @@ use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class WebsocketClientEventSubscriberTest extends TestCase
+final class WebsocketClientEventSubscriberTest extends TestCase
 {
     /**
-     * @var MockObject|ClientStorageInterface
+     * @var MockObject&ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var MockObject|WebsocketAuthenticationProviderInterface
+     * @var MockObject&WebsocketAuthenticationProviderInterface
      */
     private $authenticationProvider;
 
@@ -54,6 +54,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
 
     public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
         $this->authenticationProvider->expects($this->once())
@@ -66,12 +67,14 @@ class WebsocketClientEventSubscriberTest extends TestCase
 
     public function testTheUserIsRemovedFromStorageWhenTheClientDisconnectEventIsDispatched(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
             'sessionId' => 'session',
         ];
 
+        /** @var MockObject&TokenInterface $token */
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->once())
             ->method('getUsername')
@@ -105,6 +108,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
      */
     public function testTheClientNotFoundExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
@@ -136,6 +140,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
 
     public function testTheStorageExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
@@ -171,6 +176,7 @@ class WebsocketClientEventSubscriberTest extends TestCase
 
     public function testTheClientErrorIsLogged(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [

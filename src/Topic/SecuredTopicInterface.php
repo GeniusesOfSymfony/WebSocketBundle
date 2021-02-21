@@ -10,15 +10,13 @@ use Ratchet\Wamp\Topic;
 interface SecuredTopicInterface
 {
     /**
-     * @param string|array $payload
-     *
      * @throws FirewallRejectionException if the connection is not authorized access to the topic
      */
     public function secure(
         ?ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        $payload = null,
+        string | array | null $payload = null,
         ?array $exclude = [],
         ?array $eligible = null,
         ?string $provider = null

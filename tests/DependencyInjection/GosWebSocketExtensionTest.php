@@ -11,7 +11,7 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Reference;
 
-class GosWebSocketExtensionTest extends AbstractExtensionTestCase
+final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 {
     public function testContainerIsLoadedWithDefaultConfiguration(): void
     {

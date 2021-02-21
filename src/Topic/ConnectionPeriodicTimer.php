@@ -9,7 +9,7 @@ use React\EventLoop\TimerInterface;
 class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
 {
     /**
-     * @var TimerInterface[]
+     * @var array<string, TimerInterface>
      */
     protected array $registry = [];
     protected ConnectionInterface $connection;
@@ -21,10 +21,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         $this->loop = $loop;
     }
 
-    /**
-     * @return TimerInterface|bool
-     */
-    public function getPeriodicTimer(string $name)
+    public function getPeriodicTimer(string $name): TimerInterface | bool
     {
         if (!$this->isPeriodicTimerActive($name)) {
             return false;
@@ -38,11 +35,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         return sha1($this->connection->resourceId.$this->connection->WAMP->sessionId.$name);
     }
 
-    /**
-     * @param int|float $timeout
-     * @param mixed     $callback
-     */
-    public function addPeriodicTimer(string $name, $timeout, $callback): void
+    public function addPeriodicTimer(string $name, int | float $timeout, callable $callback): void
     {
         $this->registry[$this->getTid($name)] = $this->loop->addPeriodicTimer($timeout, $callback);
     }
@@ -66,17 +59,14 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return \ArrayIterator
+     * @return \ArrayIterator<TimerInterface>
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->registry);
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return \count($this->registry);
     }

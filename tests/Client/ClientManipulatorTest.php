@@ -15,15 +15,15 @@ use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class ClientManipulatorTest extends TestCase
+final class ClientManipulatorTest extends TestCase
 {
     /**
-     * @var MockObject|ClientStorageInterface
+     * @var MockObject&ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var MockObject|WebsocketAuthenticationProviderInterface
+     * @var MockObject&WebsocketAuthenticationProviderInterface
      */
     private $authenticationProvider;
 
@@ -44,8 +44,11 @@ class ClientManipulatorTest extends TestCase
 
     public function testGetClientForConnection(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
+
+        /** @var MockObject&TokenInterface $client */
         $client = $this->createMock(TokenInterface::class);
 
         $this->clientStorage->expects($this->once())
@@ -63,8 +66,11 @@ class ClientManipulatorTest extends TestCase
 
     public function testGetClientForConnectionAfterReauthenticating(): void
     {
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $storageId = 42;
+
+        /** @var MockObject&TokenInterface $client */
         $client = $this->createMock(TokenInterface::class);
 
         $this->clientStorage->expects($this->exactly(2))
@@ -89,13 +95,13 @@ class ClientManipulatorTest extends TestCase
 
     public function testAllConnectionsForAUserCanBeFoundByUsername(): void
     {
-        /** @var MockObject|ConnectionInterface $connection1 */
+        /** @var MockObject&ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
 
-        /** @var MockObject|ConnectionInterface $connection2 */
+        /** @var MockObject&ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
 
-        /** @var MockObject|ConnectionInterface $connection3 */
+        /** @var MockObject&ConnectionInterface $connection3 */
         $connection3 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
@@ -105,19 +111,19 @@ class ClientManipulatorTest extends TestCase
         $username1 = 'user';
         $username2 = 'guest';
 
-        /** @var MockObject|TokenInterface $client1 */
+        /** @var MockObject&TokenInterface $client1 */
         $client1 = $this->createMock(TokenInterface::class);
         $client1->expects($this->once())
             ->method('getUsername')
             ->willReturn($username1);
 
-        /** @var MockObject|TokenInterface $client2 */
+        /** @var MockObject&TokenInterface $client2 */
         $client2 = $this->createMock(TokenInterface::class);
         $client2->expects($this->once())
             ->method('getUsername')
             ->willReturn($username1);
 
-        /** @var MockObject|TokenInterface $client3 */
+        /** @var MockObject&TokenInterface $client3 */
         $client3 = $this->createMock(TokenInterface::class);
         $client3->expects($this->once())
             ->method('getUsername')
@@ -149,7 +155,7 @@ class ClientManipulatorTest extends TestCase
                 $client3
             );
 
-        /** @var MockObject|Topic $topic */
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')
@@ -166,13 +172,19 @@ class ClientManipulatorTest extends TestCase
 
     public function testFetchingAllConnectionsByDefaultOnlyReturnsAuthenticatedUsers(): void
     {
+        /** @var MockObject&ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject&ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
         $storageId2 = 84;
 
+        /** @var MockObject&TokenInterface $authenticatedClient */
         $authenticatedClient = $this->createMock(TokenInterface::class);
+
+        /** @var MockObject&AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
         $this->clientStorage->expects($this->exactly(2))
@@ -197,6 +209,7 @@ class ClientManipulatorTest extends TestCase
                 $guestClient
             );
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')
@@ -212,19 +225,19 @@ class ClientManipulatorTest extends TestCase
 
     public function testFetchingAllConnectionsWithAnonymousFlagReturnsAllConnectedUsers(): void
     {
-        /** @var MockObject|ConnectionInterface $connection1 */
+        /** @var MockObject&ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
 
-        /** @var MockObject|ConnectionInterface $connection2 */
+        /** @var MockObject&ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
         $storageId2 = 84;
 
-        /** @var MockObject|TokenInterface $authenticatedClient */
+        /** @var MockObject&TokenInterface $authenticatedClient */
         $authenticatedClient = $this->createMock(TokenInterface::class);
 
-        /** @var MockObject|AnonymousToken $guestClient */
+        /** @var MockObject&AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
         $this->clientStorage->expects($this->exactly(2))
@@ -249,7 +262,7 @@ class ClientManipulatorTest extends TestCase
                 $guestClient
             );
 
-        /** @var MockObject|Topic $topic */
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')
@@ -266,24 +279,32 @@ class ClientManipulatorTest extends TestCase
 
     public function testFetchingAllUsersWithDefinedRolesOnlyReturnsMatchingUsers(): void
     {
+        /** @var MockObject&ConnectionInterface $connection1 */
         $connection1 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject&ConnectionInterface $connection2 */
         $connection2 = $this->createMock(ConnectionInterface::class);
+
+        /** @var MockObject&ConnectionInterface $connection3 */
         $connection3 = $this->createMock(ConnectionInterface::class);
 
         $storageId1 = 42;
         $storageId2 = 84;
         $storageId3 = 126;
 
+        /** @var MockObject&UsernamePasswordToken $authenticatedClient1 */
         $authenticatedClient1 = $this->createMock(UsernamePasswordToken::class);
         $authenticatedClient1->expects($this->once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
 
+        /** @var MockObject&UsernamePasswordToken $authenticatedClient2 */
         $authenticatedClient2 = $this->createMock(UsernamePasswordToken::class);
         $authenticatedClient2->expects($this->once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER']);
 
+        /** @var MockObject&AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
         $this->clientStorage->expects($this->exactly(3))
@@ -312,6 +333,7 @@ class ClientManipulatorTest extends TestCase
                 $guestClient
             );
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->once())
             ->method('getIterator')

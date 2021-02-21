@@ -11,12 +11,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class WebsocketAuthenticationProviderTest extends TestCase
+final class WebsocketAuthenticationProviderTest extends TestCase
 {
     private const FIREWALLS = ['main'];
 
     /**
-     * @var MockObject|ClientStorageInterface
+     * @var MockObject&ClientStorageInterface
      */
     private $clientStorage;
 
@@ -36,12 +36,14 @@ class WebsocketAuthenticationProviderTest extends TestCase
 
     public function testAnAnonymousTokenIsCreatedAndAddedToStorageWhenAGuestUserConnects(): void
     {
+        /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
         $session->expects($this->once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(false);
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->Session = $session;
@@ -65,12 +67,14 @@ class WebsocketAuthenticationProviderTest extends TestCase
     {
         $token = new UsernamePasswordToken('user', 'password', 'main', ['ROLE_USER']);
 
+        /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
         $session->expects($this->once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(serialize($token));
 
+        /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->Session = $session;

@@ -6,10 +6,11 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 
-class DoctrinePeriodicPingTest extends TestCase
+final class DoctrinePeriodicPingTest extends TestCase
 {
     public function testTheDatabaseIsPingedWithAConnection(): void
     {
@@ -17,11 +18,13 @@ class DoctrinePeriodicPingTest extends TestCase
 
         $query = 'SELECT 1';
 
+        /** @var MockObject&AbstractPlatform $platform */
         $platform = $this->createMock(AbstractPlatform::class);
         $platform->expects($this->once())
             ->method('getDummySelectSQL')
             ->willReturn($query);
 
+        /** @var MockObject&Connection $connection */
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
             ->method('getDatabasePlatform')
@@ -42,6 +45,7 @@ class DoctrinePeriodicPingTest extends TestCase
     {
         $logger = new TestLogger();
 
+        /** @var MockObject&Connection $connection */
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
             ->method('getDatabasePlatform')

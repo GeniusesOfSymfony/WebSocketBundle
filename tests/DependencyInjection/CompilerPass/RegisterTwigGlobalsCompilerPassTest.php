@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Parameter;
 use Twig\Environment;
 
-class RegisterTwigGlobalsCompilerPassTest extends AbstractCompilerPassTestCase
+final class RegisterTwigGlobalsCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testGlobalsAreNotAddedToTwigWhenSharedConfigParameterIsNotSet(): void
     {

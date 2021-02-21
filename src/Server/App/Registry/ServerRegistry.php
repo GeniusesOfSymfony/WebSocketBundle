@@ -10,7 +10,7 @@ use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 final class ServerRegistry
 {
     /**
-     * @var ServerInterface[]
+     * @var array<string, ServerInterface>
      */
     private array $servers = [];
 
@@ -32,7 +32,7 @@ final class ServerRegistry
     }
 
     /**
-     * @return ServerInterface[]
+     * @return array<string, ServerInterface>
      */
     public function getServers(): array
     {

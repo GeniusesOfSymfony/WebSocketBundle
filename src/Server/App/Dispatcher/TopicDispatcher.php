@@ -52,10 +52,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $this->dispatch(self::SUBSCRIBE, $conn, $topic, $request);
     }
 
-    /**
-     * @param string|array $data
-     */
-    public function onPush(WampRequest $request, $data, string $provider): void
+    public function onPush(WampRequest $request, string | array $data, string $provider): void
     {
         $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
@@ -66,14 +63,11 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $this->dispatch(self::UNSUBSCRIBE, $conn, $topic, $request);
     }
 
-    /**
-     * @param string|array $event
-     */
     public function onPublish(
         ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        $event,
+        string | array $event,
         array $exclude,
         array $eligible
     ): void {
@@ -81,8 +75,6 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     }
 
     /**
-     * @param string|array $payload
-     *
      * @throws PushUnsupportedException  if the topic does not support push requests
      * @throws \InvalidArgumentException if an unsupported request type is given
      * @throws \RuntimeException         if the connection is missing for a method which requires it or if there is no payload for a push request
@@ -92,7 +84,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ?ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        $payload = null,
+        string | array | null $payload = null,
         ?array $exclude = null,
         ?array $eligible = null,
         ?string $provider = null
@@ -194,7 +186,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                         throw new PushUnsupportedException($appTopic);
                     }
 
-                    if ($payload === null) {
+                    if (null === $payload) {
                         throw new \RuntimeException(sprintf('Missing payload data, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -203,7 +195,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::PUBLISH:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -212,7 +204,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::SUBSCRIBE:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -221,7 +213,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::UNSUBSCRIBE:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 

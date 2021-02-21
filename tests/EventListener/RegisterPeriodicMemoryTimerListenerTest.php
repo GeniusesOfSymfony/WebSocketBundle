@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 
-class RegisterPeriodicMemoryTimerListenerTest extends TestCase
+final class RegisterPeriodicMemoryTimerListenerTest extends TestCase
 {
     /**
      * @var PeriodicRegistry

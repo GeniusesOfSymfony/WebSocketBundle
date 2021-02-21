@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\RPC\RpcInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry;
 use PHPUnit\Framework\TestCase;
 
-class RpcRegistryTest extends TestCase
+final class RpcRegistryTest extends TestCase
 {
     /**
      * @var RpcRegistry

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
@@ -9,6 +9,7 @@ return PhpCsFixer\Config::create()
         'blank_line_after_opening_tag' => false,
         'declare_strict_types' => true,
         'fopen_flags' => false,
+        'linebreak_after_opening_tag' => false,
         'ordered_imports' => true,
         'protected_to_private' => true,
         'void_return' => true,

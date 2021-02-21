@@ -21,9 +21,9 @@ final class ServerBuilder implements ServerBuilderInterface
     private TopicManager $topicManager;
     private OriginRegistry $originRegistry;
     private EventDispatcherInterface $eventDispatcher;
-    private bool $originCheck = false;
-    private bool $keepalivePing = false;
-    private int $keepaliveInterval = 30;
+    private bool $originCheck;
+    private bool $keepalivePing;
+    private int $keepaliveInterval;
     private ?\SessionHandlerInterface $sessionHandler = null;
 
     public function __construct(

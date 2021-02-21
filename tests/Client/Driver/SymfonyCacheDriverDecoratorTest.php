@@ -8,10 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-class SymfonyCacheDriverDecoratorTest extends TestCase
+final class SymfonyCacheDriverDecoratorTest extends TestCase
 {
     /**
-     * @var MockObject|AdapterInterface
+     * @var MockObject&AdapterInterface
      */
     private $cache;
 

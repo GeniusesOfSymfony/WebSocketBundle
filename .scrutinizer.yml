@@ -3,7 +3,7 @@ build:
     analysis:
       environment:
         php:
-          version: 7.4
+          version: 8.0
 
       cache:
         disabled: false
@@ -19,8 +19,3 @@ build:
 
 before_commands:
   - "composer update --no-dev --prefer-stable --prefer-source --classmap-authoritative"
-
-tools:
-  external_code_coverage:
-    timeout: 3000
-    runs: 4

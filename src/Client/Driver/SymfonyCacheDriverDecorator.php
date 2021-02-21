@@ -13,12 +13,9 @@ final class SymfonyCacheDriverDecorator implements DriverInterface
         $this->cache = $cache;
     }
 
-    /**
-     * @return mixed
-     */
-    public function fetch(string $id)
+    public function fetch(string $id): mixed
     {
-        $item = $this->cache->getItem((string) $id);
+        $item = $this->cache->getItem($id);
 
         if (!$item->isHit()) {
             return false;
@@ -29,15 +26,12 @@ final class SymfonyCacheDriverDecorator implements DriverInterface
 
     public function contains(string $id): bool
     {
-        return $this->cache->hasItem((string) $id);
+        return $this->cache->hasItem($id);
     }
 
-    /**
-     * @param mixed $data
-     */
-    public function save(string $id, $data, int $lifeTime = 0): bool
+    public function save(string $id, mixed $data, int $lifeTime = 0): bool
     {
-        $item = $this->cache->getItem((string) $id);
+        $item = $this->cache->getItem($id);
         $item->set($data);
 
         if ($lifeTime > 0) {
@@ -49,7 +43,7 @@ final class SymfonyCacheDriverDecorator implements DriverInterface
 
     public function delete(string $id): bool
     {
-        return $this->cache->deleteItem((string) $id);
+        return $this->cache->deleteItem($id);
     }
 
     public function clear(): void

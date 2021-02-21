@@ -3,16 +3,18 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 
 use Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 
-class PdoPeriodicPingTest extends TestCase
+final class PdoPeriodicPingTest extends TestCase
 {
     /**
      * @requires extension pdo
      */
     public function testTheDatabaseIsPinged(): void
     {
+        /** @var MockObject&\PDO $connection */
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
             ->method('getAttribute')
@@ -31,6 +33,7 @@ class PdoPeriodicPingTest extends TestCase
      */
     public function testTheDatabaseIsNotPingedForAPersistentConnection(): void
     {
+        /** @var MockObject&\PDO $connection */
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
             ->method('getAttribute')
@@ -50,6 +53,7 @@ class PdoPeriodicPingTest extends TestCase
     {
         $logger = new TestLogger();
 
+        /** @var MockObject&\PDO $connection */
         $connection = $this->createMock(\PDO::class);
         $connection->expects($this->once())
             ->method('getAttribute')

@@ -14,15 +14,15 @@ use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class ServerBuilderTest extends TestCase
+final class ServerBuilderTest extends TestCase
 {
     /**
-     * @var MockObject|LoopInterface
+     * @var MockObject&LoopInterface
      */
     private $loop;
 
     /**
-     * @var MockObject|TopicManager
+     * @var MockObject&TopicManager
      */
     private $topicManager;
 
@@ -32,7 +32,7 @@ class ServerBuilderTest extends TestCase
     private $originRegistry;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private $eventDispatcher;
 
@@ -132,16 +132,14 @@ class ServerBuilderTest extends TestCase
     }
 
     /**
-     * @return mixed
-     *
      * @throws \InvalidArgumentException if the requested property does not exist on the given class instance
      */
-    private function getPropertyFromClassInstance(object $classInstance, string $property)
+    private function getPropertyFromClassInstance(object $classInstance, string $property): mixed
     {
         $reflClass = new \ReflectionClass($classInstance);
 
         if (!$reflClass->hasProperty($property)) {
-            throw new \InvalidArgumentException(sprintf('The %s class does not have a property named "%s".', get_class($classInstance), $property));
+            throw new \InvalidArgumentException(sprintf('The %s class does not have a property named "%s".', \get_class($classInstance), $property));
         }
 
         $reflProperty = $reflClass->getProperty($property);

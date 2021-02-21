@@ -6,7 +6,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use PHPUnit\Framework\TestCase;
 
-class ServerRegistryTest extends TestCase
+final class ServerRegistryTest extends TestCase
 {
     /**
      * @var ServerRegistry

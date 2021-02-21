@@ -16,7 +16,7 @@ use Ratchet\Wamp\Topic;
 class WampRouterTest extends TestCase
 {
     /**
-     * @var MockObject|RouterInterface
+     * @var MockObject&RouterInterface
      */
     private $pubSubRouter;
 
@@ -48,6 +48,7 @@ class WampRouterTest extends TestCase
         $route = new Route('', 'strlen');
         $attributes = [];
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->exactly(2))
             ->method('getId')
@@ -64,6 +65,7 @@ class WampRouterTest extends TestCase
     {
         $this->expectException(ResourceNotFoundException::class);
 
+        /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
         $topic->expects($this->exactly(2))
             ->method('getId')

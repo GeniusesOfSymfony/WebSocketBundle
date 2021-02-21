@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class TopicRegistryTest extends TestCase
+final class TopicRegistryTest extends TestCase
 {
     /**
      * @var TopicRegistry
@@ -36,7 +36,7 @@ class TopicRegistryTest extends TestCase
                 // no-op
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, mixed $event, array $exclude, array $eligible): void
             {
                 // no-op
             }
@@ -69,7 +69,7 @@ class TopicRegistryTest extends TestCase
                 // no-op
             }
 
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible): void
+            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, mixed $event, array $exclude, array $eligible): void
             {
                 // no-op
             }

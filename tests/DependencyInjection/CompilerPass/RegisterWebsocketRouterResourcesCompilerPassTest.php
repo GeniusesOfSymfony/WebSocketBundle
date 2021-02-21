@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RegisterWebsocketRouterResourcesCompilerPassTest extends AbstractCompilerPassTestCase
+final class RegisterWebsocketRouterResourcesCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testTheRouterResourcesAreNotChangedIfTheParameterIsMissing(): void
     {

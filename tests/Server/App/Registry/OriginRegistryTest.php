@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Registry;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use PHPUnit\Framework\TestCase;
 
-class OriginRegistryTest extends TestCase
+final class OriginRegistryTest extends TestCase
 {
     /**
      * @var OriginRegistry

@@ -6,11 +6,12 @@ use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 
-class RegisterPeriodicTimersListenerTest extends TestCase
+final class RegisterPeriodicTimersListenerTest extends TestCase
 {
     /**
      * @var PeriodicRegistry
@@ -33,6 +34,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
 
     public function testThePeriodicTimersAreRegisteredToTheLoop(): void
     {
+        /** @var MockObject&PeriodicInterface $handler */
         $handler = $this->createMock(PeriodicInterface::class);
         $handler->expects($this->once())
             ->method('getTimeout')
@@ -40,6 +42,7 @@ class RegisterPeriodicTimersListenerTest extends TestCase
 
         $this->periodicRegistry->addPeriodic($handler);
 
+        /** @var MockObject&LoopInterface $loop */
         $loop = $this->createMock(LoopInterface::class);
         $loop->expects($this->once())
             ->method('addPeriodicTimer');

@@ -7,12 +7,12 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
  */
 final class InMemoryDriver implements DriverInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $elements = [];
 
-    /**
-     * @return mixed
-     */
-    public function fetch(string $id)
+    public function fetch(string $id): mixed
     {
         if (!$this->contains($id)) {
             return false;
@@ -26,10 +26,7 @@ final class InMemoryDriver implements DriverInterface
         return isset($this->elements[$id]);
     }
 
-    /**
-     * @param mixed $data
-     */
-    public function save(string $id, $data, int $lifeTime = 0): bool
+    public function save(string $id, mixed $data, int $lifeTime = 0): bool
     {
         $this->elements[$id] = $data;
 

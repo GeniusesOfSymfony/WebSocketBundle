@@ -9,15 +9,15 @@ use Ratchet\ConnectionInterface;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
-class ConnectionPeriodicTimerTest extends TestCase
+final class ConnectionPeriodicTimerTest extends TestCase
 {
     /**
-     * @var MockObject|ConnectionInterface
+     * @var MockObject&ConnectionInterface
      */
     private $connection;
 
     /**
-     * @var MockObject|LoopInterface
+     * @var MockObject&LoopInterface
      */
     private $loop;
 
@@ -45,6 +45,7 @@ class ConnectionPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())
@@ -67,6 +68,7 @@ class ConnectionPeriodicTimerTest extends TestCase
         $callback = static function (): void {};
         $timeout = 10;
 
+        /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
         $this->loop->expects($this->once())
