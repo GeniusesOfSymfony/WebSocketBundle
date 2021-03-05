@@ -8,18 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PeriodicRegistryTest extends TestCase
 {
-    /**
-     * @var PeriodicRegistry
-     */
-    private $registry;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->registry = new PeriodicRegistry();
-    }
-
     public function testPeriodicsAreAddedToTheRegistry(): void
     {
         $periodic = new class() implements PeriodicInterface {
@@ -34,9 +22,9 @@ final class PeriodicRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addPeriodic($periodic);
+        $registry = new PeriodicRegistry([$periodic]);
 
-        $this->assertContains($periodic, $this->registry->getPeriodics());
-        $this->assertTrue($this->registry->hasPeriodic($periodic));
+        $this->assertContains($periodic, $registry->getPeriodics());
+        $this->assertTrue($registry->hasPeriodic($periodic));
     }
 }

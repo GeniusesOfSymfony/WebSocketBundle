@@ -242,15 +242,35 @@ return static function (ContainerConfigurator $container): void {
         ->alias(OriginRegistry::class, 'gos_web_socket.registry.origins')
 
         ->set('gos_web_socket.registry.periodic', PeriodicRegistry::class)
+            ->args(
+                [
+                    tagged_iterator('gos_web_socket.periodic'),
+                ]
+            )
         ->alias(PeriodicRegistry::class, 'gos_web_socket.registry.periodic')
 
         ->set('gos_web_socket.registry.rpc', RpcRegistry::class)
+            ->args(
+                [
+                    tagged_iterator('gos_web_socket.rpc'),
+                ]
+            )
         ->alias(RpcRegistry::class, 'gos_web_socket.registry.rpc')
 
         ->set('gos_web_socket.registry.server', ServerRegistry::class)
+            ->args(
+                [
+                    tagged_iterator('gos_web_socket.server'),
+                ]
+            )
         ->alias(ServerRegistry::class, 'gos_web_socket.registry.server')
 
         ->set('gos_web_socket.registry.topic', TopicRegistry::class)
+            ->args(
+                [
+                    tagged_iterator('gos_web_socket.topic'),
+                ]
+            )
         ->alias(TopicRegistry::class, 'gos_web_socket.registry.topic')
 
         ->set('gos_web_socket.router.wamp', WampRouter::class)

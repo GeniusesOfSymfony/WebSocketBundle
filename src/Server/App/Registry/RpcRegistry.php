@@ -14,6 +14,16 @@ final class RpcRegistry
      */
     private array $rpcHandlers = [];
 
+    /**
+     * @param iterable<RpcInterface> $rpcHandlers
+     */
+    public function __construct(iterable $rpcHandlers = [])
+    {
+        foreach ($rpcHandlers as $rpcHandler) {
+            $this->addRpc($rpcHandler);
+        }
+    }
+
     public function addRpc(RpcInterface $rpcHandler): void
     {
         $this->rpcHandlers[$rpcHandler->getName()] = $rpcHandler;

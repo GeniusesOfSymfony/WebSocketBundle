@@ -24,6 +24,7 @@
 - Made `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher::dispatch()` a private method
 - Made the class constants from `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher` private
 - Changed the return type of `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface::getUser()` to match the return type of `Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getUser()`
+- The compiler passes mapping services tagged with `gos_web_socket.periodic`, `gos_web_socket.rpc`, `gos_web_socket.server`, and `gos_web_socket.topic` have been removed; the container's tagged iterator feature is used instead 
 
 ## Deprecations
 

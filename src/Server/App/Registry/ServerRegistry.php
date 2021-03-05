@@ -14,6 +14,16 @@ final class ServerRegistry
      */
     private array $servers = [];
 
+    /**
+     * @param iterable<ServerInterface> $servers
+     */
+    public function __construct(iterable $servers = [])
+    {
+        foreach ($servers as $server) {
+            $this->addServer($server);
+        }
+    }
+
     public function addServer(ServerInterface $server): void
     {
         $this->servers[$server->getName()] = $server;

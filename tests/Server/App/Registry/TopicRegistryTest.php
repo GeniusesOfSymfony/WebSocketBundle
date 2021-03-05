@@ -11,18 +11,6 @@ use Ratchet\Wamp\Topic;
 
 final class TopicRegistryTest extends TestCase
 {
-    /**
-     * @var TopicRegistry
-     */
-    private $registry;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->registry = new TopicRegistry();
-    }
-
     public function testTopicsAreAddedToTheRegistry(): void
     {
         $handler = new class() implements TopicInterface {
@@ -47,10 +35,10 @@ final class TopicRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addTopic($handler);
+        $registry = new TopicRegistry([$handler]);
 
-        $this->assertSame($handler, $this->registry->getTopic($handler->getName()));
-        $this->assertTrue($this->registry->hasTopic($handler->getName()));
+        $this->assertSame($handler, $registry->getTopic($handler->getName()));
+        $this->assertTrue($registry->hasTopic($handler->getName()));
     }
 
     public function testRetrievingATopicFailsIfTheNamedHandlerDoesNotExist(): void
@@ -80,8 +68,7 @@ final class TopicRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addTopic($handler);
-
-        $this->registry->getTopic('main');
+        $registry = new TopicRegistry([$handler]);
+        $registry->getTopic('main');
     }
 }

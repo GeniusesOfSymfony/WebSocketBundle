@@ -14,6 +14,16 @@ final class TopicRegistry
      */
     private array $topics = [];
 
+    /**
+     * @param iterable<TopicInterface> $topics
+     */
+    public function __construct(iterable $topics = [])
+    {
+        foreach ($topics as $topic) {
+            $this->addTopic($topic);
+        }
+    }
+
     public function addTopic(TopicInterface $topic): void
     {
         $this->topics[$topic->getName()] = $topic;

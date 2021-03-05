@@ -8,18 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 final class RpcRegistryTest extends TestCase
 {
-    /**
-     * @var RpcRegistry
-     */
-    private $registry;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->registry = new RpcRegistry();
-    }
-
     public function testRpcHandlersAreAddedToTheRegistry(): void
     {
         $handler = new class() implements RpcInterface {
@@ -29,10 +17,10 @@ final class RpcRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addRpc($handler);
+        $registry = new RpcRegistry([$handler]);
 
-        $this->assertSame($handler, $this->registry->getRpc($handler->getName()));
-        $this->assertTrue($this->registry->hasRpc($handler->getName()));
+        $this->assertSame($handler, $registry->getRpc($handler->getName()));
+        $this->assertTrue($registry->hasRpc($handler->getName()));
     }
 
     public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void
@@ -47,8 +35,7 @@ final class RpcRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addRpc($handler);
-
-        $this->registry->getRpc('main');
+        $registry = new RpcRegistry([$handler]);
+        $registry->getRpc('main');
     }
 }

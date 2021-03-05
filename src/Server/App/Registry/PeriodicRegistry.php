@@ -14,6 +14,16 @@ final class PeriodicRegistry
      */
     private array $periodics = [];
 
+    /**
+     * @param iterable<PeriodicInterface> $periodics
+     */
+    public function __construct(iterable $periodics = [])
+    {
+        foreach ($periodics as $periodic) {
+            $this->addPeriodic($periodic);
+        }
+    }
+
     public function addPeriodic(PeriodicInterface $periodic): void
     {
         $this->periodics[] = $periodic;

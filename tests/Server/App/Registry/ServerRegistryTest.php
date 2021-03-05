@@ -8,18 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ServerRegistryTest extends TestCase
 {
-    /**
-     * @var ServerRegistry
-     */
-    private $registry;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->registry = new ServerRegistry();
-    }
-
     public function testServersAreAddedToTheRegistry(): void
     {
         $server = new class() implements ServerInterface {
@@ -34,11 +22,11 @@ final class ServerRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addServer($server);
+        $registry = new ServerRegistry([$server]);
 
-        $this->assertSame($server, $this->registry->getServer($server->getName()));
-        $this->assertContains($server, $this->registry->getServers());
-        $this->assertTrue($this->registry->hasServer($server->getName()));
+        $this->assertSame($server, $registry->getServer($server->getName()));
+        $this->assertContains($server, $registry->getServers());
+        $this->assertTrue($registry->hasServer($server->getName()));
     }
 
     public function testRetrievingAServerFailsIfTheNamedServerDoesNotExist(): void
@@ -58,8 +46,7 @@ final class ServerRegistryTest extends TestCase
             }
         };
 
-        $this->registry->addServer($server);
-
-        $this->registry->getServer('main');
+        $registry = new ServerRegistry([$server]);
+        $registry->getServer('main');
     }
 }
