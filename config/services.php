@@ -31,7 +31,6 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilderInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\WampApplication;
-use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncher;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
