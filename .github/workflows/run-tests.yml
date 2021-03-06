@@ -44,7 +44,7 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2
           extensions: curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip
-          coverage: pcov
+          coverage: none
 
       - name: Install dependencies
         run: |
