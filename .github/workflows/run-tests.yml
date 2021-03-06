@@ -12,26 +12,22 @@ jobs:
         php: [7.4]
         symfony: [4.4.*, 5.2.*]
         composer-flags: ['--prefer-stable']
-        phpunit-flags: ['--coverage-clover clover.xml']
         can-fail: [false]
         extensions: ['amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip']
         include:
           - php: 7.4
             symfony: 4.4.*
             composer-flags: '--prefer-stable --prefer-lowest'
-            phpunit-flags: '--coverage-clover clover.xml'
             can-fail: false
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 7.4
             symfony: 5.*@dev
             composer-flags: '--prefer-stable'
-            phpunit-flags: '--coverage-clover clover.xml'
             can-fail: true
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 8.0
             symfony: 5.2.*
             composer-flags: '--ignore-platform-req=php'
-            phpunit-flags: ''
             can-fail: true
             extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
 
@@ -53,7 +49,7 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2, pecl
           extensions: ${{ matrix.extensions }}
-          coverage: pcov
+          coverage: none
 
       - name: Install ReactAMQP package
         if: matrix.php != '8.0'
@@ -67,10 +63,4 @@ jobs:
           SYMFONY_REQUIRE=${{ matrix.symfony }} composer update ${{ matrix.composer-flags }} --prefer-dist --no-suggest
 
       - name: Execute tests
-        run: vendor/bin/phpunit ${{ matrix.phpunit-flags }}
-
-      - name: Upload coverage
-        if: matrix.php != '8.0'
-        run: |
-          wget https://github.com/scrutinizer-ci/ocular/releases/download/1.6.0/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover clover.xml
+        run: vendor/bin/phpunit
