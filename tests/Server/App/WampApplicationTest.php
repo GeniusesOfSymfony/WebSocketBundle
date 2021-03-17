@@ -136,26 +136,6 @@ final class WampApplicationTest extends TestCase
         $this->assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
     }
 
-    public function testAMessageIsPushed(): void
-    {
-        $request = new WampRequest(
-            'channel_name',
-            new Route('channel/{id}', 'strlen', [], ['id' => '\d+']),
-            $this->createMock(ParameterBag::class),
-            'channel/42'
-        );
-
-        $data = 'foo';
-        $provider = 'test';
-
-        $this->topicDispatcher->expects($this->once())
-            ->method('onPush');
-
-        $this->application->onPush($request, $data, $provider);
-
-        $this->assertTrue($this->logger->hasInfoThatContains('Pusher test has pushed'));
-    }
-
     public function testARpcCallIsHandled(): void
     {
         /** @var MockObject&Topic $topic */

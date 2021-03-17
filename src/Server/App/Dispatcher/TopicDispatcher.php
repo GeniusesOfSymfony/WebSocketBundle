@@ -6,10 +6,7 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
-use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
-use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
-use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -28,39 +25,24 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     private const SUBSCRIBE = 'subscribe';
     private const UNSUBSCRIBE = 'unsubscribe';
     private const PUBLISH = 'publish';
-    private const PUSH = 'push';
 
     private TopicRegistry $topicRegistry;
     private WampRouter $router;
     private TopicPeriodicTimer $topicPeriodicTimer;
-    private TopicManager $topicManager;
 
     public function __construct(
         TopicRegistry $topicRegistry,
         WampRouter $router,
-        TopicPeriodicTimer $topicPeriodicTimer,
-        TopicManager $topicManager
+        TopicPeriodicTimer $topicPeriodicTimer
     ) {
         $this->topicRegistry = $topicRegistry;
         $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
-        $this->topicManager = $topicManager;
     }
 
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
     {
         $this->dispatch(self::SUBSCRIBE, $conn, $topic, $request);
-    }
-
-    /**
-     * @deprecated to be removed in 4.0, use the symfony/messenger component instead
-     */
-    public function onPush(WampRequest $request, string | array $data, string $provider): void
-    {
-        trigger_deprecation('gos/web-socket-bundle', '3.7', '%s() is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', __METHOD__);
-
-        $topic = $this->topicManager->getTopic($request->getMatched());
-        $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }
 
     public function onUnSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void
@@ -80,7 +62,6 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     }
 
     /**
-     * @throws PushUnsupportedException  if the topic does not support push requests
      * @throws \InvalidArgumentException if an unsupported request type is given
      * @throws \RuntimeException         if the connection is missing for a method which requires it or if there is no payload for a push request
      */
@@ -101,9 +82,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         }
 
         if (!$this->topicRegistry->hasTopic($callback)) {
-            if (null !== $this->logger) {
-                $this->logger->error(sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback));
-            }
+            $this->logger?->error(sprintf('Could not find topic dispatcher in registry for callback "%s".', $callback));
 
             return false;
         }
@@ -114,12 +93,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
             try {
                 $appTopic->secure($conn, $topic, $request, $payload, $exclude, $eligible, $provider);
             } catch (FirewallRejectionException $e) {
-                if (null !== $this->logger) {
-                    $this->logger->error(
-                        sprintf('Topic "%s" rejected the connection: %s', $appTopic->getName(), $e->getMessage()),
-                        ['exception' => $e]
-                    );
-                }
+                $this->logger?->error(
+                    sprintf('Topic "%s" rejected the connection: %s', $appTopic->getName(), $e->getMessage()),
+                    ['exception' => $e]
+                );
 
                 if ($conn && $conn instanceof WampConnection) {
                     $conn->callError(
@@ -139,12 +116,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
                 return false;
             } catch (\Throwable $e) {
-                if (null !== $this->logger) {
-                    $this->logger->error(
-                        sprintf('An error occurred while attempting to secure topic "%s", the connection was rejected: %s', $appTopic->getName(), $e->getMessage()),
-                        ['exception' => $e]
-                    );
-                }
+                $this->logger?->error(
+                    sprintf('An error occurred while attempting to secure topic "%s", the connection was rejected: %s', $appTopic->getName(), $e->getMessage()),
+                    ['exception' => $e]
+                );
 
                 if ($conn && $conn instanceof WampConnection) {
                     $conn->callError(
@@ -173,7 +148,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                 try {
                     $appTopic->registerPeriodicTimer($topic);
                 } catch (\Throwable $e) {
-                    $this->logger->error(
+                    $this->logger?->error(
                         sprintf(
                             'Error registering periodic timer for topic "%s"',
                             $appTopic->getName()
@@ -186,19 +161,6 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
         try {
             switch ($calledMethod) {
-                case self::PUSH:
-                    if (!$appTopic instanceof PushableTopicInterface) {
-                        throw new PushUnsupportedException($appTopic);
-                    }
-
-                    if (null === $payload) {
-                        throw new \RuntimeException(sprintf('Missing payload data, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
-                    }
-
-                    $appTopic->onPush($topic, $request, $payload, $provider);
-
-                    break;
-
                 case self::PUBLISH:
                     if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
@@ -235,27 +197,14 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
             }
 
             return true;
-        } catch (PushUnsupportedException $e) {
-            if (null !== $this->logger) {
-                $this->logger->error(
-                    $e->getMessage(),
-                    [
-                        'exception' => $e,
-                    ]
-                );
-            }
-
-            throw $e;
         } catch (\Throwable $e) {
-            if (null !== $this->logger) {
-                $this->logger->error(
-                    'Websocket error processing topic callback function.',
-                    [
-                        'exception' => $e,
-                        'topic' => $topic,
-                    ]
-                );
-            }
+            $this->logger?->error(
+                'Websocket error processing topic callback function.',
+                [
+                    'exception' => $e,
+                    'topic' => $topic,
+                ]
+            );
 
             if ($conn && $conn instanceof WampConnection) {
                 $conn->callError(

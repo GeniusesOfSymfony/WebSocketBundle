@@ -20,7 +20,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class WampApplication implements PushableWampServerInterface, LoggerAwareInterface
+class WampApplication implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -72,26 +72,6 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         $request = $this->wampRouter->match($topic);
 
         $this->topicDispatcher->onPublish($conn, $topic, $request, $event, $exclude, $eligible);
-    }
-
-    /**
-     * @deprecated to be removed in 4.0, use the symfony/messenger component instead
-     */
-    public function onPush(WampRequest $request, string | array $data, string $provider): void
-    {
-        trigger_deprecation('gos/web-socket-bundle', '3.7', '%s() is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', __METHOD__);
-
-        if (null !== $this->logger) {
-            $this->logger->info(
-                sprintf('Pusher %s has pushed', $provider),
-                [
-                    'provider' => $provider,
-                    'topic' => $request->getMatched(),
-                ]
-            );
-        }
-
-        $this->topicDispatcher->onPush($request, $data, $provider);
     }
 
     /**

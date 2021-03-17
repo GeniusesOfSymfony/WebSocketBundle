@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
@@ -21,9 +20,4 @@ interface TopicDispatcherInterface
         array $exclude,
         array $eligible
     ): void;
-
-    /**
-     * @deprecated method will no longer be required on this interface as of 4.0
-     */
-    public function onPush(WampRequest $request, string | array $data, string $provider): void;
 }

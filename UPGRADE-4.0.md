@@ -41,3 +41,4 @@
 - Removed support for the `gos/websocket-client` package, use `ratchet/pawl` instead
 - Removed `Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator`, if using the `doctrine/cache` package a `Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator` using a `Symfony\Component\Cache\DoctrineProvider` instance can be used
 - Removed `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface::dispatch()`, the method is no longer a required on interface implementations
+- Removed `Gos\Bundle\WebSocketBundle\Topic\TopicManager::setWampApplication()` in favor of constructor injection

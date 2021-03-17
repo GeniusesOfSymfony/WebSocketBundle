@@ -9,11 +9,8 @@ use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
-use Gos\Bundle\WebSocketBundle\Server\Exception\PushUnsupportedException;
-use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
-use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
@@ -43,11 +40,6 @@ final class TopicDispatcherTest extends TestCase
     private $topicPeriodicTimer;
 
     /**
-     * @var MockObject&TopicManager
-     */
-    private $topicManager;
-
-    /**
      * @var TestLogger
      */
     private $logger;
@@ -64,11 +56,10 @@ final class TopicDispatcherTest extends TestCase
         $this->topicRegistry = new TopicRegistry();
         $this->wampRouter = new WampRouter($this->createMock(RouterInterface::class));
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
-        $this->topicManager = $this->createMock(TopicManager::class);
 
         $this->logger = new TestLogger();
 
-        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, $this->topicManager);
+        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer);
         $this->dispatcher->setLogger($this->logger);
     }
 
@@ -118,106 +109,6 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->onSubscribe($connection, $topic, $request);
 
         $this->assertTrue($handler->wasCalled());
-    }
-
-    public function testAWebsocketPushIsDispatchedToItsHandler(): void
-    {
-        $handler = new class() implements TopicInterface, PushableTopicInterface {
-            private bool $called = false;
-
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, mixed $event, array $exclude, array $eligible): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onPush(Topic $topic, WampRequest $request, string | array $data, string $provider): void
-            {
-                $this->called = true;
-            }
-
-            public function getName(): string
-            {
-                return 'topic.handler';
-            }
-
-            public function wasCalled(): bool
-            {
-                return $this->called;
-            }
-        };
-
-        $this->topicManager->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($this->createMock(Topic::class));
-
-        $this->topicRegistry->addTopic($handler);
-
-        $route = new Route('hello/world', 'topic.handler');
-
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
-
-        $this->dispatcher->onPush($request, 'test', 'provider');
-
-        $this->assertTrue($handler->wasCalled());
-    }
-
-    public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface(): void
-    {
-        $this->expectException(PushUnsupportedException::class);
-        $this->expectExceptionMessage('The "topic.handler" topic does not support push notifications');
-
-        $handler = new class() implements TopicInterface {
-            private bool $called = false;
-
-            public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, mixed $event, array $exclude, array $eligible): void
-            {
-                throw new \RuntimeException('Not expected to be called.');
-            }
-
-            public function getName(): string
-            {
-                return 'topic.handler';
-            }
-
-            public function wasCalled(): bool
-            {
-                return $this->called;
-            }
-        };
-
-        $this->topicManager->expects($this->once())
-            ->method('getTopic')
-            ->with('topic.handler')
-            ->willReturn($this->createMock(Topic::class));
-
-        $this->topicRegistry->addTopic($handler);
-
-        $route = new Route('hello/world', 'topic.handler');
-
-        $request = new WampRequest('hello.world', $route, new ParameterBag(), 'topic.handler');
-
-        $this->dispatcher->onPush($request, 'test', 'provider');
     }
 
     public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler(): void
