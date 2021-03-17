@@ -31,9 +31,7 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
         $server = $event->getServer();
 
         $closer = function () use ($server, $loop): void {
-            if (null !== $this->logger) {
-                $this->logger->notice('Stopping server ...');
-            }
+            $this->logger?->notice('Stopping server ...');
 
             $server->emit('end');
             $server->close();
@@ -48,9 +46,7 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
 
             $this->clientStorage->removeAllClients();
 
-            if (null !== $this->logger) {
-                $this->logger->notice('Server stopped!');
-            }
+            $this->logger?->notice('Server stopped!');
         };
 
         if (\defined('SIGINT')) {

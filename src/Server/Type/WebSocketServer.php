@@ -35,9 +35,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 
     public function launch(string $host, int $port, bool $profile): void
     {
-        if (null !== $this->logger) {
-            $this->logger->info('Starting web socket');
-        }
+        $this->logger?->info('Starting web socket');
 
         $server = new Server("$host:$port", $this->loop);
 
@@ -50,16 +48,14 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
         // Server Event Loop to add other services in the same loop.
         $this->eventDispatcher->dispatch(new ServerLaunchedEvent($this->loop, $server, $profile), GosWebSocketEvents::SERVER_LAUNCHED);
 
-        if (null !== $this->logger) {
-            $this->logger->info(
-                sprintf(
-                    'Launching %s on %s PID: %s',
-                    $this->getName(),
-                    $host.':'.$port,
-                    getmypid()
-                )
-            );
-        }
+        $this->logger?->info(
+            sprintf(
+                'Launching %s on %s PID: %s',
+                $this->getName(),
+                $host.':'.$port,
+                getmypid()
+            )
+        );
 
         $app->run();
     }

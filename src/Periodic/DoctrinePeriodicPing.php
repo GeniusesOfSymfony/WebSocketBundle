@@ -28,20 +28,16 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
 
             $endTime = microtime(true);
 
-            if (null !== $this->logger) {
-                $this->logger->info(
-                    sprintf('Successfully pinged database server (~%s ms)', round(($endTime - $startTime) * 100000, 2))
-                );
-            }
+            $this->logger?->info(
+                sprintf('Successfully pinged database server (~%s ms)', round(($endTime - $startTime) * 100000, 2))
+            );
         } catch (DBALException $e) {
-            if (null !== $this->logger) {
-                $this->logger->emergency(
-                    'Could not ping database server',
-                    [
-                        'exception' => $e,
-                    ]
-                );
-            }
+            $this->logger?->emergency(
+                'Could not ping database server',
+                [
+                    'exception' => $e,
+                ]
+            );
 
             throw $e;
         }

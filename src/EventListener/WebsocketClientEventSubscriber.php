@@ -66,36 +66,30 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
 
                 $username = $token->getUsername();
 
-                if (null !== $this->logger) {
-                    $this->logger->info(
-                        sprintf('%s disconnected', $username),
-                        array_merge(
-                            $loggerContext,
-                            ['username' => $username]
-                        )
-                    );
-                }
+                $this->logger?->info(
+                    sprintf('%s disconnected', $username),
+                    array_merge(
+                        $loggerContext,
+                        ['username' => $username]
+                    )
+                );
             }
         } catch (ClientNotFoundException $e) {
-            if (null !== $this->logger) {
-                $this->logger->info(
-                    'User timed out',
-                    array_merge(
-                        $loggerContext,
-                        ['exception' => $e]
-                    )
-                );
-            }
+            $this->logger?->info(
+                'User timed out',
+                array_merge(
+                    $loggerContext,
+                    ['exception' => $e]
+                )
+            );
         } catch (StorageException $e) {
-            if (null !== $this->logger) {
-                $this->logger->info(
-                    'Error processing user in storage',
-                    array_merge(
-                        $loggerContext,
-                        ['exception' => $e]
-                    )
-                );
-            }
+            $this->logger?->info(
+                'Error processing user in storage',
+                array_merge(
+                    $loggerContext,
+                    ['exception' => $e]
+                )
+            );
         }
     }
 
@@ -130,13 +124,11 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
 
     public function onClientRejected(ClientRejectedEvent $event): void
     {
-        if (null !== $this->logger) {
-            $this->logger->warning(
-                'Client rejected, bad origin',
-                [
-                    'origin' => $event->getOrigin(),
-                ]
-            );
-        }
+        $this->logger?->warning(
+            'Client rejected, bad origin',
+            [
+                'origin' => $event->getOrigin(),
+            ]
+        );
     }
 }

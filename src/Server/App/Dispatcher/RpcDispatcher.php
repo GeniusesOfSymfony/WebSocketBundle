@@ -37,9 +37,7 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
         }
 
         if (!$this->rpcRegistry->hasRpc($callback)) {
-            if (null !== $this->logger) {
-                $this->logger->error(sprintf('Could not find RPC handler in registry for callback "%s".', $callback));
-            }
+            $this->logger?->error(sprintf('Could not find RPC handler in registry for callback "%s".', $callback));
 
             $conn->callError(
                 $id,
@@ -61,14 +59,12 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
         $method = $this->toCamelCase($request->getAttributes()->get('method'));
 
         if (!method_exists($procedure, $method)) {
-            if (null !== $this->logger) {
-                $this->logger->error(
-                    sprintf('Method "%s" not found in %s.', $method, \get_class($procedure)),
-                    [
-                        'called_method' => $request->getAttributes()->get('method'),
-                    ]
-                );
-            }
+            $this->logger?->error(
+                sprintf('Method "%s" not found in %s.', $method, \get_class($procedure)),
+                [
+                    'called_method' => $request->getAttributes()->get('method'),
+                ]
+            );
 
             $conn->callError(
                 $id,
@@ -88,15 +84,13 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
         try {
             $result = $procedure->$method($conn, $request, $params);
         } catch (\Throwable $e) {
-            if (null !== $this->logger) {
-                $this->logger->error(
-                    'Websocket error processing RPC function.',
-                    [
-                        'exception' => $e,
-                        'rpc' => $topic,
-                    ]
-                );
-            }
+            $this->logger?->error(
+                'Websocket error processing RPC function.',
+                [
+                    'exception' => $e,
+                    'rpc' => $topic,
+                ]
+            );
 
             $conn->callError(
                 $id,
@@ -114,9 +108,7 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
         }
 
         if (null === $result || false === $result) {
-            if (null !== $this->logger) {
-                $this->logger->error(sprintf('Invalid return from RPC handler %s::%s(), the return cannot be null or boolean false.', \get_class($procedure), $method));
-            }
+            $this->logger?->error(sprintf('Invalid return from RPC handler %s::%s(), the return cannot be null or boolean false.', \get_class($procedure), $method));
 
             $conn->callError(
                 $id,

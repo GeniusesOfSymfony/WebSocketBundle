@@ -38,9 +38,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
             throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
         }
 
-        if (null !== $this->logger) {
-            $this->logger->debug('GET CLIENT '.$identifier);
-        }
+        $this->logger?->debug(sprintf('GET CLIENT %s', $identifier));
 
         if (false === $result) {
             throw new ClientNotFoundException(sprintf('Client %s not found', $identifier));
@@ -61,14 +59,13 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
     {
         $serializedUser = serialize($token);
 
-        if (null !== $this->logger) {
-            $context = [
+        $this->logger?->debug(
+            sprintf('INSERT CLIENT %s', $identifier),
+            [
                 'token' => $token,
                 'username' => $token->getUsername(),
-            ];
-
-            $this->logger->debug('INSERT CLIENT '.$identifier, $context);
-        }
+            ]
+        );
 
         try {
             $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
@@ -98,9 +95,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
      */
     public function removeClient(string $identifier): bool
     {
-        if (null !== $this->logger) {
-            $this->logger->debug('REMOVE CLIENT '.$identifier);
-        }
+        $this->logger?->debug(sprintf('REMOVE CLIENT %s', $identifier));
 
         try {
             return $this->driver->delete($identifier);
@@ -114,9 +109,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
      */
     public function removeAllClients(): void
     {
-        if (null !== $this->logger) {
-            $this->logger->debug('REMOVE ALL CLIENTS');
-        }
+        $this->logger?->debug('REMOVE ALL CLIENTS');
 
         try {
             $this->driver->clear();

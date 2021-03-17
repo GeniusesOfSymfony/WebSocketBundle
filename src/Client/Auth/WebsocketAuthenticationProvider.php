@@ -32,14 +32,12 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
     public function authenticate(ConnectionInterface $conn): TokenInterface
     {
         if (1 === \count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
-            if (null !== $this->logger) {
-                $this->logger->warning(
-                    sprintf(
-                        'User firewall is not configured, we have set %s by default',
-                        $this->firewalls[0]
-                    )
-                );
-            }
+            $this->logger?->warning(
+                sprintf(
+                    'User firewall is not configured, we have set %s by default',
+                    $this->firewalls[0]
+                )
+            );
         }
 
         $loggerContext = [
@@ -54,15 +52,13 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
         $loggerContext['storage_id'] = $identifier;
         $this->clientStorage->addClient($identifier, $token);
 
-        if (null !== $this->logger) {
-            $this->logger->info(
-                sprintf(
-                    '%s connected',
-                    $token->getUsername()
-                ),
-                $loggerContext
-            );
-        }
+        $this->logger?->info(
+            sprintf(
+                '%s connected',
+                $token->getUsername()
+            ),
+            $loggerContext
+        );
 
         return $token;
     }

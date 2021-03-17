@@ -29,20 +29,16 @@ final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
             $this->pdo->query('SELECT 1');
             $endTime = microtime(true);
 
-            if (null !== $this->logger) {
-                $this->logger->notice(
-                    sprintf('Successfully pinged SQL server (~%s ms)', round(($endTime - $startTime) * 100000, 2))
-                );
-            }
+            $this->logger?->notice(
+                sprintf('Successfully pinged SQL server (~%s ms)', round(($endTime - $startTime) * 100000, 2))
+            );
         } catch (\PDOException $e) {
-            if (null !== $this->logger) {
-                $this->logger->emergency(
-                    'SQL server is gone, and unable to reconnect',
-                    [
-                        'exception' => $e,
-                    ]
-                );
-            }
+            $this->logger?->emergency(
+                'SQL server is gone, and unable to reconnect',
+                [
+                    'exception' => $e,
+                ]
+            );
 
             throw $e;
         }
