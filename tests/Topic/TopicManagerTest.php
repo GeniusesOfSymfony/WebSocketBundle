@@ -32,8 +32,7 @@ final class TopicManagerTest extends TestCase
         $this->conn = $this->createMock(ConnectionInterface::class);
         $this->mock = $this->createMock(WampServerInterface::class);
 
-        $this->mngr = new TopicManager();
-        $this->mngr->setWampApplication($this->mock);
+        $this->mngr = new TopicManager($this->mock);
 
         $this->conn->WAMP = new \stdClass();
         $this->mngr->onOpen($this->conn);
@@ -229,9 +228,9 @@ final class TopicManagerTest extends TestCase
             ->method('getSubProtocols')
             ->willReturn($subs);
 
-        $this->mngr->setWampApplication($app);
+        $mngr = new TopicManager($app);
 
-        $this->assertEquals($subs, $this->mngr->getSubProtocols());
+        $this->assertEquals($subs, $mngr->getSubProtocols());
     }
 }
 

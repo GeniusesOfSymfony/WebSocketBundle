@@ -12,20 +12,15 @@ use Ratchet\WebSocket\WsServerInterface;
  */
 class TopicManager implements WsServerInterface, WampServerInterface
 {
-    protected ?WampServerInterface $app = null;
+    protected WampServerInterface $app;
 
     /**
      * @var array<string, Topic>
      */
     protected array $topicLookup = [];
 
-    /**
-     * @deprecated to be removed in 4.0, the dependency will be injected through the constructor instead
-     */
-    public function setWampApplication(WampServerInterface $app): void
+    public function __construct(WampServerInterface $app)
     {
-        trigger_deprecation('gos/web-socket-bundle', '3.7', '%s() is deprecated and will be removed in 4.0, the dependency will be injected through the constructor instead.', __METHOD__);
-
         $this->app = $app;
     }
 

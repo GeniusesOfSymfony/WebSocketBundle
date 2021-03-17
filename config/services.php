@@ -356,17 +356,11 @@ return static function (ContainerConfigurator $container): void {
                 ]
             )
 
-        ->set('gos_web_socket.topic.periodic_timer', TopicManager::class)
+        ->set('gos_web_socket.wamp.topic_manager', TopicManager::class)
             ->public()
             ->args(
                 [
-                    service('gos_web_socket.server.event_loop'),
-                ]
-            )
-            ->call(
-                'setWampApplication',
-                [
-                    [service('gos_web_socket.server.application.wamp')],
+                    service('gos_web_socket.server.application.wamp'),
                 ]
             )
         ->alias(TopicManager::class, 'gos_web_socket.wamp.topic_manager')
