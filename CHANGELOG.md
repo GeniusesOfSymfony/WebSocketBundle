@@ -5,6 +5,7 @@
 - Drop support for Symfony 5.1 (Branch is EOL)
 - Deprecated the `WS` class and `Socket` global variable in the `websocket.js` file, use the new static `GosSocket.connect()` method as a replacement for `WS.connect()` and store the singleton within your application if necessary
 - Deprecated the `Gos\Bundle\WebSocketBundle\Server\EntryPoint` class, use the `Gos\Bundle\WebSocketBundle\Server\ServerLauncher` class instead
+- Deprecated `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface`, `Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface`,`Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface::onPush()`, and `Gos\Bundle\WebSocketBundle\Server\App\WampApplication::onPush()`; this is a continuation of the deprecation of the pusher services which was not previously flagged
 
 ## 3.6.2 (2021-01-18)
 
