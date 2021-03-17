@@ -22,5 +22,8 @@ interface TopicDispatcherInterface
         array $eligible
     ): void;
 
+    /**
+     * @deprecated method will no longer be required on this interface as of 4.0
+     */
     public function onPush(WampRequest $request, string | array $data, string $provider): void;
 }

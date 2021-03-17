@@ -33,10 +33,10 @@
     "require-dev": {
         "doctrine/dbal": "^2.11 || ^3.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
-        "phpstan/extension-installer": "^1.0.5",
-        "phpstan/phpstan": "^0.12.80",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.81",
         "phpstan/phpstan-phpunit": "^0.12.18",
-        "phpstan/phpstan-symfony": "^0.12.20",
+        "phpstan/phpstan-symfony": "^0.12.21",
         "phpunit/phpunit": "^9.5",
         "symfony/cache": "^5.2",
         "symfony/twig-bundle": "^5.2"

@@ -52,8 +52,13 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         $this->dispatch(self::SUBSCRIBE, $conn, $topic, $request);
     }
 
+    /**
+     * @deprecated to be removed in 4.0, use the symfony/messenger component instead
+     */
     public function onPush(WampRequest $request, string | array $data, string $provider): void
     {
+        trigger_deprecation('gos/web-socket-bundle', '3.7', '%s() is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', __METHOD__);
+
         $topic = $this->topicManager->getTopic($request->getMatched());
         $this->dispatch(self::PUSH, null, $topic, $request, $data, null, null, $provider);
     }

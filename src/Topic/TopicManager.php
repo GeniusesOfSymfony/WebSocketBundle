@@ -19,8 +19,13 @@ class TopicManager implements WsServerInterface, WampServerInterface
      */
     protected array $topicLookup = [];
 
+    /**
+     * @deprecated to be removed in 4.0, the dependency will be injected through the constructor instead
+     */
     public function setWampApplication(WampServerInterface $app): void
     {
+        trigger_deprecation('gos/web-socket-bundle', '3.7', '%s() is deprecated and will be removed in 4.0, the dependency will be injected through the constructor instead.', __METHOD__);
+
         $this->app = $app;
     }
 
