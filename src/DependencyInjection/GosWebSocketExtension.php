@@ -36,7 +36,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     private const DEPRECATED_ALIASES = [
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
-        'gos_web_socket.server.entry_point' => '3.7',
     ];
 
     private const DEPRECATED_SERVICES = [
@@ -49,6 +48,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         'gos_web_socket.pusher.wamp' => '3.1',
         'gos_web_socket.registry.pusher' => '3.1',
         'gos_web_socket.registry.server_push_handler' => '3.1',
+        'gos_web_socket.server.entry_point' => '3.7',
     ];
 
     public function load(array $configs, ContainerBuilder $container): void
