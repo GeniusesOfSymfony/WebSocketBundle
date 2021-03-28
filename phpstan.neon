@@ -14,6 +14,10 @@ parameters:
       message: '/Result of && is always false./'
       path: %currentWorkingDirectory%/src/Periodic/DoctrinePeriodicPing.php
 
+    -
+      message: '/Result of && is always false./'
+      path: %currentWorkingDirectory%/src/Topic/TopicManager.php
+
     # Dynamic properties added throughout Ratchet
     - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
     - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject|Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
@@ -31,7 +35,9 @@ parameters:
     - '/Parameter #4 \$details of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string\|null, .* given\./'
 
     # The param's doc block says this should be a subclass of the typehinted interface
-    - '/Parameter #1 \$conn of method Ratchet\\Wamp\\Topic::(add|remove)\(\) expects Ratchet\\Wamp\\WampConnection, Ratchet\\ConnectionInterface given\./'
+    -
+      message: '/Parameter #1 \$conn of method Ratchet\\Wamp\\Topic::(add|remove)\(\) expects Ratchet\\Wamp\\WampConnection, Ratchet\\ConnectionInterface given\./'
+      path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Method has mixed return
     -
