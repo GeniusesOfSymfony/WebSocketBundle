@@ -34,7 +34,7 @@ class OriginCheck extends BaseOriginCheck
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
