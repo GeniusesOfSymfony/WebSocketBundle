@@ -27,6 +27,10 @@ parameters:
       message: '/Result of && is always false./'
       path: %currentWorkingDirectory%/src/Periodic/DoctrinePeriodicPing.php
 
+    -
+      message: '/Result of && is always false./'
+      path: %currentWorkingDirectory%/src/Topic/TopicManager.php
+
     # Dynamic properties added throughout Ratchet
     - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
     - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject|Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
@@ -42,6 +46,11 @@ parameters:
 
     # The param's doc block says this should be a string, however it effectively supports arrays as well
     - '/Parameter #4 \$details of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string\|null, .* given\./'
+
+    # The param's doc block says this should be a subclass of the interface
+    -
+      message: '/Parameter #1 \$conn of method Ratchet\\Wamp\\Topic::(add|remove)\(\) expects Ratchet\\Wamp\\WampConnection, Ratchet\\ConnectionInterface given\./'
+      path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Method has mixed return
     -
@@ -75,6 +84,10 @@ parameters:
     -
       message: '/Parameter #1 \$connection of class Gos\\Bundle\\WebSocketBundle\\Periodic\\DoctrinePeriodicPing constructor expects Doctrine\\DBAL\\Connection\|Doctrine\\DBAL\\Driver\\PingableConnection, stdClass given\./'
       path: %currentWorkingDirectory%/tests/Periodic/DoctrinePeriodicPingTest.php
+
+    -
+      message: '/Parameter #1 \$topic of method Gos\\Bundle\\WebSocketBundle\\Topic\\TopicManager::getTopic\(\) expects Ratchet\\Wamp\\Topic\|string, null given\./'
+      path: %currentWorkingDirectory%/tests/Topic/TopicManagerTest.php
 
     # Properties in test stubs don't have typehinted properties, ignore for now
     -

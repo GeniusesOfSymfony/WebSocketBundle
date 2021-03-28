@@ -457,6 +457,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
      */
     public function prepend(ContainerBuilder $container): void
     {
+        /** @var array<string, class-string> $bundles */
         $bundles = $container->getParameter('kernel.bundles');
 
         if (!isset($bundles['GosPubSubRouterBundle'])) {
