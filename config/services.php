@@ -95,7 +95,7 @@ return static function (ContainerConfigurator $container): void {
         ->set('gos_web_socket.command.websocket_server', WebsocketServerCommand::class)
             ->args(
                 [
-                    service('gos_web_socket.server.server_launcher'),
+                    service('gos_web_socket.server.launcher'),
                     param('gos_web_socket.server.host'),
                     param('gos_web_socket.server.port'),
                 ]
@@ -317,14 +317,14 @@ return static function (ContainerConfigurator $container): void {
             )
         ->alias(ServerBuilderInterface::class, 'gos_web_socket.server.builder')
 
-        ->set('gos_web_socket.server.server_launcher', ServerLauncher::class)
+        ->set('gos_web_socket.server.launcher', ServerLauncher::class)
             ->public()
             ->args(
                 [
                     service('gos_web_socket.registry.server'),
                 ]
             )
-        ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.server_launcher')
+        ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.launcher')
 
         ->set('gos_web_socket.server.event_loop', LoopInterface::class)
             ->public()
