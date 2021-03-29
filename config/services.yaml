@@ -46,7 +46,7 @@ services:
         class: Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand
         public: false
         arguments:
-            - '@gos_web_socket.server.server_launcher'
+            - '@gos_web_socket.server.launcher'
             - '%gos_web_socket.server.host%'
             - '%gos_web_socket.server.port%'
         tags:
