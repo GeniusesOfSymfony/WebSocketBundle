@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.7.1 (2021-03-29)
+
+- Fix incorrect service reference
+
 ## 3.7.0 (2021-03-28)
 
 - Drop support for Symfony 5.1 (Branch is EOL)
