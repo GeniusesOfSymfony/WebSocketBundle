@@ -59,7 +59,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return \ArrayIterator<TimerInterface>
+     * @return \ArrayIterator<string, TimerInterface>
      */
     public function getIterator(): \Traversable
     {
