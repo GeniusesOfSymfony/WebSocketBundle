@@ -9,7 +9,7 @@ use React\EventLoop\TimerInterface;
 class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
 {
     /**
-     * @var TimerInterface[]
+     * @var array<string, TimerInterface>
      */
     protected array $registry = [];
     protected ConnectionInterface $connection;
@@ -66,7 +66,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return \ArrayIterator
+     * @return \ArrayIterator<string, TimerInterface>
      */
     public function getIterator()
     {

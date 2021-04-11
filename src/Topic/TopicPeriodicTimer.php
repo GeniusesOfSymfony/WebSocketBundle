@@ -90,7 +90,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     }
 
     /**
-     * @return \ArrayIterator|array<string, array<string, TimerInterface>>
+     * @return \ArrayIterator<string, array<string, TimerInterface>>
      */
     public function getIterator()
     {
