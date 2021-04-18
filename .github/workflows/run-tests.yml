@@ -22,7 +22,7 @@ jobs:
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 7.4
             symfony: 5.*@dev
-            composer-flags: '--prefer-stable'
+            composer-flags: ''
             can-fail: true
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 8.0
