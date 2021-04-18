@@ -9,6 +9,7 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -124,10 +125,10 @@ final class ClientStorageTest extends TestCase
 
         $clientId = '42';
 
-        /** @var MockObject&TokenInterface $token */
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         $this->driver->expects($this->once())

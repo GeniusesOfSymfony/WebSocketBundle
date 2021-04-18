@@ -20,6 +20,7 @@ use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -90,10 +91,10 @@ final class WampApplicationTest extends TestCase
 
     public function testAMessageIsPublished(): void
     {
-        /** @var MockObject&TokenInterface $token */
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         /** @var MockObject&ConnectionInterface $connection */
@@ -162,10 +163,10 @@ final class WampApplicationTest extends TestCase
 
     public function testAClientSubscriptionIsHandled(): void
     {
-        /** @var MockObject&TokenInterface $token */
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         /** @var MockObject&ConnectionInterface $connection */
@@ -206,10 +207,10 @@ final class WampApplicationTest extends TestCase
 
     public function testAClientUnsubscriptionIsHandled(): void
     {
-        /** @var MockObject&TokenInterface $token */
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         /** @var MockObject&ConnectionInterface $connection */

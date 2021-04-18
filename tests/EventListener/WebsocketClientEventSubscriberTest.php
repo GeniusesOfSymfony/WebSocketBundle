@@ -15,7 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 final class WebsocketClientEventSubscriberTest extends TestCase
 {
@@ -60,7 +60,7 @@ final class WebsocketClientEventSubscriberTest extends TestCase
         $this->authenticationProvider->expects($this->once())
             ->method('authenticate')
             ->with($connection)
-            ->willReturn($this->createMock(TokenInterface::class));
+            ->willReturn($this->createMock(AbstractToken::class));
 
         $this->listener->onClientConnect(new ClientConnectedEvent($connection));
     }
@@ -74,10 +74,10 @@ final class WebsocketClientEventSubscriberTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        /** @var MockObject&TokenInterface $token */
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('username');
 
         $this->clientStorage->expects($this->once())
@@ -196,7 +196,7 @@ final class WebsocketClientEventSubscriberTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->with($connection->resourceId)
-            ->willReturn($this->createMock(TokenInterface::class));
+            ->willReturn($this->createMock(AbstractToken::class));
 
         $this->clientStorage->expects($this->never())
             ->method('removeClient');

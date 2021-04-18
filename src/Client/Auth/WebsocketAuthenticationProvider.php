@@ -55,7 +55,7 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
         $this->logger?->info(
             sprintf(
                 '%s connected',
-                $token->getUsername()
+                method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
             ),
             $loggerContext
         );

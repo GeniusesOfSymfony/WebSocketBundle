@@ -35,7 +35,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         try {
             $result = $this->driver->fetch($identifier);
         } catch (\Exception $e) {
-            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+            throw new StorageException(sprintf('Driver %s failed', self::class), $e->getCode(), $e);
         }
 
         $this->logger?->debug(sprintf('GET CLIENT %s', $identifier));
@@ -63,18 +63,20 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
             sprintf('INSERT CLIENT %s', $identifier),
             [
                 'token' => $token,
-                'username' => $token->getUsername(),
+                'username' => method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername(),
             ]
         );
 
         try {
             $result = $this->driver->save($identifier, $serializedUser, $this->ttl);
         } catch (\Exception $e) {
-            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+            throw new StorageException(sprintf('Driver %s failed', self::class), $e->getCode(), $e);
         }
 
         if (false === $result) {
-            throw new StorageException(sprintf('Unable to add client "%s" to storage', $token->getUsername()));
+            $username = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
+
+            throw new StorageException(sprintf('Unable to add client "%s" to storage', $username));
         }
     }
 
@@ -86,7 +88,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         try {
             return $this->driver->contains($identifier);
         } catch (\Exception $e) {
-            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+            throw new StorageException(sprintf('Driver %s failed', self::class), $e->getCode(), $e);
         }
     }
 
@@ -100,7 +102,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         try {
             return $this->driver->delete($identifier);
         } catch (\Exception $e) {
-            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+            throw new StorageException(sprintf('Driver %s failed', self::class), $e->getCode(), $e);
         }
     }
 
@@ -114,7 +116,7 @@ final class ClientStorage implements ClientStorageInterface, LoggerAwareInterfac
         try {
             $this->driver->clear();
         } catch (\Exception $e) {
-            throw new StorageException(sprintf('Driver %s failed', static::class), $e->getCode(), $e);
+            throw new StorageException(sprintf('Driver %s failed', self::class), $e->getCode(), $e);
         }
     }
 }

@@ -64,7 +64,7 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
 
                 $this->clientStorage->removeClient($storageId);
 
-                $username = $token->getUsername();
+                $username = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
 
                 $this->logger?->info(
                     sprintf('%s disconnected', $username),
@@ -113,7 +113,7 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
         if ($this->clientStorage->hasClient($storageId)) {
             $token = $this->clientStorage->getClient($storageId);
 
-            $loggerContext['client'] = $token->getUsername();
+            $loggerContext['client'] = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
         }
 
         $this->logger->error(
