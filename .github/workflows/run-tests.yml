@@ -29,12 +29,12 @@ jobs:
             symfony: 5.2.*
             composer-flags: '--prefer-stable'
             can-fail: false
-            extensions: 'amqp-1.11.0beta, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
+            extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 8.0
             symfony: 5.3.*@beta
             composer-flags: '--prefer-stable'
             can-fail: false
-            extensions: 'amqp-1.11.0beta, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
+            extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
 
     name: "PHP ${{ matrix.php }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
@@ -57,6 +57,7 @@ jobs:
           coverage: none
 
       - name: Install ReactAMQP package
+        if: matrix.php == '7.4'
         run: |
           composer require --dev --no-update gos/react-amqp:^0.3
 
