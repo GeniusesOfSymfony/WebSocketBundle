@@ -56,6 +56,10 @@ jobs:
           extensions: ${{ matrix.extensions }}
           coverage: none
 
+      - name: Install ReactAMQP package
+        run: |
+          composer require --dev --no-update gos/react-amqp:^0.3
+
       - name: Install dependencies
         run: |
           composer global require --no-scripts --no-plugins symfony/flex
