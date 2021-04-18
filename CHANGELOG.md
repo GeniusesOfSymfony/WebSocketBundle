@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.7.2 (????-??-??)
+
+- Symfony 5.3 compatibility fixes
+
 ## 3.7.1 (2021-03-29)
 
 - Fix incorrect service reference

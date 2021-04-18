@@ -15,7 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class ClientEventListenerTest extends TestCase
 {
@@ -61,7 +61,7 @@ class ClientEventListenerTest extends TestCase
         $this->authenticationProvider->expects($this->once())
             ->method('authenticate')
             ->with($connection)
-            ->willReturn($this->createMock(TokenInterface::class));
+            ->willReturn($this->createMock(AbstractToken::class));
 
         $this->listener->onClientConnect($event);
     }
@@ -74,9 +74,10 @@ class ClientEventListenerTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $token = $this->createMock(TokenInterface::class);
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('username');
 
         $event = new ClientDisconnectedEvent($connection);
@@ -202,7 +203,7 @@ class ClientEventListenerTest extends TestCase
         $this->clientStorage->expects($this->once())
             ->method('getClient')
             ->with($connection->resourceId)
-            ->willReturn($this->createMock(TokenInterface::class));
+            ->willReturn($this->createMock(AbstractToken::class));
 
         $this->clientStorage->expects($this->never())
             ->method('removeClient');

@@ -9,13 +9,14 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ClientStorageTest extends TestCase
 {
     /**
-     * @var MockObject|ClearableDriverInterface
+     * @var MockObject&ClearableDriverInterface
      */
     private $driver;
 
@@ -119,9 +120,11 @@ class ClientStorageTest extends TestCase
         $this->expectExceptionMessage('Unable to add client "user" to storage');
 
         $clientId = '42';
-        $token = $this->createMock(TokenInterface::class);
+
+        /** @var MockObject&AbstractToken $token */
+        $token = $this->createMock(AbstractToken::class);
         $token->expects($this->once())
-            ->method('getUsername')
+            ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         $this->driver->expects($this->once())

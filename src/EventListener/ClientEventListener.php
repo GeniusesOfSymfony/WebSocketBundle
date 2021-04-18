@@ -53,7 +53,7 @@ final class ClientEventListener implements LoggerAwareInterface
 
                 $this->clientStorage->removeClient($storageId);
 
-                $username = $token->getUsername();
+                $username = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
 
                 if (null !== $this->logger) {
                     $this->logger->info(
@@ -108,7 +108,7 @@ final class ClientEventListener implements LoggerAwareInterface
         if ($this->clientStorage->hasClient($storageId)) {
             $token = $this->clientStorage->getClient($storageId);
 
-            $loggerContext['client'] = $token->getUsername();
+            $loggerContext['client'] = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
         }
 
         $this->logger->error(

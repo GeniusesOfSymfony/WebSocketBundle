@@ -37,7 +37,9 @@ final class ClientManipulator implements ClientManipulatorInterface
                 continue;
             }
 
-            if ($client->getUsername() === $username) {
+            $clientUsername = method_exists($client, 'getUserIdentifier') ? $client->getUserIdentifier() : $client->getUsername();
+
+            if ($clientUsername === $username) {
                 $result[] = new ClientConnection($client, $connection);
             }
         }

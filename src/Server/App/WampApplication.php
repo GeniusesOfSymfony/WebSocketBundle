@@ -57,12 +57,11 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
-                $username = $token->getUsername();
 
                 $this->logger->debug(
                     sprintf(
                         'User %s published to %s',
-                        $username,
+                        method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername(),
                         $topic->getId()
                     )
                 );
@@ -123,12 +122,11 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
-                $username = $token->getUsername();
 
                 $this->logger->info(
                     sprintf(
                         'User %s subscribed to %s',
-                        $username,
+                        method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername(),
                         $topic->getId()
                     )
                 );
@@ -152,12 +150,11 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
         if (null !== $this->logger) {
             if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
                 $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
-                $username = $token->getUsername();
 
                 $this->logger->info(
                     sprintf(
                         'User %s unsubscribed from %s',
-                        $username,
+                        method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername(),
                         $topic->getId()
                     )
                 );
