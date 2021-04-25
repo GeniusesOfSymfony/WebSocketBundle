@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.7.2 (????-??-??)
+## 3.7.2 (2021-04-25)
 
 - Symfony 5.3 compatibility fixes
 
