@@ -16,7 +16,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
     /**
      * @var Connection|PingableConnection
      */
-    private $connection;
+    private object $connection;
 
     private int $timeout = 20;
 
@@ -25,7 +25,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
      *
      * @throws \InvalidArgumentException if the connection is not an appropriate type
      */
-    public function __construct($connection)
+    public function __construct(object $connection)
     {
         if (!($connection instanceof Connection) && !($connection instanceof PingableConnection)) {
             throw new \InvalidArgumentException(sprintf('The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.', Connection::class, PingableConnection::class, \get_class($connection)));
@@ -52,11 +52,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
             if ($this->connection instanceof PingableConnection) {
                 $this->connection->ping();
             } else {
-                if (method_exists($this->connection, 'executeQuery')) {
-                    $this->connection->executeQuery($this->connection->getDatabasePlatform()->getDummySelectSQL());
-                } else {
-                    $this->connection->query($this->connection->getDatabasePlatform()->getDummySelectSQL());
-                }
+                $this->connection->executeQuery($this->connection->getDatabasePlatform()->getDummySelectSQL());
             }
 
             $endTime = microtime(true);
