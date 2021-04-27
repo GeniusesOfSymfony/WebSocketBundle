@@ -33,7 +33,7 @@
         "symfony/serializer": "^4.4 || ^5.2"
     },
     "require-dev": {
-        "doctrine/cache": "^1.8",
+        "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/dbal": "^2.9 || ^3.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
         "phpstan/extension-installer": "^1.1",
@@ -48,6 +48,7 @@
         "symfony/web-profiler-bundle": "^4.4 || ^5.2"
     },
     "conflict": {
+        "doctrine/cache": "<1.11",
         "gos/react-amqp": "<0.3",
         "symfony/monolog-bundle": "<3.0",
         "twig/twig": "<1.36 || >=2.0,<2.6"

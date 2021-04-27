@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.8.0 (????-??-??)
+
+- Add support for `doctrine/cache` 2.0
+
 ## 3.7.2 (2021-04-25)
 
 - Symfony 5.3 compatibility fixes
