@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.8.0 (????-??-??)
+## 3.8.0 (2021-06-16)
 
 - Add support for `doctrine/cache` 2.0
 - Bump minimum supported `doctrine/dbal` versions
