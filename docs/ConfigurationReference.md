@@ -2,67 +2,85 @@
 
 ```yaml
 gos_web_socket:
-    client:
-        session_handler:      ~ # Example: @session.handler.pdo
-        firewall:             ws_firewall # Example: secured_area
-        storage:
-            driver:               gos_web_socket.client.driver.in_memory # Example: gos_web_socket.client.driver.in_memory
-            ttl:                  900 # Example: 3600
-            prefix:               '' # Deprecated (The "prefix" node is deprecated and will be removed in GosWebSocketBundle 4.0.), Example: client
-            decorator:            ~
-    shared_config:        true
-    server:
-        host:                 ~ # Required, Example: 127.0.0.1
-        port:                 ~ # Required, Example: 8080
-        origin_check:         false # Example: true
+  client:
 
-        # Flag indicating a keepalive ping should be enabled on the server
-        keepalive_ping:       false # Example: true
+    # The service ID of the session handler service used to read session data.
+    session_handler:      ~
 
-        # The time in seconds between each keepalive ping
-        keepalive_interval:   30 # Example: 30
-        router:
-            resources:
+    # The name of the security firewall to load the authenticated user data for.
+    firewall:             ws_firewall
+    storage:
 
-                # Prototype
-                -
-                    resource:             ~ # Required
-                    type:                 null # One of "closure"; "container"; "glob"; "php"; "xml"; "yaml"; null
-    origins:              []
-    ping:
-        services:
+      # The service ID of the storage driver to use for storing connection data.
+      driver:               gos_web_socket.client.driver.in_memory
 
-            # Prototype
-            -
+      # The cache TTL (in seconds) for clients in storage.
+      ttl:                  900
+      prefix:               '' # Deprecated (Since gos/web-socket-bundle 3.1: The "prefix" node is deprecated and will be removed in GosWebSocketBundle 4.0.)
 
-                # The name of the service to ping
-                name:                 ~ # Required
+      # The service ID of a decorator for the client storage driver.
+      decorator:            ~
+  shared_config:        true
+  server:
 
-                # The type of the service to be pinged; valid options are "doctrine" and "pdo"
-                type:                 ~ # One of "doctrine"; "pdo", Required
-    websocket_client:     # Deprecated (The "websocket_client" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.)
-        enabled:              false
-        host:                 ~ # Required, Example: 127.0.0.1
-        port:                 ~ # Required, Example: 1337
-        ssl:                  false
-        origin:               null
-    pushers:              # Deprecated (The "pushers" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
-        amqp:                 # Deprecated (The "amqp" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
-            enabled:              false
-            host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 5672
-            login:                ~ # Required
-            password:             ~ # Required
-            vhost:                /
-            read_timeout:         0
-            write_timeout:        0
-            connect_timeout:      0
-            queue_name:           gos_websocket
-            exchange_name:        gos_websocket_exchange
-        wamp:                 # Deprecated (The "wamp" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
-            enabled:              false
-            host:                 ~ # Required, Example: 127.0.0.1
-            port:                 ~ # Required, Example: 1337
-            ssl:                  false
-            origin:               null
+    # The host IP address on the server which connections for the websocket server are accepted.
+    host:                 ~ # Required
+
+    # The port on the server which connections for the websocket server are accepted.
+    port:                 ~ # Required
+
+    # Enables checking the Origin header of websocket connections for allowed values.
+    origin_check:         false
+
+    # Flag indicating a keepalive ping should be enabled on the server.
+    keepalive_ping:       false
+
+    # The time in seconds between each keepalive ping.
+    keepalive_interval:   30
+    router:
+      resources:
+
+        # Prototype
+        -
+          resource:             ~ # Required
+          type:                 null # One of "closure"; "container"; "glob"; "php"; "xml"; "yaml"; null
+
+  # A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.
+  origins:              []
+  ping:
+    services:
+
+      # Prototype
+      -
+
+        # The name of the service to ping.
+        name:                 ~ # Required
+
+        # The type of the service to be pinged.
+        type:                 ~ # One of "doctrine"; "pdo", Required
+  websocket_client:     # Deprecated (Since gos/web-socket-bundle 3.4: The "websocket_client" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.)
+    enabled:              false
+    host:                 ~ # Required
+    port:                 ~ # Required
+    ssl:                  false
+    origin:               null
+  pushers:              # Deprecated (Since gos/web-socket-bundle 3.1: The "pushers" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
+    amqp:                 # Deprecated (Since gos/web-socket-bundle 3.1: The "amqp" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
+      enabled:              false
+      host:                 ~ # Required
+      port:                 ~ # Required
+      login:                ~ # Required
+      password:             ~ # Required
+      vhost:                /
+      read_timeout:         0
+      write_timeout:        0
+      connect_timeout:      0
+      queue_name:           gos_websocket
+      exchange_name:        gos_websocket_exchange
+    wamp:                 # Deprecated (Since gos/web-socket-bundle 3.1: The "wamp" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
+      enabled:              false
+      host:                 ~ # Required
+      port:                 ~ # Required
+      ssl:                  false
+      origin:               null
 ```
