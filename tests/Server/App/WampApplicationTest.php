@@ -9,7 +9,6 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface;
@@ -19,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

@@ -156,7 +156,7 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onUnSubscribe($connection, $topic, $request);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testAWebsocketUnsubscriptionIsDispatchedToItsHandlerAndPeriodicTimersAreClearedIfTheTopicNoLongerHasSubscribers(): void
@@ -201,11 +201,11 @@ final class TopicDispatcherTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('count')
             ->willReturn(0);
 
-        $this->topicPeriodicTimer->expects($this->once())
+        $this->topicPeriodicTimer->expects(self::once())
             ->method('clearPeriodicTimer')
             ->with($handler);
 
