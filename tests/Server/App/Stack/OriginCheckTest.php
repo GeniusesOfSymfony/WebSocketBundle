@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Stack;
 
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -77,9 +78,12 @@ class OriginCheckTest extends TestCase
             ->with('Origin')
             ->willReturn('localhost');
 
-        $this->eventDispatcher->expects(self::once())
+        $this->eventDispatcher->expects(self::exactly(2))
             ->method('dispatch')
-            ->with(self::isInstanceOf(ClientRejectedEvent::class), GosWebSocketEvents::CLIENT_REJECTED);
+            ->withConsecutive(
+                [self::isInstanceOf(ClientRejectedEvent::class), GosWebSocketEvents::CLIENT_REJECTED],
+                [self::isInstanceOf(ConnectionRejectedEvent::class), GosWebSocketEvents::CONNECTION_REJECTED],
+            );
 
         $this->decoratedComponent->expects(self::never())
             ->method('onOpen');

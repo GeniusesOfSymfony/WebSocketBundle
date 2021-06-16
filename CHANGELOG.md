@@ -4,6 +4,8 @@
 
 - Add support for `doctrine/cache` 2.0
 - Bump minimum supported `doctrine/dbal` versions
+- Add the ability to block IP addresses from connecting to the websocket server
+- Deprecated the `Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent` class and corresponding event, subscribe to `Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent` instead
 
 ## 3.7.2 (2021-04-25)
 

@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry;
 use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
+use Gos\Bundle\WebSocketBundle\Server\App\Stack\BlockedIpCheck;
 use Gos\Bundle\WebSocketBundle\Server\App\Stack\OriginCheck;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -57,7 +58,9 @@ class ServerBuilderTest extends TestCase
             $this->eventDispatcher,
             false,
             false,
-            30
+            30,
+            false,
+            []
         );
     }
 
@@ -109,7 +112,9 @@ class ServerBuilderTest extends TestCase
             $this->eventDispatcher,
             true,
             false,
-            30
+            30,
+            false,
+            []
         );
 
         $server = $builder->buildMessageStack();
@@ -127,6 +132,39 @@ class ServerBuilderTest extends TestCase
         self::assertInstanceOf(
             WsServer::class,
             $this->getPropertyFromClassInstance($decoratedServer, '_component'),
+            'The assembled message stack should decorate the correct class.'
+        );
+    }
+
+    public function testTheMessageStackIsBuiltWithTheIpAddressCheckDecorator(): void
+    {
+        $builder = new ServerBuilder(
+            $this->loop,
+            $this->topicManager,
+            $this->originRegistry,
+            $this->eventDispatcher,
+            false,
+            false,
+            30,
+            true,
+            ['192.168.1.1']
+        );
+
+        $server = $builder->buildMessageStack();
+
+        self::assertInstanceOf(BlockedIpCheck::class, $server, 'The assembled message stack should be returned.');
+
+        $decoratedServer = $this->getPropertyFromClassInstance($server, '_decorating');
+
+        self::assertInstanceOf(
+            HttpServer::class,
+            $decoratedServer,
+            'The assembled message stack should decorate the correct class.'
+        );
+
+        self::assertInstanceOf(
+            WsServer::class,
+            $this->getPropertyFromClassInstance($decoratedServer, '_httpServer'),
             'The assembled message stack should decorate the correct class.'
         );
     }

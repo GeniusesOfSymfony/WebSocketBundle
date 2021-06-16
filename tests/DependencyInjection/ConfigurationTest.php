@@ -23,6 +23,7 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'ip_address_check' => false,
                 'keepalive_ping' => false,
                 'keepalive_interval' => 30,
             ],
@@ -43,6 +44,7 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'ip_address_check' => false,
                 'keepalive_ping' => false,
                 'keepalive_interval' => 30,
                 'router' => [
@@ -58,6 +60,7 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'ip_address_check' => false,
                 'keepalive_ping' => false,
                 'keepalive_interval' => 30,
                 'router' => [
@@ -86,6 +89,7 @@ final class ConfigurationTest extends TestCase
                 'host' => '127.0.0.1',
                 'port' => 8080,
                 'origin_check' => false,
+                'ip_address_check' => false,
                 'keepalive_ping' => false,
                 'keepalive_interval' => 30,
                 'router' => [
@@ -96,6 +100,77 @@ final class ConfigurationTest extends TestCase
                         ],
                     ],
                 ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithAllowedOriginsList(): void
+    {
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => true,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
+            'origins' => [
+                'websocket-bundle.localhost',
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithInvalidOriginsList(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.origins.0": "localhost" is added by default');
+
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => true,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
+            'origins' => [
+                'localhost',
+                'websocket-bundle.localhost',
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+    }
+
+    public function testConfigWithBlockedIpAddressList(): void
+    {
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'origin_check' => false,
+                'ip_address_check' => true,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
+            'blocked_ip_addresses' => [
+                '192.168.1.1',
             ],
         ];
 
@@ -219,6 +294,7 @@ final class ConfigurationTest extends TestCase
             ],
             'shared_config' => true,
             'origins' => [],
+            'blocked_ip_addresses' => [],
             'websocket_client' => [
                 'enabled' => false,
                 'ssl' => false,

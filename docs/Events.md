@@ -9,6 +9,7 @@ The GosWebSocketBundle provides events which can be used to hook into actions pe
 - `gos_web_socket.client_disconnected` is dispatched when a client disconnects from the websocket server, listeners receive a `Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent` object
 - `gos_web_socket.client_error` is dispatched when a client connection has an error, listeners receive a `Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent` object
 - `gos_web_socket.client_rejected` is dispatched when a client connection is rejected by the websocket server, listeners receive a `Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent` object
+- `gos_web_socket.connection_rejected` is dispatched when a connection is rejected by the websocket server, listeners receive a `Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent` object
 - `gos_web_socket.push_fail` is dispatched when a server push fails, listeners receive a `Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent` object
 - `gos_web_socket.push_success` is dispatched when a server push succeeds, listeners receive a `Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent` object
 

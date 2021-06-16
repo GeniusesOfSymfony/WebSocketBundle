@@ -32,6 +32,9 @@ gos_web_socket:
     # Enables checking the Origin header of websocket connections for allowed values.
     origin_check:         false
 
+    # Enables checking the originating IP address of websocket connections for blocked addresses.
+    ip_address_check:     false
+
     # Flag indicating a keepalive ping should be enabled on the server.
     keepalive_ping:       false
 
@@ -47,6 +50,9 @@ gos_web_socket:
 
   # A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.
   origins:              []
+
+  # A list of IP addresses which are not allowed to connect to the websocket server.
+  blocked_ip_addresses: []
   ping:
     services:
 

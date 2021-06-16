@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent;
 use Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent;
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
@@ -48,8 +49,17 @@ final class GosWebSocketEvents
      * The CLIENT_REJECTED event occurs when a client connection is rejected.
      *
      * @Event("Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent")
+     *
+     * @deprecated to be removed in 4.0, subscribe to the "gos_web_socket.connection_rejected" event instead
      */
     public const CLIENT_REJECTED = 'gos_web_socket.client_rejected';
+
+    /**
+     * The CLIENT_REJECTED event occurs when a connection is rejected.
+     *
+     * @Event("Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent")
+     */
+    public const CONNECTION_REJECTED = 'gos_web_socket.connection_rejected';
 
     /**
      * The PUSHER_FAIL event occurs when a push handler has an error pushing a message to a server.
@@ -80,6 +90,7 @@ final class GosWebSocketEvents
         ClientDisconnectedEvent::class => self::CLIENT_DISCONNECTED,
         ClientErrorEvent::class => self::CLIENT_ERROR,
         ClientRejectedEvent::class => self::CLIENT_REJECTED,
+        ConnectionRejectedEvent::class => self::CONNECTION_REJECTED,
         PushHandlerFailEvent::class => self::PUSHER_FAIL,
         PushHandlerSuccessEvent::class => self::PUSHER_SUCCESS,
     ];
