@@ -48,19 +48,19 @@ final class ConnectionPeriodicTimerTest extends TestCase
         /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
         $this->connectionPeriodicTimer->addPeriodicTimer('test', $timeout, $callback);
 
-        $this->assertSame($timer, $this->connectionPeriodicTimer->getPeriodicTimer('test'));
+        self::assertSame($timer, $this->connectionPeriodicTimer->getPeriodicTimer('test'));
     }
 
     public function testNoTimerIsReturnedWhenNotRegisteredAndActive(): void
     {
-        $this->assertFalse($this->connectionPeriodicTimer->getPeriodicTimer('test'));
+        self::assertFalse($this->connectionPeriodicTimer->getPeriodicTimer('test'));
     }
 
     public function testCancelTheNamedPeriodicTimerWhenActive(): void
@@ -71,12 +71,12 @@ final class ConnectionPeriodicTimerTest extends TestCase
         /** @var MockObject&TimerInterface $timer */
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('cancelTimer')
             ->with($timer);
 
@@ -86,11 +86,11 @@ final class ConnectionPeriodicTimerTest extends TestCase
 
     public function testAnIteratorWithAllTimersIsReturned(): void
     {
-        $this->assertInstanceOf(\ArrayIterator::class, $this->connectionPeriodicTimer->getIterator());
+        self::assertInstanceOf(\ArrayIterator::class, $this->connectionPeriodicTimer->getIterator());
     }
 
     public function testTheTimerCanBeCounted(): void
     {
-        $this->assertCount(0, $this->connectionPeriodicTimer);
+        self::assertCount(0, $this->connectionPeriodicTimer);
     }
 }

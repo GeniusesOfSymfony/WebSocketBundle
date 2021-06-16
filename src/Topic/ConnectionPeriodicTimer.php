@@ -45,12 +45,12 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         return isset($this->registry[$this->getTid($name)]);
     }
 
-    public function cancelPeriodicTimer(string $tidOrname): void
+    public function cancelPeriodicTimer(string $tidOrName): void
     {
-        if (!isset($this->registry[$tidOrname])) {
-            $tid = $this->getTid($tidOrname);
+        if (!isset($this->registry[$tidOrName])) {
+            $tid = $this->getTid($tidOrName);
         } else {
-            $tid = $tidOrname;
+            $tid = $tidOrName;
         }
 
         $timer = $this->registry[$tid];

@@ -65,9 +65,9 @@ final class ServerBuilderTest extends TestCase
     {
         $server = $this->builder->buildMessageStack();
 
-        $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
+        self::assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             WsServer::class,
             $this->getPropertyFromClassInstance($server, '_httpServer'),
             'The assembled message stack should decorate the correct class.'
@@ -83,17 +83,17 @@ final class ServerBuilderTest extends TestCase
 
         $server = $this->builder->buildMessageStack();
 
-        $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
+        self::assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
         $decoratedServer = $this->getPropertyFromClassInstance($server, '_httpServer');
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             SessionProvider::class,
             $decoratedServer,
             'The assembled message stack should decorate the correct class.'
         );
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             WsServer::class,
             $this->getPropertyFromClassInstance($decoratedServer, '_app'),
             'The assembled message stack should decorate the correct class.'
@@ -114,17 +114,17 @@ final class ServerBuilderTest extends TestCase
 
         $server = $builder->buildMessageStack();
 
-        $this->assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
+        self::assertInstanceOf(HttpServer::class, $server, 'The assembled message stack should be returned.');
 
         $decoratedServer = $this->getPropertyFromClassInstance($server, '_httpServer');
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             OriginCheck::class,
             $decoratedServer,
             'The assembled message stack should decorate the correct class.'
         );
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             WsServer::class,
             $this->getPropertyFromClassInstance($decoratedServer, '_component'),
             'The assembled message stack should decorate the correct class.'

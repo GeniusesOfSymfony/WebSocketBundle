@@ -38,7 +38,7 @@ final class WebsocketAuthenticationProviderTest extends TestCase
     {
         /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
-        $session->expects($this->once())
+        $session->expects(self::once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(false);
@@ -53,14 +53,14 @@ final class WebsocketAuthenticationProviderTest extends TestCase
 
         $clientIdentifier = 42;
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->willReturn((string) $clientIdentifier);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('addClient');
 
-        $this->assertInstanceOf(AnonymousToken::class, $this->provider->authenticate($connection));
+        self::assertInstanceOf(AnonymousToken::class, $this->provider->authenticate($connection));
     }
 
     public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated(): void
@@ -69,7 +69,7 @@ final class WebsocketAuthenticationProviderTest extends TestCase
 
         /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
-        $session->expects($this->once())
+        $session->expects(self::once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(serialize($token));
@@ -84,13 +84,13 @@ final class WebsocketAuthenticationProviderTest extends TestCase
 
         $clientIdentifier = 42;
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->willReturn((string) $clientIdentifier);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('addClient');
 
-        $this->assertEquals($token, $this->provider->authenticate($connection));
+        self::assertEquals($token, $this->provider->authenticate($connection));
     }
 }

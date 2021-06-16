@@ -36,7 +36,7 @@ final class RegisterPeriodicTimersListenerTest extends TestCase
     {
         /** @var MockObject&PeriodicInterface $handler */
         $handler = $this->createMock(PeriodicInterface::class);
-        $handler->expects($this->once())
+        $handler->expects(self::once())
             ->method('getTimeout')
             ->willReturn(10);
 
@@ -44,7 +44,7 @@ final class RegisterPeriodicTimersListenerTest extends TestCase
 
         /** @var MockObject&LoopInterface $loop */
         $loop = $this->createMock(LoopInterface::class);
-        $loop->expects($this->once())
+        $loop->expects(self::once())
             ->method('addPeriodicTimer');
 
         $event = new ServerLaunchedEvent(

@@ -57,7 +57,7 @@ final class WebsocketClientEventSubscriberTest extends TestCase
         /** @var MockObject&ConnectionInterface $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
-        $this->authenticationProvider->expects($this->once())
+        $this->authenticationProvider->expects(self::once())
             ->method('authenticate')
             ->with($connection)
             ->willReturn($this->createMock(AbstractToken::class));
@@ -76,26 +76,26 @@ final class WebsocketClientEventSubscriberTest extends TestCase
 
         /** @var MockObject&AbstractToken $token */
         $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
+        $token->expects(self::once())
             ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('username');
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->with($connection->resourceId)
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->with($connection->resourceId)
             ->willReturn($token);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('removeClient')
             ->with($connection->resourceId)
             ->willReturn(true);
@@ -115,27 +115,27 @@ final class WebsocketClientEventSubscriberTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->with($connection->resourceId)
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->with($connection->resourceId)
             ->willThrowException(new ClientNotFoundException('Client not found'));
 
-        $this->clientStorage->expects($this->never())
+        $this->clientStorage->expects(self::never())
             ->method('removeClient');
 
         $this->listener->onClientDisconnect(new ClientDisconnectedEvent($connection));
 
-        $this->assertTrue($this->logger->hasInfoThatContains('User timed out'));
+        self::assertTrue($this->logger->hasInfoThatContains('User timed out'));
     }
 
     public function testTheStorageExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
@@ -147,22 +147,22 @@ final class WebsocketClientEventSubscriberTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->with($connection->resourceId)
             ->willThrowException(new StorageException('Driver failure'));
 
-        $this->clientStorage->expects($this->never())
+        $this->clientStorage->expects(self::never())
             ->method('removeClient');
 
         $this->listener->onClientDisconnect(new ClientDisconnectedEvent($connection));
 
-        $this->assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
+        self::assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
     }
 
     /**
@@ -183,27 +183,27 @@ final class WebsocketClientEventSubscriberTest extends TestCase
             'sessionId' => 'session',
         ];
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->with($connection->resourceId)
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->with($connection->resourceId)
             ->willReturn($this->createMock(AbstractToken::class));
 
-        $this->clientStorage->expects($this->never())
+        $this->clientStorage->expects(self::never())
             ->method('removeClient');
 
         $this->listener->onClientError(new ClientErrorEvent(new \Exception('Testing'), $connection));
 
-        $this->assertTrue($this->logger->hasErrorThatContains('Connection error'));
+        self::assertTrue($this->logger->hasErrorThatContains('Connection error'));
     }
 
     /**
@@ -219,6 +219,6 @@ final class WebsocketClientEventSubscriberTest extends TestCase
     {
         $this->listener->onClientRejected(new ClientRejectedEvent('localhost', null));
 
-        $this->assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
+        self::assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
     }
 }

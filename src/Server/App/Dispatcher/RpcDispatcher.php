@@ -136,9 +136,7 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
     {
         return preg_replace_callback(
             '/_([a-z])/',
-            static function ($c): string {
-                return strtoupper($c[1]);
-            },
+            static fn ($c): string => strtoupper($c[1]),
             $str
         );
     }

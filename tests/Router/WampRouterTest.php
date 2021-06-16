@@ -50,15 +50,15 @@ class WampRouterTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->exactly(2))
+        $topic->expects(self::exactly(2))
             ->method('getId')
             ->willReturn('abc/123');
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('match')
             ->willReturn([$routeName, $route, $attributes]);
 
-        $this->assertInstanceOf(WampRequest::class, $this->router->match($topic));
+        self::assertInstanceOf(WampRequest::class, $this->router->match($topic));
     }
 
     public function testAnExceptionIsThrownWhenATopicCannotBeRouted(): void
@@ -67,11 +67,11 @@ class WampRouterTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->exactly(2))
+        $topic->expects(self::exactly(2))
             ->method('getId')
             ->willReturn('abc/123');
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('match')
             ->willThrowException(new ResourceNotFoundException('Testing'));
 
@@ -83,22 +83,22 @@ class WampRouterTest extends TestCase
         $routeName = 'test';
         $parameters = [];
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('generate')
             ->with($routeName, $parameters)
             ->willReturn('abc/123');
 
-        $this->assertSame('abc/123', $this->router->generate($routeName, $parameters));
+        self::assertSame('abc/123', $this->router->generate($routeName, $parameters));
     }
 
     public function testTheRouteCollectionIsRetrieved(): void
     {
         $collection = new RouteCollection();
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('getCollection')
             ->willReturn($collection);
 
-        $this->assertSame($collection, $this->router->getCollection());
+        self::assertSame($collection, $this->router->getCollection());
     }
 }

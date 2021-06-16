@@ -24,7 +24,7 @@ final class PeriodicRegistryTest extends TestCase
 
         $registry = new PeriodicRegistry([$periodic]);
 
-        $this->assertContains($periodic, $registry->getPeriodics());
-        $this->assertTrue($registry->hasPeriodic($periodic));
+        self::assertContains($periodic, $registry->getPeriodics());
+        self::assertTrue($registry->hasPeriodic($periodic));
     }
 }

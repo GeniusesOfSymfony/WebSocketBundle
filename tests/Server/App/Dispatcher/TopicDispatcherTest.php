@@ -108,7 +108,7 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onSubscribe($connection, $topic, $request);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testAWebsocketUnsubscriptionIsDispatchedToItsHandler(): void
@@ -211,7 +211,7 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onUnSubscribe($connection, $topic, $request);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testAWebsocketPublishIsDispatchedToItsHandler(): void
@@ -259,7 +259,7 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testAWebsocketPublishIsDispatchedToASecuredHandler(): void
@@ -318,8 +318,8 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertTrue($handler->wasCalled());
-        $this->assertTrue($handler->wasSecured());
+        self::assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasSecured());
     }
 
     public function testAWebsocketPublishIsDispatchedToAHandlerThatIsNotYetRegisteredAsAPeriodicTopicTimer(): void
@@ -377,19 +377,19 @@ final class TopicDispatcherTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('count')
             ->willReturn(1);
 
-        $this->topicPeriodicTimer->expects($this->once())
+        $this->topicPeriodicTimer->expects(self::once())
             ->method('isRegistered')
             ->with($handler)
             ->willReturn(false);
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertTrue($handler->wasCalled());
-        $this->assertTrue($handler->wasRegistered());
+        self::assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasRegistered());
     }
 
     public function testADispatchFailsWhenItsHandlerIsNotInTheRegistry(): void
@@ -435,9 +435,9 @@ final class TopicDispatcherTest extends TestCase
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasCalled());
 
-        $this->assertTrue($this->logger->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
+        self::assertTrue($this->logger->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
     }
 
     public function testTheConnectionIsClosedIfATopicCannotBeSecured(): void
@@ -490,24 +490,24 @@ final class TopicDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('close');
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('getId')
             ->willReturn('topic');
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertFalse($handler->wasCalled());
-        $this->assertFalse($handler->wasSecured());
+        self::assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasSecured());
 
-        $this->assertTrue($this->logger->hasErrorThatContains('Access denied'));
+        self::assertTrue($this->logger->hasErrorThatContains('Access denied'));
     }
 
     public function testAnExceptionFromAHandlerIsCaughtAndProcessed(): void
@@ -551,19 +551,19 @@ final class TopicDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->any())
+        $topic->expects(self::any())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator());
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
 
-        $this->assertTrue($this->logger->hasErrorThatContains('Websocket error processing topic callback function.'));
+        self::assertTrue($this->logger->hasErrorThatContains('Websocket error processing topic callback function.'));
     }
 }

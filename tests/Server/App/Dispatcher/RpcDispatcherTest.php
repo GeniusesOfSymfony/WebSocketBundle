@@ -68,7 +68,7 @@ final class RpcDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callResult');
 
         /** @var MockObject&Topic $topic */
@@ -76,7 +76,7 @@ final class RpcDispatcherTest extends TestCase
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry(): void
@@ -111,7 +111,7 @@ final class RpcDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         /** @var MockObject&Topic $topic */
@@ -119,7 +119,7 @@ final class RpcDispatcherTest extends TestCase
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasCalled());
     }
 
     public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler(): void
@@ -156,7 +156,7 @@ final class RpcDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         /** @var MockObject&Topic $topic */
@@ -164,7 +164,7 @@ final class RpcDispatcherTest extends TestCase
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasCalled());
     }
 
     public function testAThrowableFromAHandlerIsCaughtAndProcessed(): void
@@ -192,7 +192,7 @@ final class RpcDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         /** @var MockObject&Topic $topic */
@@ -226,7 +226,7 @@ final class RpcDispatcherTest extends TestCase
 
         /** @var MockObject&WampConnection $connection */
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         /** @var MockObject&Topic $topic */

@@ -27,7 +27,7 @@ final class WampRouter implements LoggerAwareInterface
     public function match(Topic $topic): WampRequest
     {
         try {
-            list($routeName, $route, $attributes) = $this->pubSubRouter->match($topic->getId());
+            [$routeName, $route, $attributes] = $this->pubSubRouter->match($topic->getId());
 
             $this->logger?->debug(
                 sprintf(

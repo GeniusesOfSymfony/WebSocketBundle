@@ -19,8 +19,8 @@ final class RpcRegistryTest extends TestCase
 
         $registry = new RpcRegistry([$handler]);
 
-        $this->assertSame($handler, $registry->getRpc($handler->getName()));
-        $this->assertTrue($registry->hasRpc($handler->getName()));
+        self::assertSame($handler, $registry->getRpc($handler->getName()));
+        self::assertTrue($registry->hasRpc($handler->getName()));
     }
 
     public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void

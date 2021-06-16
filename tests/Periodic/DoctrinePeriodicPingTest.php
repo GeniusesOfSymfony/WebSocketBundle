@@ -20,17 +20,17 @@ final class DoctrinePeriodicPingTest extends TestCase
 
         /** @var MockObject&AbstractPlatform $platform */
         $platform = $this->createMock(AbstractPlatform::class);
-        $platform->expects($this->once())
+        $platform->expects(self::once())
             ->method('getDummySelectSQL')
             ->willReturn($query);
 
         /** @var MockObject&Connection $connection */
         $connection = $this->createMock(Connection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('executeQuery')
             ->with($query);
 
@@ -38,7 +38,7 @@ final class DoctrinePeriodicPingTest extends TestCase
         $ping->setLogger($logger);
         $ping->tick();
 
-        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
+        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testAConnectionErrorIsLogged(): void
@@ -47,7 +47,7 @@ final class DoctrinePeriodicPingTest extends TestCase
 
         /** @var MockObject&Connection $connection */
         $connection = $this->createMock(Connection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getDatabasePlatform')
             ->willThrowException(new DBALException('Testing'));
 
@@ -57,11 +57,11 @@ final class DoctrinePeriodicPingTest extends TestCase
         try {
             $ping->tick();
 
-            $this->fail(sprintf('A %s should have been thrown.', DBALException::class));
+            self::fail(sprintf('A %s should have been thrown.', DBALException::class));
         } catch (DBALException $exception) {
-            $this->assertSame('Testing', $exception->getMessage());
+            self::assertSame('Testing', $exception->getMessage());
 
-            $this->assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
+            self::assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
         }
     }
 }

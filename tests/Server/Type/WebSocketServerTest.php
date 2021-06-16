@@ -51,15 +51,15 @@ final class WebSocketServerTest extends TestCase
 
     public function testTheServerIsLaunched(): void
     {
-        $this->serverBuilder->expects($this->once())
+        $this->serverBuilder->expects(self::once())
             ->method('buildMessageStack')
             ->willReturn($this->createMock(MessageComponentInterface::class));
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ServerLaunchedEvent::class), GosWebSocketEvents::SERVER_LAUNCHED);
+            ->with(self::isInstanceOf(ServerLaunchedEvent::class), GosWebSocketEvents::SERVER_LAUNCHED);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('run');
 
         $this->server->launch('127.0.0.1', 1337, false);

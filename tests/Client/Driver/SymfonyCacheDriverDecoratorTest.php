@@ -32,88 +32,88 @@ final class SymfonyCacheDriverDecoratorTest extends TestCase
     public function testDataIsRetrievedFromStorage(): void
     {
         $hitCacheItem = $this->createMock(ItemInterface::class);
-        $hitCacheItem->expects($this->once())
+        $hitCacheItem->expects(self::once())
             ->method('isHit')
             ->willReturn(true);
 
-        $hitCacheItem->expects($this->once())
+        $hitCacheItem->expects(self::once())
             ->method('get')
             ->willReturn('foo');
 
         $missedCacheItem = $this->createMock(ItemInterface::class);
-        $missedCacheItem->expects($this->once())
+        $missedCacheItem->expects(self::once())
             ->method('isHit')
             ->willReturn(false);
 
-        $missedCacheItem->expects($this->never())
+        $missedCacheItem->expects(self::never())
             ->method('get');
 
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('getItem')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls($hitCacheItem, $missedCacheItem);
 
-        $this->assertSame('foo', $this->driver->fetch('abc'));
-        $this->assertFalse($this->driver->fetch('def'));
+        self::assertSame('foo', $this->driver->fetch('abc'));
+        self::assertFalse($this->driver->fetch('def'));
     }
 
     public function testStorageContainsData(): void
     {
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('hasItem')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls(true, false);
 
-        $this->assertTrue($this->driver->contains('abc'));
-        $this->assertFalse($this->driver->contains('def'));
+        self::assertTrue($this->driver->contains('abc'));
+        self::assertFalse($this->driver->contains('def'));
     }
 
     public function testDataIsSavedInStorage(): void
     {
         $noLifetimeCacheItem = $this->createMock(ItemInterface::class);
-        $noLifetimeCacheItem->expects($this->once())
+        $noLifetimeCacheItem->expects(self::once())
             ->method('set')
             ->with('data');
 
-        $noLifetimeCacheItem->expects($this->never())
+        $noLifetimeCacheItem->expects(self::never())
             ->method('expiresAfter');
 
         $lifetimeCacheItem = $this->createMock(ItemInterface::class);
-        $lifetimeCacheItem->expects($this->once())
+        $lifetimeCacheItem->expects(self::once())
             ->method('set')
             ->with('data');
 
-        $lifetimeCacheItem->expects($this->once())
+        $lifetimeCacheItem->expects(self::once())
             ->method('expiresAfter')
             ->with(60);
 
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('getItem')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls($noLifetimeCacheItem, $lifetimeCacheItem);
 
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('save')
             ->withConsecutive([$noLifetimeCacheItem], [$lifetimeCacheItem])
             ->willReturnOnConsecutiveCalls(true, true);
 
-        $this->assertTrue($this->driver->save('abc', 'data', 0));
-        $this->assertTrue($this->driver->save('def', 'data', 60));
+        self::assertTrue($this->driver->save('abc', 'data', 0));
+        self::assertTrue($this->driver->save('def', 'data', 60));
     }
 
     public function testDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->once())
+        $this->cache->expects(self::once())
             ->method('deleteItem')
             ->with('abc')
             ->willReturn(true);
 
-        $this->assertTrue($this->driver->delete('abc'));
+        self::assertTrue($this->driver->delete('abc'));
     }
 
     public function testAllDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->once())
+        $this->cache->expects(self::once())
             ->method('clear')
             ->willReturn(true);
 

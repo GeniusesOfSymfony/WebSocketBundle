@@ -38,18 +38,18 @@ final class WampServerTest extends TestCase
 
     public function testGetSubProtocols(): void
     {
-        $this->assertSame(['wamp'], $this->serv->getSubProtocols());
+        self::assertSame(['wamp'], $this->serv->getSubProtocols());
     }
 
     public function testConnectionClosesOnInvalidJson(): void
     {
-        $this->conn->expects($this->once())->method('close');
+        $this->conn->expects(self::once())->method('close');
         $this->serv->onMessage($this->conn, 'invalid json');
     }
 
     public function testConnectionClosesOnProtocolError(): void
     {
-        $this->conn->expects($this->once())->method('close');
+        $this->conn->expects(self::once())->method('close');
         $this->serv->onMessage($this->conn, json_encode(['valid' => 'json', 'invalid' => 'protocol'], \JSON_THROW_ON_ERROR));
     }
 }

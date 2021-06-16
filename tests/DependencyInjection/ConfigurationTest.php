@@ -13,7 +13,7 @@ final class ConfigurationTest extends TestCase
     {
         $config = (new Processor())->processConfiguration(new Configuration(), []);
 
-        $this->assertEquals(self::getBundleDefaultConfig(), $config);
+        self::assertEquals(self::getBundleDefaultConfig(), $config);
     }
 
     public function testConfigWithAServer(): void
@@ -30,7 +30,7 @@ final class ConfigurationTest extends TestCase
 
         $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
-        $this->assertEquals(
+        self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
             $config
         );
@@ -73,7 +73,7 @@ final class ConfigurationTest extends TestCase
 
         $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
-        $this->assertEquals(
+        self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $normalizedExtraConfig),
             $config
         );
@@ -101,7 +101,7 @@ final class ConfigurationTest extends TestCase
 
         $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
-        $this->assertEquals(
+        self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
             $config
         );
@@ -126,7 +126,7 @@ final class ConfigurationTest extends TestCase
 
         $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
 
-        $this->assertEquals(
+        self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
             $config
         );
