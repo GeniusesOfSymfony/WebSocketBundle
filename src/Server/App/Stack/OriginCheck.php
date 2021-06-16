@@ -33,14 +33,11 @@ class OriginCheck extends BaseOriginCheck
         parent::__construct($component, $allowed);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
         if ($request) {
             $header = (string) $request->getHeaderLine('Origin');
-            $origin = parse_url($header, PHP_URL_HOST) ?: $header;
+            $origin = parse_url($header, \PHP_URL_HOST) ?: $header;
 
             if (!\in_array($origin, $this->allowedOrigins)) {
                 $this->eventDispatcher->dispatch(new ClientRejectedEvent($origin, $request), GosWebSocketEvents::CLIENT_REJECTED);

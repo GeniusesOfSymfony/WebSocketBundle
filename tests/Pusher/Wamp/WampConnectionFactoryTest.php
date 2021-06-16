@@ -53,7 +53,7 @@ class WampConnectionFactoryTest extends TestCase
      */
     public function testTheFactoryIsCreatedWithAValidConfiguration(array $config): void
     {
-        $this->assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
+        self::assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
     }
 
     /**
@@ -72,7 +72,7 @@ class WampConnectionFactoryTest extends TestCase
             $this->expectExceptionMessage($exceptionMessage);
         }
 
-        $this->assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
+        self::assertInstanceOf(WampConnectionFactory::class, new WampConnectionFactory($config));
     }
 
     public function testTheConnectionObjectIsCreated(): void
@@ -84,6 +84,6 @@ class WampConnectionFactoryTest extends TestCase
 
         $connection = (new WampConnectionFactory($config))->createConnection();
 
-        $this->assertInstanceOf(ClientInterface::class, $connection);
+        self::assertInstanceOf(ClientInterface::class, $connection);
     }
 }

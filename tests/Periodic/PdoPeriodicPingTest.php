@@ -14,12 +14,12 @@ class PdoPeriodicPingTest extends TestCase
     public function testTheDatabaseIsPinged(): void
     {
         $connection = $this->createMock(\PDO::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getAttribute')
             ->with(\PDO::ATTR_PERSISTENT)
             ->willReturn(null);
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('query')
             ->with('SELECT 1');
 
@@ -32,12 +32,12 @@ class PdoPeriodicPingTest extends TestCase
     public function testTheDatabaseIsNotPingedForAPersistentConnection(): void
     {
         $connection = $this->createMock(\PDO::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getAttribute')
             ->with(\PDO::ATTR_PERSISTENT)
             ->willReturn(true);
 
-        $connection->expects($this->never())
+        $connection->expects(self::never())
             ->method('query');
 
         (new PdoPeriodicPing($connection))->tick();
@@ -51,12 +51,12 @@ class PdoPeriodicPingTest extends TestCase
         $logger = new TestLogger();
 
         $connection = $this->createMock(\PDO::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getAttribute')
             ->with(\PDO::ATTR_PERSISTENT)
             ->willReturn(null);
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('query')
             ->willThrowException(new \PDOException('Testing'));
 
@@ -66,11 +66,11 @@ class PdoPeriodicPingTest extends TestCase
         try {
             $ping->tick();
 
-            $this->fail(sprintf('A %s should have been thrown.', \PDOException::class));
+            self::fail(sprintf('A %s should have been thrown.', \PDOException::class));
         } catch (\PDOException $exception) {
-            $this->assertSame('Testing', $exception->getMessage());
+            self::assertSame('Testing', $exception->getMessage());
 
-            $this->assertTrue($logger->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
+            self::assertTrue($logger->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
         }
     }
 }

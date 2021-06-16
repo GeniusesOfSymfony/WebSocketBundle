@@ -198,7 +198,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                         throw new PushUnsupportedException($appTopic);
                     }
 
-                    if ($payload === null) {
+                    if (null === $payload) {
                         throw new \RuntimeException(sprintf('Missing payload data, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -207,7 +207,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::PUBLISH:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -216,7 +216,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::SUBSCRIPTION:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 
@@ -225,7 +225,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     break;
 
                 case self::UNSUBSCRIPTION:
-                    if ($conn === null) {
+                    if (null === $conn) {
                         throw new \RuntimeException(sprintf('No connection was provided, cannot handle "%s" for "%s".', $calledMethod, \get_class($appTopic)));
                     }
 

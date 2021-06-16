@@ -37,7 +37,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
     public function testAnAnonymousTokenIsCreatedAndAddedToStorageWhenAGuestUserConnects(): void
     {
         $session = $this->createMock(SessionInterface::class);
-        $session->expects($this->once())
+        $session->expects(self::once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(false);
@@ -51,14 +51,14 @@ class WebsocketAuthenticationProviderTest extends TestCase
 
         $clientIdentifier = 42;
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->willReturn((string) $clientIdentifier);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('addClient');
 
-        $this->assertInstanceOf(AnonymousToken::class, $this->provider->authenticate($connection));
+        self::assertInstanceOf(AnonymousToken::class, $this->provider->authenticate($connection));
     }
 
     public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated(): void
@@ -66,7 +66,7 @@ class WebsocketAuthenticationProviderTest extends TestCase
         $token = new UsernamePasswordToken('user', 'password', 'main', ['ROLE_USER']);
 
         $session = $this->createMock(SessionInterface::class);
-        $session->expects($this->once())
+        $session->expects(self::once())
             ->method('get')
             ->with('_security_main')
             ->willReturn(serialize($token));
@@ -80,13 +80,13 @@ class WebsocketAuthenticationProviderTest extends TestCase
 
         $clientIdentifier = 42;
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->willReturn((string) $clientIdentifier);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('addClient');
 
-        $this->assertEquals($token, $this->provider->authenticate($connection));
+        self::assertEquals($token, $this->provider->authenticate($connection));
     }
 }

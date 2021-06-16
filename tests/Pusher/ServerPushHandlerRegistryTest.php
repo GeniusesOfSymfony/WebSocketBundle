@@ -48,9 +48,9 @@ class ServerPushHandlerRegistryTest extends TestCase
 
         $this->registry->addPushHandler($handler);
 
-        $this->assertSame($handler, $this->registry->getPushHandler($handler->getName()));
-        $this->assertContains($handler, $this->registry->getPushers());
-        $this->assertTrue($this->registry->hasPushHandler($handler->getName()));
+        self::assertSame($handler, $this->registry->getPushHandler($handler->getName()));
+        self::assertContains($handler, $this->registry->getPushers());
+        self::assertTrue($this->registry->hasPushHandler($handler->getName()));
     }
 
     public function testRetrievingAHandlerFailsIfTheNamedHandlerDoesNotExist(): void

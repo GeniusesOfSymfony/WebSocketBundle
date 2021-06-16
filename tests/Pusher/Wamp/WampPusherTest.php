@@ -54,22 +54,22 @@ class WampPusherTest extends TestCase
 
     public function testAMessageIsPushedAndTheConnectionClosed(): void
     {
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('generate')
             ->willReturn('channel/42');
 
         $connection = $this->createMock(ClientInterface::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('connect');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('disconnect');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createConnection')
             ->willReturn($connection);
 
-        $this->serializer->expects($this->once())
+        $this->serializer->expects(self::once())
             ->method('serialize')
             ->willReturn('{}');
 

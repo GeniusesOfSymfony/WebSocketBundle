@@ -6,6 +6,7 @@ trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecate
 
 /**
  * @internal
+ *
  * @deprecated to be removed in 4.0, use the symfony/messenger component instead
  */
 final class Message

@@ -31,50 +31,50 @@ class DoctrineCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsRetrievedFromStorage(): void
     {
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('fetch')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls('foo', false);
 
-        $this->assertSame('foo', $this->driver->fetch('abc'));
-        $this->assertFalse($this->driver->fetch('def'));
+        self::assertSame('foo', $this->driver->fetch('abc'));
+        self::assertFalse($this->driver->fetch('def'));
     }
 
     public function testStorageContainsData(): void
     {
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('contains')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls(true, false);
 
-        $this->assertTrue($this->driver->contains('abc'));
-        $this->assertFalse($this->driver->contains('def'));
+        self::assertTrue($this->driver->contains('abc'));
+        self::assertFalse($this->driver->contains('def'));
     }
 
     public function testDataIsSavedInStorage(): void
     {
-        $this->cache->expects($this->exactly(2))
+        $this->cache->expects(self::exactly(2))
             ->method('save')
             ->withConsecutive(['abc'], ['def'])
             ->willReturnOnConsecutiveCalls(true, true);
 
-        $this->assertTrue($this->driver->save('abc', 'data', 0));
-        $this->assertTrue($this->driver->save('def', 'data', 60));
+        self::assertTrue($this->driver->save('abc', 'data', 0));
+        self::assertTrue($this->driver->save('def', 'data', 60));
     }
 
     public function testDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->once())
+        $this->cache->expects(self::once())
             ->method('delete')
             ->with('abc')
             ->willReturn(true);
 
-        $this->assertTrue($this->driver->delete('abc'));
+        self::assertTrue($this->driver->delete('abc'));
     }
 
     public function testAllDataIsDeletedFromStorage(): void
     {
-        $this->cache->expects($this->once())
+        $this->cache->expects(self::once())
             ->method('deleteAll')
             ->willReturn(true);
 

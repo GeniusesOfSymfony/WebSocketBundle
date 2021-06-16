@@ -11,15 +11,15 @@ class InMemoryDriverTest extends TestCase
     {
         $driver = new InMemoryDriver();
 
-        $this->assertFalse($driver->contains('abc'));
-        $this->assertTrue($driver->save('abc', 'data'));
-        $this->assertTrue($driver->contains('abc'));
-        $this->assertSame('data', $driver->fetch('abc'));
-        $this->assertTrue($driver->delete('abc'));
-        $this->assertFalse($driver->fetch('abc'));
-        $this->assertTrue($driver->save('abc', 'data'));
-        $this->assertTrue($driver->contains('abc'));
+        self::assertFalse($driver->contains('abc'));
+        self::assertTrue($driver->save('abc', 'data'));
+        self::assertTrue($driver->contains('abc'));
+        self::assertSame('data', $driver->fetch('abc'));
+        self::assertTrue($driver->delete('abc'));
+        self::assertFalse($driver->fetch('abc'));
+        self::assertTrue($driver->save('abc', 'data'));
+        self::assertTrue($driver->contains('abc'));
         $driver->clear();
-        $this->assertFalse($driver->contains('abc'));
+        self::assertFalse($driver->contains('abc'));
     }
 }

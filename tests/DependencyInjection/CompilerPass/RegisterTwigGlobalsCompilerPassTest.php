@@ -16,7 +16,7 @@ class RegisterTwigGlobalsCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertEmpty($this->container->getDefinition('twig')->getMethodCalls());
+        self::assertEmpty($this->container->getDefinition('twig')->getMethodCalls());
     }
 
     public function testGlobalsAreAddedToTwig(): void

@@ -89,45 +89,45 @@ class AmqpServerPushHandlerTest extends TestCase
     public function testAMessageIsHandledAndTheConnectionClosed(): void
     {
         $connection = $this->createMock(\AMQPConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('connect');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('disconnect');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createConnection')
             ->willReturn($connection);
 
         $envelope = $this->createMock(\AMQPEnvelope::class);
-        $envelope->expects($this->atLeastOnce())
+        $envelope->expects(self::atLeastOnce())
             ->method('getBody')
             ->willReturn('["test data"]');
 
-        $envelope->expects($this->atLeastOnce())
+        $envelope->expects(self::atLeastOnce())
             ->method('getDeliveryTag')
             ->willReturn('delivered');
 
         // The consumer loops while there are messages in the queue, so a second loop is triggered and should return nothing to break it
         $queue = $this->createMock(\AMQPQueue::class);
-        $queue->expects($this->exactly(2))
+        $queue->expects(self::exactly(2))
             ->method('get')
             ->willReturnOnConsecutiveCalls($envelope, null);
 
-        $queue->expects($this->once())
+        $queue->expects(self::once())
             ->method('ack');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createQueue')
             ->willReturn($queue);
 
         $loop = $this->createMock(LoopInterface::class);
-        $loop->expects($this->once())
+        $loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->willReturn($this->createMock(TimerInterface::class));
 
         $app = $this->createMock(PushableWampServerInterface::class);
-        $app->expects($this->once())
+        $app->expects(self::once())
             ->method('onPush');
 
         $this->pushHandler->handle($loop, $app);
@@ -139,17 +139,17 @@ class AmqpServerPushHandlerTest extends TestCase
         /** @var Consumer $consumer */
         $consumer = $consumerProperty->getValue($this->pushHandler);
 
-        $this->serializer->expects($this->once())
+        $this->serializer->expects(self::once())
             ->method('deserialize')
             ->willReturn(new Message('channel/42', ['test message']));
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('match')
             ->willReturn(['test_channel', $this->createMock(Route::class), []]);
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(PushHandlerSuccessEvent::class), GosWebSocketEvents::PUSHER_SUCCESS);
+            ->with(self::isInstanceOf(PushHandlerSuccessEvent::class), GosWebSocketEvents::PUSHER_SUCCESS);
 
         $consumer();
 
@@ -159,45 +159,45 @@ class AmqpServerPushHandlerTest extends TestCase
     public function testAnErrorHandlingAMessageIsCaught(): void
     {
         $connection = $this->createMock(\AMQPConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('connect');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('disconnect');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createConnection')
             ->willReturn($connection);
 
         $envelope = $this->createMock(\AMQPEnvelope::class);
-        $envelope->expects($this->atLeastOnce())
+        $envelope->expects(self::atLeastOnce())
             ->method('getBody')
             ->willReturn('["test data"]');
 
-        $envelope->expects($this->atLeastOnce())
+        $envelope->expects(self::atLeastOnce())
             ->method('getDeliveryTag')
             ->willReturn('delivered');
 
         // The consumer loops while there are messages in the queue, so a second loop is triggered and should return nothing to break it
         $queue = $this->createMock(\AMQPQueue::class);
-        $queue->expects($this->exactly(2))
+        $queue->expects(self::exactly(2))
             ->method('get')
             ->willReturnOnConsecutiveCalls($envelope, null);
 
-        $queue->expects($this->once())
+        $queue->expects(self::once())
             ->method('reject');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createQueue')
             ->willReturn($queue);
 
         $loop = $this->createMock(LoopInterface::class);
-        $loop->expects($this->once())
+        $loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->willReturn($this->createMock(TimerInterface::class));
 
         $app = $this->createMock(PushableWampServerInterface::class);
-        $app->expects($this->once())
+        $app->expects(self::once())
             ->method('onPush')
             ->willThrowException(new \RuntimeException('Testing error handling'));
 
@@ -210,17 +210,17 @@ class AmqpServerPushHandlerTest extends TestCase
         /** @var Consumer $consumer */
         $consumer = $consumerProperty->getValue($this->pushHandler);
 
-        $this->serializer->expects($this->once())
+        $this->serializer->expects(self::once())
             ->method('deserialize')
             ->willReturn(new Message('channel/42', ['test message']));
 
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('match')
             ->willReturn(['test_channel', $this->createMock(Route::class), []]);
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(PushHandlerFailEvent::class), GosWebSocketEvents::PUSHER_FAIL);
+            ->with(self::isInstanceOf(PushHandlerFailEvent::class), GosWebSocketEvents::PUSHER_FAIL);
 
         $consumer();
 

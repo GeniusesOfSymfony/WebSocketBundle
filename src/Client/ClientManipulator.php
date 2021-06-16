@@ -66,7 +66,7 @@ final class ClientManipulator implements ClientManipulatorInterface
                 if (\in_array($role, $roles)) {
                     $result[] = new ClientConnection($client, $connection);
 
-                    continue 1;
+                    continue 2;
                 }
             }
         }

@@ -25,6 +25,6 @@ class OriginRegistryTest extends TestCase
 
         $this->registry->addOrigin($origin);
 
-        $this->assertContains($origin, $this->registry->getOrigins());
+        self::assertContains($origin, $this->registry->getOrigins());
     }
 }

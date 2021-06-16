@@ -26,7 +26,7 @@ final class DataCollectorCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         if (!$this->internal) {
-            trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', DataCollectorCompilerPass::class);
+            trigger_deprecation('gos/web-socket-bundle', '3.1', 'The "%s" class is deprecated and will be removed in 4.0, use the symfony/messenger component instead.', self::class);
         }
 
         if (!$container->getParameter('kernel.debug') || !$container->hasDefinition('debug.stopwatch')) {

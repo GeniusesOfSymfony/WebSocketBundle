@@ -38,11 +38,11 @@ final class ServerLauncherTest extends TestCase
 
         /** @var MockObject&ServerInterface $server */
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn($serverName);
 
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('launch')
             ->with($host, $port, $profile);
 
@@ -60,11 +60,11 @@ final class ServerLauncherTest extends TestCase
 
         /** @var MockObject&ServerInterface $server */
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn($serverName);
 
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('launch')
             ->with($host, $port, $profile);
 
@@ -88,7 +88,7 @@ final class ServerLauncherTest extends TestCase
 
         /** @var MockObject&ServerInterface $server */
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn('default');
 

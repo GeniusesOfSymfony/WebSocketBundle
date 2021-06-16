@@ -29,26 +29,17 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app = $app;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onOpen(ConnectionInterface $conn): void
     {
         $conn->WAMP->subscriptions = new \SplObjectStorage();
         $this->app->onOpen($conn);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
         $this->app->onCall($conn, $id, $this->getTopic($topic), $params);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
         $topicObj = $this->getTopic($topic);
@@ -62,9 +53,6 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app->onSubscribe($conn, $topicObj);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onUnsubscribe(ConnectionInterface $conn, $topic): void
     {
         $topicObj = $this->getTopic($topic);
@@ -78,17 +66,11 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app->onUnsubscribe($conn, $topicObj);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
         $this->app->onPublish($conn, $this->getTopic($topic), $event, $exclude, $eligible);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onClose(ConnectionInterface $conn): void
     {
         $this->app->onClose($conn);
@@ -98,17 +80,11 @@ class TopicManager implements WsServerInterface, WampServerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         $this->app->onError($conn, $e);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSubProtocols()
     {
         if ($this->app instanceof WsServerInterface) {

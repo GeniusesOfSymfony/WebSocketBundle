@@ -4,8 +4,8 @@ namespace Gos\Bundle\WebSocketBundle\Periodic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException as LegacyDBALException;
-use Doctrine\DBAL\Exception as NewDBALException;
 use Doctrine\DBAL\Driver\PingableConnection;
+use Doctrine\DBAL\Exception as NewDBALException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 

@@ -43,11 +43,11 @@ class StartServerListenerTest extends TestCase
     public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
     {
         $loop = $this->createMock(LoopInterface::class);
-        $loop->expects($this->exactly(2))
+        $loop->expects(self::exactly(2))
             ->method('addSignal')
             ->withConsecutive(
-                [SIGINT, $this->isInstanceOf(\Closure::class)],
-                [SIGTERM, $this->isInstanceOf(\Closure::class)]
+                [\SIGINT, self::isInstanceOf(\Closure::class)],
+                [\SIGTERM, self::isInstanceOf(\Closure::class)]
             );
 
         $event = new ServerLaunchedEvent(

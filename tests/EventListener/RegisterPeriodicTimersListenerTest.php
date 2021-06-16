@@ -34,14 +34,14 @@ class RegisterPeriodicTimersListenerTest extends TestCase
     public function testThePeriodicTimersAreRegisteredToTheLoop(): void
     {
         $handler = $this->createMock(PeriodicInterface::class);
-        $handler->expects($this->once())
+        $handler->expects(self::once())
             ->method('getTimeout')
             ->willReturn(10);
 
         $this->periodicRegistry->addPeriodic($handler);
 
         $loop = $this->createMock(LoopInterface::class);
-        $loop->expects($this->once())
+        $loop->expects(self::once())
             ->method('addPeriodicTimer');
 
         $event = new ServerLaunchedEvent(

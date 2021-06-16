@@ -20,16 +20,16 @@ class DoctrinePeriodicPingTest extends TestCase
         $query = 'SELECT 1';
 
         $platform = $this->createMock(AbstractPlatform::class);
-        $platform->expects($this->once())
+        $platform->expects(self::once())
             ->method('getDummySelectSQL')
             ->willReturn($query);
 
         $connection = $this->createMock(Connection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('executeQuery')
             ->with($query);
 
@@ -37,26 +37,26 @@ class DoctrinePeriodicPingTest extends TestCase
         $ping->setLogger($logger);
         $ping->tick();
 
-        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
+        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testTheDatabaseIsPingedWithAPingableConnection(): void
     {
         if (!interface_exists(PingableConnection::class)) {
-            $this->markTestSkipped('Test applies to doctrine/dbal 2.x');
+            self::markTestSkipped('Test applies to doctrine/dbal 2.x');
         }
 
         $logger = new TestLogger();
 
         $connection = $this->createMock(PingableConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('ping');
 
         $ping = new DoctrinePeriodicPing($connection);
         $ping->setLogger($logger);
         $ping->tick();
 
-        $this->assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
+        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testAValidObjectIsRequired(): void
@@ -74,7 +74,7 @@ class DoctrinePeriodicPingTest extends TestCase
         $exceptionClass = class_exists(NewDBALException::class) ? NewDBALException::class : LegacyDBALException::class;
 
         $connection = $this->createMock(Connection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('getDatabasePlatform')
             ->willThrowException(new $exceptionClass('Testing'));
 
@@ -84,11 +84,11 @@ class DoctrinePeriodicPingTest extends TestCase
         try {
             $ping->tick();
 
-            $this->fail(sprintf('A %s should have been thrown.', $exceptionClass));
+            self::fail(sprintf('A %s should have been thrown.', $exceptionClass));
         } catch (LegacyDBALException | NewDBALException $exception) {
-            $this->assertSame('Testing', $exception->getMessage());
+            self::assertSame('Testing', $exception->getMessage());
 
-            $this->assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
+            self::assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
         }
     }
 }

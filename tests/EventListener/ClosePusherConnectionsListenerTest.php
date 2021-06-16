@@ -35,11 +35,11 @@ class ClosePusherConnectionsListenerTest extends TestCase
     public function testPusherConnectionsAreClosedWhenTheKernelIsTerminated(): void
     {
         $pusher = $this->createMock(PusherInterface::class);
-        $pusher->expects($this->once())
+        $pusher->expects(self::once())
             ->method('getName')
             ->willReturn('Test');
 
-        $pusher->expects($this->once())
+        $pusher->expects(self::once())
             ->method('close');
 
         $this->pusherRegistry->addPusher($pusher);

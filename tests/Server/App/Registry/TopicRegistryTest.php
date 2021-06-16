@@ -49,8 +49,8 @@ class TopicRegistryTest extends TestCase
 
         $this->registry->addTopic($handler);
 
-        $this->assertSame($handler, $this->registry->getTopic($handler->getName()));
-        $this->assertTrue($this->registry->hasTopic($handler->getName()));
+        self::assertSame($handler, $this->registry->getTopic($handler->getName()));
+        self::assertTrue($this->registry->hasTopic($handler->getName()));
     }
 
     public function testRetrievingATopicFailsIfTheNamedHandlerDoesNotExist(): void

@@ -21,7 +21,6 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class WampApplicationTest extends TestCase
@@ -93,32 +92,32 @@ class WampApplicationTest extends TestCase
     {
         /** @var MockObject&AbstractToken $token */
         $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
+        $token->expects(self::once())
             ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->atLeastOnce())
+        $topic->expects(self::atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $this->decoratedRouter->expects($this->once())
+        $this->decoratedRouter->expects(self::once())
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
@@ -127,12 +126,12 @@ class WampApplicationTest extends TestCase
         $exclude = [];
         $eligible = [];
 
-        $this->topicDispatcher->expects($this->once())
+        $this->topicDispatcher->expects(self::once())
             ->method('onPublish');
 
         $this->application->onPublish($connection, $topic, $event, $exclude, $eligible);
 
-        $this->assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
+        self::assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
     }
 
     public function testAMessageIsPushed(): void
@@ -147,22 +146,22 @@ class WampApplicationTest extends TestCase
         $data = 'foo';
         $provider = 'test';
 
-        $this->topicDispatcher->expects($this->once())
+        $this->topicDispatcher->expects(self::once())
             ->method('onPush');
 
         $this->application->onPush($request, $data, $provider);
 
-        $this->assertTrue($this->logger->hasInfoThatContains('Pusher test has pushed'));
+        self::assertTrue($this->logger->hasInfoThatContains('Pusher test has pushed'));
     }
 
     public function testARpcCallIsHandled(): void
     {
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->atLeastOnce())
+        $topic->expects(self::atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $this->decoratedRouter->expects($this->once())
+        $this->decoratedRouter->expects(self::once())
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
@@ -171,7 +170,7 @@ class WampApplicationTest extends TestCase
         $id = '42';
         $params = [];
 
-        $this->rpcDispatcher->expects($this->once())
+        $this->rpcDispatcher->expects(self::once())
             ->method('dispatch');
 
         $this->application->onCall($connection, $id, $topic, $params);
@@ -181,93 +180,93 @@ class WampApplicationTest extends TestCase
     {
         /** @var MockObject&AbstractToken $token */
         $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
+        $token->expects(self::once())
             ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->atLeastOnce())
+        $topic->expects(self::atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $this->decoratedRouter->expects($this->once())
+        $this->decoratedRouter->expects(self::once())
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
-        $this->topicDispatcher->expects($this->once())
+        $this->topicDispatcher->expects(self::once())
             ->method('onSubscribe');
 
         $this->application->onSubscribe($connection, $topic);
 
-        $this->assertTrue($this->logger->hasInfoThatContains('User user subscribed to channel/42'));
+        self::assertTrue($this->logger->hasInfoThatContains('User user subscribed to channel/42'));
     }
 
     public function testAClientUnsubscriptionIsHandled(): void
     {
         /** @var MockObject&AbstractToken $token */
         $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
+        $token->expects(self::once())
             ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->with($connection)
             ->willReturn($connection->resourceId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('hasClient')
             ->willReturn(true);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->willReturn($token);
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->atLeastOnce())
+        $topic->expects(self::atLeastOnce())
             ->method('getId')
             ->willReturn('channel/42');
 
-        $this->decoratedRouter->expects($this->once())
+        $this->decoratedRouter->expects(self::once())
             ->method('match')
             ->with('channel/42')
             ->willReturn(['channel_name', $this->createMock(Route::class), []]);
 
-        $this->topicDispatcher->expects($this->once())
+        $this->topicDispatcher->expects(self::once())
             ->method('onUnSubscribe');
 
         $this->application->onUnSubscribe($connection, $topic);
 
-        $this->assertTrue($this->logger->hasInfoThatContains('User user unsubscribed from channel/42'));
+        self::assertTrue($this->logger->hasInfoThatContains('User user unsubscribed from channel/42'));
     }
 
     public function testAConnectionIsOpened(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientConnectedEvent::class), GosWebSocketEvents::CLIENT_CONNECTED);
+            ->with(self::isInstanceOf(ClientConnectedEvent::class), GosWebSocketEvents::CLIENT_CONNECTED);
 
         $this->application->onOpen($connection);
     }
@@ -278,9 +277,9 @@ class WampApplicationTest extends TestCase
         $connection->WAMP = new \stdClass();
         $connection->WAMP->subscriptions = [];
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientDisconnectedEvent::class), GosWebSocketEvents::CLIENT_DISCONNECTED);
+            ->with(self::isInstanceOf(ClientDisconnectedEvent::class), GosWebSocketEvents::CLIENT_DISCONNECTED);
 
         $this->application->onClose($connection);
     }
@@ -289,9 +288,9 @@ class WampApplicationTest extends TestCase
     {
         $connection = $this->createMock(ConnectionInterface::class);
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientErrorEvent::class), GosWebSocketEvents::CLIENT_ERROR);
+            ->with(self::isInstanceOf(ClientErrorEvent::class), GosWebSocketEvents::CLIENT_ERROR);
 
         $this->application->onError($connection, new \Exception('Testing'));
     }

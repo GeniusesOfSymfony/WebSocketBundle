@@ -44,11 +44,11 @@ class RegisterPushHandlersListenerTest extends TestCase
         $loop = $this->createMock(LoopInterface::class);
 
         $handler = $this->createMock(ServerPushHandlerInterface::class);
-        $handler->expects($this->once())
+        $handler->expects(self::once())
             ->method('getName')
             ->willReturn('test');
 
-        $handler->expects($this->once())
+        $handler->expects(self::once())
             ->method('handle')
             ->with($loop, $this->wampServer);
 

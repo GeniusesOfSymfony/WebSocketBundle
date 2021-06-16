@@ -2,8 +2,7 @@
 composer.lock
 .phpunit.result.cache
 /phpunit.xml
-.php_cs.cache
-/.php_cs
+.php-cs-fixer.cache
 /.phpstan.neon
 /node_modules/
 /package-lock.json

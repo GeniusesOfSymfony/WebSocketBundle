@@ -28,8 +28,6 @@ final class ClientConnection implements \ArrayAccess
 
     /**
      * @param int|string $offset
-     *
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -64,7 +62,7 @@ final class ClientConnection implements \ArrayAccess
                         $trace[0]['file'],
                         $trace[0]['line']
                     ),
-                    E_USER_NOTICE
+                    \E_USER_NOTICE
                 );
         }
     }

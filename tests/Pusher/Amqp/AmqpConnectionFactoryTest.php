@@ -64,7 +64,7 @@ class AmqpConnectionFactoryTest extends TestCase
      */
     public function testTheFactoryIsCreatedWithAValidConfiguration(array $config): void
     {
-        $this->assertInstanceOf(AmqpConnectionFactory::class, new AmqpConnectionFactory($config));
+        self::assertInstanceOf(AmqpConnectionFactory::class, new AmqpConnectionFactory($config));
     }
 
     /**
@@ -83,7 +83,7 @@ class AmqpConnectionFactoryTest extends TestCase
             $this->expectExceptionMessage($exceptionMessage);
         }
 
-        $this->assertInstanceOf(AmqpConnectionFactory::class, new AmqpConnectionFactory($config));
+        self::assertInstanceOf(AmqpConnectionFactory::class, new AmqpConnectionFactory($config));
     }
 
     /**
@@ -100,6 +100,6 @@ class AmqpConnectionFactoryTest extends TestCase
 
         $connection = (new AmqpConnectionFactory($config))->createConnection();
 
-        $this->assertInstanceOf(\AMQPConnection::class, $connection);
+        self::assertInstanceOf(\AMQPConnection::class, $connection);
     }
 }

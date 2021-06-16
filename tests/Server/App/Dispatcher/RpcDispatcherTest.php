@@ -66,14 +66,14 @@ class RpcDispatcherTest extends TestCase
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callResult');
 
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertTrue($handler->wasCalled());
+        self::assertTrue($handler->wasCalled());
     }
 
     public function testARpcCallFailsWhenItsHandlerIsNotInTheRegistry(): void
@@ -107,14 +107,14 @@ class RpcDispatcherTest extends TestCase
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasCalled());
     }
 
     public function testARpcCallFailsWhenTheMethodDoesNotExistOnTheHandler(): void
@@ -150,14 +150,14 @@ class RpcDispatcherTest extends TestCase
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         $topic = $this->createMock(Topic::class);
 
         $this->dispatcher->dispatch($connection, 'a1b2c3', $topic, $request, []);
 
-        $this->assertFalse($handler->wasCalled());
+        self::assertFalse($handler->wasCalled());
     }
 
     public function testAThrowableFromAHandlerIsCaughtAndProcessed(): void
@@ -184,7 +184,7 @@ class RpcDispatcherTest extends TestCase
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         $topic = $this->createMock(Topic::class);
@@ -216,7 +216,7 @@ class RpcDispatcherTest extends TestCase
         $request = new WampRequest('hello.world', $route, $attribs, 'hello/world');
 
         $connection = $this->createMock(WampConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('callError');
 
         $topic = $this->createMock(Topic::class);

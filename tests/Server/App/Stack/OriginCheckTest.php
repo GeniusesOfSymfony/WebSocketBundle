@@ -48,12 +48,12 @@ class OriginCheckTest extends TestCase
         $connection = $this->createMock(ConnectionInterface::class);
 
         $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())
+        $request->expects(self::once())
             ->method('getHeaderLine')
             ->with('Origin')
             ->willReturn('localhost');
 
-        $this->decoratedComponent->expects($this->once())
+        $this->decoratedComponent->expects(self::once())
             ->method('onOpen')
             ->with($connection, $request);
 
@@ -65,23 +65,23 @@ class OriginCheckTest extends TestCase
         $this->component->allowedOrigins = ['socketo.me'];
 
         $connection = $this->createMock(ConnectionInterface::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('send');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('close');
 
         $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())
+        $request->expects(self::once())
             ->method('getHeaderLine')
             ->with('Origin')
             ->willReturn('localhost');
 
-        $this->eventDispatcher->expects($this->once())
+        $this->eventDispatcher->expects(self::once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(ClientRejectedEvent::class), GosWebSocketEvents::CLIENT_REJECTED);
+            ->with(self::isInstanceOf(ClientRejectedEvent::class), GosWebSocketEvents::CLIENT_REJECTED);
 
-        $this->decoratedComponent->expects($this->never())
+        $this->decoratedComponent->expects(self::never())
             ->method('onOpen');
 
         $this->component->onOpen($connection, $request);

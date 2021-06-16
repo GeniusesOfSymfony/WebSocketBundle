@@ -12,7 +12,7 @@ class WebsocketServerCommandTest extends TestCase
     public function testCommandLaunchesWebSocketServer(): void
     {
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
-        $entryPoint->expects($this->once())
+        $entryPoint->expects(self::once())
             ->method('launch')
             ->with(null, 'localhost', 1337, false);
 
@@ -25,7 +25,7 @@ class WebsocketServerCommandTest extends TestCase
     public function testCommandLaunchesWebSocketServerWithConsoleArgumentsAndOptions(): void
     {
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
-        $entryPoint->expects($this->once())
+        $entryPoint->expects(self::once())
             ->method('launch')
             ->with('websocket', 'web.socket', 8443, true);
 

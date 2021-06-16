@@ -36,11 +36,11 @@ class EntryPointTest extends TestCase
         $profile = false;
 
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn($serverName);
 
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('launch')
             ->with($host, $port, $profile);
 
@@ -57,11 +57,11 @@ class EntryPointTest extends TestCase
         $profile = false;
 
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn($serverName);
 
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('launch')
             ->with($host, $port, $profile);
 
@@ -93,7 +93,7 @@ class EntryPointTest extends TestCase
         $profile = false;
 
         $server = $this->createMock(ServerInterface::class);
-        $server->expects($this->once())
+        $server->expects(self::once())
             ->method('getName')
             ->willReturn('default');
 

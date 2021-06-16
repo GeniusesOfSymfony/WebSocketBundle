@@ -39,12 +39,12 @@ class ClientStorageTest extends TestCase
         $clientId = '42';
         $token = new AnonymousToken('secret', 'anon');
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('fetch')
             ->with($clientId)
             ->willReturn(serialize($token));
 
-        $this->assertEquals($token, $this->storage->getClient($clientId));
+        self::assertEquals($token, $this->storage->getClient($clientId));
     }
 
     public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenFetchingAClient(): void
@@ -54,7 +54,7 @@ class ClientStorageTest extends TestCase
 
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('fetch')
             ->with($clientId)
             ->willThrowException(new \Exception('Testing'));
@@ -69,7 +69,7 @@ class ClientStorageTest extends TestCase
 
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('fetch')
             ->with($clientId)
             ->willReturn(false);
@@ -84,7 +84,7 @@ class ClientStorageTest extends TestCase
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = $clientId;
 
-        $this->assertSame($clientId, $this->storage->getStorageId($connection));
+        self::assertSame($clientId, $this->storage->getStorageId($connection));
     }
 
     public function testTheClientIsAddedToStorage(): void
@@ -92,7 +92,7 @@ class ClientStorageTest extends TestCase
         $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('save')
             ->willReturn(true);
 
@@ -107,7 +107,7 @@ class ClientStorageTest extends TestCase
         $clientId = '42';
         $token = $this->createMock(TokenInterface::class);
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('save')
             ->willThrowException(new \Exception('Testing'));
 
@@ -123,11 +123,11 @@ class ClientStorageTest extends TestCase
 
         /** @var MockObject&AbstractToken $token */
         $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
+        $token->expects(self::once())
             ->method(method_exists(AbstractToken::class, 'getUserIdentifier') ? 'getUserIdentifier' : 'getUsername')
             ->willReturn('user');
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('save')
             ->willReturn(false);
 
@@ -138,11 +138,11 @@ class ClientStorageTest extends TestCase
     {
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('contains')
             ->willReturn(true);
 
-        $this->assertTrue($this->storage->hasClient($clientId));
+        self::assertTrue($this->storage->hasClient($clientId));
     }
 
     public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenCheckingForPresence(): void
@@ -152,7 +152,7 @@ class ClientStorageTest extends TestCase
 
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('contains')
             ->willThrowException(new \Exception('Testing'));
 
@@ -163,11 +163,11 @@ class ClientStorageTest extends TestCase
     {
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('delete')
             ->willReturn(true);
 
-        $this->assertTrue($this->storage->removeClient($clientId));
+        self::assertTrue($this->storage->removeClient($clientId));
     }
 
     public function testAnExceptionIsThrownIfTheStorageDriverFailsWhenRemovingAClient(): void
@@ -177,7 +177,7 @@ class ClientStorageTest extends TestCase
 
         $clientId = '42';
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('delete')
             ->willThrowException(new \Exception('Testing'));
 
@@ -186,7 +186,7 @@ class ClientStorageTest extends TestCase
 
     public function testAllClientsCanBeRemovedFromStorage(): void
     {
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('clear');
 
         $this->storage->removeAllClients();
@@ -197,7 +197,7 @@ class ClientStorageTest extends TestCase
         $this->expectException(StorageException::class);
         $this->expectExceptionMessage('Driver Gos\Bundle\WebSocketBundle\Client\ClientStorage failed');
 
-        $this->driver->expects($this->once())
+        $this->driver->expects(self::once())
             ->method('clear')
             ->willThrowException(new \Exception('Testing'));
 

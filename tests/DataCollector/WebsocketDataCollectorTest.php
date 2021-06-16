@@ -13,9 +13,9 @@ class WebsocketDataCollectorTest extends TestCase
         $collector = new WebsocketDataCollector();
         $collector->lateCollect();
 
-        $this->assertContainsOnly('int', $collector->getPusherCounts());
-        $this->assertSame(0, $collector->getPushTotal());
-        $this->assertSame('websocket', $collector->getName());
+        self::assertContainsOnly('int', $collector->getPusherCounts());
+        self::assertSame(0, $collector->getPushTotal());
+        self::assertSame('websocket', $collector->getName());
     }
 
     public function testCollectWithPushers(): void
@@ -33,8 +33,8 @@ class WebsocketDataCollectorTest extends TestCase
 
         $collector->lateCollect();
 
-        $this->assertContainsOnly('int', $collector->getPusherCounts());
-        $this->assertSame(1, $collector->getPushTotal());
-        $this->assertSame('websocket', $collector->getName());
+        self::assertContainsOnly('int', $collector->getPusherCounts());
+        self::assertSame(1, $collector->getPushTotal());
+        self::assertSame('websocket', $collector->getName());
     }
 }

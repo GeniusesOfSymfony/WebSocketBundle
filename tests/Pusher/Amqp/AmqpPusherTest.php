@@ -56,30 +56,30 @@ class AmqpPusherTest extends TestCase
 
     public function testAMessageIsPushedAndTheConnectionClosed(): void
     {
-        $this->pubSubRouter->expects($this->once())
+        $this->pubSubRouter->expects(self::once())
             ->method('generate')
             ->willReturn('channel/42');
 
         $connection = $this->createMock(\AMQPConnection::class);
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('connect');
 
-        $connection->expects($this->once())
+        $connection->expects(self::once())
             ->method('disconnect');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createConnection')
             ->willReturn($connection);
 
         $exchange = $this->createMock(\AMQPExchange::class);
-        $exchange->expects($this->once())
+        $exchange->expects(self::once())
             ->method('publish');
 
-        $this->connectionFactory->expects($this->once())
+        $this->connectionFactory->expects(self::once())
             ->method('createExchange')
             ->willReturn($exchange);
 
-        $this->serializer->expects($this->once())
+        $this->serializer->expects(self::once())
             ->method('serialize')
             ->willReturn('{}');
 

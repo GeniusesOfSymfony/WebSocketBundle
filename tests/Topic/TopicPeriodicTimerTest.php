@@ -39,21 +39,21 @@ class TopicPeriodicTimerTest extends TestCase
 
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
         $this->topicPeriodicTimer->addPeriodicTimer($topic, 'test', $timeout, $callback);
 
-        $this->assertSame($timer, $this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
+        self::assertSame($timer, $this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
     }
 
     public function testNoTimerIsReturnedWhenNotRegisteredAndActive(): void
     {
         $topic = $this->createMock(TopicInterface::class);
 
-        $this->assertFalse($this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
+        self::assertFalse($this->topicPeriodicTimer->getAllPeriodicTimers($topic, 'test'));
     }
 
     public function testRetrieveThePeriodicTimersForATopic(): void
@@ -65,35 +65,35 @@ class TopicPeriodicTimerTest extends TestCase
 
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
         $this->topicPeriodicTimer->addPeriodicTimer($topic, 'test', $timeout, $callback);
 
-        $this->assertSame(['test' => $timer], $this->topicPeriodicTimer->getPeriodicTimers($topic));
+        self::assertSame(['test' => $timer], $this->topicPeriodicTimer->getPeriodicTimers($topic));
     }
 
     public function testDetermineWhetherATopicHasBeenRegistered(): void
     {
         $topic = $this->createMock(TopicInterface::class);
 
-        $this->assertFalse($this->topicPeriodicTimer->isRegistered($topic));
+        self::assertFalse($this->topicPeriodicTimer->isRegistered($topic));
 
         $callback = static function (): void {};
         $timeout = 10;
 
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
         $this->topicPeriodicTimer->addPeriodicTimer($topic, 'test', $timeout, $callback);
 
-        $this->assertTrue($this->topicPeriodicTimer->isRegistered($topic));
+        self::assertTrue($this->topicPeriodicTimer->isRegistered($topic));
     }
 
     public function testCancelTheNamedPeriodicTimerWhenActive(): void
@@ -105,12 +105,12 @@ class TopicPeriodicTimerTest extends TestCase
 
         $timer = $this->createMock(TimerInterface::class);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('addPeriodicTimer')
             ->with($timeout, $callback)
             ->willReturn($timer);
 
-        $this->loop->expects($this->once())
+        $this->loop->expects(self::once())
             ->method('cancelTimer')
             ->with($timer);
 

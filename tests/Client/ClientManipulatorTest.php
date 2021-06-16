@@ -48,17 +48,17 @@ class ClientManipulatorTest extends TestCase
         $storageId = 42;
         $client = $this->createMock(AbstractToken::class);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getStorageId')
             ->with($connection)
             ->willReturn((string) $storageId);
 
-        $this->clientStorage->expects($this->once())
+        $this->clientStorage->expects(self::once())
             ->method('getClient')
             ->with($storageId)
             ->willReturn($client);
 
-        $this->assertSame($client, $this->manipulator->getClient($connection));
+        self::assertSame($client, $this->manipulator->getClient($connection));
     }
 
     public function testGetClientForConnectionAfterReauthenticating(): void
@@ -67,24 +67,24 @@ class ClientManipulatorTest extends TestCase
         $storageId = 42;
         $client = $this->createMock(AbstractToken::class);
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->with($connection)
             ->willReturn((string) $storageId);
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getClient')
             ->with($storageId)
             ->willReturnOnConsecutiveCalls(
-                $this->throwException(new ClientNotFoundException()),
+                self::throwException(new ClientNotFoundException()),
                 $client
             );
 
-        $this->authenticationProvider->expects($this->once())
+        $this->authenticationProvider->expects(self::once())
             ->method('authenticate')
             ->with($connection);
 
-        $this->assertSame($client, $this->manipulator->getClient($connection));
+        self::assertSame($client, $this->manipulator->getClient($connection));
     }
 
     public function testAllConnectionsForAUserCanBeFoundByUsername(): void
@@ -109,23 +109,23 @@ class ClientManipulatorTest extends TestCase
 
         /** @var MockObject&AbstractToken $client1 */
         $client1 = $this->createMock(AbstractToken::class);
-        $client1->expects($this->once())
+        $client1->expects(self::once())
             ->method($usernameMethod)
             ->willReturn($username1);
 
         /** @var MockObject&AbstractToken $client2 */
         $client2 = $this->createMock(AbstractToken::class);
-        $client2->expects($this->once())
+        $client2->expects(self::once())
             ->method($usernameMethod)
             ->willReturn($username1);
 
         /** @var MockObject&AbstractToken $client3 */
         $client3 = $this->createMock(AbstractToken::class);
-        $client3->expects($this->once())
+        $client3->expects(self::once())
             ->method($usernameMethod)
             ->willReturn($username2);
 
-        $this->clientStorage->expects($this->exactly(3))
+        $this->clientStorage->expects(self::exactly(3))
             ->method('getStorageId')
             ->withConsecutive(
                 [$connection1],
@@ -138,7 +138,7 @@ class ClientManipulatorTest extends TestCase
                 (string) $storageId3
             );
 
-        $this->clientStorage->expects($this->exactly(3))
+        $this->clientStorage->expects(self::exactly(3))
             ->method('getClient')
             ->withConsecutive(
                 [$storageId1],
@@ -153,11 +153,11 @@ class ClientManipulatorTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2, $connection3]));
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 new ClientConnection($client1, $connection1),
                 new ClientConnection($client2, $connection2),
@@ -177,7 +177,7 @@ class ClientManipulatorTest extends TestCase
         $authenticatedClient = $this->createMock(AbstractToken::class);
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->withConsecutive(
                 [$connection1],
@@ -188,7 +188,7 @@ class ClientManipulatorTest extends TestCase
                 (string) $storageId2
             );
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getClient')
             ->withConsecutive(
                 [$storageId1],
@@ -200,11 +200,11 @@ class ClientManipulatorTest extends TestCase
             );
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2]));
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 new ClientConnection($authenticatedClient, $connection1),
             ],
@@ -229,7 +229,7 @@ class ClientManipulatorTest extends TestCase
         /** @var MockObject&AnonymousToken $guestClient */
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
             ->withConsecutive(
                 [$connection1],
@@ -240,7 +240,7 @@ class ClientManipulatorTest extends TestCase
                 (string) $storageId2
             );
 
-        $this->clientStorage->expects($this->exactly(2))
+        $this->clientStorage->expects(self::exactly(2))
             ->method('getClient')
             ->withConsecutive(
                 [$storageId1],
@@ -253,11 +253,11 @@ class ClientManipulatorTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2]));
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 new ClientConnection($authenticatedClient, $connection1),
                 new ClientConnection($guestClient, $connection2),
@@ -277,18 +277,18 @@ class ClientManipulatorTest extends TestCase
         $storageId3 = 126;
 
         $authenticatedClient1 = $this->createMock(UsernamePasswordToken::class);
-        $authenticatedClient1->expects($this->once())
+        $authenticatedClient1->expects(self::once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
 
         $authenticatedClient2 = $this->createMock(UsernamePasswordToken::class);
-        $authenticatedClient2->expects($this->once())
+        $authenticatedClient2->expects(self::once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER']);
 
         $guestClient = $this->createMock(AnonymousToken::class);
 
-        $this->clientStorage->expects($this->exactly(3))
+        $this->clientStorage->expects(self::exactly(3))
             ->method('getStorageId')
             ->withConsecutive(
                 [$connection1],
@@ -301,7 +301,7 @@ class ClientManipulatorTest extends TestCase
                 (string) $storageId3
             );
 
-        $this->clientStorage->expects($this->exactly(3))
+        $this->clientStorage->expects(self::exactly(3))
             ->method('getClient')
             ->withConsecutive(
                 [$storageId1],
@@ -315,11 +315,11 @@ class ClientManipulatorTest extends TestCase
             );
 
         $topic = $this->createMock(Topic::class);
-        $topic->expects($this->once())
+        $topic->expects(self::once())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$connection1, $connection2, $connection3]));
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 new ClientConnection($authenticatedClient1, $connection1),
             ],

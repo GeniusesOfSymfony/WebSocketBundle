@@ -50,25 +50,25 @@ class DataCollectingPusherDecoratorTest extends TestCase
         $routeParameters = [];
         $context = [];
 
-        $this->pusher->expects($this->exactly(2))
+        $this->pusher->expects(self::exactly(2))
             ->method('getName')
             ->willReturn('test');
 
-        $this->stopwatch->expects($this->once())
+        $this->stopwatch->expects(self::once())
             ->method('start')
             ->with('push.test', 'websocket');
 
-        $this->pusher->expects($this->once())
+        $this->pusher->expects(self::once())
             ->method('push')
             ->with($data, $routeName, $routeParameters, $context);
 
-        $this->stopwatch->expects($this->once())
+        $this->stopwatch->expects(self::once())
             ->method('stop')
             ->with('push.test');
 
         $stopwatchEvent = $this->createMock(StopwatchEvent::class);
 
-        $this->stopwatch->expects($this->once())
+        $this->stopwatch->expects(self::once())
             ->method('getEvent')
             ->with('push.test')
             ->willReturn($stopwatchEvent);
@@ -78,7 +78,7 @@ class DataCollectingPusherDecoratorTest extends TestCase
 
     public function testClosingThePusherIsPropagatedToTheDecoratedPusher(): void
     {
-        $this->pusher->expects($this->once())
+        $this->pusher->expects(self::once())
             ->method('close');
 
         $this->decorator->close();
@@ -88,10 +88,10 @@ class DataCollectingPusherDecoratorTest extends TestCase
     {
         $name = 'test';
 
-        $this->pusher->expects($this->once())
+        $this->pusher->expects(self::once())
             ->method('getName')
             ->willReturn($name);
 
-        $this->assertSame($name, $this->decorator->getName());
+        self::assertSame($name, $this->decorator->getName());
     }
 }

@@ -36,9 +36,9 @@ class ServerRegistryTest extends TestCase
 
         $this->registry->addServer($server);
 
-        $this->assertSame($server, $this->registry->getServer($server->getName()));
-        $this->assertContains($server, $this->registry->getServers());
-        $this->assertTrue($this->registry->hasServer($server->getName()));
+        self::assertSame($server, $this->registry->getServer($server->getName()));
+        self::assertContains($server, $this->registry->getServers());
+        self::assertTrue($this->registry->hasServer($server->getName()));
     }
 
     public function testRetrievingAServerFailsIfTheNamedServerDoesNotExist(): void
