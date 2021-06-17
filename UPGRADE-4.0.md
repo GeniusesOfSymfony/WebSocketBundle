@@ -3,7 +3,7 @@
 ## Changes
 
 - Minimum PHP version is now 8.0.2
-- Minimum Symfony version is now 5.2
+- Minimum Symfony version is now 5.3
 - Minimum required Ratchet version is now 0.5
 - Added support for `gos/pubsub-router-bundle` 3.0
 - Added return typehint to `Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface::onPush()`

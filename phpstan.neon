@@ -4,7 +4,7 @@ parameters:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
   ignoreErrors:
-    # Conditionals for interface compatibility, remove when dropping support for Symfony 5.2 and earlier
+    # Conditionals for interface compatibility, remove when dropping support for Symfony 5.4 and earlier
     - '/Call to an undefined method Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface::getUsername\(\)\./'
 
     # Ignore errors for Symfony config builder
