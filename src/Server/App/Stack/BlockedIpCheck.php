@@ -30,6 +30,9 @@ class BlockedIpCheck extends IpBlackList
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function onOpen(ConnectionInterface $conn)
     {
         if ($this->isBlocked($conn->remoteAddress)) {

@@ -18,9 +18,9 @@ parameters:
       path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Dynamic properties added throughout Ratchet
-    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
-    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
-    - '/Access to an undefined property Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
+    - '/Access to an undefined property Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
 
     # Extra arguments added to Ratchet interface implementations
     - '/Method Ratchet\\ComponentInterface::onOpen\(\) invoked with 2 parameters, 1 required\./'
@@ -31,9 +31,6 @@ parameters:
 
     # The param's doc block says this should be a string, however it effectively supports arrays as well
     - '/Parameter #4 \$details of method Ratchet\\Wamp\\WampConnection::callError\(\) expects string\|null, .* given\./'
-
-    # LoggerAwareTrait::$logger is not marked as nullable
-    - '/Using nullsafe method call on non-nullable type Psr\\Log\\LoggerInterface. Use \-\> instead\./'
 
     # The param's doc block says this should be a subclass of the typehinted interface
     -
