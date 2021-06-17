@@ -35,10 +35,10 @@ parameters:
       path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Dynamic properties added throughout Ratchet
-    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
-    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject|Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
-    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP)\./'
-    - '/Access to an undefined property Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|Wamp)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject|Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
+    - '/Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
+    - '/Access to an undefined property Ratchet\\ConnectionInterface::\$(resourceId|PeriodicTimer|Session|WAMP|remoteAddress)\./'
 
     # Extra arguments added to Ratchet interface implementations
     - '/Method Ratchet\\ComponentInterface::onOpen\(\) invoked with 2 parameters, 1 required\./'
@@ -56,6 +56,10 @@ parameters:
       path: %currentWorkingDirectory%/src/Topic/TopicManager.php
 
     # Method has mixed return
+    -
+      message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\Stack\\BlockedIpCheck::onOpen\(\) has no return typehint specified\./'
+      path: %currentWorkingDirectory%/src/Server/App/Stack/BlockedIpCheck.php
+
     -
       message: '/Method Gos\\Bundle\\WebSocketBundle\\Server\\App\\Stack\\OriginCheck::onOpen\(\) has no return typehint specified\./'
       path: %currentWorkingDirectory%/src/Server/App/Stack/OriginCheck.php
