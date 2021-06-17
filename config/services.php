@@ -313,6 +313,8 @@ return static function (ContainerConfigurator $container): void {
                     param('gos_web_socket.server.origin_check'),
                     param('gos_web_socket.server.keepalive_ping'),
                     param('gos_web_socket.server.keepalive_interval'),
+                    param('gos_web_socket.server.ip_address_check'),
+                    param('gos_web_socket.blocked_ip_addresses'),
                 ]
             )
         ->alias(ServerBuilderInterface::class, 'gos_web_socket.server.builder')
