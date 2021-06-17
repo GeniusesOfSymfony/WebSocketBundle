@@ -237,6 +237,11 @@ return static function (ContainerConfigurator $container): void {
             ->tag('monolog.logger', ['channel' => 'websocket'])
 
         ->set('gos_web_socket.registry.origins', OriginRegistry::class)
+            ->args(
+                [
+                    abstract_arg('Allowed origin list'),
+                ]
+            )
         ->alias(OriginRegistry::class, 'gos_web_socket.registry.origins')
 
         ->set('gos_web_socket.registry.periodic', PeriodicRegistry::class)

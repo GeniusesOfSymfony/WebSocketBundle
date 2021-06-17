@@ -12,6 +12,16 @@ final class OriginRegistry
      */
     private array $origins = [];
 
+    /**
+     * @param iterable<string> $origins
+     */
+    public function __construct(iterable $origins = [])
+    {
+        foreach ($origins as $origin) {
+            $this->addOrigin($origin);
+        }
+    }
+
     public function addOrigin(string $origin): void
     {
         $this->origins[] = $origin;

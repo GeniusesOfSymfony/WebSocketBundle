@@ -136,11 +136,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerOriginsConfiguration(array $config, ContainerBuilder $container): void
     {
-        $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
-
-        foreach ($config['origins'] as $origin) {
-            $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
-        }
+        $container->getDefinition('gos_web_socket.registry.origins')
+            ->replaceArgument(0, $config['origins']);
     }
 
     private function registerBlockedIpAddressesConfiguration(array $config, ContainerBuilder $container): void

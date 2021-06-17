@@ -168,9 +168,9 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
             ]
         );
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.registry.origins',
-            'addOrigin',
+            0,
             ['github.com']
         );
     }
