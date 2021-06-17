@@ -10,12 +10,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class Configuration implements ConfigurationInterface
 {
-    private const DEFAULT_TTL = 900;
-    private const DEFAULT_CLIENT_STORAGE_SERVICE = 'gos_web_socket.client.driver.in_memory';
-    private const DEFAULT_FIREWALL = 'ws_firewall';
-    private const DEFAULT_ORIGIN_CHECKER = false;
-    private const DEFAULT_KEEPALIVE_PING = false;
-    private const DEFAULT_KEEPALIVE_INTERVAL = 30;
     public const PING_SERVICE_TYPE_DOCTRINE = 'doctrine';
     public const PING_SERVICE_TYPE_PDO = 'pdo';
 
@@ -28,24 +22,26 @@ final class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('session_handler')
-                        ->example('@session.handler.pdo')
+                        ->info('The service ID of the session handler service used to read session data.')
                     ->end()
                     ->variableNode('firewall')
-                        ->example('secured_area')
-                        ->defaultValue(self::DEFAULT_FIREWALL)
+                        ->defaultValue('ws_firewall')
+                        ->info('The name of the security firewall to load the authenticated user data for.')
                     ->end()
                     ->arrayNode('storage')
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('driver')
-                                ->defaultValue(self::DEFAULT_CLIENT_STORAGE_SERVICE)
-                                ->example(self::DEFAULT_CLIENT_STORAGE_SERVICE)
+                                ->defaultValue('gos_web_socket.client.driver.in_memory')
+                                ->info('The service ID of the storage driver to use for storing connection data.')
                             ->end()
                             ->integerNode('ttl')
-                                ->defaultValue(self::DEFAULT_TTL)
-                                ->example('3600')
+                                ->defaultValue(900)
+                                ->info('The cache TTL (in seconds) for clients in storage.')
                             ->end()
-                            ->scalarNode('decorator')->end()
+                            ->scalarNode('decorator')
+                                ->info('The service ID of a decorator for the client storage driver.')
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -56,33 +52,35 @@ final class Configuration implements ConfigurationInterface
             ->arrayNode('server')
                 ->children()
                     ->scalarNode('host')
-                        ->example('127.0.0.1')
+                        ->info('The host IP address on the server which connections for the websocket server are accepted.')
                         ->cannotBeEmpty()
                         ->isRequired()
                     ->end()
                     ->scalarNode('port')
-                        ->example('8080')
+                        ->info('The port on the server which connections for the websocket server are accepted.')
                         ->isRequired()
                     ->end()
                     ->booleanNode('origin_check')
-                        ->defaultValue(self::DEFAULT_ORIGIN_CHECKER)
-                        ->example('true')
+                        ->defaultValue(false)
+                        ->info('Enables checking the Origin header of websocket connections for allowed values.')
+                    ->end()
+                    ->booleanNode('ip_address_check')
+                        ->defaultValue(false)
+                        ->info('Enables checking the originating IP address of websocket connections for blocked addresses.')
                     ->end()
                     ->booleanNode('keepalive_ping')
-                        ->defaultValue(self::DEFAULT_KEEPALIVE_PING)
-                        ->example('true')
-                        ->info('Flag indicating a keepalive ping should be enabled on the server')
+                        ->defaultValue(false)
+                        ->info('Flag indicating a keepalive ping should be enabled on the server.')
                     ->end()
                     ->integerNode('keepalive_interval')
-                        ->defaultValue(self::DEFAULT_KEEPALIVE_INTERVAL)
-                        ->example('30')
-                        ->info('The time in seconds between each keepalive ping')
+                        ->defaultValue(30)
+                        ->info('The time in seconds between each keepalive ping.')
                     ->end()
                     ->arrayNode('router')
                         ->children()
                             ->arrayNode('resources')
                                 ->beforeNormalization()
-                                    ->ifTrue(static function ($v) {
+                                    ->ifTrue(static function ($v): bool {
                                         foreach ($v as $resource) {
                                             if (!\is_array($resource)) {
                                                 return true;
@@ -91,7 +89,7 @@ final class Configuration implements ConfigurationInterface
 
                                         return false;
                                     })
-                                    ->then(static function ($v) {
+                                    ->then(static function ($v): array {
                                         $resources = [];
 
                                         foreach ($v as $resource) {
@@ -125,11 +123,17 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->arrayNode('origins')
+                ->info('A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.')
                 ->scalarPrototype()
                 ->validate()
                     ->ifInArray(['localhost', '127.0.0.1'])
                         ->thenInvalid('%s is added by default')
                     ->end()
+                ->end()
+            ->end()
+            ->arrayNode('blocked_ip_addresses')
+                ->info('A list of IP addresses which are not allowed to connect to the websocket server.')
+                ->scalarPrototype()
                 ->end()
             ->end()
             ->arrayNode('ping')
@@ -138,12 +142,12 @@ final class Configuration implements ConfigurationInterface
                         ->arrayPrototype()
                             ->children()
                                 ->scalarNode('name')
-                                    ->info('The name of the service to ping')
+                                    ->info('The name of the service to ping.')
                                     ->cannotBeEmpty()
                                     ->isRequired()
                                 ->end()
                                 ->enumNode('type')
-                                    ->info('The type of the service to be pinged; valid options are "doctrine" and "pdo"')
+                                    ->info('The type of the service to be pinged.')
                                     ->isRequired()
                                     ->values([self::PING_SERVICE_TYPE_DOCTRINE, self::PING_SERVICE_TYPE_PDO])
                                 ->end()

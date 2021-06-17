@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 
 trigger_deprecation('gos/web-socket-bundle', '4.0', 'The "%s" class is deprecated and will be removed in 5.0, register event listeners using event class names instead.', GosWebSocketEvents::class);
@@ -60,9 +61,16 @@ final class GosWebSocketEvents
      *
      * @Event("Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent")
      *
-     * @deprecated to be removed in 5.0, register event listeners using the `Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent` class instead.
+     * @deprecated to be removed in 4.0, subscribe to the "gos_web_socket.connection_rejected" event instead
      */
     public const CLIENT_REJECTED = 'gos_web_socket.client_rejected';
+
+    /**
+     * The CONNECTION_REJECTED event occurs when a connection is rejected.
+     *
+     * @Event("Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent")
+     */
+    public const CONNECTION_REJECTED = 'gos_web_socket.connection_rejected';
 
     /**
      * Event aliases.
@@ -77,5 +85,6 @@ final class GosWebSocketEvents
         ClientDisconnectedEvent::class => self::CLIENT_DISCONNECTED,
         ClientErrorEvent::class => self::CLIENT_ERROR,
         ClientRejectedEvent::class => self::CLIENT_REJECTED,
+        ConnectionRejectedEvent::class => self::CONNECTION_REJECTED,
     ];
 }

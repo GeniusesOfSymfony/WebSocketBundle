@@ -41,6 +41,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerClientConfiguration($config, $container);
         $this->registerServerConfiguration($config, $container);
         $this->registerOriginsConfiguration($config, $container);
+        $this->registerBlockedIpAddressesConfiguration($config, $container);
         $this->registerPingConfiguration($config, $container);
     }
 
@@ -100,6 +101,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
         }
 
+        if (isset($config['server']['ip_address_check'])) {
+            $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
+        }
+
         if (isset($config['server']['keepalive_ping'])) {
             $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
         }
@@ -136,6 +141,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         foreach ($config['origins'] as $origin) {
             $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
         }
+    }
+
+    private function registerBlockedIpAddressesConfiguration(array $config, ContainerBuilder $container): void
+    {
+        $container->setParameter('gos_web_socket.blocked_ip_addresses', $config['blocked_ip_addresses']);
     }
 
     /**
