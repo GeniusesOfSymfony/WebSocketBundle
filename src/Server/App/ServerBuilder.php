@@ -40,8 +40,8 @@ final class ServerBuilder implements ServerBuilderInterface
         bool $originCheck,
         bool $keepalivePing,
         int $keepaliveInterval,
-        bool $ipAddressCheck = false,
-        array $blockedIpAddresses = []
+        bool $ipAddressCheck,
+        array $blockedIpAddresses
     ) {
         $this->loop = $loop;
         $this->topicManager = $topicManager;
