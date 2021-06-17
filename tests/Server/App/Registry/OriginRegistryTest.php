@@ -7,24 +7,12 @@ use PHPUnit\Framework\TestCase;
 
 final class OriginRegistryTest extends TestCase
 {
-    /**
-     * @var OriginRegistry
-     */
-    private $registry;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->registry = new OriginRegistry();
-    }
-
     public function testOriginsAreAddedToTheRegistry(): void
     {
         $origin = 'localhost';
 
-        $this->registry->addOrigin($origin);
+        $registry = new OriginRegistry([$origin]);
 
-        self::assertContains($origin, $this->registry->getOrigins());
+        self::assertContains($origin, $registry->getOrigins());
     }
 }
