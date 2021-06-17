@@ -9,7 +9,6 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
-use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\WebsocketClientEventSubscriber;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -171,8 +170,7 @@ final class WebsocketClientEventSubscriberTest extends TestCase
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
-        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))
-            ->onClientError(new ClientErrorEvent(new \Exception('Testing'), $this->createMock(ConnectionInterface::class)));
+        $this->listener->onClientError(new ClientErrorEvent(new \Exception('Testing'), $this->createMock(ConnectionInterface::class)));
     }
 
     public function testTheClientErrorIsLogged(): void
@@ -205,21 +203,6 @@ final class WebsocketClientEventSubscriberTest extends TestCase
         $this->listener->onClientError(new ClientErrorEvent(new \Exception('Testing'), $connection));
 
         self::assertTrue($this->logger->hasErrorThatContains('Connection error'));
-    }
-
-    /**
-     * @doesNotPerformAssertions
-     */
-    public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent(): void
-    {
-        $this->listener->onClientRejected(new ClientRejectedEvent('localhost', null));
-    }
-
-    public function testTheClientRejectionIsLogged(): void
-    {
-        $this->listener->onClientRejected(new ClientRejectedEvent('localhost', null));
-
-        self::assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
     }
 
     /**
