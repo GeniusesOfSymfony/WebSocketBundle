@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.8.1 (2021-06-16)
+
+- Fixes for IP blocker service
+
 ## 3.8.0 (2021-06-16)
 
 - Add support for `doctrine/cache` 2.0

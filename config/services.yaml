@@ -283,6 +283,8 @@ services:
             - '%gos_web_socket.server.origin_check%'
             - '%gos_web_socket.server.keepalive_ping%'
             - '%gos_web_socket.server.keepalive_interval%'
+            - '%gos_web_socket.server.ip_address_check%'
+            - '%gos_web_socket.blocked_ip_addresses%'
 
     gos_web_socket.server.entry_point:
         class: Gos\Bundle\WebSocketBundle\Server\EntryPoint
