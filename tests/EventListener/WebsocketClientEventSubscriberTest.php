@@ -170,7 +170,8 @@ final class WebsocketClientEventSubscriberTest extends TestCase
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientErrorEvent(): void
     {
-        $this->listener->onClientError(new ClientErrorEvent(new \Exception('Testing'), $this->createMock(ConnectionInterface::class)));
+        (new WebsocketClientEventSubscriber($this->clientStorage, $this->authenticationProvider))
+            ->onClientError(new ClientErrorEvent(new \Exception('Testing'), $this->createMock(ConnectionInterface::class)));
     }
 
     public function testTheClientErrorIsLogged(): void
