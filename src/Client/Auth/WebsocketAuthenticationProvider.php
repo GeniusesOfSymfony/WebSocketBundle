@@ -7,6 +7,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" class is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', WebsocketAuthenticationProvider::class);
@@ -86,7 +87,11 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
         }
 
         if (null === $token) {
-            $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
+            if (class_exists(NullToken::class)) {
+                $token = new NullToken();
+            } else {
+                $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
+            }
         }
 
         return $token;

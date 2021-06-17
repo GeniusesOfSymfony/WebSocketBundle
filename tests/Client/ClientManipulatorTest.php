@@ -12,8 +12,9 @@ use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @group legacy
@@ -177,8 +178,17 @@ class ClientManipulatorTest extends TestCase
         $storageId1 = 42;
         $storageId2 = 84;
 
-        $authenticatedClient = $this->createMock(AbstractToken::class);
-        $guestClient = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $authenticatedClient */
+        $authenticatedClient = $this->createMock(TokenInterface::class);
+        $authenticatedClient->expects(self::once())
+            ->method('getUser')
+            ->willReturn($this->createMock(UserInterface::class));
+
+        /** @var MockObject&TokenInterface $guestClient */
+        $guestClient = $this->createMock(TokenInterface::class);
+        $guestClient->expects(self::once())
+            ->method('getUser')
+            ->willReturn(null);
 
         $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
@@ -229,8 +239,8 @@ class ClientManipulatorTest extends TestCase
         /** @var MockObject&AbstractToken $authenticatedClient */
         $authenticatedClient = $this->createMock(AbstractToken::class);
 
-        /** @var MockObject&AnonymousToken $guestClient */
-        $guestClient = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $guestClient */
+        $guestClient = $this->createMock(TokenInterface::class);
 
         $this->clientStorage->expects(self::exactly(2))
             ->method('getStorageId')
@@ -279,17 +289,40 @@ class ClientManipulatorTest extends TestCase
         $storageId2 = 84;
         $storageId3 = 126;
 
-        $authenticatedClient1 = $this->createMock(UsernamePasswordToken::class);
-        $authenticatedClient1->expects(self::once())
-            ->method('getRoleNames')
-            ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
+        /** @var MockObject&TokenInterface $authenticatedClient1 */
+        $authenticatedClient1 = $this->createMock(TokenInterface::class);
 
-        $authenticatedClient2 = $this->createMock(UsernamePasswordToken::class);
-        $authenticatedClient2->expects(self::once())
-            ->method('getRoleNames')
-            ->willReturn(['ROLE_USER']);
+        /** @var MockObject&TokenInterface $authenticatedClient2 */
+        $authenticatedClient2 = $this->createMock(TokenInterface::class);
 
-        $guestClient = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $guestClient */
+        $guestClient = $this->createMock(TokenInterface::class);
+
+        if (method_exists(TokenInterface::class, 'getRoleNames')) {
+            $authenticatedClient1->expects(self::once())
+                ->method('getRoleNames')
+                ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
+
+            $authenticatedClient2->expects(self::once())
+                ->method('getRoleNames')
+                ->willReturn(['ROLE_USER']);
+
+            $guestClient->expects(self::once())
+                ->method('getRoleNames')
+                ->willReturn([]);
+        } else {
+            $authenticatedClient1->expects(self::once())
+                ->method('getRoles')
+                ->willReturn([new Role('ROLE_USER'), new Role('ROLE_STAFF')]);
+
+            $authenticatedClient2->expects(self::once())
+                ->method('getRoles')
+                ->willReturn([new Role('ROLE_USER')]);
+
+            $guestClient->expects(self::once())
+                ->method('getRoles')
+                ->willReturn([]);
+        }
 
         $this->clientStorage->expects(self::exactly(3))
             ->method('getStorageId')

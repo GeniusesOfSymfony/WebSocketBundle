@@ -6,6 +6,7 @@ use Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
@@ -34,22 +35,14 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsRetrievedFromStorage(): void
     {
-        $hitCacheItem = $this->createMock(ItemInterface::class);
-        $hitCacheItem->expects(self::once())
-            ->method('isHit')
-            ->willReturn(true);
+        $hitCacheItem = new CacheItem();
+        $hitCacheItem->set('foo');
 
-        $hitCacheItem->expects(self::once())
-            ->method('get')
-            ->willReturn('foo');
+        $isHitProperty = (new \ReflectionClass($hitCacheItem))->getProperty('isHit');
+        $isHitProperty->setAccessible(true);
+        $isHitProperty->setValue($hitCacheItem, true);
 
-        $missedCacheItem = $this->createMock(ItemInterface::class);
-        $missedCacheItem->expects(self::once())
-            ->method('isHit')
-            ->willReturn(false);
-
-        $missedCacheItem->expects(self::never())
-            ->method('get');
+        $missedCacheItem = new CacheItem();
 
         $this->cache->expects(self::exactly(2))
             ->method('getItem')
@@ -73,22 +66,8 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
     public function testDataIsSavedInStorage(): void
     {
-        $noLifetimeCacheItem = $this->createMock(ItemInterface::class);
-        $noLifetimeCacheItem->expects(self::once())
-            ->method('set')
-            ->with('data');
-
-        $noLifetimeCacheItem->expects(self::never())
-            ->method('expiresAfter');
-
-        $lifetimeCacheItem = $this->createMock(ItemInterface::class);
-        $lifetimeCacheItem->expects(self::once())
-            ->method('set')
-            ->with('data');
-
-        $lifetimeCacheItem->expects(self::once())
-            ->method('expiresAfter')
-            ->with(60);
+        $noLifetimeCacheItem = new CacheItem();
+        $lifetimeCacheItem = new CacheItem();
 
         $this->cache->expects(self::exactly(2))
             ->method('getItem')
@@ -102,6 +81,12 @@ class SymfonyCacheDriverDecoratorTest extends TestCase
 
         self::assertTrue($this->driver->save('abc', 'data', 0));
         self::assertTrue($this->driver->save('def', 'data', 60));
+
+        $expiryProperty = (new \ReflectionClass(CacheItem::class))->getProperty('expiry');
+        $expiryProperty->setAccessible(true);
+
+        self::assertNull($expiryProperty->getValue($noLifetimeCacheItem));
+        self::assertNotNull($expiryProperty->getValue($lifetimeCacheItem));
     }
 
     public function testDataIsDeletedFromStorage(): void

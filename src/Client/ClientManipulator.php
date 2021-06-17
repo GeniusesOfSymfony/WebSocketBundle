@@ -6,7 +6,6 @@ use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterf
 use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,10 +38,6 @@ final class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken) {
-                continue;
-            }
-
             $clientUsername = method_exists($client, 'getUserIdentifier') ? $client->getUserIdentifier() : $client->getUsername();
 
             if ($clientUsername === $username) {
@@ -64,15 +59,21 @@ final class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if ($client instanceof AnonymousToken) {
-                continue;
-            }
+            if (method_exists($client, 'getRoleNames')) {
+                foreach ($client->getRoleNames() as $role) {
+                    if (\in_array($role, $roles)) {
+                        $result[] = new ClientConnection($client, $connection);
 
-            foreach ($client->getRoleNames() as $role) {
-                if (\in_array($role, $roles)) {
-                    $result[] = new ClientConnection($client, $connection);
+                        continue 2;
+                    }
+                }
+            } else {
+                foreach ($client->getRoles() as $role) {
+                    if (\in_array($role->getRole(), $roles)) {
+                        $result[] = new ClientConnection($client, $connection);
 
-                    continue 2;
+                        continue 2;
+                    }
                 }
             }
         }
@@ -91,7 +92,7 @@ final class ClientManipulator implements ClientManipulatorInterface
         foreach ($topic as $connection) {
             $client = $this->getClient($connection);
 
-            if (true !== $anonymous && $client instanceof AnonymousToken) {
+            if (!$anonymous && !($client->getUser() instanceof UserInterface)) {
                 continue;
             }
 

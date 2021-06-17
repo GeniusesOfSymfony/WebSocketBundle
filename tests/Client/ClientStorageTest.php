@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
@@ -40,7 +41,12 @@ class ClientStorageTest extends TestCase
     public function testTheClientIsRetrieved(): void
     {
         $clientId = '42';
-        $token = new AnonymousToken('secret', 'anon');
+
+        if (class_exists(NullToken::class)) {
+            $token = new NullToken();
+        } else {
+            $token = new AnonymousToken('secret', 'anon');
+        }
 
         $this->driver->expects(self::once())
             ->method('fetch')

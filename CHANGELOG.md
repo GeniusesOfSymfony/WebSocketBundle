@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.14.0 (????-??-??)
+
+- Add support for Symfony 6.0
+- Drop support for Symfony 5.3
+
 ## 3.13.0 (2021-11-30)
 
 - Deprecated the unused `$router` argument of the `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher` constructor
