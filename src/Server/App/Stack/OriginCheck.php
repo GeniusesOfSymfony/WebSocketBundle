@@ -2,7 +2,6 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App\Stack;
 
-use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\GosWebSocketEvents;
 use Psr\Http\Message\RequestInterface;
@@ -44,8 +43,6 @@ class OriginCheck extends BaseOriginCheck
             $origin = parse_url($header, \PHP_URL_HOST) ?: $header;
 
             if (!\in_array($origin, $this->allowedOrigins)) {
-                // Dispatch deprecated event, then new event
-                $this->eventDispatcher->dispatch(new ClientRejectedEvent($origin, $request), GosWebSocketEvents::CLIENT_REJECTED);
                 $this->eventDispatcher->dispatch(new ConnectionRejectedEvent($conn, $request), GosWebSocketEvents::CONNECTION_REJECTED);
 
                 return $this->close($conn, 403);
