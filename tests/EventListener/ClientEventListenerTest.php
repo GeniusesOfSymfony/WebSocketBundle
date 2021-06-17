@@ -10,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -220,7 +221,7 @@ class ClientEventListenerTest extends TestCase
     {
         $event = new ClientRejectedEvent('localhost', null);
 
-        (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientRejected($event);
+        $this->listener->onClientRejected($event);
     }
 
     public function testTheClientRejectionIsLogged(): void
@@ -230,5 +231,24 @@ class ClientEventListenerTest extends TestCase
         $this->listener->onClientRejected($event);
 
         self::assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testThereIsNoActionWhenNoLoggerIsSetOnTheConnectionRejectedEvent(): void
+    {
+        $event = new ConnectionRejectedEvent($this->createMock(ConnectionInterface::class), null);
+
+        $this->listener->onConnectionRejected($event);
+    }
+
+    public function testTheConnectionRejectionIsLogged(): void
+    {
+        $event = new ConnectionRejectedEvent($this->createMock(ConnectionInterface::class), null);
+
+        $this->listener->onConnectionRejected($event);
+
+        self::assertTrue($this->logger->hasWarningThatContains('Connection rejected'));
     }
 }

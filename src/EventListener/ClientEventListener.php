@@ -10,6 +10,7 @@ use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent;
+use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -117,6 +118,9 @@ final class ClientEventListener implements LoggerAwareInterface
         );
     }
 
+    /**
+     * @deprecated to be removed in 4.0
+     */
     public function onClientRejected(ClientRejectedEvent $event): void
     {
         if (null !== $this->logger) {
@@ -126,6 +130,13 @@ final class ClientEventListener implements LoggerAwareInterface
                     'origin' => $event->getOrigin(),
                 ]
             );
+        }
+    }
+
+    public function onConnectionRejected(ConnectionRejectedEvent $event): void
+    {
+        if (null !== $this->logger) {
+            $this->logger->warning('Connection rejected');
         }
     }
 }

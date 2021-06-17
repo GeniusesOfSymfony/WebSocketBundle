@@ -95,6 +95,7 @@ services:
             - { name: kernel.event_listener, event: 'gos_web_socket.client_disconnected', method: onClientDisconnect }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_error', method: onClientError }
             - { name: kernel.event_listener, event: 'gos_web_socket.client_rejected', method: onClientRejected }
+            - { name: kernel.event_listener, event: 'gos_web_socket.connection_rejected', method: onConnectionRejected }
             - { name: monolog.logger, channel: websocket }
 
     gos_web_socket.event_listener.close_pusher_connections:
