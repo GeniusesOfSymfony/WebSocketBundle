@@ -16,4 +16,8 @@
             <directory suffix=".php">./src</directory>
         </include>
     </coverage>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
 </phpunit>

@@ -43,6 +43,7 @@
         "phpunit/phpunit": "^9.5",
         "symfony/cache": "^4.4 || ^5.2",
         "symfony/options-resolver": "^4.4 || ^5.2",
+        "symfony/phpunit-bridge": "^5.3",
         "symfony/stopwatch": "^4.4 || ^5.2",
         "symfony/twig-bundle": "^4.4 || ^5.2",
         "symfony/web-profiler-bundle": "^4.4 || ^5.2"
