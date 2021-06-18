@@ -134,6 +134,9 @@ class WampApplicationTest extends TestCase
         self::assertTrue($this->logger->hasDebugThatContains('User user published to channel/42'));
     }
 
+    /**
+     * @group legacy
+     */
     public function testAMessageIsPushed(): void
     {
         $request = new WampRequest(
@@ -284,6 +287,9 @@ class WampApplicationTest extends TestCase
         $this->application->onClose($connection);
     }
 
+    /**
+     * @group legacy
+     */
     public function testAnErrorIsHandled(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);

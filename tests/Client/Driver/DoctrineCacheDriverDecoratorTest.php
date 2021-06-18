@@ -8,6 +8,9 @@ use Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group legacy
+ */
 class DoctrineCacheDriverDecoratorTest extends TestCase
 {
     /**

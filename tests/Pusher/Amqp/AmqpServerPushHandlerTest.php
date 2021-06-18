@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
+ * @group legacy
  * @requires extension amqp
  */
 class AmqpServerPushHandlerTest extends TestCase

@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Stopwatch\StopwatchEvent;
 
+/**
+ * @group legacy
+ */
 class DataCollectingPusherDecoratorTest extends TestCase
 {
     /**

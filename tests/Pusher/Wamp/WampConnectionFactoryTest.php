@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 
+/**
+ * @group legacy
+ */
 class WampConnectionFactoryTest extends TestCase
 {
     public function dataInvalidConfiguration(): \Generator

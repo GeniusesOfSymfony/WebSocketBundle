@@ -11,6 +11,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @group legacy
+ */
 class WampPusherTest extends TestCase
 {
     /**

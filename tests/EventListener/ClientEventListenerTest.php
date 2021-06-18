@@ -180,6 +180,9 @@ class ClientEventListenerTest extends TestCase
         (new ClientEventListener($this->clientStorage, $this->authenticationProvider))->onClientError($event);
     }
 
+    /**
+     * @group legacy
+     */
     public function testTheClientErrorIsLogged(): void
     {
         $connection = $this->createMock(ConnectionInterface::class);
@@ -216,6 +219,7 @@ class ClientEventListenerTest extends TestCase
 
     /**
      * @doesNotPerformAssertions
+     * @group legacy
      */
     public function testThereIsNoActionWhenNoLoggerIsSetOnTheClientRejectedEvent(): void
     {
@@ -224,6 +228,9 @@ class ClientEventListenerTest extends TestCase
         $this->listener->onClientRejected($event);
     }
 
+    /**
+     * @group legacy
+     */
     public function testTheClientRejectionIsLogged(): void
     {
         $event = new ClientRejectedEvent('localhost', null);

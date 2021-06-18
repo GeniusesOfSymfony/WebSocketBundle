@@ -117,6 +117,9 @@ final class TopicDispatcherTest extends TestCase
         self::assertTrue($handler->wasCalled());
     }
 
+    /**
+     * @group legacy
+     */
     public function testAWebsocketPushIsDispatchedToItsHandler(): void
     {
         $handler = new class() implements TopicInterface, PushableTopicInterface {
@@ -169,6 +172,9 @@ final class TopicDispatcherTest extends TestCase
         self::assertTrue($handler->wasCalled());
     }
 
+    /**
+     * @group legacy
+     */
     public function testAWebsocketPushFailsIfTheHandlerDoesNotImplementTheRequiredInterface(): void
     {
         $this->expectException(PushUnsupportedException::class);

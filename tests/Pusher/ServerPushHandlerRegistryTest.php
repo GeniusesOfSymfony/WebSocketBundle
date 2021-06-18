@@ -8,6 +8,9 @@ use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 
+/**
+ * @group legacy
+ */
 class ServerPushHandlerRegistryTest extends TestCase
 {
     /**

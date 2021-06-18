@@ -7,6 +7,9 @@ use Gos\Bundle\WebSocketBundle\Server\EntryPoint;
 use Gos\Bundle\WebSocketBundle\Server\Type\ServerInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group legacy
+ */
 class EntryPointTest extends TestCase
 {
     /**

@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 
+/**
+ * @group legacy
+ */
 class RegisterPushHandlersListenerTest extends TestCase
 {
     /**

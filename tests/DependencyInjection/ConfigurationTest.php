@@ -226,6 +226,9 @@ final class ConfigurationTest extends TestCase
         (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
     }
 
+    /**
+     * @group legacy
+     */
     public function testConfigWithPushers(): void
     {
         $extraConfig = [
@@ -261,6 +264,9 @@ final class ConfigurationTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
     public function testConfigWithWebsocketClient(): void
     {
         $extraConfig = [

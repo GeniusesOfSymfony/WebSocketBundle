@@ -10,6 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * @group legacy
+ */
 class PusherCompilerPassTest extends AbstractCompilerPassTestCase
 {
     public function testPushersAreAddedToTheRegistry(): void

@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
+ * @group legacy
  * @requires extension amqp
  */
 class AmqpPusherTest extends TestCase

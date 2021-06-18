@@ -60,13 +60,12 @@ class WampRouterTest extends TestCase
         self::assertInstanceOf(WampRequest::class, $this->router->match($topic));
     }
 
+    /**
+     * @group legacy
+     */
     public function testAnExceptionIsThrownWhenATopicCannotBeRouted(): void
     {
         $this->expectException(ResourceNotFoundException::class);
-
-        $routeName = 'test';
-        $route = $this->createMock(Route::class);
-        $attributes = [];
 
         $topic = $this->createMock(Topic::class);
         $topic->expects(self::exactly(2))

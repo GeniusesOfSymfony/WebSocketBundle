@@ -6,6 +6,9 @@ use Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+/**
+ * @group legacy
+ */
 class WebsocketDataCollectorTest extends TestCase
 {
     public function testCollectNoPushers(): void

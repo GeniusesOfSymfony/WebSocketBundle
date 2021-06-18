@@ -6,6 +6,9 @@ use Gos\Bundle\WebSocketBundle\Pusher\PusherInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group legacy
+ */
 class PusherRegistryTest extends TestCase
 {
     /**

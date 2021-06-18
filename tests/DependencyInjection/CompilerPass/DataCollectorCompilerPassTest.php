@@ -14,6 +14,9 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+/**
+ * @group legacy
+ */
 class DataCollectorCompilerPassTest extends AbstractCompilerPassTestCase
 {
     protected function setUp(): void
