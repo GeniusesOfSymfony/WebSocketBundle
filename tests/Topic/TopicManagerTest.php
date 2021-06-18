@@ -10,9 +10,6 @@ use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampServerInterface;
 use Ratchet\WebSocket\WsServerInterface;
 
-/**
- * @group legacy
- */
 final class TopicManagerTest extends TestCase
 {
     /**
