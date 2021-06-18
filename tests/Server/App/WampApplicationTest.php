@@ -272,6 +272,9 @@ final class WampApplicationTest extends TestCase
         $this->application->onClose($connection);
     }
 
+    /**
+     * @group legacy
+     */
     public function testAnErrorIsHandled(): void
     {
         /** @var MockObject&ConnectionInterface $connection */

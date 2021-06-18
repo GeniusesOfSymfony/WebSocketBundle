@@ -39,6 +39,7 @@
         "phpstan/phpstan-symfony": "^0.12.37",
         "phpunit/phpunit": "^9.5",
         "symfony/cache": "^5.3",
+        "symfony/phpunit-bridge": "^5.3",
         "symfony/twig-bundle": "^5.3"
     },
     "conflict": {
