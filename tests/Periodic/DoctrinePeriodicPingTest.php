@@ -40,6 +40,9 @@ class DoctrinePeriodicPingTest extends TestCase
         self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
+    /**
+     * @group legacy
+     */
     public function testTheDatabaseIsPingedWithAPingableConnection(): void
     {
         if (!interface_exists(PingableConnection::class)) {
@@ -67,6 +70,9 @@ class DoctrinePeriodicPingTest extends TestCase
         new DoctrinePeriodicPing(new \stdClass());
     }
 
+    /**
+     * @group legacy
+     */
     public function testAConnectionErrorIsLogged(): void
     {
         $logger = new TestLogger();
