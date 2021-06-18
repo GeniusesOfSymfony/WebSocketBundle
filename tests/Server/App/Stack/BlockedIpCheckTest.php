@@ -56,6 +56,9 @@ final class BlockedIpCheckTest extends TestCase
         $this->component->onOpen($connection);
     }
 
+    /**
+     * @group legacy
+     */
     public function testARequestFailsTheAddressCheck(): void
     {
         /** @var MockObject&ConnectionInterface $connection */
