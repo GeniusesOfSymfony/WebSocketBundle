@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.9.0 (????-??-??)
+
+- Deprecate public access to public container services
+
 ## 3.8.1 (2021-06-16)
 
 - Fixes for IP blocker service
