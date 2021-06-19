@@ -67,7 +67,6 @@ return static function (ContainerConfigurator $container): void {
         ->set('gos_web_socket.client.driver.in_memory', InMemoryDriver::class)
 
         ->set('gos_web_socket.client.manipulator', ClientManipulator::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.client.storage'),
@@ -102,7 +101,6 @@ return static function (ContainerConfigurator $container): void {
             )
 
         ->set('gos_web_socket.dispatcher.rpc', RpcDispatcher::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.registry.rpc'),
@@ -118,7 +116,6 @@ return static function (ContainerConfigurator $container): void {
         ->alias(RpcDispatcherInterface::class, 'gos_web_socket.dispatcher.rpc')
 
         ->set('gos_web_socket.dispatcher.topic', TopicDispatcher::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.registry.topic'),
@@ -325,7 +322,6 @@ return static function (ContainerConfigurator $container): void {
         ->alias(ServerBuilderInterface::class, 'gos_web_socket.server.builder')
 
         ->set('gos_web_socket.server.launcher', ServerLauncher::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.registry.server'),
@@ -334,7 +330,6 @@ return static function (ContainerConfigurator $container): void {
         ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.launcher')
 
         ->set('gos_web_socket.server.event_loop', LoopInterface::class)
-            ->public()
             ->factory([Factory::class, 'create'])
         ->alias(LoopInterface::class, 'gos_web_socket.server.event_loop')
 
@@ -356,7 +351,6 @@ return static function (ContainerConfigurator $container): void {
             ->tag('monolog.logger', ['channel' => 'websocket'])
 
         ->set('gos_web_socket.topic.periodic_timer', TopicPeriodicTimer::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.server.event_loop'),
@@ -364,7 +358,6 @@ return static function (ContainerConfigurator $container): void {
             )
 
         ->set('gos_web_socket.wamp.topic_manager', TopicManager::class)
-            ->public()
             ->args(
                 [
                     service('gos_web_socket.server.application.wamp'),
