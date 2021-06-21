@@ -3,6 +3,7 @@
 ## 3.9.0 (????-??-??)
 
 - Deprecate public access to public container services
+- Deprecated the `setTimeout` method of periodic classes
 
 ## 3.8.1 (2021-06-16)
 

@@ -73,4 +73,18 @@ class PdoPeriodicPingTest extends TestCase
             self::assertTrue($logger->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
         }
     }
+
+    /**
+     * @group legacy
+     * @requires extension pdo
+     */
+    public function testTheTimeoutCanBeAdjustedAtRuntime(): void
+    {
+        $connection = $this->createMock(\PDO::class);
+
+        $ping = new PdoPeriodicPing($connection);
+        $ping->setTimeout(15);
+
+        self::assertSame(15, $ping->getTimeout());
+    }
 }

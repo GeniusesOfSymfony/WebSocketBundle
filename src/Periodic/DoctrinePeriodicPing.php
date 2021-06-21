@@ -18,14 +18,14 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
      */
     private object $connection;
 
-    private int $timeout = 20;
+    private int $timeout;
 
     /**
      * @param Connection|PingableConnection $connection
      *
      * @throws \InvalidArgumentException if the connection is not an appropriate type
      */
-    public function __construct(object $connection)
+    public function __construct(object $connection, int $timeout = 20)
     {
         if (!($connection instanceof Connection) && !($connection instanceof PingableConnection)) {
             throw new \InvalidArgumentException(sprintf('The connection must be a subclass of %s or implement %s, %s does not fulfill these requirements.', Connection::class, PingableConnection::class, \get_class($connection)));
@@ -42,6 +42,7 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
         }
 
         $this->connection = $connection;
+        $this->timeout = $timeout;
     }
 
     public function tick(): void
@@ -83,6 +84,8 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
 
     public function setTimeout(int $timeout): void
     {
+        trigger_deprecation('gos/web-socket-bundle', '3.9', '%s() is deprecated and will be removed in 4.0, set the timeout through the constructor instead.', __METHOD__);
+
         $this->timeout = $timeout;
     }
 }

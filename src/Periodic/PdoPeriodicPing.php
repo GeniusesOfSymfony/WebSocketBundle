@@ -10,11 +10,12 @@ final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     private \PDO $pdo;
-    private int $timeout = 20;
+    private int $timeout;
 
-    public function __construct(\PDO $pdo)
+    public function __construct(\PDO $pdo, int $timeout = 20)
     {
         $this->pdo = $pdo;
+        $this->timeout = $timeout;
     }
 
     public function tick(): void
@@ -55,6 +56,8 @@ final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 
     public function setTimeout(int $timeout): void
     {
+        trigger_deprecation('gos/web-socket-bundle', '3.9', '%s() is deprecated and will be removed in 4.0, set the timeout through the constructor instead.', __METHOD__);
+
         $this->timeout = $timeout;
     }
 }

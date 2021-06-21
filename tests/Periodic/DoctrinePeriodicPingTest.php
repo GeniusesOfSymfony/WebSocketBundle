@@ -43,6 +43,19 @@ class DoctrinePeriodicPingTest extends TestCase
     /**
      * @group legacy
      */
+    public function testTheTimeoutCanBeAdjustedAtRuntime(): void
+    {
+        $connection = $this->createMock(Connection::class);
+
+        $ping = new DoctrinePeriodicPing($connection);
+        $ping->setTimeout(15);
+
+        self::assertSame(15, $ping->getTimeout());
+    }
+
+    /**
+     * @group legacy
+     */
     public function testTheDatabaseIsPingedWithAPingableConnection(): void
     {
         if (!interface_exists(PingableConnection::class)) {
