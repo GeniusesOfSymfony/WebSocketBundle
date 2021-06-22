@@ -32,6 +32,9 @@ final class RegisterPeriodicTimersListenerTest extends TestCase
         $this->listener = new RegisterPeriodicTimersListener($this->periodicRegistry);
     }
 
+    /**
+     * @group legacy
+     */
     public function testThePeriodicTimersAreRegisteredToTheLoop(): void
     {
         /** @var MockObject&PeriodicInterface $handler */

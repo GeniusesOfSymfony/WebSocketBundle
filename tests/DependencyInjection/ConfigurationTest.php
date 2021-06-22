@@ -190,10 +190,12 @@ final class ConfigurationTest extends TestCase
                     [
                         'name' => 'doctrine_service',
                         'type' => Configuration::PING_SERVICE_TYPE_DOCTRINE,
+                        'interval' => 30,
                     ],
                     [
                         'name' => 'pdo_service',
                         'type' => Configuration::PING_SERVICE_TYPE_PDO,
+                        'interval' => 15,
                     ],
                 ],
             ],
@@ -218,6 +220,26 @@ final class ConfigurationTest extends TestCase
                     [
                         'name' => 'no_support_service',
                         'type' => 'no_support',
+                    ],
+                ],
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+    }
+
+    public function testConfigWithInvalidPingInterval(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The value 0 is too small for path "gos_web_socket.ping.services.0.interval".');
+
+        $extraConfig = [
+            'ping' => [
+                'services' => [
+                    [
+                        'name' => 'doctrine_service',
+                        'type' => Configuration::PING_SERVICE_TYPE_DOCTRINE,
+                        'interval' => 0,
                     ],
                 ],
             ],

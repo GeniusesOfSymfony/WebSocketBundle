@@ -12,11 +12,12 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
     use LoggerAwareTrait;
 
     private Connection $connection;
-    private int $timeout = 20;
+    private int $interval = 20;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, int $interval = 20)
     {
         $this->connection = $connection;
+        $this->interval = $interval;
     }
 
     public function tick(): void
@@ -43,13 +44,25 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
         }
     }
 
+    public function getInterval(): int
+    {
+        return $this->interval;
+    }
+
+    /**
+     * @deprecated to be removed in 4.0, use getInterval() instead
+     */
     public function getTimeout(): int
     {
-        return $this->timeout;
+        trigger_deprecation('gos/web-socket-bundle', '3.9', '%s() is deprecated and will be removed in 4.0, call %s::getInterval() instead.', __METHOD__, self::class);
+
+        return $this->getInterval();
     }
 
     public function setTimeout(int $timeout): void
     {
-        $this->timeout = $timeout;
+        trigger_deprecation('gos/web-socket-bundle', '3.9', '%s() is deprecated and will be removed in 4.0, set the timeout through the constructor instead.', __METHOD__);
+
+        $this->interval = $timeout;
     }
 }
