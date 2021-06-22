@@ -44,3 +44,5 @@
 - Removed `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface::dispatch()`, the method is no longer a required on interface implementations
 - Removed `Gos\Bundle\WebSocketBundle\Topic\TopicManager::setWampApplication()` in favor of constructor injection
 - Removed `Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent` class and corresponding event, subscribe to `Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent` instead
+- Removed the `setTimeout` method of periodic classes
+- Removed the `getTimeout` method of `Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface` in favor of `getInterval`

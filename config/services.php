@@ -199,6 +199,7 @@ return static function (ContainerConfigurator $container): void {
             ->args(
                 [
                     abstract_arg('Doctrine connection'),
+                    abstract_arg('ping interval'),
                 ]
             )
             ->call(
@@ -214,6 +215,7 @@ return static function (ContainerConfigurator $container): void {
             ->args(
                 [
                     abstract_arg('PDO connection'),
+                    abstract_arg('ping interval'),
                 ]
             )
             ->call(

@@ -26,7 +26,7 @@ final class RegisterPeriodicTimersListener implements LoggerAwareInterface
         $loop = $event->getEventLoop();
 
         foreach ($this->periodicRegistry->getPeriodics() as $periodic) {
-            $interval = method_exists($periodic, 'getInterval') ? $periodic->getInterval() : $periodic->getTimeout();
+            $interval = $periodic->getInterval();
 
             $loop->addPeriodicTimer($interval, [$periodic, 'tick']);
 

@@ -40,7 +40,7 @@ final class RegisterPeriodicTimersListenerTest extends TestCase
         /** @var MockObject&PeriodicInterface $handler */
         $handler = $this->createMock(PeriodicInterface::class);
         $handler->expects(self::once())
-            ->method('getTimeout')
+            ->method('getInterval')
             ->willReturn(10);
 
         $this->periodicRegistry->addPeriodic($handler);

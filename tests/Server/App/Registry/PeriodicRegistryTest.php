@@ -16,7 +16,7 @@ final class PeriodicRegistryTest extends TestCase
                 // no-op
             }
 
-            public function getTimeout(): int
+            public function getInterval(): int
             {
                 return 10;
             }

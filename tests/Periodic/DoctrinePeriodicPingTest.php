@@ -41,19 +41,6 @@ final class DoctrinePeriodicPingTest extends TestCase
         self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
-    /**
-     * @group legacy
-     */
-    public function testTheTimeoutCanBeAdjustedAtRuntime(): void
-    {
-        $connection = $this->createMock(Connection::class);
-
-        $ping = new DoctrinePeriodicPing($connection);
-        $ping->setTimeout(15);
-
-        self::assertSame(15, $ping->getTimeout());
-    }
-
     public function testAConnectionErrorIsLogged(): void
     {
         $logger = new TestLogger();
