@@ -2,6 +2,7 @@
 
 ## 3.9.0 (????-??-??)
 
+- Add support for configuring the ping interval for ping services
 - Deprecate public access to public container services
 - Deprecated the `setTimeout` method of periodic classes
 

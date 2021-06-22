@@ -296,15 +296,20 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                         [
                             'name' => 'database_connection',
                             'type' => Configuration::PING_SERVICE_TYPE_DOCTRINE,
+                            'interval' => 30,
                         ],
                         [
                             'name' => 'pdo',
                             'type' => Configuration::PING_SERVICE_TYPE_PDO,
+                            'interval' => 20,
                         ],
                     ],
                 ],
             ]
         );
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('gos_web_socket.periodic_ping.doctrine.database_connection', 1, 30);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('gos_web_socket.periodic_ping.pdo.pdo', 1, 20);
 
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.doctrine.database_connection', 'gos_web_socket.periodic');
         $this->assertContainerBuilderHasServiceDefinitionWithTag('gos_web_socket.periodic_ping.pdo.pdo', 'gos_web_socket.periodic');
