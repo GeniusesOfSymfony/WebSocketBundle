@@ -5,6 +5,7 @@
 - Add support for configuring the ping interval for ping services
 - Deprecate public access to public container services
 - Deprecated the `setTimeout` method of periodic classes
+- Deprecated the `getTimeout` method of `Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface` in favor of `getInterval`
 
 ## 3.8.1 (2021-06-16)
 
