@@ -6,6 +6,7 @@
 - Deprecate public access to public container services
 - Deprecated the `setTimeout` method of periodic classes
 - Deprecated the `getTimeout` method of `Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface` in favor of `getInterval`
+- Deprecated the `shared_config` config node, in 4.0 the Twig globals will automatically be created when Twig is available
 
 ## 3.8.1 (2021-06-16)
 
