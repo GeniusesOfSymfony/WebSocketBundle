@@ -13,7 +13,7 @@ final class RegisterWebsocketRouterResourcesCompilerPass implements CompilerPass
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('gos_pubsub_router.router.websocket') || !$container->hasParameter('gos_web_socket.router_resources')) {
+        if (!$container->hasDefinition('gos_pubsub_router.router.websocket')) {
             return;
         }
 

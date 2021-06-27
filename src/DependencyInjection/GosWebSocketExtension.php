@@ -45,30 +45,26 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerClientConfiguration(array $config, ContainerBuilder $container): void
     {
-        if (!isset($config['client'])) {
-            return;
-        }
-
         $container->setParameter('gos_web_socket.client.storage.ttl', $config['client']['storage']['ttl']);
         $container->setParameter('gos_web_socket.firewall', (array) $config['client']['firewall']);
 
         if (isset($config['client']['session_handler'])) {
-            $sessionHandler = ltrim($config['client']['session_handler'], '@');
+            $sessionHandlerId = $config['client']['session_handler'];
 
             $container->getDefinition('gos_web_socket.server.builder')
-                ->addMethodCall('setSessionHandler', [new Reference($sessionHandler)]);
+                ->addMethodCall('setSessionHandler', [new Reference($sessionHandlerId)]);
 
-            $container->setAlias('gos_web_socket.session_handler', $sessionHandler);
+            $container->setAlias('gos_web_socket.session_handler', $sessionHandlerId);
         }
 
         if (isset($config['client']['storage']['driver'])) {
-            $driverRef = ltrim($config['client']['storage']['driver'], '@');
-            $storageDriver = $driverRef;
+            $driverId = $config['client']['storage']['driver'];
+            $storageDriver = $driverId;
 
             if (isset($config['client']['storage']['decorator'])) {
                 $decoratorRef = ltrim($config['client']['storage']['decorator'], '@');
                 $container->getDefinition($decoratorRef)
-                    ->setArgument(0, new Reference($driverRef));
+                    ->setArgument(0, new Reference($driverId));
 
                 $storageDriver = $decoratorRef;
             }
@@ -83,53 +79,27 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerServerConfiguration(array $config, ContainerBuilder $container): void
     {
-        if (!isset($config['server'])) {
-            return;
-        }
+        $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
+        $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
+        $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
+        $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
+        $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
+        $container->setParameter('gos_web_socket.server.keepalive_interval', $config['server']['keepalive_interval']);
 
-        if (isset($config['server']['port'])) {
-            $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
-        }
+        $routerConfig = [];
 
-        if (isset($config['server']['host'])) {
-            $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
-        }
-
-        if (isset($config['server']['origin_check'])) {
-            $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
-        }
-
-        if (isset($config['server']['ip_address_check'])) {
-            $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
-        }
-
-        if (isset($config['server']['keepalive_ping'])) {
-            $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
-        }
-
-        if (isset($config['server']['keepalive_interval'])) {
-            $container->setParameter('gos_web_socket.server.keepalive_interval', $config['server']['keepalive_interval']);
-        }
-
-        if (isset($config['server']['router'])) {
-            $routerConfig = [];
-
-            // Adapt configuration based on the version of GosPubSubRouterBundle installed, if the XML loader is available the newer configuration structure is used
-            if (isset($config['server']['router']['resources'])) {
-                foreach ($config['server']['router']['resources'] as $resource) {
-                    if (\is_array($resource)) {
-                        $routerConfig[] = $resource;
-                    } else {
-                        $routerConfig[] = [
-                            'resource' => $resource,
-                            'type' => null,
-                        ];
-                    }
-                }
+        foreach (($config['server']['router']['resources'] ?? []) as $resource) {
+            if (\is_array($resource)) {
+                $routerConfig[] = $resource;
+            } else {
+                $routerConfig[] = [
+                    'resource' => $resource,
+                    'type' => null,
+                ];
             }
-
-            $container->setParameter('gos_web_socket.router_resources', $routerConfig);
         }
+
+        $container->setParameter('gos_web_socket.router_resources', $routerConfig);
     }
 
     private function registerOriginsConfiguration(array $config, ContainerBuilder $container): void

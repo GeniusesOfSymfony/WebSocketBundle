@@ -258,6 +258,12 @@ final class ConfigurationTest extends TestCase
                     'ttl' => 900,
                 ],
             ],
+            'server' => [
+                'origin_check' => false,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
             'origins' => [],
             'blocked_ip_addresses' => [],
         ];

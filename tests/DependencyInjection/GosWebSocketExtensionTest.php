@@ -55,16 +55,7 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->container->setParameter('kernel.debug', true);
 
-        $bundleConfig = [
-            'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
-                'router' => [],
-            ],
-        ];
-
-        $this->load($bundleConfig);
+        $this->load();
 
         $this->assertContainerBuilderHasParameter('gos_web_socket.router_resources', []);
     }
@@ -83,9 +74,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $bundleConfig = [
             'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
                 'router' => [
                     'resources' => [
                         'example.yaml',
@@ -121,9 +109,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $bundleConfig = [
             'server' => [
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'origin_check' => false,
                 'router' => [
                     'resources' => [
                         [
@@ -304,6 +289,16 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
     {
         return [
             new GosWebSocketExtension(),
+        ];
+    }
+
+    protected function getMinimalConfiguration(): array
+    {
+        return [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+            ],
         ];
     }
 }
