@@ -12,21 +12,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class RegisterWebsocketRouterResourcesCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testTheRouterResourcesAreNotChangedIfTheParameterIsMissing(): void
-    {
-        $this->registerService('gos_pubsub_router.routing.loader', DelegatingLoader::class);
-
-        $this->registerService('gos_pubsub_router.router.websocket', Router::class)
-            ->addArgument('websocket')
-            ->addArgument(new Reference('gos_pubsub_router.routing.loader'))
-            ->addArgument([])
-            ->addArgument([]);
-
-        $this->compile();
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('gos_pubsub_router.router.websocket', 2, []);
-    }
-
     public function testResourcesAreAddedToTheRouter(): void
     {
         $this->registerService('gos_pubsub_router.routing.loader', DelegatingLoader::class);

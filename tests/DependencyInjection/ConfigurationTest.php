@@ -321,6 +321,12 @@ final class ConfigurationTest extends TestCase
                 ],
             ],
             'shared_config' => true,
+            'server' => [
+                'origin_check' => false,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
             'origins' => [],
             'blocked_ip_addresses' => [],
             'websocket_client' => [

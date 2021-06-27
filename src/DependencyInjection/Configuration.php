@@ -57,6 +57,7 @@ final class Configuration implements ConfigurationInterface
                 ->defaultTrue()
             ->end()
             ->arrayNode('server')
+                ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('host')
                         ->info('The host IP address on the server which connections for the websocket server are accepted.')
