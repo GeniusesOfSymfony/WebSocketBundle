@@ -1,4 +1,4 @@
-# WebSocket Bundle Events
+# Subscribing to Bundle Events
 
 The GosWebSocketBundle provides events which can be used to hook into actions performed by the bundle.
 
