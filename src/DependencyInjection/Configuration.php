@@ -47,6 +47,7 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->booleanNode('shared_config')
+                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.9'))
                 ->defaultTrue()
             ->end()
             ->arrayNode('server')
