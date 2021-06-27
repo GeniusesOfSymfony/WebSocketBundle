@@ -30,7 +30,8 @@
         "symfony/http-foundation": "^4.4 || ^5.2",
         "symfony/http-kernel": "^4.4 || ^5.2",
         "symfony/security-core": "^4.4 || ^5.2",
-        "symfony/serializer": "^4.4 || ^5.2"
+        "symfony/serializer": "^4.4 || ^5.2",
+        "symfony/yaml": "^4.4 || ^5.2"
     },
     "require-dev": {
         "doctrine/cache": "^1.11 || ^2.0",
