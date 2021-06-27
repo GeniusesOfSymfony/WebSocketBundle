@@ -36,8 +36,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $container->setParameter('gos_web_socket.shared_config', $config['shared_config']);
-
         $this->registerClientConfiguration($config, $container);
         $this->registerServerConfiguration($config, $container);
         $this->registerOriginsConfiguration($config, $container);

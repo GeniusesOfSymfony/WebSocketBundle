@@ -10,19 +10,9 @@ use Twig\Environment;
 
 final class RegisterTwigGlobalsCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testGlobalsAreNotAddedToTwigWhenSharedConfigParameterIsNotSet(): void
-    {
-        $this->registerService('twig', Environment::class);
-
-        $this->compile();
-
-        self::assertEmpty($this->container->getDefinition('twig')->getMethodCalls());
-    }
-
     public function testGlobalsAreAddedToTwig(): void
     {
         $this->registerService('twig', Environment::class);
-        $this->container->setParameter('gos_web_socket.shared_config', true);
         $this->container->setParameter('gos_web_socket.server.host', '127.0.0.1');
         $this->container->setParameter('gos_web_socket.server.port', 8080);
 

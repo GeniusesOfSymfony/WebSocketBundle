@@ -19,7 +19,6 @@ gos_web_socket:
 
       # The service ID of a decorator for the client storage driver.
       decorator:            ~
-  shared_config:        true
   server:
 
     # The host IP address on the server which connections for the websocket server are accepted.

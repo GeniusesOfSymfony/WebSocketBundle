@@ -258,7 +258,6 @@ final class ConfigurationTest extends TestCase
                     'ttl' => 900,
                 ],
             ],
-            'shared_config' => true,
             'origins' => [],
             'blocked_ip_addresses' => [],
         ];

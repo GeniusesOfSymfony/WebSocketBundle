@@ -13,7 +13,7 @@ final class RegisterTwigGlobalsCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('twig') || !$container->hasParameter('gos_web_socket.shared_config') || !$container->getParameter('gos_web_socket.shared_config')) {
+        if (!$container->hasDefinition('twig')) {
             return;
         }
 
