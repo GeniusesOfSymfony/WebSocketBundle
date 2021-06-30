@@ -55,7 +55,7 @@ final class GosWebSocketEvents
     public const CLIENT_REJECTED = 'gos_web_socket.client_rejected';
 
     /**
-     * The CLIENT_REJECTED event occurs when a connection is rejected.
+     * The CONNECTION_REJECTED event occurs when a connection is rejected.
      *
      * @Event("Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent")
      */
