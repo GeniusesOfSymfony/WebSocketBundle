@@ -153,11 +153,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $storageDriver = $driverId;
 
             if (isset($config['client']['storage']['decorator'])) {
-                $decoratorRef = ltrim($config['client']['storage']['decorator'], '@');
-                $container->getDefinition($decoratorRef)
+                $decoratorId = $config['client']['storage']['decorator'];
+                $container->getDefinition($decoratorId)
                     ->addArgument(new Reference($driverId));
 
-                $storageDriver = $decoratorRef;
+                $storageDriver = $decoratorId;
             }
 
             // Alias the DriverInterface in use for autowiring
@@ -217,28 +217,26 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         foreach ((array) $config['ping']['services'] as $pingService) {
+            $serviceId = $pingService['name'];
+
             switch ($pingService['type']) {
                 case Configuration::PING_SERVICE_TYPE_DOCTRINE:
-                    $serviceRef = ltrim($pingService['name'], '@');
-
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->addArgument(new Reference($serviceId));
                     $definition->addArgument($pingService['interval']);
                     $definition->addTag('gos_web_socket.periodic');
 
-                    $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceId, $definition);
 
                     break;
 
                 case Configuration::PING_SERVICE_TYPE_PDO:
-                    $serviceRef = ltrim($pingService['name'], '@');
-
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                    $definition->addArgument(new Reference($serviceRef));
+                    $definition->addArgument(new Reference($serviceId));
                     $definition->addArgument($pingService['interval']);
                     $definition->addTag('gos_web_socket.periodic');
 
-                    $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceId, $definition);
 
                     break;
 
@@ -250,8 +248,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerPushersConfiguration(array $config, ContainerBuilder $container): void
     {
-        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
-
         if (!isset($config['pushers'])) {
             // Remove all of the pushers
             foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
@@ -264,6 +260,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
             return;
         }
+
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
 
         if (isset($config['pushers']['amqp']) && $this->isConfigEnabled($container, $config['pushers']['amqp'])) {
             // Pull the 'enabled' field out of the pusher's config
@@ -342,11 +340,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerWebsocketClientConfiguration(array $config, ContainerBuilder $container): void
     {
-        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
-
         if (!$config['websocket_client']['enabled']) {
             return;
         }
+
+        $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
 
         // Pull the 'enabled' field out of the client's config
         $factoryConfig = $config['websocket_client'];
