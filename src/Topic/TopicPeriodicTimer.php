@@ -5,6 +5,9 @@ namespace Gos\Bundle\WebSocketBundle\Topic;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
+/**
+ * @implements \IteratorAggregate<string, array<string, TimerInterface>>
+ */
 class TopicPeriodicTimer implements \IteratorAggregate
 {
     /**
