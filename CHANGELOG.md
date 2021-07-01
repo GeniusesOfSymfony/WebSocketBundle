@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.9.0 (????-??-??)
+## 3.9.0 (2021-06-30)
 
 - Add support for configuring the ping interval for ping services
 - Deprecate public access to public container services
