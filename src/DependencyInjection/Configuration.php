@@ -25,7 +25,7 @@ final class Configuration implements ConfigurationInterface
                         ->info('The service ID of the session handler service used to read session data.')
                     ->end()
                     ->variableNode('firewall')
-                        ->defaultValue('ws_firewall')
+                        ->defaultValue('main')
                         ->info('The name of the security firewall to load the authenticated user data for.')
                     ->end()
                     ->arrayNode('storage')

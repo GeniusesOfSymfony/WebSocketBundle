@@ -25,21 +25,16 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
      */
     public function __construct(ClientStorageInterface $clientStorage, array $firewalls = [])
     {
+        if (empty($firewalls)) {
+            $firewalls = ['main'];
+        }
+
         $this->clientStorage = $clientStorage;
         $this->firewalls = $firewalls;
     }
 
     public function authenticate(ConnectionInterface $conn): TokenInterface
     {
-        if (1 === \count($this->firewalls) && 'ws_firewall' === $this->firewalls[0]) {
-            $this->logger?->warning(
-                sprintf(
-                    'User firewall is not configured, we have set %s by default',
-                    $this->firewalls[0]
-                )
-            );
-        }
-
         $token = $this->getToken($conn);
 
         $identifier = $this->clientStorage->getStorageId($conn);

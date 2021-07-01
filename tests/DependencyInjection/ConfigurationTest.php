@@ -252,7 +252,7 @@ final class ConfigurationTest extends TestCase
     {
         return [
             'client' => [
-                'firewall' => 'ws_firewall',
+                'firewall' => 'main',
                 'storage' => [
                     'driver' => 'gos_web_socket.client.driver.in_memory',
                     'ttl' => 900,
