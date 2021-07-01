@@ -40,16 +40,10 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
             );
         }
 
-        $loggerContext = [
-            'connection_id' => $conn->resourceId,
-            'session_id' => $conn->WAMP->sessionId,
-        ];
-
         $token = $this->getToken($conn);
 
         $identifier = $this->clientStorage->getStorageId($conn);
 
-        $loggerContext['storage_id'] = $identifier;
         $this->clientStorage->addClient($identifier, $token);
 
         $this->logger?->info(
@@ -57,7 +51,11 @@ final class WebsocketAuthenticationProvider implements WebsocketAuthenticationPr
                 '%s connected',
                 method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
             ),
-            $loggerContext
+            [
+                'connection_id' => $conn->resourceId,
+                'session_id' => $conn->WAMP->sessionId,
+                'storage_id' => $identifier,
+            ]
         );
 
         return $token;

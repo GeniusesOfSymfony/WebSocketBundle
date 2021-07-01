@@ -6,6 +6,9 @@ use Ratchet\ConnectionInterface;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
+/**
+ * @implements \IteratorAggregate<string, TimerInterface>
+ */
 class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
 {
     /**

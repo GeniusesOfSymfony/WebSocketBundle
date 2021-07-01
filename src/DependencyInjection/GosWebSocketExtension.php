@@ -62,11 +62,11 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $storageDriver = $driverId;
 
             if (isset($config['client']['storage']['decorator'])) {
-                $decoratorRef = ltrim($config['client']['storage']['decorator'], '@');
-                $container->getDefinition($decoratorRef)
-                    ->setArgument(0, new Reference($driverId));
+                $decoratorId = $config['client']['storage']['decorator'];
+                $container->getDefinition($decoratorId)
+                    ->setArgument(0, new Reference($decoratorId));
 
-                $storageDriver = $decoratorRef;
+                $storageDriver = $decoratorId;
             }
 
             // Alias the DriverInterface in use for autowiring
@@ -123,28 +123,26 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         foreach ((array) $config['ping']['services'] as $pingService) {
+            $serviceId = $pingService['name'];
+
             switch ($pingService['type']) {
                 case Configuration::PING_SERVICE_TYPE_DOCTRINE:
-                    $serviceRef = ltrim($pingService['name'], '@');
-
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.doctrine');
-                    $definition->replaceArgument(0, new Reference($serviceRef));
+                    $definition->replaceArgument(0, new Reference($serviceId));
                     $definition->replaceArgument(1, $pingService['interval']);
                     $definition->addTag('gos_web_socket.periodic');
 
-                    $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.doctrine.'.$serviceId, $definition);
 
                     break;
 
                 case Configuration::PING_SERVICE_TYPE_PDO:
-                    $serviceRef = ltrim($pingService['name'], '@');
-
                     $definition = new ChildDefinition('gos_web_socket.periodic_ping.pdo');
-                    $definition->replaceArgument(0, new Reference($serviceRef));
+                    $definition->replaceArgument(0, new Reference($serviceId));
                     $definition->replaceArgument(1, $pingService['interval']);
                     $definition->addTag('gos_web_socket.periodic');
 
-                    $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceRef, $definition);
+                    $container->setDefinition('gos_web_socket.periodic_ping.pdo.'.$serviceId, $definition);
 
                     break;
 
