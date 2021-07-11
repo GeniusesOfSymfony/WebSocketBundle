@@ -21,7 +21,7 @@
         "gos/pubsub-router-bundle": "^2.2",
         "gos/websocket-client": "^1.1",
         "psr/log": "^1.1",
-        "react/event-loop": "^1.0",
+        "react/event-loop": "^1.2",
         "symfony/config": "^4.4 || ^5.2",
         "symfony/console": "^4.4 || ^5.2",
         "symfony/dependency-injection": "^4.4 || ^5.2",
