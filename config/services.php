@@ -36,7 +36,7 @@ use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
-use React\EventLoop\Factory;
+use React\EventLoop\Loop;
 use React\EventLoop\LoopInterface;
 
 return static function (ContainerConfigurator $container): void {
@@ -332,7 +332,7 @@ return static function (ContainerConfigurator $container): void {
         ->alias(ServerLauncherInterface::class, 'gos_web_socket.server.launcher')
 
         ->set('gos_web_socket.server.event_loop', LoopInterface::class)
-            ->factory([Factory::class, 'create'])
+            ->factory([Loop::class, 'get'])
         ->alias(LoopInterface::class, 'gos_web_socket.server.event_loop')
 
         ->set('gos_web_socket.server.websocket', WebSocketServer::class)
