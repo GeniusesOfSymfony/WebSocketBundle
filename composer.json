@@ -39,7 +39,7 @@
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^0.12.92",
-        "phpstan/phpstan-phpunit": "^0.12.20",
+        "phpstan/phpstan-phpunit": "^0.12.21",
         "phpstan/phpstan-symfony": "^0.12.38",
         "phpunit/phpunit": "^9.5",
         "symfony/cache": "^4.4 || ^5.2",
