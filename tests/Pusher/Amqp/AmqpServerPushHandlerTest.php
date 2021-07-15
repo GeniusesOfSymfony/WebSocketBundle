@@ -15,7 +15,6 @@ use Gos\Bundle\WebSocketBundle\Server\App\PushableWampServerInterface;
 use Gos\Component\ReactAMQP\Consumer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -53,11 +52,6 @@ class AmqpServerPushHandlerTest extends TestCase
     private $connectionFactory;
 
     /**
-     * @var TestLogger
-     */
-    private $logger;
-
-    /**
      * @var AmqpServerPushHandler
      */
     private $pushHandler;
@@ -80,11 +74,8 @@ class AmqpServerPushHandlerTest extends TestCase
 
         $this->connectionFactory = $this->createMock(AmqpConnectionFactoryInterface::class);
 
-        $this->logger = new TestLogger();
-
         $this->pushHandler = new AmqpServerPushHandler($this->router, $this->serializer, $this->eventDispatcher, $this->connectionFactory);
         $this->pushHandler->setName('amqp');
-        $this->pushHandler->setLogger($this->logger);
     }
 
     public function testAMessageIsHandledAndTheConnectionClosed(): void

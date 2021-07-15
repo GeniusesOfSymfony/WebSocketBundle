@@ -9,14 +9,12 @@ use Doctrine\DBAL\Exception as NewDBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\NullLogger;
 
 class DoctrinePeriodicPingTest extends TestCase
 {
     public function testTheDatabaseIsPingedWithAConnection(): void
     {
-        $logger = new TestLogger();
-
         $query = 'SELECT 1';
 
         $platform = $this->createMock(AbstractPlatform::class);
@@ -34,10 +32,7 @@ class DoctrinePeriodicPingTest extends TestCase
             ->with($query);
 
         $ping = new DoctrinePeriodicPing($connection);
-        $ping->setLogger($logger);
         $ping->tick();
-
-        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     /**
@@ -62,17 +57,12 @@ class DoctrinePeriodicPingTest extends TestCase
             self::markTestSkipped('Test applies to doctrine/dbal 2.x');
         }
 
-        $logger = new TestLogger();
-
         $connection = $this->createMock(PingableConnection::class);
         $connection->expects(self::once())
             ->method('ping');
 
         $ping = new DoctrinePeriodicPing($connection);
-        $ping->setLogger($logger);
         $ping->tick();
-
-        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testAValidObjectIsRequired(): void
@@ -88,7 +78,7 @@ class DoctrinePeriodicPingTest extends TestCase
      */
     public function testAConnectionErrorIsLogged(): void
     {
-        $logger = new TestLogger();
+        $logger = new NullLogger();
 
         $exceptionClass = class_exists(NewDBALException::class) ? NewDBALException::class : LegacyDBALException::class;
 
@@ -106,8 +96,6 @@ class DoctrinePeriodicPingTest extends TestCase
             self::fail(sprintf('A %s should have been thrown.', $exceptionClass));
         } catch (LegacyDBALException | NewDBALException $exception) {
             self::assertSame('Testing', $exception->getMessage());
-
-            self::assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
         }
     }
 }

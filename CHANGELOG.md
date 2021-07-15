@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.10.0 (????-??-??)
+
+- Add support for `psr/log` 2.0 and 3.0
+
 ## 3.9.0 (2021-06-30)
 
 - Add support for configuring the ping interval for ping services

@@ -14,26 +14,21 @@ use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\NullLogger;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class ClientEventListenerTest extends TestCase
 {
     /**
-     * @var MockObject|ClientStorageInterface
+     * @var MockObject&ClientStorageInterface
      */
     private $clientStorage;
 
     /**
-     * @var MockObject|WebsocketAuthenticationProviderInterface
+     * @var MockObject&WebsocketAuthenticationProviderInterface
      */
     private $authenticationProvider;
-
-    /**
-     * @var TestLogger
-     */
-    private $logger;
 
     /**
      * @var ClientEventListener
@@ -47,10 +42,7 @@ class ClientEventListenerTest extends TestCase
         $this->clientStorage = $this->createMock(ClientStorageInterface::class);
         $this->authenticationProvider = $this->createMock(WebsocketAuthenticationProviderInterface::class);
 
-        $this->logger = new TestLogger();
-
         $this->listener = new ClientEventListener($this->clientStorage, $this->authenticationProvider);
-        $this->listener->setLogger($this->logger);
     }
 
     public function testTheUserIsAuthenticatedWhenTheClientConnectEventIsDispatched(): void
@@ -138,8 +130,6 @@ class ClientEventListenerTest extends TestCase
             ->method('removeClient');
 
         $this->listener->onClientDisconnect($event);
-
-        self::assertTrue($this->logger->hasInfoThatContains('User timed out'));
     }
 
     public function testTheStorageExceptionIsHandledWhenAttemptingToRemoveTheUserFromStorage(): void
@@ -166,8 +156,6 @@ class ClientEventListenerTest extends TestCase
             ->method('removeClient');
 
         $this->listener->onClientDisconnect($event);
-
-        self::assertTrue($this->logger->hasInfoThatContains('Error processing user in storage'));
     }
 
     /**
@@ -185,6 +173,7 @@ class ClientEventListenerTest extends TestCase
      */
     public function testTheClientErrorIsLogged(): void
     {
+        $this->listener->setLogger(new NullLogger());
         $connection = $this->createMock(ConnectionInterface::class);
         $connection->resourceId = 'resource';
         $connection->WAMP = (object) [
@@ -213,8 +202,6 @@ class ClientEventListenerTest extends TestCase
             ->method('removeClient');
 
         $this->listener->onClientError($event);
-
-        self::assertTrue($this->logger->hasErrorThatContains('Connection error'));
     }
 
     /**
@@ -230,14 +217,13 @@ class ClientEventListenerTest extends TestCase
 
     /**
      * @group legacy
+     * @doesNotPerformAssertions
      */
     public function testTheClientRejectionIsLogged(): void
     {
         $event = new ClientRejectedEvent('localhost', null);
 
         $this->listener->onClientRejected($event);
-
-        self::assertTrue($this->logger->hasWarningThatContains('Client rejected, bad origin'));
     }
 
     /**
@@ -250,12 +236,13 @@ class ClientEventListenerTest extends TestCase
         $this->listener->onConnectionRejected($event);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testTheConnectionRejectionIsLogged(): void
     {
         $event = new ConnectionRejectedEvent($this->createMock(ConnectionInterface::class), null);
 
         $this->listener->onConnectionRejected($event);
-
-        self::assertTrue($this->logger->hasWarningThatContains('Connection rejected'));
     }
 }

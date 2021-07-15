@@ -19,7 +19,6 @@ use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampConnection;
@@ -48,11 +47,6 @@ final class TopicDispatcherTest extends TestCase
     private $topicManager;
 
     /**
-     * @var TestLogger
-     */
-    private $logger;
-
-    /**
      * @var TopicDispatcher
      */
     private $dispatcher;
@@ -66,10 +60,7 @@ final class TopicDispatcherTest extends TestCase
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
         $this->topicManager = $this->createMock(TopicManager::class);
 
-        $this->logger = new TestLogger();
-
         $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, $this->topicManager);
-        $this->dispatcher->setLogger($this->logger);
     }
 
     public function testAWebsocketSubscriptionIsDispatchedToItsHandler(): void
@@ -532,8 +523,6 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);
 
         self::assertFalse($handler->wasCalled());
-
-        self::assertTrue($this->logger->hasErrorThatContains('Could not find topic dispatcher in registry for callback "topic.handler".'));
     }
 
     public function testTheConnectionIsClosedIfATopicCannotBeSecured(): void
@@ -600,8 +589,6 @@ final class TopicDispatcherTest extends TestCase
 
         self::assertFalse($handler->wasCalled());
         self::assertFalse($handler->wasSecured());
-
-        self::assertTrue($this->logger->hasErrorThatContains('Access denied'));
     }
 
     public function testAnExceptionFromAHandlerIsCaughtAndProcessed(): void
@@ -655,7 +642,5 @@ final class TopicDispatcherTest extends TestCase
         $this->dispatcher->dispatch(TopicDispatcher::PUBLISH, $connection, $topic, $request, 'test', [], []);
 
         self::assertTrue($handler->wasCalled());
-
-        self::assertTrue($this->logger->hasErrorThatContains('Websocket error processing topic callback function.'));
     }
 }
