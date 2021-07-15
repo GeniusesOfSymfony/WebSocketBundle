@@ -5,7 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Periodic;
 use Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\NullLogger;
 
 final class PdoPeriodicPingTest extends TestCase
 {
@@ -51,7 +51,7 @@ final class PdoPeriodicPingTest extends TestCase
      */
     public function testAConnectionErrorIsLogged(): void
     {
-        $logger = new TestLogger();
+        $logger = new NullLogger();
 
         /** @var MockObject&\PDO $connection */
         $connection = $this->createMock(\PDO::class);
@@ -73,8 +73,6 @@ final class PdoPeriodicPingTest extends TestCase
             self::fail(sprintf('A %s should have been thrown.', \PDOException::class));
         } catch (\PDOException $exception) {
             self::assertSame('Testing', $exception->getMessage());
-
-            self::assertTrue($logger->hasEmergencyThatContains('SQL server is gone, and unable to reconnect'));
         }
     }
 }

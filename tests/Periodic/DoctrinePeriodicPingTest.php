@@ -8,14 +8,12 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\NullLogger;
 
 final class DoctrinePeriodicPingTest extends TestCase
 {
     public function testTheDatabaseIsPingedWithAConnection(): void
     {
-        $logger = new TestLogger();
-
         $query = 'SELECT 1';
 
         /** @var MockObject&AbstractPlatform $platform */
@@ -35,15 +33,12 @@ final class DoctrinePeriodicPingTest extends TestCase
             ->with($query);
 
         $ping = new DoctrinePeriodicPing($connection);
-        $ping->setLogger($logger);
         $ping->tick();
-
-        self::assertTrue($logger->hasInfoThatContains('Successfully pinged database server '));
     }
 
     public function testAConnectionErrorIsLogged(): void
     {
-        $logger = new TestLogger();
+        $logger = new NullLogger();
 
         /** @var MockObject&Connection $connection */
         $connection = $this->createMock(Connection::class);
@@ -60,8 +55,6 @@ final class DoctrinePeriodicPingTest extends TestCase
             self::fail(sprintf('A %s should have been thrown.', DBALException::class));
         } catch (DBALException $exception) {
             self::assertSame('Testing', $exception->getMessage());
-
-            self::assertTrue($logger->hasEmergencyThatContains('Could not ping database server'));
         }
     }
 }

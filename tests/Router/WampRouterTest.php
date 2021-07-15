@@ -10,7 +10,6 @@ use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\Test\TestLogger;
 use Ratchet\Wamp\Topic;
 
 class WampRouterTest extends TestCase
@@ -19,11 +18,6 @@ class WampRouterTest extends TestCase
      * @var MockObject&RouterInterface
      */
     private $pubSubRouter;
-
-    /**
-     * @var TestLogger
-     */
-    private $logger;
 
     /**
      * @var WampRouter
@@ -36,10 +30,7 @@ class WampRouterTest extends TestCase
 
         $this->pubSubRouter = $this->createMock(RouterInterface::class);
 
-        $this->logger = new TestLogger();
-
         $this->router = new WampRouter($this->pubSubRouter);
-        $this->router->setLogger($this->logger);
     }
 
     public function testATopicIsRouted(): void
@@ -70,7 +61,7 @@ class WampRouterTest extends TestCase
 
         /** @var MockObject&Topic $topic */
         $topic = $this->createMock(Topic::class);
-        $topic->expects(self::exactly(2))
+        $topic->expects(self::once())
             ->method('getId')
             ->willReturn('abc/123');
 
