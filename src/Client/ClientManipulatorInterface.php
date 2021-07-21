@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Client;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 interface ClientManipulatorInterface
 {
@@ -26,7 +27,7 @@ interface ClientManipulatorInterface
     public function getClient(ConnectionInterface $connection): TokenInterface;
 
     /**
-     * @return string|object
+     * @return string|\Stringable|UserInterface
      */
     public function getUser(ConnectionInterface $connection);
 }
