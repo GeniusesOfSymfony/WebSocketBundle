@@ -1,5 +1,5 @@
 parameters:
-  level: 7
+  level: 8
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
@@ -105,6 +105,6 @@ parameters:
     -
       message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string\|false given\./'
       path: %currentWorkingDirectory%/tests/Server/WampServerTest.php
+
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
-  checkGenericClassInNonGenericObjectType: false

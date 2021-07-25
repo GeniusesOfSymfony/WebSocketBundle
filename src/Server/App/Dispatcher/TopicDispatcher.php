@@ -180,13 +180,15 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                 try {
                     $appTopic->registerPeriodicTimer($topic);
                 } catch (\Throwable $e) {
-                    $this->logger->error(
-                        sprintf(
-                            'Error registering periodic timer for topic "%s"',
-                            $appTopic->getName()
-                        ),
-                        ['exception' => $e]
-                    );
+                    if (null !== $this->logger) {
+                        $this->logger->error(
+                            sprintf(
+                                'Error registering periodic timer for topic "%s"',
+                                $appTopic->getName()
+                            ),
+                            ['exception' => $e]
+                        );
+                    }
                 }
             }
         }
