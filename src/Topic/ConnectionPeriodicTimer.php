@@ -5,6 +5,7 @@ namespace Gos\Bundle\WebSocketBundle\Topic;
 use Ratchet\ConnectionInterface;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
+use ReturnTypeWillChange;
 
 /**
  * @implements \IteratorAggregate<string, TimerInterface>
@@ -71,6 +72,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     /**
      * @return \ArrayIterator<string, TimerInterface>
      */
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->registry);
@@ -79,6 +81,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
+    #[ReturnTypeWillChange]
     public function count()
     {
         return \count($this->registry);

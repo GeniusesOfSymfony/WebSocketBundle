@@ -85,7 +85,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app->onError($conn, $e);
     }
 
-    public function getSubProtocols()
+    public function getSubProtocols(): array
     {
         if ($this->app instanceof WsServerInterface) {
             return $this->app->getSubProtocols();

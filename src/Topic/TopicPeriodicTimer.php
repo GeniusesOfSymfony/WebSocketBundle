@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Topic;
 
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
+use ReturnTypeWillChange;
 
 /**
  * @implements \IteratorAggregate<string, array<string, TimerInterface>>
@@ -95,6 +96,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
     /**
      * @return \ArrayIterator<string, array<string, TimerInterface>>
      */
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->registry);

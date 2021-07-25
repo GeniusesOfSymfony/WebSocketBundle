@@ -90,7 +90,12 @@ final class SessionAuthenticationProviderTest extends TestCase
             $user = new User('user', 'password');
         }
 
-        $token = new UsernamePasswordToken($user, 'password', 'main', ['ROLE_USER']);
+        // Symfony 5.4 deprecates the `$credentials` argument of the token class
+        if (3 === (new \ReflectionClass(UsernamePasswordToken::class))->getConstructor()->getNumberOfParameters()) {
+            $token = new UsernamePasswordToken($user, 'main', ['ROLE_USER']);
+        } else {
+            $token = new UsernamePasswordToken($user, 'password', 'main', ['ROLE_USER']);
+        }
 
         /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
