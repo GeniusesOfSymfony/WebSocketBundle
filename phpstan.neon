@@ -1,5 +1,5 @@
 parameters:
-  level: 7
+  level: 8
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
@@ -42,7 +42,15 @@ parameters:
       message: '/Parameter #1 \$topic of method Gos\\Bundle\\WebSocketBundle\\Topic\\TopicManager::getTopic\(\) expects Ratchet\\Wamp\\Topic\|string, null given\./'
       path: %currentWorkingDirectory%/tests/Topic/TopicManagerTest.php
 
+    # Properties in test stubs don't have typehinted properties, ignore for now
+    -
+      message: '/Property class@anonymous.* has no typehint specified\./'
+      path: %currentWorkingDirectory%/tests/*
+
+    # Ignore lack of json_* error checking in tests
+    -
+      message: '/Parameter #2 \$msg of method Gos\\Bundle\\WebSocketBundle\\Server\\WampServer::onMessage\(\) expects string, string\|false given\./'
+      path: %currentWorkingDirectory%/tests/Server/WampServerTest.php
+
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
-  checkGenericClassInNonGenericObjectType: false
-  treatPhpDocTypesAsCertain: false
