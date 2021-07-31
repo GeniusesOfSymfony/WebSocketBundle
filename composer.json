@@ -22,16 +22,16 @@
         "gos/websocket-client": "^1.1",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "react/event-loop": "^1.2",
-        "symfony/config": "^4.4 || ^5.2",
-        "symfony/console": "^4.4 || ^5.2",
-        "symfony/dependency-injection": "^4.4 || ^5.2",
+        "symfony/config": "^4.4 || ^5.3",
+        "symfony/console": "^4.4 || ^5.3",
+        "symfony/dependency-injection": "^4.4 || ^5.3",
         "symfony/deprecation-contracts": "^2.1",
-        "symfony/event-dispatcher": "^4.4 || ^5.2",
-        "symfony/http-foundation": "^4.4 || ^5.2",
-        "symfony/http-kernel": "^4.4 || ^5.2",
-        "symfony/security-core": "^4.4 || ^5.2",
-        "symfony/serializer": "^4.4 || ^5.2",
-        "symfony/yaml": "^4.4 || ^5.2"
+        "symfony/event-dispatcher": "^4.4 || ^5.3",
+        "symfony/http-foundation": "^4.4 || ^5.3",
+        "symfony/http-kernel": "^4.4 || ^5.3",
+        "symfony/security-core": "^4.4 || ^5.3",
+        "symfony/serializer": "^4.4 || ^5.3",
+        "symfony/yaml": "^4.4 || ^5.3"
     },
     "require-dev": {
         "doctrine/cache": "^1.11 || ^2.0",
@@ -42,12 +42,12 @@
         "phpstan/phpstan-phpunit": "^0.12.21",
         "phpstan/phpstan-symfony": "^0.12.41",
         "phpunit/phpunit": "^9.5",
-        "symfony/cache": "^4.4 || ^5.2",
-        "symfony/options-resolver": "^4.4 || ^5.2",
+        "symfony/cache": "^4.4 || ^5.3",
+        "symfony/options-resolver": "^4.4 || ^5.3",
         "symfony/phpunit-bridge": "^5.3",
-        "symfony/stopwatch": "^4.4 || ^5.2",
-        "symfony/twig-bundle": "^4.4 || ^5.2",
-        "symfony/web-profiler-bundle": "^4.4 || ^5.2"
+        "symfony/stopwatch": "^4.4 || ^5.3",
+        "symfony/twig-bundle": "^4.4 || ^5.3",
+        "symfony/web-profiler-bundle": "^4.4 || ^5.3"
     },
     "conflict": {
         "doctrine/cache": "<1.11",

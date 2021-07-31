@@ -4,6 +4,7 @@
 
 - Add support for `psr/log` 2.0 and 3.0
 - Updated use of `react/event-loop` to prefer newer API
+- Drop support for Symfony 5.2 (Branch is EOL)
 
 ## 3.9.0 (2021-06-30)
 

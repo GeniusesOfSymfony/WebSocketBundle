@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: [7.4]
-        symfony: [4.4.*, 5.2.*, 5.3.*]
+        symfony: [4.4.*, 5.3.*]
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         extensions: ['amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip']
@@ -25,11 +25,6 @@ jobs:
             composer-flags: ''
             can-fail: true
             extensions: 'amqp, curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
-          - php: 8.0
-            symfony: 5.2.*
-            composer-flags: '--prefer-stable'
-            can-fail: false
-            extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
           - php: 8.0
             symfony: 5.3.*
             composer-flags: '--prefer-stable'
