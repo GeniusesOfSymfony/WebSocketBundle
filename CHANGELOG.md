@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.10.0 (????-??-??)
+## 3.10.0 (2021-07-31)
 
 - Add support for `psr/log` 2.0 and 3.0
 - Updated use of `react/event-loop` to prefer newer API
