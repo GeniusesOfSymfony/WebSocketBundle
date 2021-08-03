@@ -9,7 +9,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\Server\IoServer;
 use React\EventLoop\LoopInterface;
-use React\Socket\Server;
+use React\Socket\SocketServer;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -37,7 +37,7 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
     {
         $this->logger?->info('Starting web socket');
 
-        $server = new Server("$host:$port", $this->loop);
+        $server = new SocketServer("$host:$port", [], $this->loop);
 
         $app = new IoServer(
             $this->serverBuilder->buildMessageStack(),
