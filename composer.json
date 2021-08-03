@@ -22,6 +22,7 @@
         "gos/websocket-client": "^1.1",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "react/event-loop": "^1.2",
+        "react/socket": "^1.9",
         "symfony/config": "^4.4 || ^5.3",
         "symfony/console": "^4.4 || ^5.3",
         "symfony/dependency-injection": "^4.4 || ^5.3",
