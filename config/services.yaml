@@ -1,4 +1,12 @@
 services:
+    gos_web_socket.authentication.provider.session:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider
+        abstract: true
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.token_storage'
+            - ~ # firewalls, set based on configuration
+
     gos_web_socket.authentication.storage.driver.in_memory:
         class: Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriver
         public: false
