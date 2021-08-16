@@ -16,6 +16,94 @@ final class ConfigurationTest extends TestCase
         self::assertEquals(self::getBundleDefaultConfig(), $config);
     }
 
+    public function testConfigWithAuthenticationStorageUsingPsrCache(): void
+    {
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
+                    'pool' => 'cache.websocket',
+                    'id' => null,
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithAuthenticationStorageUsingServiceStorage(): void
+    {
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE,
+                    'pool' => null,
+                    'id' => 'app.authentication.storage.driver.custom',
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithAuthenticationStorageUsingPsrCacheAndNoCachePoolConfigured(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.authentication.storage": A cache pool must be set when using the PSR cache storage');
+
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
+                ],
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+    }
+
+    public function testConfigWithAuthenticationStorageUsingServiceStorageAndNoIdConfigured(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.authentication.storage": A service ID must be set when using the service storage');
+
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE,
+                ],
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+    }
+
+    public function testConfigWithAuthenticationStorageUsingUnsupportedStorageType(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The value "unsupported" is not allowed for path "gos_web_socket.authentication.storage.type". Permissible values: "in_memory", "psr_cache", "service"');
+
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => 'unsupported',
+                ],
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+    }
+
     public function testConfigWithAServer(): void
     {
         $extraConfig = [
@@ -312,6 +400,13 @@ final class ConfigurationTest extends TestCase
     protected static function getBundleDefaultConfig(): array
     {
         return [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+            ],
             'client' => [
                 'firewall' => 'ws_firewall',
                 'storage' => [

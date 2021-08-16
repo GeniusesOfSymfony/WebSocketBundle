@@ -32,5 +32,5 @@ interface StorageDriverInterface
     /**
      * @throws StorageException if the token could not be saved to storage
      */
-    public function store(string $id, TokenInterface $token, int $lifetime = 0): bool;
+    public function store(string $id, TokenInterface $token): bool;
 }

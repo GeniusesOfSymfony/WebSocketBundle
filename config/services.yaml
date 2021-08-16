@@ -1,4 +1,20 @@
 services:
+    gos_web_socket.authentication.storage.driver.in_memory:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriver
+        public: false
+
+    gos_web_socket.authentication.storage.driver.psr_cache:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\PsrCacheStorageDriver
+        public: false
+        arguments:
+            - ~ # cache pool
+
+    gos_web_socket.authentication.token_storage:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.storage.driver'
+
     gos_web_socket.client.authentication.websocket_provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         public: false

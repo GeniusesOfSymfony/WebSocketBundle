@@ -2,6 +2,17 @@
 
 ```yaml
 gos_web_socket:
+  authentication:
+    storage:
+
+      # The type of storage for the websocket server authentication tokens.
+      type: in_memory # One of "in_memory"; "psr_cache"; "service", Required
+
+      # The cache pool to use when using the PSR cache storage.
+      pool: ~
+
+      # The service ID to use when using the service storage.
+      id: ~
   client:
 
     # The service ID of the session handler service used to read session data.

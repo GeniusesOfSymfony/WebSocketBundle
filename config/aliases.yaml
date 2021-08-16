@@ -1,4 +1,7 @@
 services:
+    Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface:
+        alias: gos_web_socket.authentication.token_storage
+
     Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface:
         alias: gos_web_socket.client.authentication.websocket_provider
 

@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
@@ -67,6 +68,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $container->setParameter('gos_web_socket.shared_config', $config['shared_config']);
 
+        $this->registerAuthenticationConfiguration($config, $container);
         $this->registerClientConfiguration($config, $container);
         $this->registerServerConfiguration($config, $container);
         $this->registerOriginsConfiguration($config, $container);
@@ -129,6 +131,34 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 );
             }
         }
+    }
+
+    private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
+    {
+        $storageId = null;
+
+        switch ($config['authentication']['storage']['type']) {
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY:
+                $storageId = 'gos_web_socket.authentication.storage.driver.in_memory';
+
+                break;
+
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE:
+                $storageId = 'gos_web_socket.authentication.storage.driver.psr_cache';
+
+                $container->getDefinition($storageId)
+                    ->replaceArgument(0, new Reference($config['authentication']['storage']['pool']));
+
+                break;
+
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE:
+                $storageId = $config['authentication']['storage']['id'];
+
+                break;
+        }
+
+        $container->setAlias('gos_web_socket.authentication.storage.driver', $storageId);
+        $container->setAlias(TokenStorageInterface::class, $storageId);
     }
 
     private function registerClientConfiguration(array $config, ContainerBuilder $container): void
