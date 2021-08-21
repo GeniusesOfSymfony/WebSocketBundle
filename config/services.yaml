@@ -1,4 +1,11 @@
 services:
+    gos_web_socket.authentication.authenticator:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Authenticator
+        public: false
+        arguments:
+            - ~ # authentication providers, set based on configuration
+            - '@gos_web_socket.authentication.token_storage'
+
     gos_web_socket.authentication.provider.session:
         class: Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider
         abstract: true
