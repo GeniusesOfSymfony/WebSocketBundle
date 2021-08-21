@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gos\Bundle\WebSocketBundle\Tests\Authentication\Storage\Provider;
+namespace Gos\Bundle\WebSocketBundle\Tests\Authentication\Provider;
 
 use Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
