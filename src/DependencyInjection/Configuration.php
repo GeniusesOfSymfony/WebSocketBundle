@@ -132,9 +132,11 @@ final class Configuration implements ConfigurationInterface
     {
         $rootNode->children()
             ->arrayNode('client')
+                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the new websocket authentication API instead.', '3.11'))
                 ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('session_handler')
+                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the session handler on the session authentication provider instead.', '3.11'))
                         ->info('The service ID of the session handler service used to read session data.')
                     ->end()
                     ->variableNode('firewall')

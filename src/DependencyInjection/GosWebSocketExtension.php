@@ -44,6 +44,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
         WebsocketAuthenticationProviderInterface::class => '3.11',
+        'gos_web_socket.session_handler' => '3.11',
     ];
 
     private const DEPRECATED_SERVICES = [
@@ -215,6 +216,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         // @deprecated to be removed in 4.0, parameter is unused
         $container->setParameter('gos_web_socket.client.storage.prefix', $config['client']['storage']['prefix']);
 
+        // @deprecated to be removed in 4.0, session handler config is moved
         if (isset($config['client']['session_handler'])) {
             $sessionHandlerId = $config['client']['session_handler'];
 
@@ -224,6 +226,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setAlias('gos_web_socket.session_handler', $sessionHandlerId);
         }
 
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         if (isset($config['client']['storage']['driver'])) {
             $driverId = $config['client']['storage']['driver'];
             $storageDriver = $driverId;

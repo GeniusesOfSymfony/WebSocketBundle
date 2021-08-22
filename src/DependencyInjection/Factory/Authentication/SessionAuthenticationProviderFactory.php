@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class SessionAuthenticationProviderFactory implements AuthenticationProviderFactoryInterface
 {
@@ -40,6 +41,11 @@ final class SessionAuthenticationProviderFactory implements AuthenticationProvid
         $container->setDefinition($providerId, new ChildDefinition('gos_web_socket.authentication.provider.session'))
             ->replaceArgument(1, $firewalls);
 
+        if (null !== $config['session_handler']) {
+            $container->getDefinition('gos_web_socket.server.builder')
+                ->addMethodCall('setSessionHandler', [new Reference($config['session_handler'])]);
+        }
+
         return $providerId;
     }
 
@@ -54,6 +60,10 @@ final class SessionAuthenticationProviderFactory implements AuthenticationProvid
     public function addConfiguration(NodeDefinition $builder): void
     {
         $builder->children()
+            ->scalarNode('session_handler')
+                ->defaultNull()
+                ->info('The service ID of the session handler service used to read session data.')
+            ->end()
             ->variableNode('firewalls')
                 ->defaultNull()
                 ->info('The firewalls from which the session token can be used; can be an array, a string, or null to allow all firewalls.')

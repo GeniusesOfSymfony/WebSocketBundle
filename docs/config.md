@@ -6,6 +6,9 @@ gos_web_socket:
     providers:
       session:
 
+        # The service ID of the session handler service used to read session data.
+        session_handler:      null
+
         # The firewalls from which the session token can be used; can be an array, a string, or null to allow all firewalls.
         firewalls:            null
     storage:
@@ -18,10 +21,10 @@ gos_web_socket:
 
       # The service ID to use when using the service storage.
       id:                   null
-  client:
+  client:               # Deprecated (Since gos/web-socket-bundle 3.11: The child node "client" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the new websocket authentication API instead.)
 
     # The service ID of the session handler service used to read session data.
-    session_handler:      ~
+    session_handler:      ~ # Deprecated (Since gos/web-socket-bundle 3.11: The child node "session_handler" at path "gos_web_socket.client" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the session handler on the session authentication provider instead.)
 
     # The name of the security firewall to load the authenticated user data for.
     firewall:             ws_firewall # Deprecated (Since gos/web-socket-bundle 3.11: The child node "firewall" at path "gos_web_socket.client" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the firewalls on the session authentication provider instead.)

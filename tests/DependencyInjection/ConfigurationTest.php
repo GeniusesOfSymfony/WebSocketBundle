@@ -23,6 +23,7 @@ final class ConfigurationTest extends TestCase
             'authentication' => [
                 'providers' => [
                     'session' => [
+                        'session_handler' => null,
                         'firewalls' => null,
                     ],
                 ],
@@ -48,6 +49,7 @@ final class ConfigurationTest extends TestCase
             'authentication' => [
                 'providers' => [
                     'session' => [
+                        'session_handler' => null,
                         'firewalls' => [
                             'dev',
                             'main',
@@ -76,6 +78,7 @@ final class ConfigurationTest extends TestCase
             'authentication' => [
                 'providers' => [
                     'session' => [
+                        'session_handler' => null,
                         'firewalls' => 'main',
                     ],
                 ],

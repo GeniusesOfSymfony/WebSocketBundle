@@ -3,9 +3,11 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection\Factory\Authentication;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
+use Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class SessionAuthenticationProviderFactoryTest extends TestCase
 {
@@ -25,7 +27,7 @@ final class SessionAuthenticationProviderFactoryTest extends TestCase
         $this->container = new ContainerBuilder();
     }
 
-    public function testAuthenticationProviderServiceIsCreatedWithDefaultConfiguration(): void
+    public function testAuthenticationProviderServiceIsCreatedWithDefaultConfigurationAndConfiguresSessionHandler(): void
     {
         $this->container->setParameter(
             'security.firewalls',
@@ -35,9 +37,12 @@ final class SessionAuthenticationProviderFactoryTest extends TestCase
             ]
         );
 
+        $this->container->register('gos_web_socket.server.builder', ServerBuilder::class);
+
         $this->factory->createAuthenticationProvider(
             $this->container,
             [
+                'session_handler' => 'session.handler.pdo',
                 'firewalls' => null,
             ],
         );
@@ -55,6 +60,21 @@ final class SessionAuthenticationProviderFactoryTest extends TestCase
             (string) $definition->getArgument(1),
             'The firewalls argument should be mapped to the "security.firewalls" parameter.'
         );
+
+        $definition = $this->container->getDefinition('gos_web_socket.server.builder');
+
+        self::assertEquals(
+            [
+                [
+                    'setSessionHandler',
+                    [
+                        new Reference('session.handler.pdo'),
+                    ],
+                ],
+            ],
+            $definition->getMethodCalls(),
+            'The authentication provider service should configure the session handler for the server builder.'
+        );
     }
 
     public function testAuthenticationProviderServiceIsCreatedWithAnArrayOfFirewalls(): void
@@ -62,6 +82,7 @@ final class SessionAuthenticationProviderFactoryTest extends TestCase
         $this->factory->createAuthenticationProvider(
             $this->container,
             [
+                'session_handler' => null,
                 'firewalls' => [
                     'dev',
                     'main',
@@ -89,6 +110,7 @@ final class SessionAuthenticationProviderFactoryTest extends TestCase
         $this->factory->createAuthenticationProvider(
             $this->container,
             [
+                'session_handler' => null,
                 'firewalls' => 'main',
             ],
         );
