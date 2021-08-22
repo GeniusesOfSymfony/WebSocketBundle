@@ -6,6 +6,13 @@ services:
             - ~ # authentication providers, set based on configuration
             - '@gos_web_socket.authentication.token_storage'
 
+    gos_web_socket.authentication.connection_repository:
+        class: Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepository
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.token_storage'
+            - '@gos_web_socket.authentication.authenticator'
+
     gos_web_socket.authentication.provider.session:
         class: Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider
         abstract: true
@@ -62,6 +69,7 @@ services:
     gos_web_socket.client.manipulator:
         class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
         public: true
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - '@gos_web_socket.client.storage'
             - '@gos_web_socket.client.authentication.websocket_provider'

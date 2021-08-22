@@ -2,6 +2,9 @@ services:
     Gos\Bundle\WebSocketBundle\Authentication\AuthenticatorInterface:
         alias: gos_web_socket.authentication.authenticator
 
+    Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepositoryInterface:
+        alias: gos_web_socket.authentication.connection_repository
+
     Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface:
         alias: gos_web_socket.authentication.token_storage
 
@@ -11,6 +14,7 @@ services:
 
     Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface:
         alias: gos_web_socket.client.manipulator
+        # deprecated alias, deprecation is set in the container extension
 
     Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface:
         alias: gos_web_socket.client.storage
