@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\BaseNode;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -23,7 +24,42 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('gos_web_socket');
 
-        $treeBuilder->getRootNode()->children()
+        $rootNode = $treeBuilder->getRootNode();
+
+        $this->addAuthenticationSection($rootNode);
+        $this->addClientSection($rootNode);
+        $this->addServerSection($rootNode);
+        $this->addPingSection($rootNode);
+        $this->addPushersSection($rootNode);
+        $this->addWebsocketClientSection($rootNode);
+
+        $rootNode->children()
+            ->booleanNode('shared_config')
+                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.9'))
+                ->defaultTrue()
+            ->end()
+            ->arrayNode('origins')
+                ->info('A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.')
+                ->scalarPrototype()
+                ->validate()
+                    ->ifInArray(['localhost', '127.0.0.1'])
+                        ->thenInvalid('%s is added by default')
+                    ->end()
+                ->end()
+            ->end()
+            ->arrayNode('blocked_ip_addresses')
+                ->info('A list of IP addresses which are not allowed to connect to the websocket server.')
+                ->scalarPrototype()
+                ->end()
+            ->end()
+        ->end();
+
+        return $treeBuilder;
+    }
+
+    private function addAuthenticationSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
             ->arrayNode('authentication')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -56,6 +92,12 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+        ;
+    }
+
+    private function addClientSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
             ->arrayNode('client')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -88,21 +130,23 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ->booleanNode('shared_config')
-                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.9'))
-                ->defaultTrue()
-            ->end()
+        ;
+    }
+
+    private function addServerSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
             ->arrayNode('server')
                 ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('host')
-                        ->info('The host IP address on the server which connections for the websocket server are accepted.')
-                        ->cannotBeEmpty()
                         ->isRequired()
+                        ->cannotBeEmpty()
+                        ->info('The host IP address on the server which connections for the websocket server are accepted.')
                     ->end()
                     ->scalarNode('port')
-                        ->info('The port on the server which connections for the websocket server are accepted.')
                         ->isRequired()
+                        ->info('The port on the server which connections for the websocket server are accepted.')
                     ->end()
                     ->booleanNode('origin_check')
                         ->defaultFalse()
@@ -152,12 +196,12 @@ final class Configuration implements ConfigurationInterface
                                 ->prototype('array')
                                     ->children()
                                         ->scalarNode('resource')
-                                            ->cannotBeEmpty()
                                             ->isRequired()
+                                            ->cannotBeEmpty()
                                         ->end()
                                         ->enumNode('type')
-                                            ->values(['closure', 'container', 'glob', 'php', 'xml', 'yaml', null])
                                             ->defaultNull()
+                                            ->values(['closure', 'container', 'glob', 'php', 'xml', 'yaml', null])
                                         ->end()
                                     ->end()
                                 ->end()
@@ -166,38 +210,30 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('origins')
-                ->info('A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.')
-                ->scalarPrototype()
-                ->validate()
-                    ->ifInArray(['localhost', '127.0.0.1'])
-                        ->thenInvalid('%s is added by default')
-                    ->end()
-                ->end()
-            ->end()
-            ->arrayNode('blocked_ip_addresses')
-                ->info('A list of IP addresses which are not allowed to connect to the websocket server.')
-                ->scalarPrototype()
-                ->end()
-            ->end()
+        ;
+    }
+
+    private function addPingSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
             ->arrayNode('ping')
                 ->children()
                     ->arrayNode('services')
                         ->arrayPrototype()
                             ->children()
                                 ->scalarNode('name')
-                                    ->info('The name of the service to ping.')
-                                    ->cannotBeEmpty()
                                     ->isRequired()
+                                    ->cannotBeEmpty()
+                                    ->info('The name of the service to ping.')
                                 ->end()
                                 ->enumNode('type')
-                                    ->info('The type of the service to be pinged.')
                                     ->isRequired()
+                                    ->info('The type of the service to be pinged.')
                                     ->values([self::PING_SERVICE_TYPE_DOCTRINE, self::PING_SERVICE_TYPE_PDO])
                                 ->end()
                                 ->integerNode('interval')
-                                    ->info('The time (in seconds) between executions of this ping.')
                                     ->defaultValue(20)
+                                    ->info('The time (in seconds) between executions of this ping.')
                                     ->min(1)
                                 ->end()
                             ->end()
@@ -205,6 +241,24 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+        ;
+    }
+
+    private function addPushersSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
+            ->arrayNode('pushers')
+                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
+                ->append($this->addAmqpNode())
+                ->append($this->addWampNode())
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addWebsocketClientSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode->children()
             ->arrayNode('websocket_client')
                 ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.', '3.4'))
                 ->addDefaultsIfNotSet()
@@ -225,22 +279,12 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('pushers')
-                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
-                ->append($this->addAmqpNode())
-                ->append($this->addWampNode())
-                ->end()
-            ->end()
-        ->end();
-
-        return $treeBuilder;
+        ;
     }
 
     private function addWampNode(): NodeDefinition
     {
-        $builder = new TreeBuilder('wamp');
-
-        $node = $builder->getRootNode();
+        $node = (new TreeBuilder('wamp'))->getRootNode();
 
         $node
             ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
@@ -267,9 +311,7 @@ final class Configuration implements ConfigurationInterface
 
     private function addAmqpNode(): NodeDefinition
     {
-        $builder = new TreeBuilder('amqp');
-
-        $node = $builder->getRootNode();
+        $node = (new TreeBuilder('amqp'))->getRootNode();
 
         $node
             ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
