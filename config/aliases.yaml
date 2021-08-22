@@ -7,12 +7,14 @@ services:
 
     Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface:
         alias: gos_web_socket.client.authentication.websocket_provider
+        # deprecated alias, deprecation is set in the container extension
 
     Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface:
         alias: gos_web_socket.client.manipulator
 
     Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface:
         alias: gos_web_socket.client.storage
+        # deprecated alias, deprecation is set in the container extension
 
     Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry:
         alias: gos_web_socket.registry.pusher

@@ -3,6 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
+use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\AuthenticationProviderFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
@@ -37,12 +39,19 @@ use Symfony\Component\DependencyInjection\Reference;
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     private const DEPRECATED_ALIASES = [
+        ClientStorageInterface::class => '3.11',
+        DriverInterface::class => '3.11',
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
+        WebsocketAuthenticationProviderInterface::class => '3.11',
     ];
 
     private const DEPRECATED_SERVICES = [
+        'gos_web_socket.client.authentication.websocket_provider' => '3.11',
         'gos_web_socket.client.driver.doctrine_cache' => '3.4',
+        'gos_web_socket.client.driver.in_memory' => '3.11',
+        'gos_web_socket.client.driver.symfony_cache' => '3.11',
+        'gos_web_socket.client.storage' => '3.11',
         'gos_web_socket.data_collector.websocket' => '3.1',
         'gos_web_socket.event_listener.close_pusher_connections' => '3.1',
         'gos_web_socket.event_listener.register_push_handlers' => '3.1',
@@ -197,7 +206,10 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerClientConfiguration(array $config, ContainerBuilder $container): void
     {
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         $container->setParameter('gos_web_socket.client.storage.ttl', $config['client']['storage']['ttl']);
+
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         $container->setParameter('gos_web_socket.firewall', (array) $config['client']['firewall']);
 
         // @deprecated to be removed in 4.0, parameter is unused

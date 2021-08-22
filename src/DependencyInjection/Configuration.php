@@ -49,7 +49,7 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->booleanNode('shared_config')
-                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.9'))
+                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.9'))
                 ->defaultTrue()
             ->end()
             ->arrayNode('origins')
@@ -76,6 +76,8 @@ final class Configuration implements ConfigurationInterface
         $authenticationNode = $rootNode->children()
             ->arrayNode('authentication')
                 ->addDefaultsIfNotSet();
+
+        $this->addAuthenticationProvidersSection($authenticationNode);
 
         $authenticationNode->children()
                 ->arrayNode('storage')
@@ -107,8 +109,6 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ->end();
-
-        $this->addAuthenticationProvidersSection($authenticationNode);
     }
 
     private function addAuthenticationProvidersSection(ArrayNodeDefinition $authenticationNode): void
@@ -138,25 +138,30 @@ final class Configuration implements ConfigurationInterface
                         ->info('The service ID of the session handler service used to read session data.')
                     ->end()
                     ->variableNode('firewall')
+                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the firewalls on the session authentication provider instead.', '3.11'))
                         ->defaultValue('ws_firewall')
                         ->info('The name of the security firewall to load the authenticated user data for.')
                     ->end()
                     ->arrayNode('storage')
+                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('driver')
+                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
                                 ->defaultValue('gos_web_socket.client.driver.in_memory')
                                 ->info('The service ID of the storage driver to use for storing connection data.')
                             ->end()
                             ->integerNode('ttl')
+                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Configure the TTL on the authentication storage driver instead.', '3.11'))
                                 ->defaultValue(900)
                                 ->info('The cache TTL (in seconds) for clients in storage.')
                             ->end()
                             ->scalarNode('prefix')
-                                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.1'))
+                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0.', '3.1'))
                                 ->defaultValue('')
                             ->end()
                             ->scalarNode('decorator')
+                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
                                 ->info('The service ID of a decorator for the client storage driver.')
                             ->end()
                         ->end()
@@ -281,7 +286,7 @@ final class Configuration implements ConfigurationInterface
     {
         $rootNode->children()
             ->arrayNode('pushers')
-                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
+                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
                 ->append($this->addAmqpNode())
                 ->append($this->addWampNode())
                 ->end()
@@ -293,7 +298,7 @@ final class Configuration implements ConfigurationInterface
     {
         $rootNode->children()
             ->arrayNode('websocket_client')
-                ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.', '3.4'))
+                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.', '3.4'))
                 ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
@@ -320,7 +325,7 @@ final class Configuration implements ConfigurationInterface
         $node = (new TreeBuilder('wamp'))->getRootNode();
 
         $node
-            ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
+            ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
             ->addDefaultsIfNotSet()
             ->canBeEnabled()
             ->children()
@@ -347,7 +352,7 @@ final class Configuration implements ConfigurationInterface
         $node = (new TreeBuilder('amqp'))->getRootNode();
 
         $node
-            ->setDeprecated(...$this->getDeprecationParameters('The "%node%" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
+            ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.', '3.1'))
             ->addDefaultsIfNotSet()
             ->canBeEnabled()
             ->children()

@@ -33,6 +33,7 @@ services:
     gos_web_socket.client.authentication.websocket_provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         public: false
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - '@gos_web_socket.client.storage'
             - '%gos_web_socket.firewall%'
@@ -44,16 +45,19 @@ services:
     gos_web_socket.client.driver.doctrine_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
+        # deprecated service, deprecation is set in the container extension
         # arguments are set by the container extension
 
     gos_web_socket.client.driver.symfony_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
+        # deprecated service, deprecation is set in the container extension
         # arguments are set by the container extension
 
     gos_web_socket.client.driver.in_memory:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
         public: false
+        # deprecated service, deprecation is set in the container extension
 
     gos_web_socket.client.manipulator:
         class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
@@ -67,6 +71,7 @@ services:
     gos_web_socket.client.storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         public: false
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - ~ # driver argument is set by the container extension
             - '%gos_web_socket.client.storage.ttl%'
