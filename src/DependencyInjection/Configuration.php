@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\AuthenticationProviderFactoryInterface;
 use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -19,6 +20,19 @@ final class Configuration implements ConfigurationInterface
     public const AUTHENTICATION_STORAGE_TYPE_IN_MEMORY = 'in_memory';
     public const AUTHENTICATION_STORAGE_TYPE_PSR_CACHE = 'psr_cache';
     public const AUTHENTICATION_STORAGE_TYPE_SERVICE = 'service';
+
+    /**
+     * @var AuthenticationProviderFactoryInterface[]
+     */
+    private array $authenticationProviderFactories;
+
+    /**
+     * @param AuthenticationProviderFactoryInterface[] $authenticationProviderFactories
+     */
+    public function __construct(array $authenticationProviderFactories)
+    {
+        $this->authenticationProviderFactories = $authenticationProviderFactories;
+    }
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
@@ -59,40 +73,59 @@ final class Configuration implements ConfigurationInterface
 
     private function addAuthenticationSection(ArrayNodeDefinition $rootNode): void
     {
-        $rootNode->children()
+        $authenticationNode = $rootNode->children()
             ->arrayNode('authentication')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->arrayNode('storage')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->enumNode('type')
-                                ->isRequired()
-                                ->defaultValue(self::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY)
-                                ->info('The type of storage for the websocket server authentication tokens.')
-                                ->values([self::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY, self::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE, self::AUTHENTICATION_STORAGE_TYPE_SERVICE])
-                            ->end()
-                            ->scalarNode('pool')
-                                ->defaultNull()
-                                ->info('The cache pool to use when using the PSR cache storage.')
-                            ->end()
-                            ->scalarNode('id')
-                                ->defaultNull()
-                                ->info('The service ID to use when using the service storage.')
-                            ->end()
+                ->addDefaultsIfNotSet();
+
+        $authenticationNode->children()
+                ->arrayNode('storage')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->enumNode('type')
+                            ->isRequired()
+                            ->defaultValue(self::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY)
+                            ->info('The type of storage for the websocket server authentication tokens.')
+                            ->values([self::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY, self::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE, self::AUTHENTICATION_STORAGE_TYPE_SERVICE])
                         ->end()
-                        ->validate()
-                            ->ifTrue(static fn (array $config): bool => ('' === $config['pool'] || null === $config['pool']) && self::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE === $config['type'])
-                            ->thenInvalid('A cache pool must be set when using the PSR cache storage')
+                        ->scalarNode('pool')
+                            ->defaultNull()
+                            ->info('The cache pool to use when using the PSR cache storage.')
                         ->end()
-                        ->validate()
-                            ->ifTrue(static fn (array $config): bool => ('' === $config['id'] || null === $config['id']) && self::AUTHENTICATION_STORAGE_TYPE_SERVICE === $config['type'])
-                            ->thenInvalid('A service ID must be set when using the service storage')
+                        ->scalarNode('id')
+                            ->defaultNull()
+                            ->info('The service ID to use when using the service storage.')
                         ->end()
+                    ->end()
+                    ->validate()
+                        ->ifTrue(static fn (array $config): bool => ('' === $config['pool'] || null === $config['pool']) && self::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE === $config['type'])
+                        ->thenInvalid('A cache pool must be set when using the PSR cache storage')
+                    ->end()
+                    ->validate()
+                        ->ifTrue(static fn (array $config): bool => ('' === $config['id'] || null === $config['id']) && self::AUTHENTICATION_STORAGE_TYPE_SERVICE === $config['type'])
+                        ->thenInvalid('A service ID must be set when using the service storage')
                     ->end()
                 ->end()
             ->end()
+        ->end();
+
+        $this->addAuthenticationProvidersSection($authenticationNode);
+    }
+
+    private function addAuthenticationProvidersSection(ArrayNodeDefinition $authenticationNode): void
+    {
+        $providerNodeBuilder = $authenticationNode
+            ->fixXmlConfig('provider')
+            ->children()
+                ->arrayNode('providers')
+                    // ->requiresAtLeastOneElement() // Will be required as of 4.0
         ;
+
+        foreach ($this->authenticationProviderFactories as $factory) {
+            $name = str_replace('-', '_', $factory->getKey());
+            $factoryNode = $providerNodeBuilder->children()->arrayNode($name)->canBeUnset();
+
+            $factory->addConfiguration($factoryNode);
+        }
     }
 
     private function addClientSection(ArrayNodeDefinition $rootNode): void

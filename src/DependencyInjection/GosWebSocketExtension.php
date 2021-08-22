@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\AuthenticationProviderFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
@@ -18,6 +19,7 @@ use Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface;
 use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -51,6 +53,21 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         'gos_web_socket.registry.server_push_handler' => '3.1',
         'gos_web_socket.server.entry_point' => '3.7',
     ];
+
+    /**
+     * @var AuthenticationProviderFactoryInterface[]
+     */
+    private array $authenticationProviderFactories = [];
+
+    public function addAuthenticationProviderFactory(AuthenticationProviderFactoryInterface $factory): void
+    {
+        $this->authenticationProviderFactories[] = $factory;
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
+    {
+        return new Configuration($this->authenticationProviderFactories);
+    }
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -135,6 +152,23 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
     private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
     {
+        $authenticators = [];
+
+        if (isset($config['authentication']['providers'])) {
+            foreach ($this->authenticationProviderFactories as $factory) {
+                $key = str_replace('-', '_', $factory->getKey());
+
+                if (!isset($config['authentication']['providers'][$key])) {
+                    continue;
+                }
+
+                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $config['authentication']['providers'][$key]));
+            }
+        }
+
+        $container->getDefinition('gos_web_socket.authentication.authenticator')
+            ->replaceArgument(1, new IteratorArgument($authenticators));
+
         $storageId = null;
 
         switch ($config['authentication']['storage']['type']) {

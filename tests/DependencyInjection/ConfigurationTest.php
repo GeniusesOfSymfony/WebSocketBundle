@@ -3,6 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
@@ -11,9 +12,110 @@ final class ConfigurationTest extends TestCase
 {
     public function testDefaultConfig(): void
     {
-        $config = (new Processor())->processConfiguration(new Configuration(), []);
+        $config = (new Processor())->processConfiguration(new Configuration([]), []);
 
         self::assertEquals(self::getBundleDefaultConfig(), $config);
+    }
+
+    public function testConfigWithSessionAuthenticationProviderWithDefaultConfig(): void
+    {
+        $extraConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => null,
+                    ],
+                ],
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithSessionAuthenticationProviderWithArrayOfFirewalls(): void
+    {
+        $extraConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => [
+                            'dev',
+                            'main',
+                        ],
+                    ],
+                ],
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithSessionAuthenticationProviderWithStringFirewall(): void
+    {
+        $extraConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => 'main',
+                    ],
+                ],
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
+    public function testConfigWithSessionAuthenticationProviderWithInvalidFirewallType(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Invalid configuration for path "gos_web_socket.authentication.providers.session.firewalls": The firewalls node must be an array, a string, or null');
+
+        $extraConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => true,
+                    ],
+                ],
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+            ],
+        ];
+
+        (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
     }
 
     public function testConfigWithAuthenticationStorageUsingPsrCache(): void
@@ -25,10 +127,11 @@ final class ConfigurationTest extends TestCase
                     'pool' => 'cache.websocket',
                     'id' => null,
                 ],
+                'providers' => [],
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -45,10 +148,11 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => 'app.authentication.storage.driver.custom',
                 ],
+                'providers' => [],
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -69,7 +173,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     public function testConfigWithAuthenticationStorageUsingServiceStorageAndNoIdConfigured(): void
@@ -85,7 +189,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     public function testConfigWithAuthenticationStorageUsingUnsupportedStorageType(): void
@@ -101,7 +205,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     public function testConfigWithAServer(): void
@@ -117,7 +221,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -162,7 +266,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $normalizedExtraConfig),
@@ -191,7 +295,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -215,7 +319,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -243,7 +347,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     public function testConfigWithBlockedIpAddressList(): void
@@ -262,7 +366,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -289,7 +393,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -313,7 +417,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     public function testConfigWithInvalidPingInterval(): void
@@ -333,7 +437,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
     }
 
     /**
@@ -366,7 +470,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),
@@ -389,7 +493,7 @@ final class ConfigurationTest extends TestCase
             ],
         ];
 
-        $config = (new Processor())->processConfiguration(new Configuration(), [$extraConfig]);
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
         self::assertEquals(
             array_merge(self::getBundleDefaultConfig(), $extraConfig),

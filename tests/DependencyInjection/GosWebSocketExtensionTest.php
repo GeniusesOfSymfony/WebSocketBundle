@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
@@ -13,6 +14,7 @@ use Gos\Bundle\WebSocketBundle\Pusher\Wamp\WampConnectionFactory;
 use Gos\Component\WebSocketClient\Wamp\Client;
 use Gos\Component\WebSocketClient\Wamp\ClientFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -153,6 +155,35 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                     'type' => null,
                 ],
             ]
+        );
+    }
+
+    public function testContainerIsLoadedWithSessionAuthenticationProviderConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => 'main',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.authentication.authenticator',
+            1,
+            new IteratorArgument([new Reference('gos_web_socket.authentication.provider.session.default')])
         );
     }
 
@@ -457,8 +488,11 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
     protected function getContainerExtensions(): array
     {
+        $extension = new GosWebSocketExtension();
+        $extension->addAuthenticationProviderFactory(new SessionAuthenticationProviderFactory());
+
         return [
-            new GosWebSocketExtension(),
+            $extension,
         ];
     }
 

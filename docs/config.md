@@ -6,13 +6,18 @@ gos_web_socket:
     storage:
 
       # The type of storage for the websocket server authentication tokens.
-      type: in_memory # One of "in_memory"; "psr_cache"; "service", Required
+      type:                 in_memory # One of "in_memory"; "psr_cache"; "service", Required
 
       # The cache pool to use when using the PSR cache storage.
-      pool: ~
+      pool:                 null
 
       # The service ID to use when using the service storage.
-      id: ~
+      id:                   null
+    providers:
+      session:
+
+        # The firewalls from which the session token can be used; can be an array, a string, or null to allow all firewalls.
+        firewalls:            null
   client:
 
     # The service ID of the session handler service used to read session data.
@@ -31,7 +36,6 @@ gos_web_socket:
 
       # The service ID of a decorator for the client storage driver.
       decorator:            ~
-  shared_config:        true
   server:
 
     # The host IP address on the server which connections for the websocket server are accepted.
@@ -58,12 +62,6 @@ gos_web_socket:
         -
           resource:             ~ # Required
           type:                 null # One of "closure"; "container"; "glob"; "php"; "xml"; "yaml"; null
-
-  # A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.
-  origins:              []
-
-  # A list of IP addresses which are not allowed to connect to the websocket server.
-  blocked_ip_addresses: []
   ping:
     services:
 
@@ -75,12 +73,9 @@ gos_web_socket:
 
         # The type of the service to be pinged.
         type:                 ~ # One of "doctrine"; "pdo", Required
-  websocket_client:     # Deprecated (Since gos/web-socket-bundle 3.4: The "websocket_client" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.)
-    enabled:              false
-    host:                 ~ # Required
-    port:                 ~ # Required
-    ssl:                  false
-    origin:               null
+
+        # The time (in seconds) between executions of this ping.
+        interval:             20
   pushers:              # Deprecated (Since gos/web-socket-bundle 3.1: The "pushers" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
     amqp:                 # Deprecated (Since gos/web-socket-bundle 3.1: The "amqp" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.)
       enabled:              false
@@ -100,4 +95,17 @@ gos_web_socket:
       port:                 ~ # Required
       ssl:                  false
       origin:               null
+  websocket_client:     # Deprecated (Since gos/web-socket-bundle 3.4: The "websocket_client" node is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.)
+    enabled:              false
+    host:                 ~ # Required
+    port:                 ~ # Required
+    ssl:                  false
+    origin:               null
+  shared_config:        true # Deprecated (Since gos/web-socket-bundle 3.9: The "shared_config" node is deprecated and will be removed in GosWebSocketBundle 4.0.)
+
+  # A list of origins allowed to connect to the websocket server, must match the value from the "Origin" header of the HTTP request.
+  origins:              []
+
+  # A list of IP addresses which are not allowed to connect to the websocket server.
+  blocked_ip_addresses: []
 ```
