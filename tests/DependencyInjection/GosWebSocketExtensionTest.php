@@ -158,6 +158,44 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
+    public function testContainerIsLoadedWithAuthenticatorEnabled(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'enable_authenticator' => true,
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.event_listener.client',
+            0,
+            new Reference('gos_web_socket.authentication.token_storage')
+        );
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.server.application.wamp',
+            3,
+            new Reference('gos_web_socket.authentication.token_storage')
+        );
+
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.authentication.websocket_provider');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.doctrine_cache');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.in_memory');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.symfony_cache');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.manipulator');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.storage');
+    }
+
     public function testContainerIsLoadedWithSessionAuthenticationProviderConfigured(): void
     {
         $this->container->setParameter(
@@ -182,7 +220,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.authentication.authenticator',
-            1,
+            0,
             new IteratorArgument([new Reference('gos_web_socket.authentication.provider.session.default')])
         );
     }
@@ -499,6 +537,9 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
     protected function getMinimalConfiguration(): array
     {
         return [
+            'authentication' => [
+                'enable_authenticator' => false,
+            ],
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,

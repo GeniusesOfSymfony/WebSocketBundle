@@ -107,6 +107,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerPushersConfiguration($config, $container);
         $this->registerWebsocketClientConfiguration($config, $container);
 
+        $this->maybeEnableAuthenticatorApi($config, $container);
+
         $this->markAliasesDeprecated($container);
         $this->markServicesDeprecated($container);
     }
@@ -163,6 +165,27 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
+    private function maybeEnableAuthenticatorApi(array $config, ContainerBuilder $container): void
+    {
+        if (!$config['authentication']['enable_authenticator']) {
+            return;
+        }
+
+        $container->getDefinition('gos_web_socket.event_listener.client')
+            ->replaceArgument(0, new Reference('gos_web_socket.authentication.token_storage'))
+            ->replaceArgument(1, new Reference('gos_web_socket.authentication.authenticator'));
+
+        $container->getDefinition('gos_web_socket.server.application.wamp')
+            ->replaceArgument(3, new Reference('gos_web_socket.authentication.token_storage'));
+
+        $container->removeDefinition('gos_web_socket.client.authentication.websocket_provider');
+        $container->removeDefinition('gos_web_socket.client.driver.doctrine_cache');
+        $container->removeDefinition('gos_web_socket.client.driver.in_memory');
+        $container->removeDefinition('gos_web_socket.client.driver.symfony_cache');
+        $container->removeDefinition('gos_web_socket.client.manipulator');
+        $container->removeDefinition('gos_web_socket.client.storage');
+    }
+
     private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
     {
         $authenticators = [];
@@ -180,7 +203,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         $container->getDefinition('gos_web_socket.authentication.authenticator')
-            ->replaceArgument(1, new IteratorArgument($authenticators));
+            ->replaceArgument(0, new IteratorArgument($authenticators));
 
         $storageId = null;
 
