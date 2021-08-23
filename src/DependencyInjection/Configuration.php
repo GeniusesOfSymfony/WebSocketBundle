@@ -107,6 +107,16 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('A service ID must be set when using the service storage')
                     ->end()
                 ->end()
+                ->booleanNode('enable_authenticator')
+                    ->defaultFalse()
+                    ->info('Enables the new authenticator API.')
+                    ->validate()
+                        ->ifTrue(static fn (bool $enableAuthenticator): bool => !$enableAuthenticator)
+                        ->then(static function (bool $enableAuthenticator): void {
+                            trigger_deprecation('gos/web-socket-bundle', '3.11', 'Not setting the "gos_web_socket.authentication.enable_authenticator" config option to true is deprecated.');
+                        })
+                    ->end()
+                ->end()
             ->end()
         ->end();
     }

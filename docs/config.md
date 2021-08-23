@@ -21,6 +21,9 @@ gos_web_socket:
 
       # The service ID to use when using the service storage.
       id:                   null
+
+    # Enables the new authenticator API.
+    enable_authenticator: false
   client:               # Deprecated (Since gos/web-socket-bundle 3.11: The child node "client" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the new websocket authentication API instead.)
 
     # The service ID of the session handler service used to read session data.

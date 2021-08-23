@@ -32,6 +32,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -61,6 +62,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -87,6 +89,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -115,6 +118,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -130,7 +134,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => 'cache.websocket',
                     'id' => null,
                 ],
-                'providers' => [],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -151,7 +155,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => 'app.authentication.storage.driver.custom',
                 ],
-                'providers' => [],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -173,6 +177,7 @@ final class ConfigurationTest extends TestCase
                 'storage' => [
                     'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
                 ],
+                'enable_authenticator' => false,
             ],
         ];
 
@@ -513,6 +518,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
+                'enable_authenticator' => false,
             ],
             'client' => [
                 'firewall' => 'ws_firewall',
