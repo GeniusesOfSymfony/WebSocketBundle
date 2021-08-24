@@ -81,6 +81,14 @@ final class TestToken implements TokenInterface
         return sprintf('%s(user="%s")', self::class, $this->getUserIdentifier());
     }
 
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return [];
+    }
+
     public function getRoleNames(): array
     {
         return [];
@@ -91,17 +99,26 @@ final class TestToken implements TokenInterface
         return '';
     }
 
-    public function getUser(): UserInterface
+    /**
+     * @return string|\Stringable|UserInterface
+     */
+    public function getUser()
     {
         return $this->user;
     }
 
+    /**
+     * @param string|\Stringable|UserInterface $user
+     */
     public function setUser($user): void
     {
         throw new \BadMethodCallException(sprintf('Cannot set user on %s.', self::class));
     }
 
-    public function getUsername(): string
+    /**
+     * @return string
+     */
+    public function getUsername()
     {
         return $this->getUserIdentifier();
     }
@@ -115,6 +132,9 @@ final class TestToken implements TokenInterface
         return $this->user->getUsername();
     }
 
+    /**
+     * @return bool
+     */
     public function isAuthenticated()
     {
         return true;
@@ -131,33 +151,56 @@ final class TestToken implements TokenInterface
         throw new \BadMethodCallException(sprintf('Cannot change authentication state of %s.', self::class));
     }
 
-    public function eraseCredentials(): void
+    public function eraseCredentials()
     {
     }
 
-    public function getAttributes(): array
+    /**
+     * @return array
+     */
+    public function getAttributes()
     {
         return [];
     }
 
-    public function setAttributes(array $attributes): void
+    /**
+     * @param array $attributes
+     *
+     * @return void
+     * @phpstan-return never
+     */
+    public function setAttributes($attributes)
     {
         throw new \BadMethodCallException(sprintf('Cannot set attributes of %s.', self::class));
     }
 
-    public function hasAttribute(string $name): bool
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttribute($name)
     {
         return false;
     }
 
     /**
+     * @param string $name
+     *
      * @return mixed
      */
-    public function getAttribute(string $name)
+    public function getAttribute($name)
     {
         return null;
     }
 
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return void
+     * @phpstan-return never
+     */
     public function setAttribute(string $name, $value): void
     {
         throw new \BadMethodCallException(sprintf('Cannot add attribute to %s.', self::class));
