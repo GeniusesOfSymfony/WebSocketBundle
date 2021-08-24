@@ -201,7 +201,7 @@ final class TestToken implements TokenInterface
      * @return void
      * @phpstan-return never
      */
-    public function setAttribute(string $name, $value): void
+    public function setAttribute($name, $value)
     {
         throw new \BadMethodCallException(sprintf('Cannot add attribute to %s.', self::class));
     }
