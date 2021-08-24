@@ -120,7 +120,13 @@ final class TestToken implements TokenInterface
         return true;
     }
 
-    public function setAuthenticated(bool $isAuthenticated): void
+    /**
+     * @param bool $isAuthenticated
+     *
+     * @return void
+     * @phpstan-return never
+     */
+    public function setAuthenticated($isAuthenticated)
     {
         throw new \BadMethodCallException(sprintf('Cannot change authentication state of %s.', self::class));
     }

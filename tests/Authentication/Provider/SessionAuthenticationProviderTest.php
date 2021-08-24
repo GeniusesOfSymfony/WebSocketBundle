@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Core\User\User;
 
 final class SessionAuthenticationProviderTest extends TestCase
 {
@@ -82,7 +84,13 @@ final class SessionAuthenticationProviderTest extends TestCase
 
     public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated(): void
     {
-        $token = new UsernamePasswordToken('user', 'password', 'main', ['ROLE_USER']);
+        if (class_exists(InMemoryUser::class)) {
+            $user = new InMemoryUser('user', 'password');
+        } else {
+            $user = new User('user', 'password');
+        }
+
+        $token = new UsernamePasswordToken($user, 'password', 'main', ['ROLE_USER']);
 
         /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
