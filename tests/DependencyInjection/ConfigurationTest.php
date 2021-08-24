@@ -5,16 +5,45 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
 final class ConfigurationTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     public function testDefaultConfig(): void
     {
         $config = (new Processor())->processConfiguration(new Configuration([]), []);
 
         self::assertEquals(self::getBundleDefaultConfig(), $config);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testNotEnablingNewAuthenticatorIsDeprecated(): void
+    {
+        $this->expectDeprecation('Since gos/web-socket-bundle 3.11: Not setting the "gos_web_socket.authentication.enable_authenticator" config option to true is deprecated.');
+
+        $extraConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
+                    'pool' => null,
+                    'id' => null,
+                ],
+                'enable_authenticator' => false,
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
     }
 
     public function testConfigWithSessionAuthenticationProviderWithDefaultConfig(): void
@@ -32,7 +61,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -62,7 +91,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -89,7 +118,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -118,7 +147,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -134,7 +163,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => 'cache.websocket',
                     'id' => null,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -155,7 +184,7 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => 'app.authentication.storage.driver.custom',
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -177,7 +206,7 @@ final class ConfigurationTest extends TestCase
                 'storage' => [
                     'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
                 ],
-                'enable_authenticator' => false,
+                'enable_authenticator' => true,
             ],
         ];
 
@@ -453,6 +482,10 @@ final class ConfigurationTest extends TestCase
      */
     public function testConfigWithPushers(): void
     {
+        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "pushers" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "amqp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "wamp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+
         $extraConfig = [
             'pushers' => [
                 'wamp' => [
@@ -491,6 +524,8 @@ final class ConfigurationTest extends TestCase
      */
     public function testConfigWithWebsocketClient(): void
     {
+        $this->expectDeprecation('Since gos/web-socket-bundle 3.4: The child node "websocket_client" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.');
+
         $extraConfig = [
             'websocket_client' => [
                 'enabled' => false,
