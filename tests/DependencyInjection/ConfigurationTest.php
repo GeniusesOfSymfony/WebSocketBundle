@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\DependencyInjection\Definition;
 
 final class ConfigurationTest extends TestCase
 {
@@ -25,7 +26,9 @@ final class ConfigurationTest extends TestCase
      */
     public function testNotEnablingNewAuthenticatorIsDeprecated(): void
     {
-        $this->expectDeprecation('Since gos/web-socket-bundle 3.11: Not setting the "gos_web_socket.authentication.enable_authenticator" config option to true is deprecated.');
+        $deprecationPrefix = method_exists(Definition::class, 'getDeprecation') ? 'Since gos/web-socket-bundle 3.11: ' : '';
+
+        $this->expectDeprecation($deprecationPrefix.'Not setting the "gos_web_socket.authentication.enable_authenticator" config option to true is deprecated.');
 
         $extraConfig = [
             'authentication' => [
@@ -482,9 +485,11 @@ final class ConfigurationTest extends TestCase
      */
     public function testConfigWithPushers(): void
     {
-        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "pushers" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
-        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "amqp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
-        $this->expectDeprecation('Since gos/web-socket-bundle 3.1: The child node "wamp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+        $deprecationPrefix = method_exists(Definition::class, 'getDeprecation') ? 'Since gos/web-socket-bundle 3.1: ' : '';
+
+        $this->expectDeprecation($deprecationPrefix.'The child node "pushers" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+        $this->expectDeprecation($deprecationPrefix.'The child node "amqp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
+        $this->expectDeprecation($deprecationPrefix.'The child node "wamp" at path "gos_web_socket.pushers" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the symfony/messenger component instead.');
 
         $extraConfig = [
             'pushers' => [
@@ -524,7 +529,9 @@ final class ConfigurationTest extends TestCase
      */
     public function testConfigWithWebsocketClient(): void
     {
-        $this->expectDeprecation('Since gos/web-socket-bundle 3.4: The child node "websocket_client" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.');
+        $deprecationPrefix = method_exists(Definition::class, 'getDeprecation') ? 'Since gos/web-socket-bundle 3.4: ' : '';
+
+        $this->expectDeprecation($deprecationPrefix.'The child node "websocket_client" at path "gos_web_socket" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the ratchet/pawl package instead.');
 
         $extraConfig = [
             'websocket_client' => [
