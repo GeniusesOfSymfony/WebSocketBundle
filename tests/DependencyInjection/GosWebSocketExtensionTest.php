@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
 use Doctrine\DBAL\Connection;
 use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
-use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
@@ -50,7 +50,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         // Authentication services
         $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'gos_web_socket.authentication.storage.driver.in_memory');
-        $this->assertContainerBuilderHasAlias(TokenStorageInterface::class, 'gos_web_socket.authentication.storage.driver.in_memory');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'gos_web_socket.authentication.storage.driver.in_memory');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -247,7 +247,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load($bundleConfig);
 
         $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'gos_web_socket.authentication.storage.driver.psr_cache');
-        $this->assertContainerBuilderHasAlias(TokenStorageInterface::class, 'gos_web_socket.authentication.storage.driver.psr_cache');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'gos_web_socket.authentication.storage.driver.psr_cache');
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'gos_web_socket.authentication.storage.driver.psr_cache',
@@ -278,7 +278,7 @@ class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         $this->load($bundleConfig);
 
         $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'app.authentication.storage.driver.custom');
-        $this->assertContainerBuilderHasAlias(TokenStorageInterface::class, 'app.authentication.storage.driver.custom');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'app.authentication.storage.driver.custom');
     }
 
     public function testContainerIsLoadedWithOriginsConfigured(): void
