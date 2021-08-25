@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
-use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface;
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
@@ -228,7 +228,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         $container->setAlias('gos_web_socket.authentication.storage.driver', $storageId);
-        $container->setAlias(TokenStorageInterface::class, $storageId);
+        $container->setAlias(StorageDriverInterface::class, $storageId);
     }
 
     private function registerClientConfiguration(array $config, ContainerBuilder $container): void
