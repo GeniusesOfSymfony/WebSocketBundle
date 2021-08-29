@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+/**
+ * @group legacy
+ */
 class WebsocketAuthenticationProviderTest extends TestCase
 {
     private const FIREWALLS = ['main'];

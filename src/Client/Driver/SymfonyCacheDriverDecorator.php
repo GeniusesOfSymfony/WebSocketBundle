@@ -4,6 +4,11 @@ namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
+trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" class is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', SymfonyCacheDriverDecorator::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the new websocket authentication API instead
+ */
 final class SymfonyCacheDriverDecorator implements DriverInterface
 {
     private AdapterInterface $cache;

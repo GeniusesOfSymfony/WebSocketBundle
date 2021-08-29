@@ -2,7 +2,12 @@
 
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface;
+use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
+use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\AuthenticationProviderFactoryInterface;
 use Gos\Bundle\WebSocketBundle\Periodic\PeriodicInterface;
 use Gos\Bundle\WebSocketBundle\Pusher\Amqp\AmqpConnectionFactory;
 use Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry;
@@ -17,6 +22,7 @@ use Gos\Component\WebSocketClient\Wamp\ClientFactoryInterface;
 use Gos\Component\WebSocketClient\Wamp\ClientInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,12 +40,22 @@ use Symfony\Component\DependencyInjection\Reference;
 final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
 {
     private const DEPRECATED_ALIASES = [
+        ClientManipulatorInterface::class => '3.11',
+        ClientStorageInterface::class => '3.11',
+        DriverInterface::class => '3.11',
         PusherRegistry::class => '3.1',
         ServerPushHandlerRegistry::class => '3.1',
+        WebsocketAuthenticationProviderInterface::class => '3.11',
+        'gos_web_socket.session_handler' => '3.11',
     ];
 
     private const DEPRECATED_SERVICES = [
+        'gos_web_socket.client.authentication.websocket_provider' => '3.11',
         'gos_web_socket.client.driver.doctrine_cache' => '3.4',
+        'gos_web_socket.client.driver.in_memory' => '3.11',
+        'gos_web_socket.client.driver.symfony_cache' => '3.11',
+        'gos_web_socket.client.manipulator' => '3.11',
+        'gos_web_socket.client.storage' => '3.11',
         'gos_web_socket.data_collector.websocket' => '3.1',
         'gos_web_socket.event_listener.close_pusher_connections' => '3.1',
         'gos_web_socket.event_listener.register_push_handlers' => '3.1',
@@ -50,6 +66,21 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         'gos_web_socket.registry.server_push_handler' => '3.1',
         'gos_web_socket.server.entry_point' => '3.7',
     ];
+
+    /**
+     * @var AuthenticationProviderFactoryInterface[]
+     */
+    private array $authenticationProviderFactories = [];
+
+    public function addAuthenticationProviderFactory(AuthenticationProviderFactoryInterface $factory): void
+    {
+        $this->authenticationProviderFactories[] = $factory;
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
+    {
+        return new Configuration($this->authenticationProviderFactories);
+    }
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -67,6 +98,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $container->setParameter('gos_web_socket.shared_config', $config['shared_config']);
 
+        $this->registerAuthenticationConfiguration($config, $container);
         $this->registerClientConfiguration($config, $container);
         $this->registerServerConfiguration($config, $container);
         $this->registerOriginsConfiguration($config, $container);
@@ -74,6 +106,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerPingConfiguration($config, $container);
         $this->registerPushersConfiguration($config, $container);
         $this->registerWebsocketClientConfiguration($config, $container);
+
+        $this->maybeEnableAuthenticatorApi($config, $container);
 
         $this->markAliasesDeprecated($container);
         $this->markServicesDeprecated($container);
@@ -131,14 +165,84 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
+    private function maybeEnableAuthenticatorApi(array $config, ContainerBuilder $container): void
+    {
+        if (!$config['authentication']['enable_authenticator']) {
+            return;
+        }
+
+        $container->getDefinition('gos_web_socket.event_listener.client')
+            ->replaceArgument(0, new Reference('gos_web_socket.authentication.token_storage'))
+            ->replaceArgument(1, new Reference('gos_web_socket.authentication.authenticator'));
+
+        $container->getDefinition('gos_web_socket.server.application.wamp')
+            ->replaceArgument(3, new Reference('gos_web_socket.authentication.token_storage'));
+
+        $container->removeDefinition('gos_web_socket.client.authentication.websocket_provider');
+        $container->removeDefinition('gos_web_socket.client.driver.doctrine_cache');
+        $container->removeDefinition('gos_web_socket.client.driver.in_memory');
+        $container->removeDefinition('gos_web_socket.client.driver.symfony_cache');
+        $container->removeDefinition('gos_web_socket.client.manipulator');
+        $container->removeDefinition('gos_web_socket.client.storage');
+    }
+
+    private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
+    {
+        $authenticators = [];
+
+        if (isset($config['authentication']['providers'])) {
+            foreach ($this->authenticationProviderFactories as $factory) {
+                $key = str_replace('-', '_', $factory->getKey());
+
+                if (!isset($config['authentication']['providers'][$key])) {
+                    continue;
+                }
+
+                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $config['authentication']['providers'][$key]));
+            }
+        }
+
+        $container->getDefinition('gos_web_socket.authentication.authenticator')
+            ->replaceArgument(0, new IteratorArgument($authenticators));
+
+        $storageId = null;
+
+        switch ($config['authentication']['storage']['type']) {
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY:
+                $storageId = 'gos_web_socket.authentication.storage.driver.in_memory';
+
+                break;
+
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE:
+                $storageId = 'gos_web_socket.authentication.storage.driver.psr_cache';
+
+                $container->getDefinition($storageId)
+                    ->replaceArgument(0, new Reference($config['authentication']['storage']['pool']));
+
+                break;
+
+            case Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE:
+                $storageId = $config['authentication']['storage']['id'];
+
+                break;
+        }
+
+        $container->setAlias('gos_web_socket.authentication.storage.driver', $storageId);
+        $container->setAlias(StorageDriverInterface::class, $storageId);
+    }
+
     private function registerClientConfiguration(array $config, ContainerBuilder $container): void
     {
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         $container->setParameter('gos_web_socket.client.storage.ttl', $config['client']['storage']['ttl']);
+
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         $container->setParameter('gos_web_socket.firewall', (array) $config['client']['firewall']);
 
         // @deprecated to be removed in 4.0, parameter is unused
         $container->setParameter('gos_web_socket.client.storage.prefix', $config['client']['storage']['prefix']);
 
+        // @deprecated to be removed in 4.0, session handler config is moved
         if (isset($config['client']['session_handler'])) {
             $sessionHandlerId = $config['client']['session_handler'];
 
@@ -148,6 +252,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->setAlias('gos_web_socket.session_handler', $sessionHandlerId);
         }
 
+        // @deprecated to be removed in 4.0, authentication API has been replaced
         if (isset($config['client']['storage']['driver'])) {
             $driverId = $config['client']['storage']['driver'];
             $storageDriver = $driverId;

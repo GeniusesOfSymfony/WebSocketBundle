@@ -30,6 +30,7 @@
         "symfony/event-dispatcher": "^4.4 || ^5.3",
         "symfony/http-foundation": "^4.4 || ^5.3",
         "symfony/http-kernel": "^4.4 || ^5.3",
+        "symfony/polyfill-php80": "^1.15",
         "symfony/security-core": "^4.4 || ^5.3",
         "symfony/serializer": "^4.4 || ^5.3",
         "symfony/yaml": "^4.4 || ^5.3"

@@ -9,6 +9,11 @@ use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" class is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', WebsocketAuthenticationProvider::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the new websocket authentication API instead
+ */
 final class WebsocketAuthenticationProvider implements WebsocketAuthenticationProviderInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;

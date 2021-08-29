@@ -1,7 +1,46 @@
 services:
+    gos_web_socket.authentication.authenticator:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Authenticator
+        public: false
+        arguments:
+            - ~ # authentication providers, set based on configuration
+            - '@gos_web_socket.authentication.token_storage'
+
+    gos_web_socket.authentication.connection_repository:
+        class: Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepository
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.token_storage'
+            - '@gos_web_socket.authentication.authenticator'
+
+    gos_web_socket.authentication.provider.session:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider
+        abstract: true
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.token_storage'
+            - ~ # firewalls, set based on configuration
+
+    gos_web_socket.authentication.storage.driver.in_memory:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriver
+        public: false
+
+    gos_web_socket.authentication.storage.driver.psr_cache:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\PsrCacheStorageDriver
+        public: false
+        arguments:
+            - ~ # cache pool
+
+    gos_web_socket.authentication.token_storage:
+        class: Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage
+        public: false
+        arguments:
+            - '@gos_web_socket.authentication.storage.driver'
+
     gos_web_socket.client.authentication.websocket_provider:
         class: Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider
         public: false
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - '@gos_web_socket.client.storage'
             - '%gos_web_socket.firewall%'
@@ -13,20 +52,24 @@ services:
     gos_web_socket.client.driver.doctrine_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator
         public: false
+        # deprecated service, deprecation is set in the container extension
         # arguments are set by the container extension
 
     gos_web_socket.client.driver.symfony_cache:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator
         public: false
+        # deprecated service, deprecation is set in the container extension
         # arguments are set by the container extension
 
     gos_web_socket.client.driver.in_memory:
         class: Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver
         public: false
+        # deprecated service, deprecation is set in the container extension
 
     gos_web_socket.client.manipulator:
         class: Gos\Bundle\WebSocketBundle\Client\ClientManipulator
         public: true
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - '@gos_web_socket.client.storage'
             - '@gos_web_socket.client.authentication.websocket_provider'
@@ -36,6 +79,7 @@ services:
     gos_web_socket.client.storage:
         class: Gos\Bundle\WebSocketBundle\Client\ClientStorage
         public: false
+        # deprecated service, deprecation is set in the container extension
         arguments:
             - ~ # driver argument is set by the container extension
             - '%gos_web_socket.client.storage.ttl%'

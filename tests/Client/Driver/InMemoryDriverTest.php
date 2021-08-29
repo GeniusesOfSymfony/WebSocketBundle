@@ -5,6 +5,9 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Client\Driver;
 use Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group legacy
+ */
 class InMemoryDriverTest extends TestCase
 {
     public function testDataIsProcessedInStorage(): void

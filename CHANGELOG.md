@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.11.0 (????-??-??)
+
+- Implemented a new [authentication API](docs/authentication.md) and deprecated the previous implementation
+
 ## 3.10.0 (2021-07-31)
 
 - Add support for `psr/log` 2.0 and 3.0

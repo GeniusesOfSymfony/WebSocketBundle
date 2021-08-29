@@ -13,6 +13,9 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+/**
+ * @group legacy
+ */
 class ClientStorageTest extends TestCase
 {
     /**
