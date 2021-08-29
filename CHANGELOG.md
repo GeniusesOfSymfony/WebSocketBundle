@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.11.0 (????-??-??)
+## 3.11.0 (2021-08-29)
 
 - Implemented a new [authentication API](docs/authentication.md) and deprecated the previous implementation
 
