@@ -14,12 +14,13 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\WampServerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-class WampApplication implements LoggerAwareInterface
+class WampApplication implements WampServerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
