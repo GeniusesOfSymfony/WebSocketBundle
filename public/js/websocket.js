@@ -84,13 +84,35 @@ var GosSocket = /*#__PURE__*/function () {
 
 
   _createClass(GosSocket, [{
-    key: "isConnected",
+    key: "autobahn",
+    get:
+    /**
+     * Retrieve the AutobahnJS API object
+     *
+     * @returns {ab}
+     */
+    function get() {
+      return this._autobahn;
+    }
+    /**
+     * Retrieve the current AutobahnJS session object
+     *
+     * @returns {ab.Session|null}
+     */
 
+  }, {
+    key: "session",
+    get: function get() {
+      return this._session;
+    }
     /**
      * Check if currently connected to the websocket server
      *
      * @returns {Boolean}
      */
+
+  }, {
+    key: "isConnected",
     value: function isConnected() {
       return this._session !== null;
     }
@@ -280,28 +302,6 @@ var GosSocket = /*#__PURE__*/function () {
         listeners[i].call(this, data);
       }
     }
-  }, {
-    key: "autobahn",
-
-    /**
-     * Retrieve the AutobahnJS API object
-     *
-     * @returns {ab}
-     */
-    get: function get() {
-      return this._autobahn;
-    }
-    /**
-     * Retrieve the current AutobahnJS session object
-     *
-     * @returns {ab.Session|null}
-     */
-
-  }, {
-    key: "session",
-    get: function get() {
-      return this._session;
-    }
   }], [{
     key: "connect",
     value: function connect(uri) {
@@ -329,7 +329,7 @@ var WS = /*#__PURE__*/function () {
 
   _createClass(WS, [{
     key: "connect",
-
+    value:
     /**
      * Create a new connection
      *
@@ -339,7 +339,7 @@ var WS = /*#__PURE__*/function () {
      * @throws {Error} If AutobahnJS is not loaded
      * @deprecated Use `GosSocket.connect()` instead
      */
-    value: function connect(uri) {
+    function connect(uri) {
       var sessionConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       return GosSocket.connect(uri, sessionConfig);
     }
