@@ -49,6 +49,13 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.authentication.token_storage'),
                 ]
             )
+            ->call(
+                'setLogger',
+                [
+                    service('logger'),
+                ]
+            )
+            ->tag('monolog.logger', ['channel' => 'websocket'])
         ->alias(AuthenticatorInterface::class, 'gos_web_socket.authentication.authenticator')
 
         ->set('gos_web_socket.authentication.connection_repository', ConnectionRepository::class)
@@ -67,6 +74,13 @@ return static function (ContainerConfigurator $container): void {
                     abstract_arg('firewalls'),
                 ]
             )
+            ->call(
+                'setLogger',
+                [
+                    service('logger'),
+                ]
+            )
+            ->tag('monolog.logger', ['channel' => 'websocket'])
 
         ->set('gos_web_socket.authentication.storage.driver.in_memory', InMemoryStorageDriver::class)
 
@@ -83,6 +97,13 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.authentication.storage.driver'),
                 ]
             )
+            ->call(
+                'setLogger',
+                [
+                    service('logger'),
+                ]
+            )
+            ->tag('monolog.logger', ['channel' => 'websocket'])
         ->alias(TokenStorageInterface::class, 'gos_web_socket.authentication.token_storage')
 
         ->set('gos_web_socket.command.websocket_server', WebsocketServerCommand::class)
@@ -103,7 +124,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -120,7 +141,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -136,7 +157,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('kernel.event_listener')
@@ -151,7 +172,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('kernel.event_listener', ['priority' => 255])
@@ -166,7 +187,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('kernel.event_listener')
@@ -182,7 +203,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('kernel.event_subscriber')
@@ -199,7 +220,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -215,7 +236,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -224,7 +245,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -278,7 +299,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -296,7 +317,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('monolog.logger', ['channel' => 'websocket'])
@@ -340,7 +361,7 @@ return static function (ContainerConfigurator $container): void {
             ->call(
                 'setLogger',
                 [
-                    [service('logger')],
+                    service('logger'),
                 ]
             )
             ->tag('gos_web_socket.server')
