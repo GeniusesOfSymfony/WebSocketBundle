@@ -7,6 +7,11 @@ use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" interface is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', ClientStorageInterface::class);
+
+/**
+ * @deprecated to be removed in 4.0, use the new websocket authentication API instead
+ */
 interface ClientStorageInterface
 {
     /**

@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
+/**
+ * @group legacy
+ */
 final class SymfonyCacheDriverDecoratorTest extends TestCase
 {
     /**

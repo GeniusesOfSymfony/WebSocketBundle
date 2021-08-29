@@ -10,8 +10,10 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" class is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', ClientStorage::class);
+
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @deprecated to be removed in 4.0, use the new websocket authentication API instead
  */
 final class ClientStorage implements ClientStorageInterface, LoggerAwareInterface
 {

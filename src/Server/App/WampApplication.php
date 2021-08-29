@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Server\App;
 
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
@@ -14,6 +15,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -26,20 +28,35 @@ class WampApplication implements LoggerAwareInterface
     protected TopicDispatcherInterface $topicDispatcher;
     protected RpcDispatcherInterface $rpcDispatcher;
     protected EventDispatcherInterface $eventDispatcher;
-    protected ClientStorageInterface $clientStorage;
+
+    /**
+     * @var ClientStorageInterface|TokenStorageInterface
+     * @note Will be renamed $tokenStorage in 4.0
+     */
+    protected $clientStorage;
+
     protected WampRouter $wampRouter;
 
+    /**
+     * @param ClientStorageInterface|TokenStorageInterface $tokenStorage
+     *
+     * @throws \InvalidArgumentException if invalid parameters are given
+     */
     public function __construct(
         RpcDispatcherInterface $rpcDispatcher,
         TopicDispatcherInterface $topicDispatcher,
         EventDispatcherInterface $eventDispatcher,
-        ClientStorageInterface $clientStorage,
+        object $tokenStorage,
         WampRouter $wampRouter
     ) {
+        if (!($tokenStorage instanceof ClientStorageInterface) && !($tokenStorage instanceof TokenStorageInterface)) {
+            throw new \InvalidArgumentException(sprintf('Argument 4 of the %s constructor must be an instance of %s or %s, "%s" given.', self::class, ClientStorageInterface::class, TokenStorageInterface::class, \get_class($tokenStorage)));
+        }
+
         $this->rpcDispatcher = $rpcDispatcher;
         $this->topicDispatcher = $topicDispatcher;
         $this->eventDispatcher = $eventDispatcher;
-        $this->clientStorage = $clientStorage;
+        $this->clientStorage = $tokenStorage;
         $this->wampRouter = $wampRouter;
     }
 
@@ -54,8 +71,10 @@ class WampApplication implements LoggerAwareInterface
         }
 
         if (null !== $this->logger) {
-            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
-                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+            $storageId = $this->generateStorageId($conn);
+
+            if ($this->hasTokenInStorage($storageId)) {
+                $token = $this->getTokenFromStorage($storageId);
 
                 $this->logger->debug(
                     sprintf(
@@ -96,8 +115,10 @@ class WampApplication implements LoggerAwareInterface
         }
 
         if (null !== $this->logger) {
-            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
-                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+            $storageId = $this->generateStorageId($conn);
+
+            if ($this->hasTokenInStorage($storageId)) {
+                $token = $this->getTokenFromStorage($storageId);
 
                 $this->logger->info(
                     sprintf(
@@ -124,8 +145,10 @@ class WampApplication implements LoggerAwareInterface
         }
 
         if (null !== $this->logger) {
-            if ($this->clientStorage->hasClient($this->clientStorage->getStorageId($conn))) {
-                $token = $this->clientStorage->getClient($this->clientStorage->getStorageId($conn));
+            $storageId = $this->generateStorageId($conn);
+
+            if ($this->hasTokenInStorage($storageId)) {
+                $token = $this->getTokenFromStorage($storageId);
 
                 $this->logger->info(
                     sprintf(
@@ -160,5 +183,32 @@ class WampApplication implements LoggerAwareInterface
     public function onError(ConnectionInterface $conn, \Throwable $e): void
     {
         $this->eventDispatcher->dispatch(new ClientErrorEvent($e, $conn), GosWebSocketEvents::CLIENT_ERROR);
+    }
+
+    private function generateStorageId(ConnectionInterface $connection): string
+    {
+        if ($this->clientStorage instanceof TokenStorageInterface) {
+            return $this->clientStorage->generateStorageId($connection);
+        }
+
+        return $this->clientStorage->getStorageId($connection);
+    }
+
+    private function getTokenFromStorage(string $id): TokenInterface
+    {
+        if ($this->clientStorage instanceof TokenStorageInterface) {
+            return $this->clientStorage->getToken($id);
+        }
+
+        return $this->clientStorage->getClient($id);
+    }
+
+    private function hasTokenInStorage(string $id): bool
+    {
+        if ($this->clientStorage instanceof TokenStorageInterface) {
+            return $this->clientStorage->hasToken($id);
+        }
+
+        return $this->clientStorage->hasClient($id);
     }
 }

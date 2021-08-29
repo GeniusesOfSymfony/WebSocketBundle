@@ -2,6 +2,15 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Gos\Bundle\WebSocketBundle\Authentication\Authenticator;
+use Gos\Bundle\WebSocketBundle\Authentication\AuthenticatorInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepository;
+use Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepositoryInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriver;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\PsrCacheStorageDriver;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider;
 use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulator;
@@ -41,6 +50,49 @@ use React\EventLoop\LoopInterface;
 
 return static function (ContainerConfigurator $container): void {
     $container->services()
+        ->set('gos_web_socket.authentication.authenticator', Authenticator::class)
+            ->args(
+                [
+                    abstract_arg('authentication providers'),
+                    service('gos_web_socket.authentication.token_storage'),
+                ]
+            )
+        ->alias(AuthenticatorInterface::class, 'gos_web_socket.authentication.authenticator')
+
+        ->set('gos_web_socket.authentication.connection_repository', ConnectionRepository::class)
+            ->args(
+                [
+                    service('gos_web_socket.authentication.token_storage'),
+                    service('gos_web_socket.authentication.authenticator'),
+                ]
+            )
+        ->alias(ConnectionRepositoryInterface::class, 'gos_web_socket.authentication.connection_repository')
+
+        ->set('gos_web_socket.authentication.provider.session', SessionAuthenticationProvider::class)
+            ->args(
+                [
+                    service('gos_web_socket.authentication.token_storage'),
+                    abstract_arg('firewalls'),
+                ]
+            )
+
+        ->set('gos_web_socket.authentication.storage.driver.in_memory', InMemoryStorageDriver::class)
+
+        ->set('gos_web_socket.authentication.storage.driver.psr_cache', PsrCacheStorageDriver::class)
+            ->args(
+                [
+                    abstract_arg('cache pool'),
+                ]
+            )
+
+        ->set('gos_web_socket.authentication.token_storage', TokenStorage::class)
+            ->args(
+                [
+                    service('gos_web_socket.authentication.storage.driver'),
+                ]
+            )
+        ->alias(TokenStorageInterface::class, 'gos_web_socket.authentication.token_storage')
+
         ->set('gos_web_socket.client.authentication.websocket_provider', WebsocketAuthenticationProvider::class)
             ->args(
                 [

@@ -4,6 +4,8 @@ namespace Gos\Bundle\WebSocketBundle;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RegisterTwigGlobalsCompilerPass;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\CompilerPass\RegisterWebsocketRouterResourcesCompilerPass;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\EventDispatcher\DependencyInjection\AddEventAliasesPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -20,6 +22,10 @@ class GosWebSocketBundle extends Bundle
             ->addCompilerPass(new RegisterTwigGlobalsCompilerPass())
             ->addCompilerPass(new RegisterWebsocketRouterResourcesCompilerPass())
         ;
+
+        /** @var GosWebSocketExtension $extension */
+        $extension = $container->getExtension('gos_web_socket');
+        $extension->addAuthenticationProviderFactory(new SessionAuthenticationProviderFactory());
     }
 
     public function getPath(): string

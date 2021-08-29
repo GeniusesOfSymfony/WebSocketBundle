@@ -2,8 +2,10 @@
 
 namespace Gos\Bundle\WebSocketBundle\Client\Driver;
 
+trigger_deprecation('gos/web-socket-bundle', '3.11', 'The "%s" class is deprecated and will be removed in 4.0, use the new websocket authentication API instead.', InMemoryDriver::class);
+
 /**
- * @author Johann Saunier <johann_27@hotmail.fr>
+ * @deprecated to be removed in 4.0, use the new websocket authentication API instead
  */
 final class InMemoryDriver implements DriverInterface
 {

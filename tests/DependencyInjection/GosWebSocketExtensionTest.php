@@ -4,10 +4,13 @@ namespace Gos\Bundle\WebSocketBundle\Tests\DependencyInjection;
 
 use Doctrine\DBAL\Connection;
 use Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Configuration;
+use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\SessionAuthenticationProviderFactory;
 use Gos\Bundle\WebSocketBundle\DependencyInjection\GosWebSocketExtension;
 use Gos\Bundle\WebSocketBundle\GosWebSocketBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -25,7 +28,12 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
+        // Client storage container parameters
         $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
+
+        // Authentication services
+        $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'gos_web_socket.authentication.storage.driver.in_memory');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'gos_web_socket.authentication.storage.driver.in_memory');
     }
 
     public function testContainerFailsToLoadWhenPubSubBundleIsMissing(): void
@@ -131,6 +139,129 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                 ],
             ]
         );
+    }
+
+    public function testContainerIsLoadedWithAuthenticatorEnabled(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'enable_authenticator' => true,
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.event_subscriber.client',
+            0,
+            new Reference('gos_web_socket.authentication.token_storage')
+        );
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.server.application.wamp',
+            3,
+            new Reference('gos_web_socket.authentication.token_storage')
+        );
+
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.authentication.websocket_provider');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.doctrine_cache');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.in_memory');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.symfony_cache');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.manipulator');
+        $this->assertContainerBuilderNotHasService('gos_web_socket.client.storage');
+    }
+
+    public function testContainerIsLoadedWithSessionAuthenticationProviderConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'providers' => [
+                    'session' => [
+                        'firewalls' => 'main',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.authentication.authenticator',
+            0,
+            new IteratorArgument([new Reference('gos_web_socket.authentication.provider.session.default')])
+        );
+    }
+
+    public function testContainerIsLoadedWithPsrCacheAuthenticationStorageConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
+                    'pool' => 'cache.websocket',
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'gos_web_socket.authentication.storage.driver.psr_cache');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'gos_web_socket.authentication.storage.driver.psr_cache');
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'gos_web_socket.authentication.storage.driver.psr_cache',
+            0,
+            new Reference('cache.websocket')
+        );
+    }
+
+    public function testContainerIsLoadedWithServiceAuthenticationStorageConfigured(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
+                'GosWebSocketBundle' => GosWebSocketBundle::class,
+            ]
+        );
+
+        $bundleConfig = [
+            'authentication' => [
+                'storage' => [
+                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE,
+                    'id' => 'app.authentication.storage.driver.custom',
+                ],
+            ],
+        ];
+
+        $this->load($bundleConfig);
+
+        $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'app.authentication.storage.driver.custom');
+        $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'app.authentication.storage.driver.custom');
     }
 
     public function testContainerIsLoadedWithOriginsConfigured(): void
@@ -287,14 +418,20 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
     protected function getContainerExtensions(): array
     {
+        $extension = new GosWebSocketExtension();
+        $extension->addAuthenticationProviderFactory(new SessionAuthenticationProviderFactory());
+
         return [
-            new GosWebSocketExtension(),
+            $extension,
         ];
     }
 
     protected function getMinimalConfiguration(): array
     {
         return [
+            'authentication' => [
+                'enable_authenticator' => false,
+            ],
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
