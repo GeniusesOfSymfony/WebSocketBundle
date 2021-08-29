@@ -17,30 +17,6 @@ final class ConfigurationTest extends TestCase
         self::assertEquals(self::getBundleDefaultConfig(), $config);
     }
 
-    /**
-     * @group legacy
-     */
-    public function testNotEnablingNewAuthenticatorIsDeprecated(): void
-    {
-        $extraConfig = [
-            'authentication' => [
-                'storage' => [
-                    'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
-                    'pool' => null,
-                    'id' => null,
-                ],
-                'enable_authenticator' => false,
-            ],
-        ];
-
-        $config = (new Processor())->processConfiguration(new Configuration([new SessionAuthenticationProviderFactory()]), [$extraConfig]);
-
-        self::assertEquals(
-            array_merge(self::getBundleDefaultConfig(), $extraConfig),
-            $config
-        );
-    }
-
     public function testConfigWithSessionAuthenticationProviderWithDefaultConfig(): void
     {
         $extraConfig = [
@@ -56,7 +32,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -86,7 +61,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -113,7 +87,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -142,7 +115,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => null,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -158,7 +130,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => 'cache.websocket',
                     'id' => null,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -179,7 +150,6 @@ final class ConfigurationTest extends TestCase
                     'pool' => null,
                     'id' => 'app.authentication.storage.driver.custom',
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -201,7 +171,6 @@ final class ConfigurationTest extends TestCase
                 'storage' => [
                     'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_PSR_CACHE,
                 ],
-                'enable_authenticator' => true,
             ],
         ];
 
@@ -480,14 +449,6 @@ final class ConfigurationTest extends TestCase
                     'type' => Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY,
                     'pool' => null,
                     'id' => null,
-                ],
-                'enable_authenticator' => false,
-            ],
-            'client' => [
-                'firewall' => 'main',
-                'storage' => [
-                    'driver' => 'gos_web_socket.client.driver.in_memory',
-                    'ttl' => 900,
                 ],
             ],
             'server' => [

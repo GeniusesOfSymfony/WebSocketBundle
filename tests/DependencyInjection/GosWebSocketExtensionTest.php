@@ -28,9 +28,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
-        // Client storage container parameters
-        $this->assertContainerBuilderHasParameter('gos_web_socket.client.storage.ttl');
-
         // Authentication services
         $this->assertContainerBuilderHasAlias('gos_web_socket.authentication.storage.driver', 'gos_web_socket.authentication.storage.driver.in_memory');
         $this->assertContainerBuilderHasAlias(StorageDriverInterface::class, 'gos_web_socket.authentication.storage.driver.in_memory');
@@ -139,44 +136,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
                 ],
             ]
         );
-    }
-
-    public function testContainerIsLoadedWithAuthenticatorEnabled(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $bundleConfig = [
-            'authentication' => [
-                'enable_authenticator' => true,
-            ],
-        ];
-
-        $this->load($bundleConfig);
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'gos_web_socket.event_subscriber.client',
-            0,
-            new Reference('gos_web_socket.authentication.token_storage')
-        );
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'gos_web_socket.server.application.wamp',
-            3,
-            new Reference('gos_web_socket.authentication.token_storage')
-        );
-
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.authentication.websocket_provider');
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.doctrine_cache');
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.in_memory');
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.driver.symfony_cache');
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.manipulator');
-        $this->assertContainerBuilderNotHasService('gos_web_socket.client.storage');
     }
 
     public function testContainerIsLoadedWithSessionAuthenticationProviderConfigured(): void
@@ -291,89 +250,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testContainerIsLoadedWithClientConfiguredWithoutCacheDecorator(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', true);
-
-        $this->load(
-            [
-                'client' => [
-                    'session_handler' => 'session.handler.pdo',
-                    'firewall' => 'ws_firewall',
-                    'storage' => [
-                        'driver' => 'gos_web_socket.client.driver.in_memory',
-                        'ttl' => 900,
-                    ],
-                ],
-            ]
-        );
-
-        $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
-        $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
-
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.server.builder',
-            'setSessionHandler',
-            [new Reference('session.handler.pdo')]
-        );
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'gos_web_socket.client.storage',
-            0,
-            new Reference('gos_web_socket.client.driver.in_memory')
-        );
-    }
-
-    public function testContainerIsLoadedWithClientConfiguredWithCacheDecorator(): void
-    {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'GosPubSubRouterBundle' => GosPubSubRouterBundle::class,
-                'GosWebSocketBundle' => GosWebSocketBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', true);
-
-        $this->load(
-            [
-                'client' => [
-                    'session_handler' => 'session.handler.pdo',
-                    'firewall' => 'ws_firewall',
-                    'storage' => [
-                        'driver' => 'gos_web_socket.client.driver.in_memory',
-                        'ttl' => 900,
-                        'decorator' => 'gos_web_socket.client.driver.symfony_cache',
-                    ],
-                ],
-            ]
-        );
-
-        $this->assertContainerBuilderHasParameter('gos_web_socket.firewall');
-        $this->assertContainerBuilderHasAlias('gos_web_socket.session_handler');
-
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
-            'gos_web_socket.server.builder',
-            'setSessionHandler',
-            [new Reference('session.handler.pdo')]
-        );
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'gos_web_socket.client.storage',
-            0,
-            new Reference('gos_web_socket.client.driver.symfony_cache')
-        );
-    }
-
     public function testContainerIsLoadedWithPingServicesConfigured(): void
     {
         $this->container->setParameter(
@@ -429,9 +305,6 @@ final class GosWebSocketExtensionTest extends AbstractExtensionTestCase
     protected function getMinimalConfiguration(): array
     {
         return [
-            'authentication' => [
-                'enable_authenticator' => false,
-            ],
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,

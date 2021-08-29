@@ -4,7 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Tests\Server\App;
 
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
 use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
@@ -37,9 +37,9 @@ final class WampApplicationTest extends TestCase
     private $eventDispatcher;
 
     /**
-     * @var MockObject&ClientStorageInterface
+     * @var MockObject&TokenStorageInterface
      */
-    private $clientStorage;
+    private $tokenStorage;
 
     /**
      * @var WampRouter
@@ -64,14 +64,14 @@ final class WampApplicationTest extends TestCase
         $this->rpcDispatcher = $this->createMock(RpcDispatcherInterface::class);
         $this->topicDispatcher = $this->createMock(TopicDispatcherInterface::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->clientStorage = $this->createMock(ClientStorageInterface::class);
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->wampRouter = new WampRouter($this->decoratedRouter);
 
         $this->application = new WampApplication(
             $this->rpcDispatcher,
             $this->topicDispatcher,
             $this->eventDispatcher,
-            $this->clientStorage,
+            $this->tokenStorage,
             $this->wampRouter
         );
     }

@@ -11,14 +11,6 @@ use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriv
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\PsrCacheStorageDriver;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider;
-use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientManipulator;
-use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorage;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver;
-use Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator;
 use Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand;
 use Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener;
 use Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener;
@@ -93,56 +85,6 @@ return static function (ContainerConfigurator $container): void {
             )
         ->alias(TokenStorageInterface::class, 'gos_web_socket.authentication.token_storage')
 
-        ->set('gos_web_socket.client.authentication.websocket_provider', WebsocketAuthenticationProvider::class)
-            ->args(
-                [
-                    service('gos_web_socket.client.storage'),
-                    param('gos_web_socket.firewall'),
-                ]
-            )
-            ->call(
-                'setLogger',
-                [
-                    [service('logger')],
-                ]
-            )
-            ->tag('monolog.logger', ['channel' => 'websocket'])
-        ->alias(WebsocketAuthenticationProviderInterface::class, 'gos_web_socket.client.authentication.websocket_provider')
-
-        ->set('gos_web_socket.client.driver.symfony_cache', SymfonyCacheDriverDecorator::class)
-            ->args(
-                [
-                    abstract_arg('decorated client driver'),
-                ]
-            )
-
-        ->set('gos_web_socket.client.driver.in_memory', InMemoryDriver::class)
-
-        ->set('gos_web_socket.client.manipulator', ClientManipulator::class)
-            ->args(
-                [
-                    service('gos_web_socket.client.storage'),
-                    service('gos_web_socket.client.authentication.websocket_provider'),
-                ]
-            )
-        ->alias(ClientManipulatorInterface::class, 'gos_web_socket.client.manipulator')
-
-        ->set('gos_web_socket.client.storage', ClientStorage::class)
-            ->args(
-                [
-                    abstract_arg('client driver'),
-                    param('gos_web_socket.client.storage.ttl'),
-                ]
-            )
-            ->call(
-                'setLogger',
-                [
-                    [service('logger')],
-                ]
-            )
-            ->tag('monolog.logger', ['channel' => 'websocket'])
-        ->alias(ClientStorageInterface::class, 'gos_web_socket.client.storage')
-
         ->set('gos_web_socket.command.websocket_server', WebsocketServerCommand::class)
             ->args(
                 [
@@ -188,7 +130,7 @@ return static function (ContainerConfigurator $container): void {
             ->args(
                 [
                     service('gos_web_socket.registry.periodic'),
-                    service('gos_web_socket.client.storage'),
+                    service('gos_web_socket.authentication.token_storage'),
                 ]
             )
             ->call(
@@ -233,8 +175,8 @@ return static function (ContainerConfigurator $container): void {
         ->set('gos_web_socket.event_subscriber.client', WebsocketClientEventSubscriber::class)
             ->args(
                 [
-                    service('gos_web_socket.client.storage'),
-                    service('gos_web_socket.authentication.websocket_provider'),
+                    service('gos_web_socket.authentication.token_storage'),
+                    service('gos_web_socket.authentication.authenticator'),
                 ]
             )
             ->call(
@@ -347,7 +289,7 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.dispatcher.rpc'),
                     service('gos_web_socket.dispatcher.topic'),
                     service('event_dispatcher'),
-                    service('gos_web_socket.client.storage'),
+                    service('gos_web_socket.authentication.token_storage'),
                     service('gos_web_socket.router.wamp'),
                 ]
             )

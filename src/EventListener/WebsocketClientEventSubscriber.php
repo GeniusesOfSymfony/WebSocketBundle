@@ -6,19 +6,13 @@ use Gos\Bundle\WebSocketBundle\Authentication\AuthenticatorInterface;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\Exception\StorageException;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\Exception\TokenNotFoundException;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface;
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
-use Gos\Bundle\WebSocketBundle\Client\Exception\ClientNotFoundException;
-use Gos\Bundle\WebSocketBundle\Client\Exception\StorageException as LegacyStorageException;
 use Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent;
 use Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent;
 use Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Ratchet\ConnectionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @internal
@@ -27,37 +21,12 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ClientStorageInterface|TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var WebsocketAuthenticationProviderInterface|AuthenticatorInterface
-     */
-    private $authenticator;
+    private AuthenticatorInterface $authenticator;
 
-    /**
-     * @param ClientStorageInterface|TokenStorageInterface                    $tokenStorage
-     * @param WebsocketAuthenticationProviderInterface|AuthenticatorInterface $authenticator
-     *
-     * @throws \InvalidArgumentException if invalid parameters are given
-     */
-    public function __construct(object $tokenStorage, object $authenticator)
+    public function __construct(TokenStorageInterface $tokenStorage, AuthenticatorInterface $authenticator)
     {
-        if (!($tokenStorage instanceof ClientStorageInterface) && !($tokenStorage instanceof TokenStorageInterface)) {
-            throw new \InvalidArgumentException(sprintf('Argument 1 of the %s constructor must be an instance of %s or %s, "%s" given.', self::class, ClientStorageInterface::class, TokenStorageInterface::class, \get_class($tokenStorage)));
-        }
-
-        if (!($authenticator instanceof WebsocketAuthenticationProviderInterface) && !($authenticator instanceof AuthenticatorInterface)) {
-            throw new \InvalidArgumentException(sprintf('Argument 2 of the %s constructor must be an instance of %s or %s, "%s" given.', self::class, WebsocketAuthenticationProviderInterface::class, AuthenticatorInterface::class, \get_class($tokenStorage)));
-        }
-
-        // The arguments must both be part of the Client API or Authentication API, cannot be one of each
-        if (($tokenStorage instanceof ClientStorageInterface && $authenticator instanceof AuthenticatorInterface) || ($tokenStorage instanceof TokenStorageInterface && $authenticator instanceof WebsocketAuthenticationProviderInterface)) {
-            throw new \InvalidArgumentException(sprintf('Cannot use mixed APIs in %s.', self::class));
-        }
-
         $this->tokenStorage = $tokenStorage;
         $this->authenticator = $authenticator;
     }
@@ -81,7 +50,7 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
     {
         $connection = $event->getConnection();
 
-        $storageId = $this->generateStorageId($connection);
+        $storageId = $this->tokenStorage->generateStorageId($connection);
 
         $loggerContext = [
             'connection_id' => $connection->resourceId,
@@ -90,10 +59,10 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
         ];
 
         try {
-            if ($this->hasTokenInStorage($storageId)) {
-                $token = $this->getTokenFromStorage($storageId);
+            if ($this->tokenStorage->hasToken($storageId)) {
+                $token = $this->tokenStorage->getToken($storageId);
 
-                $this->removeTokenInStorage($storageId);
+                $this->tokenStorage->removeToken($storageId);
 
                 $userIdentifier = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
 
@@ -105,7 +74,7 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
                     )
                 );
             }
-        } catch (ClientNotFoundException | TokenNotFoundException $e) {
+        } catch (TokenNotFoundException $e) {
             $this->logger?->info(
                 'User timed out',
                 array_merge(
@@ -113,7 +82,7 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
                     ['exception' => $e]
                 )
             );
-        } catch (LegacyStorageException | StorageException $e) {
+        } catch (StorageException $e) {
             $this->logger?->info(
                 'Error processing user in storage',
                 array_merge(
@@ -138,10 +107,10 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
             'exception' => $event->getThrowable(),
         ];
 
-        $storageId = $this->generateStorageId($connection);
+        $storageId = $this->tokenStorage->generateStorageId($connection);
 
-        if ($this->hasTokenInStorage($storageId)) {
-            $token = $this->getTokenFromStorage($storageId);
+        if ($this->tokenStorage->hasToken($storageId)) {
+            $token = $this->tokenStorage->getToken($storageId);
 
             $loggerContext['user_identifier'] = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
         }
@@ -155,41 +124,5 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
     public function onConnectionRejected(ConnectionRejectedEvent $event): void
     {
         $this->logger?->warning('Connection rejected');
-    }
-
-    private function generateStorageId(ConnectionInterface $connection): string
-    {
-        if ($this->tokenStorage instanceof TokenStorageInterface) {
-            return $this->tokenStorage->generateStorageId($connection);
-        }
-
-        return $this->tokenStorage->getStorageId($connection);
-    }
-
-    private function getTokenFromStorage(string $id): TokenInterface
-    {
-        if ($this->tokenStorage instanceof TokenStorageInterface) {
-            return $this->tokenStorage->getToken($id);
-        }
-
-        return $this->tokenStorage->getClient($id);
-    }
-
-    private function hasTokenInStorage(string $id): bool
-    {
-        if ($this->tokenStorage instanceof TokenStorageInterface) {
-            return $this->tokenStorage->hasToken($id);
-        }
-
-        return $this->tokenStorage->hasClient($id);
-    }
-
-    private function removeTokenInStorage(string $id): bool
-    {
-        if ($this->tokenStorage instanceof TokenStorageInterface) {
-            return $this->tokenStorage->removeToken($id);
-        }
-
-        return $this->tokenStorage->removeClient($id);
     }
 }

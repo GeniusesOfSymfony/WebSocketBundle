@@ -2,22 +2,6 @@
 
 The websocket bundle automatically handles authenticating users on every connection to your websocket server, allowing your [RPC](rpc.md) and [Topic](topics.md) classes to use your authenticated user data.
 
-## Enabling the Authenticator API
-
-The following is the minimum configuration needed to enable the authenticator and its services:
-
-```yaml
-gos_web_socket:
-    authentication:
-        enable_authenticator: true
-```
-
-This instructs the bundle to enable the new authentication API and replace the [legacy implementation](auth.md). When this system is enabled, the legacy services are removed from the service container and should not be used due to incompatibilities between the two authentication APIs.
-
-*NOTE* This configuration is needed as a temporary migration step, as of GosWebSocketBundle 4.0 this will be the authentication API.
-
-However, this will not enable any authentication providers on its own, you must also configure the provider(s) your application will use for authentication.
-
 ## Authentication Providers
 
 An authentication provider is an implementation of `Gos\Bundle\WebSocketBundle\Authentication\Provider\AuthenticationProviderInterface` which processes a `Ratchet\ConnectionInterface` and creates a security token representing the current user.
@@ -185,65 +169,3 @@ The `findTokenForConnection()` method is used to find the security token for the
 ### Retrieving The User For A Connection
 
 The `getUser()` method is used to retrieve the user for the given connection. This is a shortcut for `$repository->findTokenForConnection($token)->getUser()`.
-
-## Migrating from the Legacy Authentication API
-
-To update your application to use the new authentication API, you will need to make the following changes:
-
-1) Enable the new API
-
-The below is the minimal configuration necessary with notes regarding migrating from the legacy configuration:
-
-```yaml
-gos_web_socket:
-    authentication:
-        enable_authenticator: true
-        providers:
-            session:
-                firewall: ~ # This should match the `gos_web_socket.client.firewall` config value
-                session_handler: '@session.handler.pdo' # This should match the `gos_web_socket.client.session_handler` config value
-```
-
-If you are using the client storage with a Symfony cache decorator, you can migrate this configuration to the new storage by moving your config values from the `client` section to the `authentication` section
-
-Example Legacy Configuration:
-
-```yaml
-gos_web_socket:
-    client:
-        storage:
-            driver: 'cache.websocket'
-            decorator: 'gos_web_socket.client.driver.symfony_cache'
-```
-
-Example New Configuration:
-
-```yaml
-gos_web_socket:
-    authentication:
-        storage:
-            type: psr_cache
-            pool: 'cache.websocket'
-```
-
-2) Replace class and service references
-
-The new authentication API is a full replacement for the legacy implementation. When enabled, the legacy implementation cannot be used.
-
-The below table shows an approximate map of the legacy interfaces to the new interfaces alongside their purposes:
-
-| Legacy API                                                                        | New API                                                                           | Purpose                                                                                                            |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface` | `Gos\Bundle\WebSocketBundle\Authentication\AuthenticatorInterface`                | Authenticates the given connection to the server                                                                   |
-| `Gos\Bundle\WebSocketBundle\Client\ClientConnection`                              | `Gos\Bundle\WebSocketBundle\Authentication\TokenConnection`                       | DTO holding the connection and security token                                                                      |
-| `Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface`                    | `Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepositoryInterface`         | Queries the connection storage to find connections and tokens                                                      |
-| `Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface`                        | `Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface`         | Manages the token storage for the websocket server                                                                 |
-| `Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface`                        | `Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface` | Storage layer for security tokens for the websocket server (typically only implemented for custom storage drivers) |
-
-The below table shows an approximate map of the legacy service IDs to the new service IDs:
-
-| Legacy Service                                            | New Service                                           | Purpose                                                       |
-| --------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
-| `gos_web_socket.client.authentication.websocket_provider` | `gos_web_socket.authentication.authenticator`         | Authenticates the given connection to the server              |
-| `gos_web_socket.client.manipulator`                       | `gos_web_socket.authentication.connection_repository` | Queries the connection storage to find connections and tokens |
-| `gos_web_socket.client.storage`                           | `gos_web_socket.authentication.token_storage`         | Manages the token storage for the websocket server            |

@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\DependencyInjection;
 
 use Gos\Bundle\WebSocketBundle\DependencyInjection\Factory\Authentication\AuthenticationProviderFactoryInterface;
-use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -40,7 +39,6 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $this->addAuthenticationSection($rootNode);
-        $this->addClientSection($rootNode);
         $this->addServerSection($rootNode);
         $this->addPingSection($rootNode);
 
@@ -100,16 +98,6 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('A service ID must be set when using the service storage')
                     ->end()
                 ->end()
-                ->booleanNode('enable_authenticator')
-                    ->defaultFalse()
-                    ->info('Enables the new authenticator API.')
-                    ->validate()
-                        ->ifTrue(static fn (bool $enableAuthenticator): bool => !$enableAuthenticator)
-                        ->then(static function (bool $enableAuthenticator): void {
-                            trigger_deprecation('gos/web-socket-bundle', '3.11', 'Not setting the "gos_web_socket.authentication.enable_authenticator" config option to true is deprecated.');
-                        })
-                    ->end()
-                ->end()
             ->end()
         ->end();
     }
@@ -129,48 +117,6 @@ final class Configuration implements ConfigurationInterface
 
             $factory->addConfiguration($factoryNode);
         }
-    }
-
-    private function addClientSection(ArrayNodeDefinition $rootNode): void
-    {
-        $rootNode->children()
-            ->arrayNode('client')
-                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the new websocket authentication API instead.', '3.11'))
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->scalarNode('session_handler')
-                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the session handler on the session authentication provider instead.', '3.11'))
-                        ->info('The service ID of the session handler service used to read session data.')
-                    ->end()
-                    ->variableNode('firewall')
-                        ->defaultValue('main')
-                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Set the firewalls on the session authentication provider instead.', '3.11'))
-                        ->defaultValue('main')
-                        ->info('The name of the security firewall to load the authenticated user data for.')
-                    ->end()
-                    ->arrayNode('storage')
-                        ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->scalarNode('driver')
-                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
-                                ->defaultValue('gos_web_socket.client.driver.in_memory')
-                                ->info('The service ID of the storage driver to use for storing connection data.')
-                            ->end()
-                            ->integerNode('ttl')
-                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Configure the TTL on the authentication storage driver instead.', '3.11'))
-                                ->defaultValue(900)
-                                ->info('The cache TTL (in seconds) for clients in storage.')
-                            ->end()
-                            ->scalarNode('decorator')
-                                ->setDeprecated(...$this->getDeprecationParameters('The child node "%node%" at path "%path%" is deprecated and will be removed in GosWebSocketBundle 4.0. Use the "gos_web_socket.authentication.storage" node instead.', '3.11'))
-                                ->info('The service ID of a decorator for the client storage driver.')
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ;
     }
 
     private function addServerSection(ArrayNodeDefinition $rootNode): void
@@ -282,14 +228,5 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-    }
-
-    private function getDeprecationParameters(string $message, string $version): array
-    {
-        if (method_exists(BaseNode::class, 'getDeprecation')) {
-            return ['gos/web-socket-bundle', $version, $message];
-        }
-
-        return [$message];
     }
 }

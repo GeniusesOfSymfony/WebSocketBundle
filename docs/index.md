@@ -81,7 +81,6 @@ Congratulations, your websocket server is now running. However, you will still n
 - [Creating Periodic Functions](periodic.md)
 - [Bundle Configuration](config.md)
 - [Authenticating Users](authentication.md)
-    - [Legacy Authentication](auth.md)
 - [Securing the Websocket Server](securing-connections.md)
 - [Subscribing to Bundle Events](events.md)
 - [Using the JavaScript Client](javascript-client.md)

@@ -2,7 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Tests\EventListener;
 
-use Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent;
 use Gos\Bundle\WebSocketBundle\EventListener\BindSignalsToWebsocketServerEventListener;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry;
@@ -19,9 +19,9 @@ final class BindSignalsToWebsocketServerEventListenerTest extends TestCase
     private $periodicRegistry;
 
     /**
-     * @var MockObject&ClientStorageInterface
+     * @var MockObject&TokenStorageInterface
      */
-    private $clientStorage;
+    private $tokenStorage;
 
     /**
      * @var BindSignalsToWebsocketServerEventListener
@@ -33,9 +33,9 @@ final class BindSignalsToWebsocketServerEventListenerTest extends TestCase
         parent::setUp();
 
         $this->periodicRegistry = new PeriodicRegistry();
-        $this->clientStorage = $this->createMock(ClientStorageInterface::class);
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
 
-        $this->listener = new BindSignalsToWebsocketServerEventListener($this->periodicRegistry, $this->clientStorage);
+        $this->listener = new BindSignalsToWebsocketServerEventListener($this->periodicRegistry, $this->tokenStorage);
     }
 
     /**
