@@ -1,4 +1,6 @@
-# Authenticating Users
+# Authenticating Users (Legacy Authentication)
+
+**NOTE** This guide covers the legacy authentication system which will be removed in GosWebSocketBundle 4.0, please see [this guide](authentication.md) for information on the new authentication system.
 
 When a connection is opened to the websocket server, the user is authenticated against the firewall(s) you have configured the bundle to use from your application.
 
