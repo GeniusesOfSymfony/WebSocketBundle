@@ -114,6 +114,7 @@ return static function (ContainerConfigurator $container): void {
                     param('gos_web_socket.server.port'),
                 ]
             )
+            ->tag('console.command')
 
         ->set('gos_web_socket.dispatcher.rpc', RpcDispatcher::class)
             ->args(
