@@ -24,7 +24,7 @@ const buildPlugins = (minify) => {
                         modules: 'auto',
                         forceAllTransforms: false,
                         useBuiltIns: 'usage',
-                        corejs: '3.8',
+                        corejs: '3.16',
                     },
                 ],
             ],
