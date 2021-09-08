@@ -14,7 +14,7 @@
  * @param {Object} payload The data payload for the publish event
  */
 
-class GosSocket {
+export default class GosSocket {
     /**
      * Reference to the AutobahnJS API
      *
@@ -25,7 +25,7 @@ class GosSocket {
     /**
      * Collection of listeners to trigger as callbacks for events
      *
-     * @type {Object.GosSocketListener[]}
+     * @type {{GosSocketListener}}
      */
     #listeners = {};
 
@@ -254,5 +254,3 @@ class GosSocket {
         }
     }
 }
-
-export default GosSocket;

@@ -2845,7 +2845,7 @@ class GosSocket {
   /**
    * Collection of listeners to trigger as callbacks for events
    *
-   * @type {Object.GosSocketListener[]}
+   * @type {{GosSocketListener}}
    */
 
   /**
