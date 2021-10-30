@@ -9,6 +9,7 @@ use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Ratchet\Wamp\WampConnection;
+use function Symfony\Component\String\u;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
@@ -56,7 +57,7 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
 
         $procedure = $this->rpcRegistry->getRpc($callback);
 
-        $method = $this->toCamelCase($request->getAttributes()->get('method'));
+        $method = $this->toCamelCase($request->getAttributes()->get('method', ''));
 
         if (!method_exists($procedure, $method)) {
             $this->logger?->error(
@@ -132,12 +133,8 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
         $conn->callResult($id, $result);
     }
 
-    private function toCamelCase(?string $str): string
+    private function toCamelCase(string $str): string
     {
-        return preg_replace_callback(
-            '/_([a-z])/',
-            static fn ($c): string => strtoupper($c[1]),
-            $str
-        );
+        return u($str)->camel()->toString();
     }
 }
