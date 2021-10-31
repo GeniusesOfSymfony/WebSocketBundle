@@ -112,6 +112,7 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.server.launcher'),
                     param('gos_web_socket.server.host'),
                     param('gos_web_socket.server.port'),
+                    service('gos_web_socket.registry.server'),
                 ]
             )
             ->tag('console.command')
