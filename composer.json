@@ -77,7 +77,7 @@
         "doctrine/cache": "to use doctrine/cache as a client driver",
         "doctrine/dbal": "to use Doctrine ping services",
         "gos/react-amqp": "to use the amqp server push handler",
-        "symfony/cache": "to use symfony/cache as a client driver",
+        "symfony/cache": "to use symfony/cache as an authentication storage driver",
         "symfony/options-resolver": "to use the pushers",
         "symfony/serializer": "to use the pushers",
         "symfony/stopwatch": "to use the data collectors"
