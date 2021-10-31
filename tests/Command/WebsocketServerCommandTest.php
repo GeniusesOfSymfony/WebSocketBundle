@@ -81,6 +81,6 @@ class WebsocketServerCommandTest extends TestCase
 
         $tester = new CommandCompletionTester($command);
 
-        $this->assertSame($suggestions, $tester->complete($input));
+        self::assertSame($suggestions, $tester->complete($input));
     }
 }
