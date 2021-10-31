@@ -61,7 +61,7 @@
         "ext-pcntl": "* to handle process signals",
         "ext-pdo": "* to use PDO ping services",
         "doctrine/dbal": "to use Doctrine ping services",
-        "symfony/cache": "to use symfony/cache as a client driver"
+        "symfony/cache": "to use symfony/cache as an authentication storage driver"
     },
     "minimum-stability": "dev"
 }
