@@ -46,9 +46,9 @@
     },
     "conflict": {
         "doctrine/dbal": "<2.13.1 || >=3.0,<3.1",
-        "symfony/cache": "<5.2",
+        "symfony/cache": "<5.3",
         "symfony/monolog-bundle": "<3.0",
-        "symfony/twig-bundle": "<5.2",
+        "symfony/twig-bundle": "<5.3",
         "twig/twig": "<1.36 || >=2.0,<2.6"
     },
     "autoload": {
