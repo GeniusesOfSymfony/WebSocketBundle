@@ -95,6 +95,7 @@ services:
             - '@gos_web_socket.server.launcher'
             - '%gos_web_socket.server.host%'
             - '%gos_web_socket.server.port%'
+            - '@gos_web_socket.registry.server'
         tags:
             - { name: console.command, command: gos:websocket:server }
 

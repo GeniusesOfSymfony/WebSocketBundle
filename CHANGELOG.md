@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.12.0 (????-??-??)
+
+- Add support for command auto-completion for Symfony 5.4
+
 ## 3.11.0 (2021-08-29)
 
 - Implemented a new [authentication API](docs/authentication.md) and deprecated the previous implementation

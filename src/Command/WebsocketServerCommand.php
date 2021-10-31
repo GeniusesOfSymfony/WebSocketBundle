@@ -2,8 +2,11 @@
 
 namespace Gos\Bundle\WebSocketBundle\Command;
 
+use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,13 +26,20 @@ final class WebsocketServerCommand extends Command
 
     private int $port;
 
-    public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port)
+    private ?ServerRegistry $serverRegistry;
+
+    public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port, ?ServerRegistry $serverRegistry = null)
     {
         parent::__construct();
+
+        if (null === $serverRegistry) {
+            trigger_deprecation('gos/web-socket-bundle', '3.12', 'Not passing the "%s" to the "%s" constructor is deprecated and will be required as of 4.0.', ServerRegistry::class, self::class);
+        }
 
         $this->serverLauncher = $entryPoint;
         $this->port = $port;
         $this->host = $host;
+        $this->serverRegistry = $serverRegistry;
     }
 
     protected function configure(): void
@@ -63,5 +73,14 @@ final class WebsocketServerCommand extends Command
         $this->serverLauncher->launch($name, $host, (int) $port, $profile);
 
         return 0;
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('name') && null !== $this->serverRegistry) {
+            $suggestions->suggestValues(array_keys($this->serverRegistry->getServers()));
+
+            return;
+        }
     }
 }
