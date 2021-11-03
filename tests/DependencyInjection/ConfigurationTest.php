@@ -246,6 +246,10 @@ final class ConfigurationTest extends TestCase
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => false,
                 'ip_address_check' => false,
                 'keepalive_ping' => false,
@@ -283,6 +287,10 @@ final class ConfigurationTest extends TestCase
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => false,
                 'ip_address_check' => false,
                 'keepalive_ping' => false,
@@ -312,6 +320,10 @@ final class ConfigurationTest extends TestCase
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => false,
                 'ip_address_check' => false,
                 'keepalive_ping' => false,
@@ -335,12 +347,43 @@ final class ConfigurationTest extends TestCase
         );
     }
 
+    public function testConfigWithServerAndTlsEnabled(): void
+    {
+        $extraConfig = [
+            'server' => [
+                'host' => '127.0.0.1',
+                'port' => 8080,
+                'tls' => [
+                    'enabled' => true,
+                    'options' => [
+                        'verify_peer' => false,
+                    ],
+                ],
+                'origin_check' => false,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
+            ],
+        ];
+
+        $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
+
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
+    }
+
     public function testConfigWithAllowedOriginsList(): void
     {
         $extraConfig = [
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => true,
                 'ip_address_check' => false,
                 'keepalive_ping' => false,
@@ -388,6 +431,10 @@ final class ConfigurationTest extends TestCase
             'server' => [
                 'host' => '127.0.0.1',
                 'port' => 8080,
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => false,
                 'ip_address_check' => true,
                 'keepalive_ping' => false,
@@ -554,6 +601,10 @@ final class ConfigurationTest extends TestCase
             ],
             'shared_config' => true,
             'server' => [
+                'tls' => [
+                    'enabled' => false,
+                    'options' => [],
+                ],
                 'origin_check' => false,
                 'ip_address_check' => false,
                 'keepalive_ping' => false,

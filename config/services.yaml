@@ -374,6 +374,8 @@ services:
             - '@gos_web_socket.server.builder'
             - '@gos_web_socket.server.event_loop'
             - '@event_dispatcher'
+            - '%gos_web_socket.server.tls.enabled%'
+            - '%gos_web_socket.server.tls.options%'
         calls:
             - [ setLogger, ['@logger'] ]
         tags:
