@@ -1,8 +1,10 @@
 # Changelog
 
-## 3.12.0 (????-??-??)
+## 3.12.0 (2021-11-03)
 
+- [#454](https://github.com/GeniusesOfSymfony/WebSocketBundle/pull/454) Add native TLS support
 - Add support for command auto-completion for Symfony 5.4
+- Add attributes to silence PHP 8.1 deprecations
 
 ## 3.11.0 (2021-08-29)
 
