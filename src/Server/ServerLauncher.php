@@ -20,7 +20,7 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
      * @throws \InvalidArgumentException if the given server name is not registered
      * @throws \RuntimeException         if there are no servers registered to launch
      */
-    public function launch(?string $serverName, string $host, int $port, bool $profile): void
+    public function launch(?string $serverName, string $host, int $port, bool $profile, bool $tlsEnabled = false, array $tlsOptions = []): void
     {
         if (null === $serverName) {
             $servers = $this->serverRegistry->getServers();
@@ -39,6 +39,6 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
             $server = $this->serverRegistry->getServer($serverName);
         }
 
-        $server->launch($host, $port, $profile);
+        $server->launch($host, $port, $profile, $tlsEnabled, $tlsOptions);
     }
 }

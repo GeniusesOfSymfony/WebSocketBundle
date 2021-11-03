@@ -50,6 +50,17 @@ gos_web_socket:
     # The port on the server which connections for the websocket server are accepted.
     port:                 ~ # Required
 
+    tls:
+
+      # Enables the native tls support that can be configured with the options below.
+      enabled: false
+
+      # The options to set up the tls configuration. See the example below or see https://www.php.net/manual/en/context.ssl.php for all available options.
+      options:
+        local_cert: '/path/to/cert/cert.crt'
+        local_pk: '/path/to/key/mykey.key'
+        verify_peer: false
+
     # Enables checking the Origin header of websocket connections for allowed values.
     origin_check:         false
 

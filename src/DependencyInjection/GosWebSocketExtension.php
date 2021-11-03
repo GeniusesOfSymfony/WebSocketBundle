@@ -277,6 +277,8 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
     {
         $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
         $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
+        $container->setParameter('gos_web_socket.server.tls.enabled', $config['server']['tls']['enabled']);
+        $container->setParameter('gos_web_socket.server.tls.options', $config['server']['tls']['options']);
         $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
         $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
         $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);

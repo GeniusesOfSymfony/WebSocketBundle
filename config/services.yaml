@@ -96,6 +96,8 @@ services:
             - '%gos_web_socket.server.host%'
             - '%gos_web_socket.server.port%'
             - '@gos_web_socket.registry.server'
+            - '%gos_web_socket.server.tls.enabled%'
+            - '%gos_web_socket.server.tls.options%'
         tags:
             - { name: console.command, command: gos:websocket:server }
 

@@ -44,7 +44,7 @@ final class ServerLauncherTest extends TestCase
 
         $server->expects(self::once())
             ->method('launch')
-            ->with($host, $port, $profile);
+            ->with($host, $port, $profile, false, []);
 
         $this->serverRegistry->addServer($server);
 
@@ -66,7 +66,7 @@ final class ServerLauncherTest extends TestCase
 
         $server->expects(self::once())
             ->method('launch')
-            ->with($host, $port, $profile);
+            ->with($host, $port, $profile, false, []);
 
         $this->serverRegistry->addServer($server);
 
