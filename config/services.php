@@ -358,6 +358,8 @@ return static function (ContainerConfigurator $container): void {
                     service('gos_web_socket.server.builder'),
                     service('gos_web_socket.server.event_loop'),
                     service('event_dispatcher'),
+                    param('gos_web_socket.server.tls.enabled'),
+                    param('gos_web_socket.server.tls.options'),
                 ]
             )
             ->call(

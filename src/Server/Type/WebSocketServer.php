@@ -9,6 +9,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\Server\IoServer;
 use React\EventLoop\LoopInterface;
+use React\Socket\SecureServer;
 use React\Socket\SocketServer;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -22,15 +23,21 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
     private ServerBuilderInterface $serverBuilder;
     private LoopInterface $loop;
     private EventDispatcherInterface $eventDispatcher;
+    private bool $tlsEnabled;
+    private array $tlsOptions;
 
     public function __construct(
         ServerBuilderInterface $serverBuilder,
         LoopInterface $loop,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        bool $tlsEnabled = false,
+        array $tlsOptions = []
     ) {
         $this->serverBuilder = $serverBuilder;
         $this->loop = $loop;
         $this->eventDispatcher = $eventDispatcher;
+        $this->tlsEnabled = $tlsEnabled;
+        $this->tlsOptions = $tlsOptions;
     }
 
     public function launch(string $host, int $port, bool $profile): void
@@ -38,6 +45,10 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
         $this->logger?->info('Starting web socket');
 
         $server = new SocketServer("$host:$port", [], $this->loop);
+
+        if ($this->tlsEnabled) {
+            $server = new SecureServer($server, $this->loop, $this->tlsOptions);
+        }
 
         $app = new IoServer(
             $this->serverBuilder->buildMessageStack(),
