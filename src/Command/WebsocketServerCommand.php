@@ -26,19 +26,9 @@ final class WebsocketServerCommand extends Command
 
     private int $port;
 
-    private bool $tlsEnabled;
-
-    private array $tlsOptions;
-
     private ?ServerRegistry $serverRegistry;
 
-    public function __construct(
-        ServerLauncherInterface $entryPoint,
-        string $host,
-        int $port,
-        ?ServerRegistry $serverRegistry = null,
-        bool $tlsEnabled,
-        array $tlsOptions)
+    public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port, ?ServerRegistry $serverRegistry = null)
     {
         parent::__construct();
 
@@ -49,8 +39,6 @@ final class WebsocketServerCommand extends Command
         $this->serverLauncher = $entryPoint;
         $this->port = $port;
         $this->host = $host;
-        $this->tlsEnabled = $tlsEnabled;
-        $this->tlsOptions = $tlsOptions;
         $this->serverRegistry = $serverRegistry;
     }
 
@@ -82,7 +70,7 @@ final class WebsocketServerCommand extends Command
         /** @var bool $profile */
         $profile = $input->getOption('profile');
 
-        $this->serverLauncher->launch($name, $host, (int) $port, $profile, $this->tlsEnabled, $this->tlsOptions);
+        $this->serverLauncher->launch($name, $host, (int) $port, $profile);
 
         return 0;
     }

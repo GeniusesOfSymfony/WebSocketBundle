@@ -29,11 +29,6 @@ class WebSocketServerTest extends TestCase
      */
     private $eventDispatcher;
 
-    /**
-     * @var WebSocketServer
-     */
-    private $server;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,14 +36,11 @@ class WebSocketServerTest extends TestCase
         $this->serverBuilder = $this->createMock(ServerBuilderInterface::class);
         $this->loop = $this->createMock(LoopInterface::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
-        $this->server = new WebSocketServer(
-            $this->serverBuilder,
-            $this->loop,
-            $this->eventDispatcher
-        );
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testTheServerIsLaunched(): void
     {
         $this->serverBuilder->expects(self::once())
@@ -62,6 +54,27 @@ class WebSocketServerTest extends TestCase
         $this->loop->expects(self::once())
             ->method('run');
 
-        $this->server->launch('127.0.0.1', 1337, false);
+        (new WebSocketServer($this->serverBuilder, $this->loop, $this->eventDispatcher))
+            ->launch('127.0.0.1', 1337, false);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testTheServerIsLaunchedWithTlsSupport(): void
+    {
+        $this->serverBuilder->expects(self::once())
+            ->method('buildMessageStack')
+            ->willReturn($this->createMock(MessageComponentInterface::class));
+
+        $this->eventDispatcher->expects(self::once())
+            ->method('dispatch')
+            ->with(self::isInstanceOf(ServerLaunchedEvent::class), GosWebSocketEvents::SERVER_LAUNCHED);
+
+        $this->loop->expects(self::once())
+            ->method('run');
+
+        (new WebSocketServer($this->serverBuilder, $this->loop, $this->eventDispatcher, true, ['verify_peer' => false]))
+            ->launch('127.0.0.1', 1337, false);
     }
 }

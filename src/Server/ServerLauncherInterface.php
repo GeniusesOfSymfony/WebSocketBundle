@@ -4,5 +4,5 @@ namespace Gos\Bundle\WebSocketBundle\Server;
 
 interface ServerLauncherInterface
 {
-    public function launch(?string $serverName, string $host, int $port, bool $profile, bool $tlsEnabled = false, array $tlsOptions = []): void;
+    public function launch(?string $serverName, string $host, int $port, bool $profile): void;
 }

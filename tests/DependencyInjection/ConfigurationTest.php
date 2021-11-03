@@ -248,7 +248,7 @@ final class ConfigurationTest extends TestCase
                 'port' => 8080,
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => false,
                 'ip_address_check' => false,
@@ -289,7 +289,7 @@ final class ConfigurationTest extends TestCase
                 'port' => 8080,
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => false,
                 'ip_address_check' => false,
@@ -322,7 +322,7 @@ final class ConfigurationTest extends TestCase
                 'port' => 8080,
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => false,
                 'ip_address_check' => false,
@@ -356,22 +356,22 @@ final class ConfigurationTest extends TestCase
                 'tls' => [
                     'enabled' => true,
                     'options' => [
-                        'verify_peer' => false
-                    ]
-                ]
+                        'verify_peer' => false,
+                    ],
+                ],
+                'origin_check' => false,
+                'ip_address_check' => false,
+                'keepalive_ping' => false,
+                'keepalive_interval' => 30,
             ],
         ];
 
         $config = (new Processor())->processConfiguration(new Configuration([]), [$extraConfig]);
 
-        $expectedTlsOptions = [
-            'enabled' => true,
-            'options' => [
-                'verify_peer' => false
-            ]
-        ];
-
-        $this->assertEquals($expectedTlsOptions, $config['server']['tls']);
+        self::assertEquals(
+            array_merge(self::getBundleDefaultConfig(), $extraConfig),
+            $config
+        );
     }
 
     public function testConfigWithAllowedOriginsList(): void
@@ -382,7 +382,7 @@ final class ConfigurationTest extends TestCase
                 'port' => 8080,
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => true,
                 'ip_address_check' => false,
@@ -433,7 +433,7 @@ final class ConfigurationTest extends TestCase
                 'port' => 8080,
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => false,
                 'ip_address_check' => true,
@@ -603,7 +603,7 @@ final class ConfigurationTest extends TestCase
             'server' => [
                 'tls' => [
                     'enabled' => false,
-                    'options' => []
+                    'options' => [],
                 ],
                 'origin_check' => false,
                 'ip_address_check' => false,

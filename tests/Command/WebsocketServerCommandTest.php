@@ -21,7 +21,7 @@ class WebsocketServerCommandTest extends TestCase
             ->method('launch')
             ->with(null, 'localhost', 1337, false);
 
-        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, new ServerRegistry(), false, []);
+        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, new ServerRegistry());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
@@ -33,9 +33,9 @@ class WebsocketServerCommandTest extends TestCase
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
         $entryPoint->expects(self::once())
             ->method('launch')
-            ->with('websocket', 'web.socket', 8443, true, true, ['verify_peer' => false]);
+            ->with('websocket', 'web.socket', 8443, true);
 
-        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, new ServerRegistry(), true, ['verify_peer' => false]);
+        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, new ServerRegistry());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -77,7 +77,7 @@ class WebsocketServerCommandTest extends TestCase
         /** @var MockObject&ServerLauncherInterface $entryPoint */
         $entryPoint = $this->createMock(ServerLauncherInterface::class);
 
-        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, $registry, false, []);
+        $command = new WebsocketServerCommand($entryPoint, 'localhost', 1337, $registry);
 
         $tester = new CommandCompletionTester($command);
 

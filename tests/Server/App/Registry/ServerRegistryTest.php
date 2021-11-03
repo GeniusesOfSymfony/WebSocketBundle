@@ -23,7 +23,7 @@ class ServerRegistryTest extends TestCase
     public function testServersAreAddedToTheRegistry(): void
     {
         $server = new class() implements ServerInterface {
-            public function launch(string $host, int $port, bool $profile, bool $tlsEnabled = false, array $tlsOptions = []): void
+            public function launch(string $host, int $port, bool $profile): void
             {
                 // no-op
             }
@@ -47,7 +47,7 @@ class ServerRegistryTest extends TestCase
         $this->expectExceptionMessage('A server named "main" has not been registered.');
 
         $server = new class() implements ServerInterface {
-            public function launch(string $host, int $port, bool $profile, bool $tlsEnabled = false, array $tlsOptions = []): void
+            public function launch(string $host, int $port, bool $profile): void
             {
                 // no-op
             }
