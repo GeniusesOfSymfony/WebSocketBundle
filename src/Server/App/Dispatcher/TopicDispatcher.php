@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Server\App\Dispatcher;
 
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
@@ -27,16 +26,13 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     private const PUBLISH = 'publish';
 
     private TopicRegistry $topicRegistry;
-    private WampRouter $router;
     private TopicPeriodicTimer $topicPeriodicTimer;
 
     public function __construct(
         TopicRegistry $topicRegistry,
-        WampRouter $router,
         TopicPeriodicTimer $topicPeriodicTimer
     ) {
         $this->topicRegistry = $topicRegistry;
-        $this->router = $router;
         $this->topicPeriodicTimer = $topicPeriodicTimer;
     }
 

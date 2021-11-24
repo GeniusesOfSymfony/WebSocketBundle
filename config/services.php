@@ -136,7 +136,6 @@ return static function (ContainerConfigurator $container): void {
             ->args(
                 [
                     service('gos_web_socket.registry.topic'),
-                    service('gos_web_socket.router.wamp'),
                     service('gos_web_socket.topic.periodic_timer'),
                 ]
             )

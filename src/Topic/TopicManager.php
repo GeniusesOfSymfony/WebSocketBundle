@@ -32,7 +32,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
 
     /**
      * @param string       $id    The unique ID of the RPC, required to respond to
-     * @param string|Topic $topic
+     * @param Topic|string $topic
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
@@ -40,7 +40,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * @param string|Topic $topic
+     * @param Topic|string $topic
      */
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
@@ -56,7 +56,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * @param string|Topic $topic
+     * @param Topic|string $topic
      */
     public function onUnsubscribe(ConnectionInterface $conn, $topic): void
     {
@@ -72,7 +72,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
     }
 
     /**
-     * @param string|Topic $topic
+     * @param Topic|string $topic
      * @param string       $event
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void

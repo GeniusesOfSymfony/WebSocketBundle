@@ -3,9 +3,7 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Server\App\Dispatcher;
 
 use Gos\Bundle\PubSubRouterBundle\Router\Route;
-use Gos\Bundle\PubSubRouterBundle\Router\RouterInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
-use Gos\Bundle\WebSocketBundle\Router\WampRouter;
 use Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher;
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry;
 use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
@@ -29,11 +27,6 @@ final class TopicDispatcherTest extends TestCase
     private $topicRegistry;
 
     /**
-     * @var WampRouter
-     */
-    private $wampRouter;
-
-    /**
      * @var MockObject&TopicPeriodicTimer
      */
     private $topicPeriodicTimer;
@@ -48,10 +41,9 @@ final class TopicDispatcherTest extends TestCase
         parent::setUp();
 
         $this->topicRegistry = new TopicRegistry();
-        $this->wampRouter = new WampRouter($this->createMock(RouterInterface::class));
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
 
-        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer);
+        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->topicPeriodicTimer);
     }
 
     public function testAWebsocketSubscriptionIsDispatchedToItsHandler(): void
