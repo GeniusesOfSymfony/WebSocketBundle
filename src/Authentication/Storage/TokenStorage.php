@@ -15,7 +15,6 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     private StorageDriverInterface $driver;
-    private int $ttl;
 
     public function __construct(StorageDriverInterface $driver)
     {

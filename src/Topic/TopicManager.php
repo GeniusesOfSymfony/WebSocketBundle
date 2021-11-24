@@ -53,6 +53,9 @@ class TopicManager implements WsServerInterface, WampServerInterface
         $this->app->onSubscribe($conn, $topicObj);
     }
 
+    /**
+     * @param Topic|string $topic
+     */
     public function onUnsubscribe(ConnectionInterface $conn, $topic): void
     {
         $topicObj = $this->getTopic($topic);
