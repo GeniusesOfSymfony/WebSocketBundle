@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.13.0 (????-??-??)
+
+- Deprecated the unused `$router` argument of the `Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher` constructor
+
 ## 3.12.0 (2021-11-03)
 
 - [#454](https://github.com/GeniusesOfSymfony/WebSocketBundle/pull/454) Add native TLS support

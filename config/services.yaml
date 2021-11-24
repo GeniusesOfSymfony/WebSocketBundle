@@ -122,7 +122,6 @@ services:
         public: true
         arguments:
             - '@gos_web_socket.registry.topic'
-            - '@gos_web_socket.router.wamp'
             - '@gos_web_socket.topic.periodic_timer'
             - '@gos_web_socket.wamp.topic_manager'
         calls:

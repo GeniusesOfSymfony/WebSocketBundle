@@ -31,20 +31,46 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     public const PUSH = 'onPush';
 
     private TopicRegistry $topicRegistry;
-    private WampRouter $router;
     private TopicPeriodicTimer $topicPeriodicTimer;
     private TopicManager $topicManager;
 
+    /**
+     * @param WampRouter|TopicPeriodicTimer   $router
+     * @param TopicPeriodicTimer|TopicManager $topicPeriodicTimer
+     */
     public function __construct(
         TopicRegistry $topicRegistry,
-        WampRouter $router,
-        TopicPeriodicTimer $topicPeriodicTimer,
-        TopicManager $topicManager
+        object $router,
+        object $topicPeriodicTimer,
+        ?TopicManager $topicManager = null
     ) {
         $this->topicRegistry = $topicRegistry;
-        $this->router = $router;
-        $this->topicPeriodicTimer = $topicPeriodicTimer;
-        $this->topicManager = $topicManager;
+
+        if ($router instanceof WampRouter) {
+            trigger_deprecation('gos/web-socket-bundle', '3.13', 'Passing a "%s" instance as the second argument of the "%s" class constructor is deprecated and will not be supported in 4.0.', WampRouter::class, self::class);
+
+            if (!$topicPeriodicTimer instanceof TopicPeriodicTimer) {
+                throw new \InvalidArgumentException(sprintf('Argument 3 of the %s constructor must be an instance of %s, "%s" given.', self::class, TopicPeriodicTimer::class, get_debug_type($topicPeriodicTimer)));
+            }
+
+            $this->topicPeriodicTimer = $topicPeriodicTimer;
+
+            if (!$topicManager instanceof TopicManager) {
+                throw new \InvalidArgumentException(sprintf('Argument 4 of the %s constructor must be an instance of %s, "%s" given.', self::class, TopicManager::class, get_debug_type($topicManager)));
+            }
+
+            $this->topicManager = $topicManager;
+        } elseif ($router instanceof TopicPeriodicTimer) {
+            $this->topicPeriodicTimer = $router;
+
+            if (!$topicPeriodicTimer instanceof TopicManager) {
+                throw new \InvalidArgumentException(sprintf('Argument 3 of the %s constructor must be an instance of %s, "%s" given.', self::class, TopicManager::class, get_debug_type($topicPeriodicTimer)));
+            }
+
+            $this->topicManager = $topicPeriodicTimer;
+        } else {
+            throw new \InvalidArgumentException(sprintf('Argument 2 of the %s constructor must be an instance of %s or %s, "%s" given.', self::class, WampRouter::class, TopicPeriodicTimer::class, get_debug_type($router)));
+        }
     }
 
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void

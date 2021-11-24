@@ -60,7 +60,50 @@ final class TopicDispatcherTest extends TestCase
         $this->topicPeriodicTimer = $this->createMock(TopicPeriodicTimer::class);
         $this->topicManager = $this->createMock(TopicManager::class);
 
-        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, $this->topicManager);
+        $this->dispatcher = new TopicDispatcher($this->topicRegistry, $this->topicPeriodicTimer, $this->topicManager);
+    }
+
+    /**
+     * @group legacy
+     * @doesNotPerformAssertions
+     */
+    public function testAcceptsLegacyConstructorArguments(): void
+    {
+        new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, $this->topicManager);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testRejectsLegacyConstructorSignatureWithInvalidPeriodicTimer(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new TopicDispatcher($this->topicRegistry, $this->wampRouter, new \stdClass(), $this->topicManager);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testRejectsLegacyConstructorSignatureWithInvalidTopicManager(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new TopicDispatcher($this->topicRegistry, $this->wampRouter, $this->topicPeriodicTimer, null);
+    }
+
+    public function testRejectsNewConstructorSignatureWithInvalidTopicManager(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new TopicDispatcher($this->topicRegistry, $this->topicPeriodicTimer, new \stdClass());
+    }
+
+    public function testRejectsNewConstructorSignatureWithInvalidPeriodicTimer(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new TopicDispatcher($this->topicRegistry, new \stdClass(), $this->topicManager);
     }
 
     public function testAWebsocketSubscriptionIsDispatchedToItsHandler(): void
