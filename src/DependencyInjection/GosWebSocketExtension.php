@@ -59,20 +59,6 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $this->registerPingConfiguration($config, $container);
     }
 
-    private function maybeEnableAuthenticatorApi(array $config, ContainerBuilder $container): void
-    {
-        if (!$config['authentication']['enable_authenticator']) {
-            return;
-        }
-
-        $container->removeDefinition('gos_web_socket.client.authentication.websocket_provider');
-        $container->removeDefinition('gos_web_socket.client.driver.doctrine_cache');
-        $container->removeDefinition('gos_web_socket.client.driver.in_memory');
-        $container->removeDefinition('gos_web_socket.client.driver.symfony_cache');
-        $container->removeDefinition('gos_web_socket.client.manipulator');
-        $container->removeDefinition('gos_web_socket.client.storage');
-    }
-
     private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
     {
         $authenticators = [];

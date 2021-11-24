@@ -21,7 +21,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
         $this->loop = $loop;
     }
 
-    public function getAllPeriodicTimers(TopicInterface $topic, string $name): TimerInterface | bool
+    public function getAllPeriodicTimers(TopicInterface $topic, string $name): TimerInterface|bool
     {
         if (!$this->isPeriodicTimerActive($topic, $name)) {
             return false;
@@ -42,7 +42,7 @@ class TopicPeriodicTimer implements \IteratorAggregate
         return $this->registry[$namespace] ?? [];
     }
 
-    public function addPeriodicTimer(TopicInterface $topic, string $name, int | float $timeout, callable $callback): void
+    public function addPeriodicTimer(TopicInterface $topic, string $name, int|float $timeout, callable $callback): void
     {
         $namespace = $this->getTopicNamespace($topic);
 

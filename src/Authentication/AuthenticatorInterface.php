@@ -3,7 +3,6 @@
 namespace Gos\Bundle\WebSocketBundle\Authentication;
 
 use Ratchet\ConnectionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 interface AuthenticatorInterface
 {

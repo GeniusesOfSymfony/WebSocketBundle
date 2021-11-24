@@ -24,7 +24,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         $this->loop = $loop;
     }
 
-    public function getPeriodicTimer(string $name): TimerInterface | bool
+    public function getPeriodicTimer(string $name): TimerInterface|bool
     {
         if (!$this->isPeriodicTimerActive($name)) {
             return false;
@@ -38,7 +38,7 @@ class ConnectionPeriodicTimer implements \IteratorAggregate, \Countable
         return sha1($this->connection->resourceId.$this->connection->WAMP->sessionId.$name);
     }
 
-    public function addPeriodicTimer(string $name, int | float $timeout, callable $callback): void
+    public function addPeriodicTimer(string $name, int|float $timeout, callable $callback): void
     {
         $this->registry[$this->getTid($name)] = $this->loop->addPeriodicTimer($timeout, $callback);
     }

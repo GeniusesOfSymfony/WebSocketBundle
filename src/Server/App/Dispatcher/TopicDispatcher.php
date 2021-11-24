@@ -50,7 +50,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        string | array $event,
+        string|array $event,
         array $exclude,
         array $eligible
     ): void {
@@ -66,7 +66,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ?ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        string | array | null $payload = null,
+        string|array|null $payload = null,
         ?array $exclude = null,
         ?array $eligible = null,
         ?string $provider = null

@@ -55,9 +55,7 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
      */
     public function getToken(string $id): TokenInterface
     {
-        if (null !== $this->logger) {
-            $this->logger->debug(sprintf('Retrieving token for connection ID %s from storage.', $id));
-        }
+        $this->logger?->debug(sprintf('Retrieving token for connection ID %s from storage.', $id));
 
         return $this->driver->get($id);
     }
@@ -75,9 +73,7 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
      */
     public function removeToken(string $id): bool
     {
-        if (null !== $this->logger) {
-            $this->logger->debug(sprintf('Removing token for connection ID %s from storage.', $id));
-        }
+        $this->logger?->debug(sprintf('Removing token for connection ID %s from storage.', $id));
 
         return $this->driver->delete($id);
     }
@@ -87,9 +83,7 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
      */
     public function removeAllTokens(): void
     {
-        if (null !== $this->logger) {
-            $this->logger->debug('Removing all tokens from storage');
-        }
+        $this->logger?->debug('Removing all tokens from storage');
 
         $this->driver->clear();
     }

@@ -3,8 +3,8 @@
 namespace Gos\Bundle\WebSocketBundle\Tests\Authentication\Storage;
 
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface;
-use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage;
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\Exception\StorageException;
+use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;

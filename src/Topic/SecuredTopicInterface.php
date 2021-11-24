@@ -16,7 +16,7 @@ interface SecuredTopicInterface
         ?ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        string | array | null $payload = null,
+        string|array|null $payload = null,
         ?array $exclude = [],
         ?array $eligible = null,
         ?string $provider = null

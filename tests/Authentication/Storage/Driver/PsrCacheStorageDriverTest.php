@@ -146,12 +146,12 @@ final class TestToken implements TokenInterface
      * @return void
      * @phpstan-return never
      */
-    public function setAuthenticated($isAuthenticated)
+    public function setAuthenticated($isAuthenticated): void
     {
         throw new \BadMethodCallException(sprintf('Cannot change authentication state of %s.', self::class));
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -169,7 +169,7 @@ final class TestToken implements TokenInterface
      * @return void
      * @phpstan-return never
      */
-    public function setAttributes($attributes)
+    public function setAttributes($attributes): void
     {
         throw new \BadMethodCallException(sprintf('Cannot set attributes of %s.', self::class));
     }
@@ -201,7 +201,7 @@ final class TestToken implements TokenInterface
      * @return void
      * @phpstan-return never
      */
-    public function setAttribute($name, $value)
+    public function setAttribute($name, $value): void
     {
         throw new \BadMethodCallException(sprintf('Cannot add attribute to %s.', self::class));
     }

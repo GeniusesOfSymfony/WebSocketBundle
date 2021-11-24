@@ -16,7 +16,7 @@ interface TopicDispatcherInterface
         ConnectionInterface $conn,
         Topic $topic,
         WampRequest $request,
-        string | array $event,
+        string|array $event,
         array $exclude,
         array $eligible
     ): void;

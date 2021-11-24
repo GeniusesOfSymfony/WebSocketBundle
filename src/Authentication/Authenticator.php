@@ -35,9 +35,7 @@ final class Authenticator implements AuthenticatorInterface, LoggerAwareInterfac
     {
         foreach ($this->providers as $provider) {
             if (!$provider->supports($connection)) {
-                if (null !== $this->logger) {
-                    $this->logger->debug(sprintf('Skipping the "%s" authentication provider as it did not support the connection.', \get_class($provider)));
-                }
+                $this->logger?->debug(sprintf('Skipping the "%s" authentication provider as it did not support the connection.', \get_class($provider)));
 
                 continue;
             }
@@ -48,19 +46,17 @@ final class Authenticator implements AuthenticatorInterface, LoggerAwareInterfac
 
             $this->tokenStorage->addToken($id, $token);
 
-            if (null !== $this->logger) {
-                $this->logger->info(
-                    sprintf(
-                        'User "%s" authenticated to websocket server',
-                        method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
-                    ),
-                    [
-                        'connection_id' => $connection->resourceId,
-                        'session_id' => $connection->WAMP->sessionId,
-                        'storage_id' => $id,
-                    ]
-                );
-            }
+            $this->logger?->info(
+                sprintf(
+                    'User "%s" authenticated to websocket server',
+                    method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
+                ),
+                [
+                    'connection_id' => $connection->resourceId,
+                    'session_id' => $connection->WAMP->sessionId,
+                    'storage_id' => $id,
+                ]
+            );
 
             break;
         }
