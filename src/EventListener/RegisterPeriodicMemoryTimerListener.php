@@ -15,11 +15,8 @@ final class RegisterPeriodicMemoryTimerListener implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private PeriodicRegistry $periodicRegistry;
-
-    public function __construct(PeriodicRegistry $periodicRegistry)
+    public function __construct(private PeriodicRegistry $periodicRegistry)
     {
-        $this->periodicRegistry = $periodicRegistry;
     }
 
     public function __invoke(ServerLaunchedEvent $event): void

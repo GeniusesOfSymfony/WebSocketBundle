@@ -11,13 +11,10 @@ final class DoctrinePeriodicPing implements PeriodicInterface, LoggerAwareInterf
 {
     use LoggerAwareTrait;
 
-    private Connection $connection;
-    private int $interval;
-
-    public function __construct(Connection $connection, int $interval = 20)
-    {
-        $this->connection = $connection;
-        $this->interval = $interval;
+    public function __construct(
+        private Connection $connection,
+        private int $interval = 20,
+    ) {
     }
 
     public function tick(): void

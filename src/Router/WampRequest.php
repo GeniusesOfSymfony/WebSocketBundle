@@ -7,17 +7,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class WampRequest
 {
-    private ParameterBag $attributes;
-    private Route $route;
-    private string $routeName;
-    private string $matched;
-
-    public function __construct(string $routeName, Route $route, ParameterBag $attributes, string $matched)
-    {
-        $this->attributes = $attributes;
-        $this->route = $route;
-        $this->routeName = $routeName;
-        $this->matched = $matched;
+    public function __construct(
+        private string $routeName,
+        private Route $route,
+        private ParameterBag $attributes,
+        private string $matched,
+    ) {
     }
 
     public function getAttributes(): ParameterBag

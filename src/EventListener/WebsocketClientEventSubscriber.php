@@ -21,14 +21,10 @@ final class WebsocketClientEventSubscriber implements EventSubscriberInterface, 
 {
     use LoggerAwareTrait;
 
-    private TokenStorageInterface $tokenStorage;
-
-    private AuthenticatorInterface $authenticator;
-
-    public function __construct(TokenStorageInterface $tokenStorage, AuthenticatorInterface $authenticator)
-    {
-        $this->tokenStorage = $tokenStorage;
-        $this->authenticator = $authenticator;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private AuthenticatorInterface $authenticator,
+    ) {
     }
 
     public static function getSubscribedEvents(): array

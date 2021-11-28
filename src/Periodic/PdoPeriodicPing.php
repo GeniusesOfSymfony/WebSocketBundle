@@ -9,13 +9,10 @@ final class PdoPeriodicPing implements PeriodicInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private \PDO $pdo;
-    private int $interval;
-
-    public function __construct(\PDO $pdo, int $interval = 20)
-    {
-        $this->pdo = $pdo;
-        $this->interval = $interval;
+    public function __construct(
+        private \PDO $pdo,
+        private int $interval = 20,
+    ) {
     }
 
     public function tick(): void

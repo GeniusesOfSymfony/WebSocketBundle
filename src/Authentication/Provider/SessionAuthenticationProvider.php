@@ -7,7 +7,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -22,20 +21,13 @@ final class SessionAuthenticationProvider implements AuthenticationProviderInter
 {
     use LoggerAwareTrait;
 
-    private TokenStorageInterface $tokenStorage;
-
-    /**
-     * @var string[]
-     */
-    private array $firewalls;
-
     /**
      * @param string[] $firewalls
      */
-    public function __construct(TokenStorageInterface $tokenStorage, array $firewalls)
-    {
-        $this->tokenStorage = $tokenStorage;
-        $this->firewalls = $firewalls;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private array $firewalls,
+    ) {
     }
 
     public function supports(ConnectionInterface $connection): bool
@@ -51,19 +43,17 @@ final class SessionAuthenticationProvider implements AuthenticationProviderInter
 
         $this->tokenStorage->addToken($storageId, $token);
 
-        if (null !== $this->logger) {
-            $this->logger->info(
-                sprintf(
-                    '%s connected',
-                    method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
-                ),
-                [
-                    'connection_id' => $connection->resourceId,
-                    'session_id' => $connection->WAMP->sessionId,
-                    'storage_id' => $storageId,
-                ]
-            );
-        }
+        $this->logger?->info(
+            sprintf(
+                '%s connected',
+                method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()
+            ),
+            [
+                'connection_id' => $connection->resourceId,
+                'session_id' => $connection->WAMP->sessionId,
+                'storage_id' => $storageId,
+            ]
+        );
 
         return $token;
     }
@@ -82,11 +72,7 @@ final class SessionAuthenticationProvider implements AuthenticationProviderInter
         }
 
         if (null === $token) {
-            if (class_exists(NullToken::class)) {
-                $token = new NullToken();
-            } else {
-                $token = new AnonymousToken($this->firewalls[0], 'anon-'.$connection->WAMP->sessionId);
-            }
+            $token = new NullToken();
         }
 
         return $token;

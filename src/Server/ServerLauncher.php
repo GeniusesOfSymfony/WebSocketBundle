@@ -6,11 +6,8 @@ use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 
 final class ServerLauncher implements ServerLauncherInterface
 {
-    private ServerRegistry $serverRegistry;
-
-    public function __construct(ServerRegistry $serverRegistry)
+    public function __construct(private ServerRegistry $serverRegistry)
     {
-        $this->serverRegistry = $serverRegistry;
     }
 
     /**

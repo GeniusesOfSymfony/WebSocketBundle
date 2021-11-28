@@ -25,15 +25,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
     private const UNSUBSCRIBE = 'unsubscribe';
     private const PUBLISH = 'publish';
 
-    private TopicRegistry $topicRegistry;
-    private TopicPeriodicTimer $topicPeriodicTimer;
-
     public function __construct(
-        TopicRegistry $topicRegistry,
-        TopicPeriodicTimer $topicPeriodicTimer
+        private TopicRegistry $topicRegistry,
+        private TopicPeriodicTimer $topicPeriodicTimer,
     ) {
-        $this->topicRegistry = $topicRegistry;
-        $this->topicPeriodicTimer = $topicPeriodicTimer;
     }
 
     public function onSubscribe(ConnectionInterface $conn, Topic $topic, WampRequest $request): void

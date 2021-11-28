@@ -12,8 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ConnectionRepositoryTest extends TestCase
 {
@@ -49,8 +49,8 @@ final class ConnectionRepositoryTest extends TestCase
 
         $storageId = 42;
 
-        /** @var MockObject&AbstractToken $token */
-        $token = $this->createMock(AbstractToken::class);
+        /** @var MockObject&TokenInterface $token */
+        $token = $this->createMock(TokenInterface::class);
 
         $this->tokenStorage->expects(self::once())
             ->method('generateStorageId')
@@ -72,8 +72,8 @@ final class ConnectionRepositoryTest extends TestCase
 
         $storageId = 42;
 
-        /** @var MockObject&AbstractToken $token */
-        $token = $this->createMock(AbstractToken::class);
+        /** @var MockObject&TokenInterface $token */
+        $token = $this->createMock(TokenInterface::class);
 
         $this->tokenStorage->expects(self::exactly(2))
             ->method('generateStorageId')
@@ -185,11 +185,17 @@ final class ConnectionRepositoryTest extends TestCase
         $storageId1 = 42;
         $storageId2 = 84;
 
-        /** @var MockObject&AbstractToken $authenticatedToken */
-        $authenticatedToken = $this->createMock(AbstractToken::class);
+        /** @var MockObject&TokenInterface $authenticatedToken */
+        $authenticatedToken = $this->createMock(TokenInterface::class);
+        $authenticatedToken->expects(self::once())
+            ->method('getUser')
+            ->willReturn($this->createMock(UserInterface::class));
 
-        /** @var MockObject&AnonymousToken $guestToken */
-        $guestToken = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $guestToken */
+        $guestToken = $this->createMock(TokenInterface::class);
+        $guestToken->expects(self::once())
+            ->method('getUser')
+            ->willReturn(null);
 
         $this->tokenStorage->expects(self::exactly(2))
             ->method('generateStorageId')
@@ -237,11 +243,15 @@ final class ConnectionRepositoryTest extends TestCase
         $storageId1 = 42;
         $storageId2 = 84;
 
-        /** @var MockObject&AbstractToken $authenticatedToken */
-        $authenticatedToken = $this->createMock(AbstractToken::class);
+        /** @var MockObject&TokenInterface $authenticatedToken */
+        $authenticatedToken = $this->createMock(TokenInterface::class);
+        $authenticatedToken->expects(self::never())
+            ->method('getUser');
 
-        /** @var MockObject&AnonymousToken $guestToken */
-        $guestToken = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $guestToken */
+        $guestToken = $this->createMock(TokenInterface::class);
+        $guestToken->expects(self::never())
+            ->method('getUser');
 
         $this->tokenStorage->expects(self::exactly(2))
             ->method('generateStorageId')
@@ -295,20 +305,23 @@ final class ConnectionRepositoryTest extends TestCase
         $storageId2 = 84;
         $storageId3 = 126;
 
-        /** @var MockObject&UsernamePasswordToken $authenticatedToken1 */
-        $authenticatedToken1 = $this->createMock(UsernamePasswordToken::class);
+        /** @var MockObject&TokenInterface $authenticatedToken1 */
+        $authenticatedToken1 = $this->createMock(TokenInterface::class);
         $authenticatedToken1->expects(self::once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER', 'ROLE_STAFF']);
 
-        /** @var MockObject&UsernamePasswordToken $authenticatedToken2 */
-        $authenticatedToken2 = $this->createMock(UsernamePasswordToken::class);
+        /** @var MockObject&TokenInterface $authenticatedToken2 */
+        $authenticatedToken2 = $this->createMock(TokenInterface::class);
         $authenticatedToken2->expects(self::once())
             ->method('getRoleNames')
             ->willReturn(['ROLE_USER']);
 
-        /** @var MockObject&AnonymousToken $guestToken */
-        $guestToken = $this->createMock(AnonymousToken::class);
+        /** @var MockObject&TokenInterface $guestToken */
+        $guestToken = $this->createMock(TokenInterface::class);
+        $guestToken->expects(self::once())
+            ->method('getRoleNames')
+            ->willReturn([]);
 
         $this->tokenStorage->expects(self::exactly(3))
             ->method('generateStorageId')

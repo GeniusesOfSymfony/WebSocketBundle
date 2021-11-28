@@ -20,24 +20,13 @@ final class WebSocketServer implements ServerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private ServerBuilderInterface $serverBuilder;
-    private LoopInterface $loop;
-    private EventDispatcherInterface $eventDispatcher;
-    private bool $tlsEnabled;
-    private array $tlsOptions;
-
     public function __construct(
-        ServerBuilderInterface $serverBuilder,
-        LoopInterface $loop,
-        EventDispatcherInterface $eventDispatcher,
-        bool $tlsEnabled = false,
-        array $tlsOptions = []
+        private ServerBuilderInterface $serverBuilder,
+        private LoopInterface $loop,
+        private EventDispatcherInterface $eventDispatcher,
+        private bool $tlsEnabled = false,
+        private array $tlsOptions = [],
     ) {
-        $this->serverBuilder = $serverBuilder;
-        $this->loop = $loop;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->tlsEnabled = $tlsEnabled;
-        $this->tlsOptions = $tlsOptions;
     }
 
     public function launch(string $host, int $port, bool $profile): void

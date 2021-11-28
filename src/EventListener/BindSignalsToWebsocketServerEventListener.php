@@ -16,13 +16,10 @@ final class BindSignalsToWebsocketServerEventListener implements LoggerAwareInte
 {
     use LoggerAwareTrait;
 
-    private PeriodicRegistry $periodicRegistry;
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(PeriodicRegistry $periodicRegistry, TokenStorageInterface $tokenStorage)
-    {
-        $this->periodicRegistry = $periodicRegistry;
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        private PeriodicRegistry $periodicRegistry,
+        private TokenStorageInterface $tokenStorage,
+    ) {
     }
 
     public function __invoke(ServerLaunchedEvent $event): void

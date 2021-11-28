@@ -18,40 +18,22 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class ServerBuilder implements ServerBuilderInterface
 {
-    private LoopInterface $loop;
-    private TopicManager $topicManager;
-    private OriginRegistry $originRegistry;
-    private EventDispatcherInterface $eventDispatcher;
-    private bool $originCheck;
-    private bool $keepalivePing;
-    private int $keepaliveInterval;
-    private bool $ipAddressCheck;
-    private array $blockedIpAddresses;
     private ?\SessionHandlerInterface $sessionHandler = null;
 
     /**
      * @param string[] $blockedIpAddresses
      */
     public function __construct(
-        LoopInterface $loop,
-        TopicManager $topicManager,
-        OriginRegistry $originRegistry,
-        EventDispatcherInterface $eventDispatcher,
-        bool $originCheck,
-        bool $keepalivePing,
-        int $keepaliveInterval,
-        bool $ipAddressCheck,
-        array $blockedIpAddresses
+        private LoopInterface $loop,
+        private TopicManager $topicManager,
+        private OriginRegistry $originRegistry,
+        private EventDispatcherInterface $eventDispatcher,
+        private bool $originCheck,
+        private bool $keepalivePing,
+        private int $keepaliveInterval,
+        private bool $ipAddressCheck,
+        private array $blockedIpAddresses,
     ) {
-        $this->loop = $loop;
-        $this->topicManager = $topicManager;
-        $this->originRegistry = $originRegistry;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->originCheck = $originCheck;
-        $this->keepalivePing = $keepalivePing;
-        $this->keepaliveInterval = $keepaliveInterval;
-        $this->ipAddressCheck = $ipAddressCheck;
-        $this->blockedIpAddresses = $blockedIpAddresses;
     }
 
     public function buildMessageStack(): MessageComponentInterface

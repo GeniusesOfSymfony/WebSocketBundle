@@ -14,11 +14,8 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private StorageDriverInterface $driver;
-
-    public function __construct(StorageDriverInterface $driver)
+    public function __construct(private StorageDriverInterface $driver)
     {
-        $this->driver = $driver;
     }
 
     public function generateStorageId(ConnectionInterface $conn): string
@@ -31,14 +28,13 @@ final class TokenStorage implements TokenStorageInterface, LoggerAwareInterface
      */
     public function addToken(string $id, TokenInterface $token): void
     {
-        if (null !== $this->logger) {
-            $context = [
+        $this->logger?->debug(
+            sprintf('Adding token for connection ID %s to storage.', $id),
+            [
                 'token' => $token,
                 'username' => method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername(),
-            ];
-
-            $this->logger->debug(sprintf('Adding token for connection ID %s to storage.', $id), $context);
-        }
+            ],
+        );
 
         $result = $this->driver->store($id, $token);
 

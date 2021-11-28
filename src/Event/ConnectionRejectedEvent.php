@@ -8,13 +8,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class ConnectionRejectedEvent extends Event
 {
-    private ConnectionInterface $connection;
-    private ?RequestInterface $request;
-
-    public function __construct(ConnectionInterface $connection, ?RequestInterface $request = null)
-    {
-        $this->connection = $connection;
-        $this->request = $request;
+    public function __construct(
+        public readonly ConnectionInterface $connection,
+        public readonly ?RequestInterface $request = null,
+    ) {
     }
 
     public function getConnection(): ConnectionInterface

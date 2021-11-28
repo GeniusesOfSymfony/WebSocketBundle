@@ -14,11 +14,8 @@ final class WampRouter implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private RouterInterface $pubSubRouter;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $pubSubRouter)
     {
-        $this->pubSubRouter = $router;
     }
 
     /**

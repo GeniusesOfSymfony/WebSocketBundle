@@ -25,22 +25,13 @@ final class WebsocketServerCommand extends Command
      */
     protected static $defaultDescription = 'Starts the websocket server';
 
-    private ServerLauncherInterface $serverLauncher;
-
-    private string $host;
-
-    private int $port;
-
-    private ServerRegistry $serverRegistry;
-
-    public function __construct(ServerLauncherInterface $entryPoint, string $host, int $port, ServerRegistry $serverRegistry)
-    {
+    public function __construct(
+        private ServerLauncherInterface $serverLauncher,
+        private string $host,
+        private int $port,
+        private ServerRegistry $serverRegistry,
+    ) {
         parent::__construct();
-
-        $this->serverLauncher = $entryPoint;
-        $this->port = $port;
-        $this->host = $host;
-        $this->serverRegistry = $serverRegistry;
     }
 
     protected function configure(): void

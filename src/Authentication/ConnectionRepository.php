@@ -6,21 +6,15 @@ use Gos\Bundle\WebSocketBundle\Authentication\Storage\Exception\TokenNotFoundExc
 use Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ConnectionRepository implements ConnectionRepositoryInterface
 {
-    private TokenStorageInterface $tokenStorage;
-    private AuthenticatorInterface $authenticator;
-
     public function __construct(
-        TokenStorageInterface $tokenStorage,
-        AuthenticatorInterface $authenticator
+        private TokenStorageInterface $tokenStorage,
+        private AuthenticatorInterface $authenticator,
     ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->authenticator = $authenticator;
     }
 
     /**
@@ -34,7 +28,7 @@ final class ConnectionRepository implements ConnectionRepositoryInterface
         foreach ($topic as $connection) {
             $client = $this->findTokenForConnection($connection);
 
-            if (true !== $anonymous && $client instanceof AnonymousToken) {
+            if (!$anonymous && !($client->getUser() instanceof UserInterface)) {
                 continue;
             }
 
@@ -54,10 +48,6 @@ final class ConnectionRepository implements ConnectionRepositoryInterface
         /** @var ConnectionInterface $connection */
         foreach ($topic as $connection) {
             $client = $this->findTokenForConnection($connection);
-
-            if ($client instanceof AnonymousToken) {
-                continue;
-            }
 
             $clientUsername = method_exists($client, 'getUserIdentifier') ? $client->getUserIdentifier() : $client->getUsername();
 

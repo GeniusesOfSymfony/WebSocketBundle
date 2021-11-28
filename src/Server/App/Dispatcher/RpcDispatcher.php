@@ -18,11 +18,8 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
 {
     use LoggerAwareTrait;
 
-    private RpcRegistry $rpcRegistry;
-
-    public function __construct(RpcRegistry $rpcRegistry)
+    public function __construct(private RpcRegistry $rpcRegistry)
     {
-        $this->rpcRegistry = $rpcRegistry;
     }
 
     public function dispatch(ConnectionInterface $conn, string $id, Topic $topic, WampRequest $request, array $params): void

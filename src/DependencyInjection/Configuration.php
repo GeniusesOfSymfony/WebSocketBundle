@@ -20,16 +20,10 @@ final class Configuration implements ConfigurationInterface
     public const AUTHENTICATION_STORAGE_TYPE_SERVICE = 'service';
 
     /**
-     * @var AuthenticationProviderFactoryInterface[]
-     */
-    private array $authenticationProviderFactories;
-
-    /**
      * @param AuthenticationProviderFactoryInterface[] $authenticationProviderFactories
      */
-    public function __construct(array $authenticationProviderFactories)
+    public function __construct(private array $authenticationProviderFactories)
     {
-        $this->authenticationProviderFactories = $authenticationProviderFactories;
     }
 
     public function getConfigTreeBuilder(): TreeBuilder
@@ -108,7 +102,6 @@ final class Configuration implements ConfigurationInterface
             ->fixXmlConfig('provider')
             ->children()
                 ->arrayNode('providers')
-                    // ->requiresAtLeastOneElement() // Will be required as of 4.0
         ;
 
         foreach ($this->authenticationProviderFactories as $factory) {

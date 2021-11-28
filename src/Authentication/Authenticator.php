@@ -13,19 +13,10 @@ final class Authenticator implements AuthenticatorInterface, LoggerAwareInterfac
     use LoggerAwareTrait;
 
     /**
-     * @var AuthenticationProviderInterface[]
-     */
-    private iterable $providers;
-
-    private TokenStorageInterface $tokenStorage;
-
-    /**
      * @param AuthenticationProviderInterface[] $providers
      */
-    public function __construct(iterable $providers, TokenStorageInterface $tokenStorage)
+    public function __construct(private iterable $providers, private TokenStorageInterface $tokenStorage)
     {
-        $this->providers = $providers;
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**
