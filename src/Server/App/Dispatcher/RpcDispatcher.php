@@ -28,10 +28,10 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
             throw new \InvalidArgumentException(sprintf('Argument 1 of %1$s() must be an instance of %2$s, a %3$s instance was given.', __METHOD__, WampConnection::class, \get_class($conn)));
         }
 
-        $callback = $request->getRoute()->getCallback();
+        $callback = $request->route->getCallback();
 
         if (!\is_string($callback)) {
-            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
+            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->routeName));
         }
 
         if (!$this->rpcRegistry->hasRpc($callback)) {
@@ -40,7 +40,7 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
             $conn->callError(
                 $id,
                 $topic,
-                sprintf('A RPC handler for the "%s" route has not been registered.', $request->getRouteName()),
+                sprintf('A RPC handler for the "%s" route has not been registered.', $request->routeName),
                 [
                     'code' => 404,
                     'rpc' => $topic,
@@ -54,13 +54,13 @@ final class RpcDispatcher implements RpcDispatcherInterface, LoggerAwareInterfac
 
         $procedure = $this->rpcRegistry->getRpc($callback);
 
-        $method = $this->toCamelCase($request->getAttributes()->get('method', ''));
+        $method = $this->toCamelCase($request->attributes->get('method', ''));
 
         if (!method_exists($procedure, $method)) {
             $this->logger?->error(
                 sprintf('Method "%s" not found in %s.', $method, \get_class($procedure)),
                 [
-                    'called_method' => $request->getAttributes()->get('method'),
+                    'called_method' => $request->attributes->get('method'),
                 ]
             );
 

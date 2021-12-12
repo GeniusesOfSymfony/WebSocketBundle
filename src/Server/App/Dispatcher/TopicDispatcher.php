@@ -66,10 +66,10 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         ?array $eligible = null,
         ?string $provider = null
     ): bool {
-        $callback = $request->getRoute()->getCallback();
+        $callback = $request->route->getCallback();
 
         if (!\is_string($callback)) {
-            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->getRouteName()));
+            throw new \InvalidArgumentException(sprintf('The callback for route "%s" must be a string, a callable was given.', $request->routeName));
         }
 
         if (!$this->topicRegistry->hasTopic($callback)) {

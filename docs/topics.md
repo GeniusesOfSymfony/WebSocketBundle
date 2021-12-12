@@ -174,7 +174,7 @@ class AcmeSecuredTopic extends AcmeTopic implements SecuredTopicInterface
         ?string $provider = null
     ): void {
         // Check input data to verify if connection must be blocked
-        if ($request->getAttributes()->has('denied')) {
+        if ($request->attributes->has('denied')) {
             throw new FirewallRejectionException('Access denied');
         }
 
