@@ -143,7 +143,6 @@ final class TestToken implements TokenInterface
     /**
      * @param bool $isAuthenticated
      *
-     * @return void
      * @phpstan-return never
      */
     public function setAuthenticated($isAuthenticated): void
@@ -166,7 +165,6 @@ final class TestToken implements TokenInterface
     /**
      * @param array $attributes
      *
-     * @return void
      * @phpstan-return never
      */
     public function setAttributes($attributes): void
@@ -198,7 +196,6 @@ final class TestToken implements TokenInterface
      * @param string $name
      * @param mixed  $value
      *
-     * @return void
      * @phpstan-return never
      */
     public function setAttribute($name, $value): void
