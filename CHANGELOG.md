@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.14.0 (????-??-??)
+## 3.14.0 (2021-12-15)
 
 - Add support for Symfony 6.0
 - Drop support for Symfony 5.3
