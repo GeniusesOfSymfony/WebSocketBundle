@@ -97,10 +97,18 @@ final class ConnectionRepository implements ConnectionRepositoryInterface
     }
 
     /**
-     * @return string|\Stringable|UserInterface
+     * @return string|\Stringable|UserInterface|null
+     *
+     * @note As of 4.0, the return type will change to `UserInterface|null`.
      */
     public function getUser(ConnectionInterface $connection)
     {
-        return $this->findTokenForConnection($connection)->getUser();
+        $user = $this->findTokenForConnection($connection)->getUser();
+
+        if (null !== $user && !($user instanceof UserInterface)) {
+            trigger_deprecation('gos/web-socket-bundle', '3.14', 'Retrieving a user that is not an instance of %s is deprecated in %s().', UserInterface::class, __METHOD__);
+        }
+
+        return $user;
     }
 }
