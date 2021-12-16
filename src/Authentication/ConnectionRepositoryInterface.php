@@ -26,10 +26,5 @@ interface ConnectionRepositoryInterface
 
     public function findTokenForConnection(ConnectionInterface $connection): TokenInterface;
 
-    /**
-     * @return string|\Stringable|UserInterface|null
-     *
-     * @note As of 4.0, the return type will change to `UserInterface|null`.
-     */
-    public function getUser(ConnectionInterface $connection);
+    public function getUser(ConnectionInterface $connection): ?UserInterface;
 }

@@ -22,6 +22,7 @@
 - The compiler passes mapping services tagged with `gos_web_socket.periodic`, `gos_web_socket.rpc`, `gos_web_socket.server`, and `gos_web_socket.topic` have been removed; the container's tagged iterator feature is used instead
 - Deprecated public access to container services, use dependency injection for all services
 - The server registry parameter of the `Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand` constructor is now required
+- Changed the return type of `Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepositoryInterface::getUser()` to match `Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getUser()`
 
 ### JavaScript
 
