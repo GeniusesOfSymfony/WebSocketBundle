@@ -14,15 +14,15 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
+final class GosWebSocketExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
     /**
      * @var AuthenticationProviderFactoryInterface[]
@@ -39,39 +39,37 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         return new Configuration($this->authenticationProviderFactories);
     }
 
-    public function load(array $configs, ContainerBuilder $container): void
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
         $loader->load('services.php');
-
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         $container->registerForAutoconfiguration(PeriodicInterface::class)->addTag('gos_web_socket.periodic');
         $container->registerForAutoconfiguration(RpcInterface::class)->addTag('gos_web_socket.rpc');
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $this->registerAuthenticationConfiguration($config, $container);
-        $this->registerServerConfiguration($config, $container);
-        $this->registerOriginsConfiguration($config, $container);
-        $this->registerBlockedIpAddressesConfiguration($config, $container);
-        $this->registerPingConfiguration($config, $container);
+        $this->registerAuthenticationConfiguration($mergedConfig, $container);
+        $this->registerServerConfiguration($mergedConfig, $container);
+        $this->registerOriginsConfiguration($mergedConfig, $container);
+        $this->registerBlockedIpAddressesConfiguration($mergedConfig, $container);
+        $this->registerPingConfiguration($mergedConfig, $container);
     }
 
-    private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
+    private function registerAuthenticationConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
         $authenticators = [];
 
-        if (isset($config['authentication']['providers'])) {
+        if (isset($mergedConfig['authentication']['providers'])) {
             foreach ($this->authenticationProviderFactories as $factory) {
                 $key = str_replace('-', '_', $factory->getKey());
 
-                if (!isset($config['authentication']['providers'][$key])) {
+                if (!isset($mergedConfig['authentication']['providers'][$key])) {
                     continue;
                 }
 
-                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $config['authentication']['providers'][$key]));
+                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $mergedConfig['authentication']['providers'][$key]));
             }
         }
 
@@ -80,7 +78,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $storageId = null;
 
-        switch ($config['authentication']['storage']['type']) {
+        switch ($mergedConfig['authentication']['storage']['type']) {
             case Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY:
                 $storageId = 'gos_web_socket.authentication.storage.driver.in_memory';
 
@@ -90,12 +88,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 $storageId = 'gos_web_socket.authentication.storage.driver.psr_cache';
 
                 $container->getDefinition($storageId)
-                    ->replaceArgument(0, new Reference($config['authentication']['storage']['pool']));
+                    ->replaceArgument(0, new Reference($mergedConfig['authentication']['storage']['pool']));
 
                 break;
 
             case Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE:
-                $storageId = $config['authentication']['storage']['id'];
+                $storageId = $mergedConfig['authentication']['storage']['id'];
 
                 break;
         }
@@ -104,20 +102,20 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->setAlias(StorageDriverInterface::class, $storageId);
     }
 
-    private function registerServerConfiguration(array $config, ContainerBuilder $container): void
+    private function registerServerConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
-        $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
-        $container->setParameter('gos_web_socket.server.tls.enabled', $config['server']['tls']['enabled']);
-        $container->setParameter('gos_web_socket.server.tls.options', $config['server']['tls']['options']);
-        $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
-        $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
-        $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
-        $container->setParameter('gos_web_socket.server.keepalive_interval', $config['server']['keepalive_interval']);
+        $container->setParameter('gos_web_socket.server.port', $mergedConfig['server']['port']);
+        $container->setParameter('gos_web_socket.server.host', $mergedConfig['server']['host']);
+        $container->setParameter('gos_web_socket.server.tls.enabled', $mergedConfig['server']['tls']['enabled']);
+        $container->setParameter('gos_web_socket.server.tls.options', $mergedConfig['server']['tls']['options']);
+        $container->setParameter('gos_web_socket.server.origin_check', $mergedConfig['server']['origin_check']);
+        $container->setParameter('gos_web_socket.server.ip_address_check', $mergedConfig['server']['ip_address_check']);
+        $container->setParameter('gos_web_socket.server.keepalive_ping', $mergedConfig['server']['keepalive_ping']);
+        $container->setParameter('gos_web_socket.server.keepalive_interval', $mergedConfig['server']['keepalive_interval']);
 
         $routerConfig = [];
 
-        foreach (($config['server']['router']['resources'] ?? []) as $resource) {
+        foreach (($mergedConfig['server']['router']['resources'] ?? []) as $resource) {
             if (\is_array($resource)) {
                 $routerConfig[] = $resource;
             } else {
@@ -131,27 +129,27 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->setParameter('gos_web_socket.router_resources', $routerConfig);
     }
 
-    private function registerOriginsConfiguration(array $config, ContainerBuilder $container): void
+    private function registerOriginsConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
         $container->getDefinition('gos_web_socket.registry.origins')
-            ->replaceArgument(0, $config['origins']);
+            ->replaceArgument(0, $mergedConfig['origins']);
     }
 
-    private function registerBlockedIpAddressesConfiguration(array $config, ContainerBuilder $container): void
+    private function registerBlockedIpAddressesConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        $container->setParameter('gos_web_socket.blocked_ip_addresses', $config['blocked_ip_addresses']);
+        $container->setParameter('gos_web_socket.blocked_ip_addresses', $mergedConfig['blocked_ip_addresses']);
     }
 
     /**
      * @throws InvalidArgumentException if an unsupported ping service type is given
      */
-    private function registerPingConfiguration(array $config, ContainerBuilder $container): void
+    private function registerPingConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (!isset($config['ping'])) {
+        if (!isset($mergedConfig['ping'])) {
             return;
         }
 
-        foreach ((array) $config['ping']['services'] as $pingService) {
+        foreach ((array) $mergedConfig['ping']['services'] as $pingService) {
             $serviceId = $pingService['name'];
 
             switch ($pingService['type']) {
