@@ -82,5 +82,11 @@
         "symfony/serializer": "to use the pushers",
         "symfony/stopwatch": "to use the data collectors"
     },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "phpstan/extension-installer": true
+        }
+    },
     "minimum-stability": "dev"
 }
