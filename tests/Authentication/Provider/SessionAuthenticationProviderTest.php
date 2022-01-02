@@ -8,12 +8,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ratchet\ConnectionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\InMemoryUser;
-use Symfony\Component\Security\Core\User\User;
 
 final class SessionAuthenticationProviderTest extends TestCase
 {
@@ -79,23 +77,16 @@ final class SessionAuthenticationProviderTest extends TestCase
             ->method('addToken')
             ->with($storageIdentifier, self::isInstanceOf(TokenInterface::class));
 
-        self::assertInstanceOf(class_exists(NullToken::class) ? NullToken::class : AnonymousToken::class, $this->provider->authenticate($connection));
+        self::assertInstanceOf(NullToken::class, $this->provider->authenticate($connection));
     }
 
     public function testAnAuthenticatedUserFromASharedSessionIsAuthenticated(): void
     {
-        if (class_exists(InMemoryUser::class)) {
-            $user = new InMemoryUser('user', 'password');
-        } else {
-            $user = new User('user', 'password');
-        }
-
-        // Symfony 5.4 deprecates the `$credentials` argument of the token class
-        if (3 === (new \ReflectionClass(UsernamePasswordToken::class))->getConstructor()->getNumberOfParameters()) {
-            $token = new UsernamePasswordToken($user, 'main', ['ROLE_USER']);
-        } else {
-            $token = new UsernamePasswordToken($user, 'password', 'main', ['ROLE_USER']);
-        }
+        $token = new UsernamePasswordToken(
+            new InMemoryUser('user', 'password'),
+            'main',
+            ['ROLE_USER'],
+        );
 
         /** @var MockObject&SessionInterface $session */
         $session = $this->createMock(SessionInterface::class);
