@@ -29,15 +29,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 /**
  * @author Johann Saunier <johann_27@hotmail.fr>
  */
-final class GosWebSocketExtension extends Extension implements PrependExtensionInterface
+final class GosWebSocketExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
     private const DEPRECATED_ALIASES = [
         ClientManipulatorInterface::class => '3.11',
@@ -82,32 +82,30 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         return new Configuration($this->authenticationProviderFactories);
     }
 
-    public function load(array $configs, ContainerBuilder $container): void
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
         $loader->load('services.yaml');
         $loader->load('aliases.yaml');
 
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
-
         $container->registerForAutoconfiguration(PeriodicInterface::class)->addTag('gos_web_socket.periodic');
         $container->registerForAutoconfiguration(RpcInterface::class)->addTag('gos_web_socket.rpc');
         $container->registerForAutoconfiguration(ServerInterface::class)->addTag('gos_web_socket.server');
         $container->registerForAutoconfiguration(TopicInterface::class)->addTag('gos_web_socket.topic');
 
-        $container->setParameter('gos_web_socket.shared_config', $config['shared_config']);
+        $container->setParameter('gos_web_socket.shared_config', $mergedConfig['shared_config']);
 
-        $this->registerAuthenticationConfiguration($config, $container);
-        $this->registerClientConfiguration($config, $container);
-        $this->registerServerConfiguration($config, $container);
-        $this->registerOriginsConfiguration($config, $container);
-        $this->registerBlockedIpAddressesConfiguration($config, $container);
-        $this->registerPingConfiguration($config, $container);
-        $this->registerPushersConfiguration($config, $container);
-        $this->registerWebsocketClientConfiguration($config, $container);
+        $this->registerAuthenticationConfiguration($mergedConfig, $container);
+        $this->registerClientConfiguration($mergedConfig, $container);
+        $this->registerServerConfiguration($mergedConfig, $container);
+        $this->registerOriginsConfiguration($mergedConfig, $container);
+        $this->registerBlockedIpAddressesConfiguration($mergedConfig, $container);
+        $this->registerPingConfiguration($mergedConfig, $container);
+        $this->registerPushersConfiguration($mergedConfig, $container);
+        $this->registerWebsocketClientConfiguration($mergedConfig, $container);
 
-        $this->maybeEnableAuthenticatorApi($config, $container);
+        $this->maybeEnableAuthenticatorApi($mergedConfig, $container);
 
         $this->markAliasesDeprecated($container);
         $this->markServicesDeprecated($container);
@@ -165,9 +163,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function maybeEnableAuthenticatorApi(array $config, ContainerBuilder $container): void
+    private function maybeEnableAuthenticatorApi(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (!$config['authentication']['enable_authenticator']) {
+        if (!$mergedConfig['authentication']['enable_authenticator']) {
             return;
         }
 
@@ -186,19 +184,19 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->removeDefinition('gos_web_socket.client.storage');
     }
 
-    private function registerAuthenticationConfiguration(array $config, ContainerBuilder $container): void
+    private function registerAuthenticationConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
         $authenticators = [];
 
-        if (isset($config['authentication']['providers'])) {
+        if (isset($mergedConfig['authentication']['providers'])) {
             foreach ($this->authenticationProviderFactories as $factory) {
                 $key = str_replace('-', '_', $factory->getKey());
 
-                if (!isset($config['authentication']['providers'][$key])) {
+                if (!isset($mergedConfig['authentication']['providers'][$key])) {
                     continue;
                 }
 
-                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $config['authentication']['providers'][$key]));
+                $authenticators[] = new Reference($factory->createAuthenticationProvider($container, $mergedConfig['authentication']['providers'][$key]));
             }
         }
 
@@ -207,7 +205,7 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $storageId = null;
 
-        switch ($config['authentication']['storage']['type']) {
+        switch ($mergedConfig['authentication']['storage']['type']) {
             case Configuration::AUTHENTICATION_STORAGE_TYPE_IN_MEMORY:
                 $storageId = 'gos_web_socket.authentication.storage.driver.in_memory';
 
@@ -217,12 +215,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
                 $storageId = 'gos_web_socket.authentication.storage.driver.psr_cache';
 
                 $container->getDefinition($storageId)
-                    ->replaceArgument(0, new Reference($config['authentication']['storage']['pool']));
+                    ->replaceArgument(0, new Reference($mergedConfig['authentication']['storage']['pool']));
 
                 break;
 
             case Configuration::AUTHENTICATION_STORAGE_TYPE_SERVICE:
-                $storageId = $config['authentication']['storage']['id'];
+                $storageId = $mergedConfig['authentication']['storage']['id'];
 
                 break;
         }
@@ -231,20 +229,20 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->setAlias(StorageDriverInterface::class, $storageId);
     }
 
-    private function registerClientConfiguration(array $config, ContainerBuilder $container): void
+    private function registerClientConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
         // @deprecated to be removed in 4.0, authentication API has been replaced
-        $container->setParameter('gos_web_socket.client.storage.ttl', $config['client']['storage']['ttl']);
+        $container->setParameter('gos_web_socket.client.storage.ttl', $mergedConfig['client']['storage']['ttl']);
 
         // @deprecated to be removed in 4.0, authentication API has been replaced
-        $container->setParameter('gos_web_socket.firewall', (array) $config['client']['firewall']);
+        $container->setParameter('gos_web_socket.firewall', (array) $mergedConfig['client']['firewall']);
 
         // @deprecated to be removed in 4.0, parameter is unused
-        $container->setParameter('gos_web_socket.client.storage.prefix', $config['client']['storage']['prefix']);
+        $container->setParameter('gos_web_socket.client.storage.prefix', $mergedConfig['client']['storage']['prefix']);
 
         // @deprecated to be removed in 4.0, session handler config is moved
-        if (isset($config['client']['session_handler'])) {
-            $sessionHandlerId = $config['client']['session_handler'];
+        if (isset($mergedConfig['client']['session_handler'])) {
+            $sessionHandlerId = $mergedConfig['client']['session_handler'];
 
             $container->getDefinition('gos_web_socket.server.builder')
                 ->addMethodCall('setSessionHandler', [new Reference($sessionHandlerId)]);
@@ -253,12 +251,12 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
 
         // @deprecated to be removed in 4.0, authentication API has been replaced
-        if (isset($config['client']['storage']['driver'])) {
-            $driverId = $config['client']['storage']['driver'];
+        if (isset($mergedConfig['client']['storage']['driver'])) {
+            $driverId = $mergedConfig['client']['storage']['driver'];
             $storageDriver = $driverId;
 
-            if (isset($config['client']['storage']['decorator'])) {
-                $decoratorId = $config['client']['storage']['decorator'];
+            if (isset($mergedConfig['client']['storage']['decorator'])) {
+                $decoratorId = $mergedConfig['client']['storage']['decorator'];
                 $container->getDefinition($decoratorId)
                     ->addArgument(new Reference($driverId));
 
@@ -273,20 +271,20 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function registerServerConfiguration(array $config, ContainerBuilder $container): void
+    private function registerServerConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        $container->setParameter('gos_web_socket.server.port', $config['server']['port']);
-        $container->setParameter('gos_web_socket.server.host', $config['server']['host']);
-        $container->setParameter('gos_web_socket.server.tls.enabled', $config['server']['tls']['enabled']);
-        $container->setParameter('gos_web_socket.server.tls.options', $config['server']['tls']['options']);
-        $container->setParameter('gos_web_socket.server.origin_check', $config['server']['origin_check']);
-        $container->setParameter('gos_web_socket.server.ip_address_check', $config['server']['ip_address_check']);
-        $container->setParameter('gos_web_socket.server.keepalive_ping', $config['server']['keepalive_ping']);
-        $container->setParameter('gos_web_socket.server.keepalive_interval', $config['server']['keepalive_interval']);
+        $container->setParameter('gos_web_socket.server.port', $mergedConfig['server']['port']);
+        $container->setParameter('gos_web_socket.server.host', $mergedConfig['server']['host']);
+        $container->setParameter('gos_web_socket.server.tls.enabled', $mergedConfig['server']['tls']['enabled']);
+        $container->setParameter('gos_web_socket.server.tls.options', $mergedConfig['server']['tls']['options']);
+        $container->setParameter('gos_web_socket.server.origin_check', $mergedConfig['server']['origin_check']);
+        $container->setParameter('gos_web_socket.server.ip_address_check', $mergedConfig['server']['ip_address_check']);
+        $container->setParameter('gos_web_socket.server.keepalive_ping', $mergedConfig['server']['keepalive_ping']);
+        $container->setParameter('gos_web_socket.server.keepalive_interval', $mergedConfig['server']['keepalive_interval']);
 
         $routerConfig = [];
 
-        foreach (($config['server']['router']['resources'] ?? []) as $resource) {
+        foreach (($mergedConfig['server']['router']['resources'] ?? []) as $resource) {
             if (\is_array($resource)) {
                 $routerConfig[] = $resource;
             } else {
@@ -300,30 +298,30 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         $container->setParameter('gos_web_socket.router_resources', $routerConfig);
     }
 
-    private function registerOriginsConfiguration(array $config, ContainerBuilder $container): void
+    private function registerOriginsConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
         $originsRegistryDef = $container->getDefinition('gos_web_socket.registry.origins');
 
-        foreach ($config['origins'] as $origin) {
+        foreach ($mergedConfig['origins'] as $origin) {
             $originsRegistryDef->addMethodCall('addOrigin', [$origin]);
         }
     }
 
-    private function registerBlockedIpAddressesConfiguration(array $config, ContainerBuilder $container): void
+    private function registerBlockedIpAddressesConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        $container->setParameter('gos_web_socket.blocked_ip_addresses', $config['blocked_ip_addresses']);
+        $container->setParameter('gos_web_socket.blocked_ip_addresses', $mergedConfig['blocked_ip_addresses']);
     }
 
     /**
      * @throws InvalidArgumentException if an unsupported ping service type is given
      */
-    private function registerPingConfiguration(array $config, ContainerBuilder $container): void
+    private function registerPingConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (!isset($config['ping'])) {
+        if (!isset($mergedConfig['ping'])) {
             return;
         }
 
-        foreach ((array) $config['ping']['services'] as $pingService) {
+        foreach ((array) $mergedConfig['ping']['services'] as $pingService) {
             $serviceId = $pingService['name'];
 
             switch ($pingService['type']) {
@@ -353,9 +351,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function registerPushersConfiguration(array $config, ContainerBuilder $container): void
+    private function registerPushersConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (!isset($config['pushers'])) {
+        if (!isset($mergedConfig['pushers'])) {
             // Remove all of the pushers
             foreach (['gos_web_socket.pusher.amqp', 'gos_web_socket.pusher.wamp'] as $pusher) {
                 $container->removeDefinition($pusher);
@@ -370,9 +368,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
 
         $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
 
-        if (isset($config['pushers']['amqp']) && $this->isConfigEnabled($container, $config['pushers']['amqp'])) {
+        if (isset($mergedConfig['pushers']['amqp']) && $this->isConfigEnabled($container, $mergedConfig['pushers']['amqp'])) {
             // Pull the 'enabled' field out of the pusher's config
-            $factoryConfig = $config['pushers']['amqp'];
+            $factoryConfig = $mergedConfig['pushers']['amqp'];
             unset($factoryConfig['enabled']);
 
             $connectionFactoryDef = new Definition(
@@ -408,9 +406,9 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
             $container->removeDefinition('gos_web_socket.pusher.amqp.push_handler');
         }
 
-        if (isset($config['pushers']['wamp']) && $this->isConfigEnabled($container, $config['pushers']['wamp'])) {
+        if (isset($mergedConfig['pushers']['wamp']) && $this->isConfigEnabled($container, $mergedConfig['pushers']['wamp'])) {
             // Pull the 'enabled' field out of the pusher's config
-            $factoryConfig = $config['pushers']['wamp'];
+            $factoryConfig = $mergedConfig['pushers']['wamp'];
             unset($factoryConfig['enabled']);
 
             $connectionFactoryDef = new Definition(
@@ -445,16 +443,16 @@ final class GosWebSocketExtension extends Extension implements PrependExtensionI
         }
     }
 
-    private function registerWebsocketClientConfiguration(array $config, ContainerBuilder $container): void
+    private function registerWebsocketClientConfiguration(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (!$config['websocket_client']['enabled']) {
+        if (!$mergedConfig['websocket_client']['enabled']) {
             return;
         }
 
         $usesSymfony51Api = method_exists(Definition::class, 'getDeprecation');
 
         // Pull the 'enabled' field out of the client's config
-        $factoryConfig = $config['websocket_client'];
+        $factoryConfig = $mergedConfig['websocket_client'];
         unset($factoryConfig['enabled']);
 
         $clientFactoryDef = new Definition(
