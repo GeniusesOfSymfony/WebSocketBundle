@@ -47,9 +47,7 @@
     "conflict": {
         "doctrine/dbal": "<3.3",
         "symfony/cache": "<5.4",
-        "symfony/monolog-bundle": "<3.0",
-        "symfony/twig-bundle": "<5.4",
-        "twig/twig": "<1.36 || >=2.0,<2.6"
+        "symfony/twig-bundle": "<5.4"
     },
     "autoload": {
         "psr-4": { "Gos\\Bundle\\WebSocketBundle\\": "src/" }
