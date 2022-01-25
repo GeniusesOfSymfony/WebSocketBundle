@@ -4,6 +4,7 @@ namespace Gos\Bundle\WebSocketBundle\Command;
 
 use Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry;
 use Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -13,18 +14,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'gos:websocket:server', description: 'Starts the websocket server')]
 final class WebsocketServerCommand extends Command
 {
-    /**
-     * @var string|null
-     */
-    protected static $defaultName = 'gos:websocket:server';
-
-    /**
-     * @var string|null
-     */
-    protected static $defaultDescription = 'Starts the websocket server';
-
     public function __construct(
         private ServerLauncherInterface $serverLauncher,
         private string $host,
