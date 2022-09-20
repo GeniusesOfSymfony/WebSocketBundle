@@ -22,6 +22,6 @@
     </listeners>
 
     <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=31&amp;max[direct]=3&amp;max[indirect]=29"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=31&amp;max[direct]=6&amp;max[indirect]=29"/>
     </php>
 </phpunit>
