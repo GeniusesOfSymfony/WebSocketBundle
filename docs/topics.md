@@ -289,7 +289,7 @@ class AcmeConnectionPeriodicTopic extends AcmeTopic
             300,
             function () use ($connection, $topic) {
                 // Broadcasts only to the current user
-                $topic->broadcast('hello world', [], [$connection->resourceId]);
+                $topic->broadcast('hello world', [], [$connection->WAMP->sessionId]);
             }
         );
     }
