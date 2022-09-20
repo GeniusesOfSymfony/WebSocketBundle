@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.15.0 (2022-09-20)
+
+- Fix deprecated command configuration for Symfony 6.1
+
 ## 3.14.0 (2021-12-15)
 
 - Add support for Symfony 6.0
