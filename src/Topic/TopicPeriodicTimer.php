@@ -90,6 +90,11 @@ class TopicPeriodicTimer implements \IteratorAggregate
     public function clearPeriodicTimer(TopicInterface $topic): void
     {
         $namespace = $this->getTopicNamespace($topic);
+
+        foreach ($this->registry[$namespace] as $timer) {
+            $this->loop->cancelTimer($timer);
+        }
+
         unset($this->registry[$namespace]);
     }
 
