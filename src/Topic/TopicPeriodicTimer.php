@@ -2,6 +2,7 @@
 
 namespace Gos\Bundle\WebSocketBundle\Topic;
 
+use Ratchet\Wamp\Topic;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 
@@ -11,7 +12,7 @@ use React\EventLoop\TimerInterface;
 class TopicPeriodicTimer implements \IteratorAggregate
 {
     /**
-     * @var array<string, array<string, TimerInterface>>
+     * @var array<string, array<string, array<string, TimerInterface>>>
      */
     protected array $registry = [];
     protected LoopInterface $loop;
@@ -21,69 +22,78 @@ class TopicPeriodicTimer implements \IteratorAggregate
         $this->loop = $loop;
     }
 
-    public function getAllPeriodicTimers(TopicInterface $topic, string $name): TimerInterface|bool
+    public function getPeriodicTimer(TopicInterface $appTopic, Topic $topic, string $name): TimerInterface|bool
     {
-        if (!$this->isPeriodicTimerActive($topic, $name)) {
+        if (!$this->isPeriodicTimerActive($appTopic, $topic, $name)) {
             return false;
         }
 
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
-        return $this->registry[$namespace][$name];
+        return $this->registry[$namespace][$topic->getId()][$name];
     }
 
     /**
      * @return array<string, TimerInterface>
      */
-    public function getPeriodicTimers(TopicInterface $topic): array
+    public function getPeriodicTimers(TopicInterface $appTopic, Topic $topic): array
     {
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
-        return $this->registry[$namespace] ?? [];
+        return $this->registry[$namespace][$topic->getId()] ?? [];
     }
 
-    public function addPeriodicTimer(TopicInterface $topic, string $name, int|float $timeout, callable $callback): void
+    public function addPeriodicTimer(TopicInterface $appTopic, Topic $topic, string $name, int|float $timeout, callable $callback): void
     {
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
         if (!isset($this->registry[$namespace])) {
             $this->registry[$namespace] = [];
         }
 
-        $this->registry[$namespace][$name] = $this->loop->addPeriodicTimer($timeout, $callback);
+        if (!isset($this->registry[$namespace][$topic->getId()])) {
+            $this->registry[$namespace][$topic->getId()] = [];
+        }
+
+        $this->registry[$namespace][$topic->getId()][$name] = $this->loop->addPeriodicTimer($timeout, $callback);
     }
 
-    public function isRegistered(TopicInterface $topic): bool
+    public function isRegistered(TopicInterface $appTopic, Topic $topic): bool
     {
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
-        return isset($this->registry[$namespace]);
+        return isset($this->registry[$namespace][$topic->getId()]);
     }
 
-    public function isPeriodicTimerActive(TopicInterface $topic, string $name): bool
+    public function isPeriodicTimerActive(TopicInterface $appTopic, Topic $topic, string $name): bool
     {
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
-        return isset($this->registry[$namespace][$name]);
+        return isset($this->registry[$namespace][$topic->getId()][$name]);
     }
 
-    public function cancelPeriodicTimer(TopicInterface $topic, string $name): void
+    public function cancelPeriodicTimer(TopicInterface $appTopic, Topic $topic, string $name): void
     {
-        $namespace = $this->getTopicNamespace($topic);
+        $namespace = $this->getTopicNamespace($appTopic);
 
-        if (!isset($this->registry[$namespace][$name])) {
+        if (!isset($this->registry[$namespace][$topic->getId()][$name])) {
             return;
         }
 
-        $timer = $this->registry[$namespace][$name];
+        $timer = $this->registry[$namespace][$topic->getId()][$name];
         $this->loop->cancelTimer($timer);
-        unset($this->registry[$namespace][$name]);
+        unset($this->registry[$namespace][$topic->getId()][$name]);
     }
 
-    public function clearPeriodicTimer(TopicInterface $topic): void
+    public function clearPeriodicTimer(TopicInterface $appTopic, Topic $topic): void
     {
-        $namespace = $this->getTopicNamespace($topic);
-        unset($this->registry[$namespace]);
+        $namespace = $this->getTopicNamespace($appTopic);
+
+        foreach ($this->registry[$namespace][$topic->getId()] as $timer) {
+            $this->loop->cancelTimer($timer);
+        }
+
+        unset($this->registry[$namespace][$topic->getId()]);
     }
 
     /**
