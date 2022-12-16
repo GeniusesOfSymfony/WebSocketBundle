@@ -366,7 +366,7 @@ final class TopicDispatcherTest extends TestCase
 
         $this->topicPeriodicTimer->expects(self::once())
             ->method('isRegistered')
-            ->with($handler)
+            ->with($handler, $topic)
             ->willReturn(false);
 
         $this->dispatcher->onPublish($connection, $topic, $request, 'test', [], []);

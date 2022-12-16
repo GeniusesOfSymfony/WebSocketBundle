@@ -135,7 +135,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
         if ($appTopic instanceof TopicPeriodicTimerInterface) {
             $appTopic->setPeriodicTimer($this->topicPeriodicTimer);
 
-            if (!$this->topicPeriodicTimer->isRegistered($appTopic) && 0 !== \count($topic)) {
+            if (!$this->topicPeriodicTimer->isRegistered($appTopic, $topic) && 0 !== \count($topic)) {
                 try {
                     $appTopic->registerPeriodicTimer($topic);
                 } catch (\Throwable $e) {
@@ -178,7 +178,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
                     $appTopic->onUnSubscribe($conn, $topic, $request);
 
                     if (0 === \count($topic)) {
-                        $this->topicPeriodicTimer->clearPeriodicTimer($appTopic);
+                        $this->topicPeriodicTimer->clearPeriodicTimer($appTopic, $topic);
                     }
 
                     break;
