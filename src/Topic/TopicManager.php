@@ -76,11 +76,13 @@ class TopicManager implements WsServerInterface, WampServerInterface
 
     public function onClose(ConnectionInterface $conn): void
     {
-        $this->app->onClose($conn);
-
         foreach ($this->topicLookup as $topic) {
             $this->cleanTopic($topic, $conn);
+
+            $this->app->onUnsubscribe($conn, $topic);
         }
+
+        $this->app->onClose($conn);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e): void

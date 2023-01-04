@@ -196,11 +196,6 @@ class WampApplication implements PushableWampServerInterface, LoggerAwareInterfa
 
     public function onClose(ConnectionInterface $conn): void
     {
-        foreach ($conn->WAMP->subscriptions as $topic) {
-            $wampRequest = $this->wampRouter->match($topic);
-            $this->topicDispatcher->onUnSubscribe($conn, $topic, $wampRequest);
-        }
-
         $this->eventDispatcher->dispatch(new ClientDisconnectedEvent($conn), GosWebSocketEvents::CLIENT_DISCONNECTED);
     }
 
