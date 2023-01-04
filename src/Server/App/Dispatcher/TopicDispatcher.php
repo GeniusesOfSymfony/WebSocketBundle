@@ -204,7 +204,7 @@ final class TopicDispatcher implements TopicDispatcherInterface, LoggerAwareInte
 
             if (!$this->topicPeriodicTimer->isRegistered($appTopic) && 0 !== \count($topic)) {
                 try {
-                    $appTopic->registerPeriodicTimer($topic);
+                    $appTopic->registerPeriodicTimer($topic, $request);
                 } catch (\Throwable $e) {
                     if (null !== $this->logger) {
                         $this->logger->error(

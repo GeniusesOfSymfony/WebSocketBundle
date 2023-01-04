@@ -432,7 +432,7 @@ final class TopicDispatcherTest extends TestCase
                 return 'topic.handler';
             }
 
-            public function registerPeriodicTimer(Topic $topic): void
+            public function registerPeriodicTimer(Topic $topic, WampRequest $request): void
             {
                 $this->registered = true;
             }

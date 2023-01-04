@@ -205,7 +205,7 @@ To implement an example fulfilling a scenario of "every 5 minutes all subscriber
 
 You will need to add these two methods to your Topic:
 
-- `public function registerPeriodicTimer(Topic $topic): void`
+- `public function registerPeriodicTimer(Topic $topic, WampRequest $request): void`
 - `public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer): void`
 
 The `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait` is available to help implement the interface.
@@ -215,6 +215,7 @@ The `Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait` is available to h
 
 namespace App\Websocket\Topic;
 
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerTrait;
 use Ratchet\Wamp\Topic;
@@ -223,7 +224,7 @@ class AcmePeriodicTopic extends AcmeTopic implements TopicPeriodicTimerInterface
 {
     use TopicPeriodicTimerTrait;
 
-    public function registerPeriodicTimer(Topic $topic): void
+    public function registerPeriodicTimer(Topic $topic, WampRequest $request): void
     {
         // Adds the periodic timer the first time a client connects to the topic
         $this->periodicTimer->addPeriodicTimer(
